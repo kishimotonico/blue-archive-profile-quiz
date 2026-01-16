@@ -82,13 +82,36 @@ async function scrapeStudentData(page: Page, studentId: string): Promise<{ data:
 
   // スキル名の取得
   const getSkillName = async (sectionText: string): Promise<string | null> => {
-    const header = page.locator(`//h3[contains(text(), "${sectionText}")]`);
+    const header = page.locator(`//h3[contains(text(), "${sectionText}")]`).first();
     if (await header.count() === 0) return null;
 
-    const skillNameLocator = header.locator('xpath=/following-sibling::div[1]//table//th').nth(0);
-    if (await skillNameLocator.count() > 0) {
-      return (await skillNameLocator.innerText()).trim();
+    const tableLocator = header.locator('xpath=/following-sibling::div[1]//table/thead/tr[1]');
+    if (await tableLocator.count() === 0) return null;
+
+    // colspan属性を持つthを優先的に探す
+    const colspanTh = tableLocator.locator('th[colspan]').first();
+    if (await colspanTh.count() > 0) {
+      return (await colspanTh.innerText()).trim();
     }
+
+    // 最初のセルがthかtdかで取得位置を変える
+    const firstCell = tableLocator.locator('th, td').first();
+    const firstCellTag = await firstCell.evaluate((el) => el.tagName.toLowerCase());
+
+    if (firstCellTag === 'th') {
+      // アイコンがth → 2番目のthがスキル名
+      const secondTh = tableLocator.locator('th:nth-of-type(2)');
+      if (await secondTh.count() > 0) {
+        return (await secondTh.innerText()).trim();
+      }
+    } else {
+      // アイコンがtd → 1番目のthがスキル名
+      const firstTh = tableLocator.locator('th:nth-of-type(1)');
+      if (await firstTh.count() > 0) {
+        return (await firstTh.innerText()).trim();
+      }
+    }
+
     return null;
   };
 

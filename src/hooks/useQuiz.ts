@@ -1,13 +1,14 @@
 import { useAtom } from 'jotai';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import {
   currentQuestionAtom,
   revealedHintCountAtom,
   answeredAtom,
   correctAtom,
   scoreAtom,
+  allStudentsAtom,
 } from '../store/quiz';
-import { checkAnswer, calculateScore } from '../quiz-core';
+import { validateAnswer, calculateScore } from '../quiz-core';
 
 export function useQuiz() {
   const [currentQuestion, setCurrentQuestion] = useAtom(currentQuestionAtom);
@@ -15,6 +16,8 @@ export function useQuiz() {
   const [answered, setAnswered] = useAtom(answeredAtom);
   const [correct, setCorrect] = useAtom(correctAtom);
   const [score, setScore] = useAtom(scoreAtom);
+  const [allStudents] = useAtom(allStudentsAtom);
+  const [answerFeedback, setAnswerFeedback] = useState<string | null>(null);
 
   /**
    * 次のヒントを開示
@@ -35,14 +38,27 @@ export function useQuiz() {
       if (!currentQuestion) return;
       if (answered) return;
 
-      const isCorrect = checkAnswer(answer, currentQuestion.student);
-      const calculatedScore = calculateScore(revealedHintCount, isCorrect);
+      const result = validateAnswer(answer, currentQuestion.student, allStudents);
 
-      setCorrect(isCorrect);
-      setScore(calculatedScore);
-      setAnswered(true);
+      if (result.type === 'correct') {
+        // 正解
+        const calculatedScore = calculateScore(revealedHintCount, true);
+        setCorrect(true);
+        setScore(calculatedScore);
+        setAnswered(true);
+        setAnswerFeedback(null);
+      } else if (result.type === 'wrong_student') {
+        // 存在する生徒だが間違い → 0点で終了
+        setCorrect(false);
+        setScore(0);
+        setAnswered(true);
+        setAnswerFeedback(null);
+      } else {
+        // 該当する生徒が存在しない → 続行可能
+        setAnswerFeedback('該当する生徒が見つかりません');
+      }
     },
-    [currentQuestion, answered, revealedHintCount, setCorrect, setScore, setAnswered]
+    [currentQuestion, answered, revealedHintCount, allStudents, setCorrect, setScore, setAnswered]
   );
 
   /**
@@ -54,6 +70,7 @@ export function useQuiz() {
     setAnswered(false);
     setCorrect(false);
     setScore(0);
+    setAnswerFeedback(null);
   }, [setCurrentQuestion, setRevealedHintCount, setAnswered, setCorrect, setScore]);
 
   return {
@@ -63,6 +80,7 @@ export function useQuiz() {
     answered,
     correct,
     score,
+    answerFeedback,
     revealNextHint,
     submitAnswer,
     resetQuiz,

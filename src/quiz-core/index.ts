@@ -39,7 +39,10 @@ export {
   normalizeAnswer,
   checkAnswer,
   getAnswerVariants,
+  validateAnswer,
 } from './answer';
+
+export type { AnswerResult } from './answer';
 
 // スコア計算
 export {

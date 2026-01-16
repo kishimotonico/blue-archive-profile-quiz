@@ -1,5 +1,10 @@
 import { atom } from 'jotai';
-import type { QuizQuestion, QuizState } from '../quiz-core';
+import type { QuizQuestion, QuizState, Student } from '../quiz-core';
+
+/**
+ * 全生徒リスト
+ */
+export const allStudentsAtom = atom<Student[]>([]);
 
 /**
  * 現在のクイズ問題

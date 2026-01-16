@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
 import { useQuiz } from '../hooks/useQuiz';
 import { useDailyQuiz } from '../hooks/useDailyQuiz';
 import {
@@ -8,12 +9,20 @@ import {
   createQuizQuestion,
   getDailyDate,
   getTimeUntilNextReset,
+  loadStudents,
 } from '../quiz-core';
+import { allStudentsAtom } from '../store/quiz';
+import {
+  totalAttemptsAtom,
+  scoreDistributionAtom,
+  bestScoreAtom,
+} from '../store/daily';
 import Header from '../components/layout/Header';
 import HintList from '../components/quiz/HintList';
 import AnswerInput from '../components/quiz/AnswerInput';
 import ScoreDisplay from '../components/quiz/ScoreDisplay';
 import StudentReveal from '../components/quiz/StudentReveal';
+import StudentPortrait from '../components/quiz/StudentPortrait';
 import Button from '../components/common/Button';
 import Modal from '../components/common/Modal';
 
@@ -25,11 +34,16 @@ function DailyQuiz() {
     answered,
     correct,
     score,
+    answerFeedback,
     revealNextHint,
     submitAnswer,
   } = useQuiz();
 
-  const { isTodayCompleted, getTodayResult, saveTodayResult } = useDailyQuiz();
+  const { isTodayCompleted, getTodayResult, saveTodayResult, saveProgress, loadProgress, clearProgress } = useDailyQuiz();
+  const [, setAllStudents] = useAtom(allStudentsAtom);
+  const [totalAttempts] = useAtom(totalAttemptsAtom);
+  const [scoreDistribution] = useAtom(scoreDistributionAtom);
+  const [bestScore] = useAtom(bestScoreAtom);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
@@ -37,11 +51,31 @@ function DailyQuiz() {
 
   useEffect(() => {
     const initQuiz = async () => {
+      // 全生徒リストを読み込み
+      const students = await loadStudents();
+      setAllStudents(students);
+
       // 今日の問題が既に完了しているかチェック
       const todayResult = getTodayResult();
       if (todayResult) {
         setLoading(false);
         return;
+      }
+
+      // 進行状態の復元を試みる
+      const progress = loadProgress();
+      if (progress) {
+        // 進行状態から復元
+        const student = students.find(s => s.id === progress.studentId);
+        if (student) {
+          const question = {
+            student,
+            hints: progress.hints,
+          };
+          setCurrentQuestion(question);
+          setLoading(false);
+          return;
+        }
       }
 
       // 日替わりシードで問題を生成
@@ -54,7 +88,18 @@ function DailyQuiz() {
     };
 
     initQuiz();
-  }, [setCurrentQuestion, getTodayResult]);
+  }, [setCurrentQuestion, getTodayResult, loadProgress, setAllStudents]);
+
+  useEffect(() => {
+    // 進行状態を保存（ヒント開示時）
+    if (currentQuestion && !answered && revealedHintCount > 0) {
+      saveProgress({
+        studentId: currentQuestion.student.id,
+        revealedHintCount,
+        hints: currentQuestion.hints,
+      });
+    }
+  }, [currentQuestion, answered, revealedHintCount, saveProgress]);
 
   useEffect(() => {
     // 回答が完了したら結果を保存
@@ -64,9 +109,10 @@ function DailyQuiz() {
         revealedHintCount,
         studentId: currentQuestion.student.id,
       });
+      clearProgress(); // 進行状態をクリア
       setShowResultModal(true);
     }
-  }, [answered, currentQuestion, score, revealedHintCount, saveTodayResult]);
+  }, [answered, currentQuestion, score, revealedHintCount, saveTodayResult, clearProgress]);
 
   const handleGiveUp = () => {
     if (!currentQuestion) return;
@@ -138,6 +184,13 @@ function DailyQuiz() {
     );
   }
 
+  // 立ち絵の表示状態を計算
+  const getPortraitState = () => {
+    if (answered) return 'revealed';
+    if (revealedHintCount >= currentQuestion.hints.length) return 'silhouette';
+    return 'hidden';
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -155,6 +208,14 @@ function DailyQuiz() {
             <ScoreDisplay score={score} showMax={false} />
           </div>
 
+          {/* 立ち絵表示 */}
+          <div className="flex justify-center">
+            <StudentPortrait
+              student={currentQuestion.student}
+              state={getPortraitState()}
+            />
+          </div>
+
           {/* ヒント一覧 */}
           <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
 
@@ -162,6 +223,13 @@ function DailyQuiz() {
           {!answered && (
             <div className="space-y-4">
               <AnswerInput onSubmit={submitAnswer} />
+
+              {/* 誤答フィードバック */}
+              {answerFeedback && (
+                <div className="text-center text-red-600 font-semibold">
+                  {answerFeedback}
+                </div>
+              )}
 
               <div className="flex justify-center">
                 {revealedHintCount < currentQuestion.hints.length ? (
@@ -206,9 +274,55 @@ function DailyQuiz() {
           <p className="text-sm text-gray-500 mb-2">
             使用ヒント数: {revealedHintCount}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mb-6">
             次の問題まで: {getTimeUntilNextReset()}
           </p>
+
+          {/* 統計情報 */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">統計情報</h3>
+
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">累積挑戦回数:</span>
+                <span className="font-semibold">{totalAttempts}回</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">ベストスコア:</span>
+                <span className="font-semibold">{bestScore}点</span>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <p className="text-sm text-gray-600 mb-2">スコア分布:</p>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>9点 (完璧):</span>
+                  <span>{scoreDistribution.perfect}回</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>7-8点:</span>
+                  <span>{scoreDistribution.veryHigh}回</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>5-6点:</span>
+                  <span>{scoreDistribution.high}回</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>3-4点:</span>
+                  <span>{scoreDistribution.medium}回</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>1-2点:</span>
+                  <span>{scoreDistribution.low}回</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>0点:</span>
+                  <span>{scoreDistribution.zero}回</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="mt-6 space-y-2">
             <Button

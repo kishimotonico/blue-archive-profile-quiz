@@ -1,6 +1,14 @@
 import type { Student } from './types';
 
 /**
+ * 回答結果の型
+ */
+export type AnswerResult =
+  | { type: 'correct' }
+  | { type: 'wrong_student'; answeredStudent: Student }
+  | { type: 'unknown' };
+
+/**
  * ひらがなをカタカナに変換
  */
 export function hiraganaToKatakana(str: string): string {
@@ -45,4 +53,35 @@ export function getAnswerVariants(student: Student): string[] {
     hiraganaToKatakana(student.fullName),
     hiraganaToKatakana(student.name),
   ];
+}
+
+/**
+ * 回答を検証し、正解/誤答/不明を判定
+ * @param answer ユーザーの回答
+ * @param correctStudent 正解の生徒
+ * @param allStudents 全生徒リスト
+ * @returns 回答結果
+ */
+export function validateAnswer(
+  answer: string,
+  correctStudent: Student,
+  allStudents: Student[]
+): AnswerResult {
+  // 正解判定
+  if (checkAnswer(answer, correctStudent)) {
+    return { type: 'correct' };
+  }
+
+  // 全生徒から該当する生徒を検索
+  const matchedStudent = allStudents.find((student) =>
+    checkAnswer(answer, student)
+  );
+
+  if (matchedStudent) {
+    // 存在する生徒だが、正解ではない
+    return { type: 'wrong_student', answeredStudent: matchedStudent };
+  } else {
+    // 該当する生徒が存在しない
+    return { type: 'unknown' };
+  }
 }

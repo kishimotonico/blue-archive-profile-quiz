@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
 import { useQuiz } from '../hooks/useQuiz';
-import { getRandomStudents, createQuizQuestion, type Student } from '../quiz-core';
+import { getRandomStudents, createQuizQuestion, loadStudents, type Student } from '../quiz-core';
+import { allStudentsAtom } from '../store/quiz';
 import Header from '../components/layout/Header';
 import HintList from '../components/quiz/HintList';
 import AnswerInput from '../components/quiz/AnswerInput';
 import ScoreDisplay from '../components/quiz/ScoreDisplay';
 import StudentReveal from '../components/quiz/StudentReveal';
+import StudentPortrait from '../components/quiz/StudentPortrait';
 import Button from '../components/common/Button';
 import Modal from '../components/common/Modal';
 
@@ -20,11 +23,13 @@ function RegularQuiz() {
     answered,
     correct,
     score,
+    answerFeedback,
     revealNextHint,
     submitAnswer,
     resetQuiz,
   } = useQuiz();
 
+  const [, setAllStudents] = useAtom(allStudentsAtom);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
@@ -36,6 +41,10 @@ function RegularQuiz() {
   // 初期化
   useEffect(() => {
     const initQuiz = async () => {
+      // 全生徒リストを読み込み
+      const allStudents = await loadStudents();
+      setAllStudents(allStudents);
+
       const randomStudents = await getRandomStudents(TOTAL_QUESTIONS);
       setStudents(randomStudents);
 
@@ -52,7 +61,7 @@ function RegularQuiz() {
     return () => {
       resetQuiz();
     };
-  }, [setCurrentQuestion, resetQuiz]);
+  }, [setCurrentQuestion, resetQuiz, setAllStudents]);
 
   // 回答完了時の処理
   useEffect(() => {
@@ -113,6 +122,13 @@ function RegularQuiz() {
     );
   }
 
+  // 立ち絵の表示状態を計算
+  const getPortraitState = () => {
+    if (answered) return 'revealed';
+    if (revealedHintCount >= currentQuestion.hints.length) return 'silhouette';
+    return 'hidden';
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -138,6 +154,14 @@ function RegularQuiz() {
             <ScoreDisplay score={score} showMax={false} />
           </div>
 
+          {/* 立ち絵表示 */}
+          <div className="flex justify-center">
+            <StudentPortrait
+              student={currentQuestion.student}
+              state={getPortraitState()}
+            />
+          </div>
+
           {/* ヒント一覧 */}
           <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
 
@@ -145,6 +169,13 @@ function RegularQuiz() {
           {!answered && (
             <div className="space-y-4">
               <AnswerInput onSubmit={submitAnswer} />
+
+              {/* 誤答フィードバック */}
+              {answerFeedback && (
+                <div className="text-center text-red-600 font-semibold">
+                  {answerFeedback}
+                </div>
+              )}
 
               <div className="flex justify-center">
                 {revealedHintCount < currentQuestion.hints.length ? (

@@ -5,7 +5,7 @@ import { extractFamilyName } from './students';
  * ヒントタイプごとのラベル定義
  */
 const HINT_LABELS: Record<HintType, string> = {
-  school: '所属',
+  school: '学園',
   club: '部活',
   age: '年齢',
   birthday: '誕生日',
@@ -21,7 +21,7 @@ const HINT_LABELS: Record<HintType, string> = {
  */
 export function generateHints(student: Student): Hint[] {
   const hints: Hint[] = [
-    { type: 'school', label: HINT_LABELS.school, value: student.school },
+    { type: 'school', label: HINT_LABELS.school, value: `${student.school} / ${student.grade}` },
     { type: 'club', label: HINT_LABELS.club, value: student.club },
     { type: 'age', label: HINT_LABELS.age, value: student.age },
     { type: 'birthday', label: HINT_LABELS.birthday, value: student.birthday },

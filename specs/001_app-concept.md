@@ -13,6 +13,7 @@ Webベースのシングルページアプリケーションです。
     - React Router
     - jotai
     - Motion
+    - zod
 - Tailwind CSS (optional)
 - Claude Code
 

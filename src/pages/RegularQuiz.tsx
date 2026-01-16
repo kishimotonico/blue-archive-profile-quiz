@@ -121,21 +121,21 @@ function RegularQuiz() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50">
       <Header />
 
-      <main className="flex-1 flex gap-6 p-6 max-w-6xl mx-auto w-full overflow-hidden">
+      <main className="flex-1 flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6 max-w-6xl mx-auto w-full">
+        {/* モバイル: ヒント（上部に表示） */}
+        <div className="md:hidden w-full">
+          <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
+        </div>
+
         {/* 左ペイン: 立ち絵 + 入力 */}
         <div className="flex-1 flex flex-col items-center justify-center gap-4">
           {/* 進捗表示 */}
           <div className="text-center text-sm text-gray-600">
             問題 {currentQuestionIndex + 1} / {TOTAL_QUESTIONS} | 合計: {totalScore}点
           </div>
-
-          <StudentPortrait
-            student={currentQuestion.student}
-            state={getPortraitState()}
-          />
 
           {!answered ? (
             <>
@@ -163,7 +163,14 @@ function RegularQuiz() {
                 )}
               </div>
             </>
-          ) : (
+          ) : null}
+
+          <StudentPortrait
+            student={currentQuestion.student}
+            state={getPortraitState()}
+          />
+
+          {answered && (
             <>
               <StudentReveal student={currentQuestion.student} correct={correct} />
 
@@ -183,8 +190,8 @@ function RegularQuiz() {
           </div>
         </div>
 
-        {/* 右ペイン: ヒント一覧 */}
-        <div className="w-72 flex flex-col gap-2">
+        {/* 右ペイン: ヒント（デスクトップのみ） */}
+        <div className="hidden md:flex w-80 lg:w-96 flex-col gap-2">
           <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
         </div>
       </main>

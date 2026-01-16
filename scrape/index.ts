@@ -15,7 +15,7 @@ type StudentData = {
   hobby: string | null;
   weaponName: string | null;
   cv: string | null;
-  portraitImageUrl: string | null;
+  portraitImage: string | null;
   skills: {
     ex: string | null;
     normal: string | null;
@@ -24,14 +24,32 @@ type StudentData = {
   };
 };
 
-async function scrapeStudentData(page: Page, studentId: string): Promise<StudentData> {
-  const baseUrl = 'https://bluearchive.wikiru.jp/';
+const BASE_URL = 'https://bluearchive.wikiru.jp/';
+const OUTPUT_DIR = './output/students';
+const IMAGE_DIR = './output/images/portrait';
+const CACHE_DIR = './cache';
 
-  // 基本情報テーブル内のテキストを取得するヘルパー関数
+async function downloadImage(url: string, filepath: string): Promise<void> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to download image: ${response.status}`);
+  }
+  const buffer = await response.arrayBuffer();
+  writeFileSync(filepath, Buffer.from(buffer));
+}
+
+async function scrapeStudentData(page: Page, studentId: string): Promise<{ data: StudentData; imageUrl: string | null }> {
+  // 基本情報テーブル内のテキストを取得するヘルパー関数（ルビを除外）
   const getProfileValue = async (label: string): Promise<string | null> => {
     const cell = page.locator(`//h2[contains(text(), "基本情報")]/following-sibling::div[1]//table//th[contains(text(), "${label}")]/following-sibling::td[1]`);
     if (await cell.count() > 0) {
-      return (await cell.innerText()).trim();
+      // <rt>タグ（ルビ）と<rp>タグ（括弧）を除外してテキストを取得
+      const text = await cell.evaluate((el) => {
+        const clone = el.cloneNode(true) as HTMLElement;
+        clone.querySelectorAll('rt, rp').forEach((node) => node.remove());
+        return clone.textContent || '';
+      });
+      return text.trim();
     }
     return null;
   };
@@ -54,12 +72,12 @@ async function scrapeStudentData(page: Page, studentId: string): Promise<Student
     weaponName = (await weaponLocator.first().innerText()).trim();
   }
 
-  // 立ち絵画像の取得
+  // 立ち絵画像URLの取得
   const portraitLocator = page.locator('//h2[contains(text(), "基本情報")]/following-sibling::div[1]//table//td[@rowspan]//img');
-  let portraitImageUrl: string | null = null;
+  let imageUrl: string | null = null;
   if (await portraitLocator.count() > 0) {
     const src = await portraitLocator.getAttribute('src');
-    if (src) portraitImageUrl = new URL(src, baseUrl).toString();
+    if (src) imageUrl = new URL(src, BASE_URL).toString();
   }
 
   // スキル名の取得
@@ -80,67 +98,139 @@ async function scrapeStudentData(page: Page, studentId: string): Promise<Student
   const subSkill = await getSkillName('サブスキル');
 
   return {
-    id: studentId,
-    fullName,
-    name,
-    school,
-    club,
-    age,
-    birthday,
-    height,
-    hobby,
-    weaponName,
-    cv,
-    portraitImageUrl,
-    skills: {
-      ex: exSkill,
-      normal: normalSkill,
-      passive: passiveSkill,
-      sub: subSkill,
+    data: {
+      id: studentId,
+      fullName,
+      name,
+      school,
+      club,
+      age,
+      birthday,
+      height,
+      hobby,
+      weaponName,
+      cv,
+      portraitImage: imageUrl ? `images/portrait/${studentId}.png` : null,
+      skills: {
+        ex: exSkill,
+        normal: normalSkill,
+        passive: passiveSkill,
+        sub: subSkill,
+      },
     },
+    imageUrl,
   };
 }
 
-async function main() {
-  // 生徒マスターデータを読み込み
-  const yamlContent = readFileSync('../data/students-master.yaml', 'utf-8');
-  const students: Record<string, string> = parse(yamlContent);
+async function processStudent(
+  page: Page,
+  studentId: string,
+  studentName: string,
+  useCache: boolean
+): Promise<void> {
+  const cachePath = `${CACHE_DIR}/${studentId}.html`;
+  const jsonPath = `${OUTPUT_DIR}/${studentId}.json`;
+  const imagePath = `${IMAGE_DIR}/${studentId}.png`;
 
-  // 出力ディレクトリを作成
-  const outputDir = './output';
-  if (!existsSync(outputDir)) {
-    mkdirSync(outputDir, { recursive: true });
-  }
+  // キャッシュからHTMLを読み込むか、Webから取得
+  if (useCache && existsSync(cachePath)) {
+    console.log(`  -> Using cached HTML`);
+    const html = readFileSync(cachePath, 'utf-8');
+    await page.setContent(html, { waitUntil: 'domcontentloaded' });
+  } else {
+    const url = `${BASE_URL}?${encodeURIComponent(studentName)}`;
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
-  const results: StudentData[] = [];
-
-  for (const [studentId, studentName] of Object.entries(students)) {
-    const url = `https://bluearchive.wikiru.jp/?${encodeURIComponent(studentName)}`;
-    console.log(`Scraping: ${studentName} (${studentId}) - ${url}`);
-
-    try {
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      const data = await scrapeStudentData(page, studentId);
-      results.push(data);
-      console.log(`  -> OK: ${data.name}`);
-    } catch (error) {
-      console.error(`  -> Error: ${error}`);
-    }
+    // HTMLをキャッシュに保存
+    const html = await page.content();
+    writeFileSync(cachePath, html, 'utf-8');
+    console.log(`  -> HTML cached`);
 
     // サーバー負荷軽減のため少し待機
     await page.waitForTimeout(500);
   }
 
+  const { data, imageUrl } = await scrapeStudentData(page, studentId);
+
+  // 画像をダウンロード
+  if (imageUrl) {
+    await downloadImage(imageUrl, imagePath);
+    console.log(`  -> Image saved: ${imagePath}`);
+  }
+
+  // JSONを保存
+  writeFileSync(jsonPath, JSON.stringify(data, null, 2), 'utf-8');
+  console.log(`  -> OK: ${data.name}`);
+}
+
+async function main() {
+  // コマンドライン引数を解析
+  const args = process.argv.slice(2);
+  const targetStudentId = args[0] || null;
+
+  // 生徒マスターデータを読み込み
+  const yamlContent = readFileSync('../data/students-master.yaml', 'utf-8');
+  const students: Record<string, string> = parse(yamlContent);
+
+  // 単体実行時のバリデーション
+  if (targetStudentId && !students[targetStudentId]) {
+    console.error(`Error: Student ID "${targetStudentId}" not found in students-master.yaml`);
+    process.exit(1);
+  }
+
+  // 出力ディレクトリを作成
+  mkdirSync(OUTPUT_DIR, { recursive: true });
+  mkdirSync(IMAGE_DIR, { recursive: true });
+  mkdirSync(CACHE_DIR, { recursive: true });
+
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  // 単体実行モード
+  if (targetStudentId) {
+    const studentName = students[targetStudentId];
+    console.log(`Scraping: ${studentName} (${targetStudentId})`);
+
+    try {
+      // 単体実行時はキャッシュを使わない（再取得目的のため）
+      await processStudent(page, targetStudentId, studentName, false);
+    } catch (error) {
+      console.error(`  -> Error: ${error}`);
+    }
+
+    await browser.close();
+    return;
+  }
+
+  // 全件実行モード
+  const entries = Object.entries(students);
+  let processed = 0;
+  let skipped = 0;
+
+  for (const [studentId, studentName] of entries) {
+    const jsonPath = `${OUTPUT_DIR}/${studentId}.json`;
+
+    // 既に処理済みならスキップ
+    if (existsSync(jsonPath)) {
+      skipped++;
+      console.log(`Skip: ${studentName} (${studentId}) - already exists`);
+      continue;
+    }
+
+    console.log(`[${processed + skipped + 1}/${entries.length}] Scraping: ${studentName} (${studentId})`);
+
+    try {
+      await processStudent(page, studentId, studentName, true);
+      processed++;
+    } catch (error) {
+      console.error(`  -> Error: ${error}`);
+    }
+  }
+
   await browser.close();
 
-  // 結果をJSON出力
-  const outputPath = `${outputDir}/students.json`;
-  writeFileSync(outputPath, JSON.stringify(results, null, 2), 'utf-8');
-  console.log(`\nOutput saved to: ${outputPath}`);
+  console.log(`\nCompleted: ${processed} processed, ${skipped} skipped`);
 }
 
 main().catch(console.error);

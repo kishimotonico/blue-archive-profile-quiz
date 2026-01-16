@@ -8,18 +8,16 @@ interface HintCardProps {
 function HintCard({ hint, revealed }: HintCardProps) {
   return (
     <div
-      className={`p-4 rounded-lg border-2 transition-all ${
+      className={`flex items-center justify-between px-4 py-2.5 rounded-lg border transition-all ${
         revealed
-          ? 'bg-white border-blue-500'
-          : 'bg-gray-200 border-gray-300'
+          ? 'bg-white border-blue-400 shadow-sm'
+          : 'bg-gray-100 border-gray-200'
       }`}
     >
-      <div className="text-sm font-semibold text-gray-600 mb-1">
-        {hint.label}
-      </div>
-      <div className="text-lg font-bold text-gray-800">
+      <span className="text-sm text-gray-600 w-16 shrink-0">{hint.label}</span>
+      <span className={`text-sm font-semibold ${revealed ? 'text-gray-800' : 'text-gray-400'}`}>
         {revealed ? hint.value : '???'}
-      </div>
+      </span>
     </div>
   );
 }

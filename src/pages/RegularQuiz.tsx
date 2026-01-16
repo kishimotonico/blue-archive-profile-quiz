@@ -7,7 +7,6 @@ import { allStudentsAtom } from '../store/quiz';
 import Header from '../components/layout/Header';
 import HintList from '../components/quiz/HintList';
 import AnswerInput from '../components/quiz/AnswerInput';
-import ScoreDisplay from '../components/quiz/ScoreDisplay';
 import StudentReveal from '../components/quiz/StudentReveal';
 import StudentPortrait from '../components/quiz/StudentPortrait';
 import Button from '../components/common/Button';
@@ -94,9 +93,9 @@ function RegularQuiz() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="h-screen flex flex-col bg-slate-50">
         <Header />
-        <div className="flex items-center justify-center h-96">
+        <div className="flex-1 flex items-center justify-center">
           <div className="text-xl text-gray-600">読み込み中...</div>
         </div>
       </div>
@@ -105,9 +104,9 @@ function RegularQuiz() {
 
   if (!currentQuestion) {
     return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="h-screen flex flex-col bg-slate-50">
         <Header />
-        <div className="flex items-center justify-center h-96">
+        <div className="flex-1 flex items-center justify-center">
           <div className="text-xl text-gray-600">問題の読み込みに失敗しました</div>
         </div>
       </div>
@@ -122,96 +121,73 @@ function RegularQuiz() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="h-screen flex flex-col bg-slate-50">
       <Header />
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center mb-8">レギュラーモード</h1>
 
-        <div className="max-w-4xl mx-auto space-y-6">
+      <main className="flex-1 flex gap-6 p-6 max-w-6xl mx-auto w-full overflow-hidden">
+        {/* 左ペイン: 立ち絵 + 入力 */}
+        <div className="flex-1 flex flex-col items-center justify-center gap-4">
           {/* 進捗表示 */}
-          <div className="flex justify-between items-center bg-white rounded-lg shadow p-4">
-            <div className="text-lg font-semibold text-gray-700">
-              問題 {currentQuestionIndex + 1} / {TOTAL_QUESTIONS}
-            </div>
-            <div className="text-lg font-semibold text-blue-600">
-              合計スコア: {totalScore}
-            </div>
+          <div className="text-center text-sm text-gray-600">
+            問題 {currentQuestionIndex + 1} / {TOTAL_QUESTIONS} | 合計: {totalScore}点
           </div>
 
-          {/* スコア表示 */}
-          <div className="flex justify-between items-center">
-            <div className="text-lg font-semibold text-gray-700">
-              開示ヒント数: {revealedHintCount} / {currentQuestion.hints.length}
-            </div>
-            <ScoreDisplay score={score} showMax={false} />
-          </div>
+          <StudentPortrait
+            student={currentQuestion.student}
+            state={getPortraitState()}
+          />
 
-          {/* 立ち絵表示 */}
-          <div className="flex justify-center">
-            <StudentPortrait
-              student={currentQuestion.student}
-              state={getPortraitState()}
-            />
-          </div>
+          {!answered ? (
+            <>
+              <div className="w-full max-w-md">
+                <AnswerInput onSubmit={submitAnswer} />
+              </div>
 
-          {/* ヒント一覧 */}
-          <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
-
-          {/* 回答フォーム */}
-          {!answered && (
-            <div className="space-y-4">
-              <AnswerInput onSubmit={submitAnswer} />
-
-              {/* 誤答フィードバック */}
               {answerFeedback && (
-                <div className="text-center text-red-600 font-semibold">
-                  {answerFeedback}
-                </div>
+                <p className="text-red-500 text-sm font-semibold">{answerFeedback}</p>
               )}
 
               <div className="flex justify-center">
                 {revealedHintCount < currentQuestion.hints.length ? (
-                  <Button
-                    onClick={revealNextHint}
-                    variant="secondary"
-                  >
+                  <Button onClick={revealNextHint} variant="secondary">
                     次のヒントを開示
                   </Button>
                 ) : revealedHintCount === currentQuestion.hints.length ? (
-                  <Button
-                    onClick={revealNextHint}
-                    variant="secondary"
-                  >
+                  <Button onClick={revealNextHint} variant="secondary">
                     シルエットを表示
                   </Button>
                 ) : (
-                  <Button
-                    onClick={giveUp}
-                    variant="danger"
-                  >
+                  <Button onClick={giveUp} variant="danger">
                     諦めて正解を表示
                   </Button>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* 正解表示 */}
-          {answered && (
+            </>
+          ) : (
             <>
               <StudentReveal student={currentQuestion.student} correct={correct} />
 
-              <div className="flex justify-center">
-                <Button onClick={handleNext} variant="primary" size="lg">
-                  {currentQuestionIndex + 1 < TOTAL_QUESTIONS
-                    ? '次の問題へ'
-                    : '結果を見る'}
-                </Button>
-              </div>
+              <Button onClick={handleNext} variant="primary" size="lg">
+                {currentQuestionIndex + 1 < TOTAL_QUESTIONS
+                  ? '次の問題へ'
+                  : '結果を見る'}
+              </Button>
             </>
           )}
+
+          <div className="text-center">
+            <span className="text-2xl font-bold text-blue-600">{score}点</span>
+            <span className="text-sm text-gray-500 ml-2">
+              ヒント {revealedHintCount}/{currentQuestion.hints.length}
+            </span>
+          </div>
         </div>
-      </div>
+
+        {/* 右ペイン: ヒント一覧 */}
+        <div className="w-72 flex flex-col gap-2">
+          <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
+        </div>
+      </main>
     </div>
   );
 }

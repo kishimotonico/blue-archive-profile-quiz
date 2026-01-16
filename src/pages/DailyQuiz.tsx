@@ -7,7 +7,6 @@ import {
   getDailySeed,
   getRandomStudent,
   createQuizQuestion,
-  getDailyDate,
   getTimeUntilNextReset,
   loadStudents,
 } from '../quiz-core';
@@ -20,7 +19,6 @@ import {
 import Header from '../components/layout/Header';
 import HintList from '../components/quiz/HintList';
 import AnswerInput from '../components/quiz/AnswerInput';
-import ScoreDisplay from '../components/quiz/ScoreDisplay';
 import StudentReveal from '../components/quiz/StudentReveal';
 import StudentPortrait from '../components/quiz/StudentPortrait';
 import Button from '../components/common/Button';
@@ -122,9 +120,9 @@ function DailyQuiz() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="h-screen flex flex-col bg-slate-50">
         <Header />
-        <div className="flex items-center justify-center h-96">
+        <div className="flex-1 flex items-center justify-center">
           <div className="text-xl text-gray-600">読み込み中...</div>
         </div>
       </div>
@@ -132,39 +130,32 @@ function DailyQuiz() {
   }
 
   const todayResult = getTodayResult();
-  const today = getDailyDate();
 
   if (isTodayCompleted && todayResult) {
     return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="h-screen flex flex-col bg-slate-50">
         <Header />
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-center mb-8">
-            日替わりクイズ ({today})
-          </h1>
+        <div className="flex-1 flex items-center justify-center p-6">
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-md">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              今日のクイズは完了済みです
+            </h2>
 
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                今日のクイズは完了済みです
-              </h2>
+            <div className="text-4xl font-bold text-blue-600 mb-4">{todayResult.score}点</div>
 
-              <ScoreDisplay score={todayResult.score} />
+            <div className="text-gray-600 space-y-2">
+              <p>使用ヒント数: {todayResult.revealedHintCount}</p>
+              <p>次の問題まで: {getTimeUntilNextReset()}</p>
+            </div>
 
-              <div className="mt-6 text-gray-600">
-                <p>使用ヒント数: {todayResult.revealedHintCount}</p>
-                <p className="mt-4">次の問題まで: {getTimeUntilNextReset()}</p>
-              </div>
-
-              <div className="mt-8 space-y-2">
-                <Button
-                  variant="primary"
-                  className="w-full"
-                  onClick={() => navigate('/regular')}
-                >
-                  もっと遊ぶ
-                </Button>
-              </div>
+            <div className="mt-8">
+              <Button
+                variant="primary"
+                className="w-full"
+                onClick={() => navigate('/regular')}
+              >
+                もっと遊ぶ
+              </Button>
             </div>
           </div>
         </div>
@@ -174,9 +165,9 @@ function DailyQuiz() {
 
   if (!currentQuestion) {
     return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="h-screen flex flex-col bg-slate-50">
         <Header />
-        <div className="flex items-center justify-center h-96">
+        <div className="flex-1 flex items-center justify-center">
           <div className="text-xl text-gray-600">問題の読み込みに失敗しました</div>
         </div>
       </div>
@@ -191,78 +182,60 @@ function DailyQuiz() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="h-screen flex flex-col bg-slate-50">
       <Header />
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center mb-8">
-          日替わりクイズ ({today})
-        </h1>
 
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* スコア表示 */}
-          <div className="flex justify-between items-center">
-            <div className="text-lg font-semibold text-gray-700">
-              開示ヒント数: {revealedHintCount} / {currentQuestion.hints.length}
-            </div>
-            <ScoreDisplay score={score} showMax={false} />
-          </div>
+      <main className="flex-1 flex gap-6 p-6 max-w-6xl mx-auto w-full overflow-hidden">
+        {/* 左ペイン: 立ち絵 + 入力 */}
+        <div className="flex-1 flex flex-col items-center justify-center gap-4">
+          <StudentPortrait
+            student={currentQuestion.student}
+            state={getPortraitState()}
+          />
 
-          {/* 立ち絵表示 */}
-          <div className="flex justify-center">
-            <StudentPortrait
-              student={currentQuestion.student}
-              state={getPortraitState()}
-            />
-          </div>
+          {!answered ? (
+            <>
+              <div className="w-full max-w-md">
+                <AnswerInput onSubmit={submitAnswer} />
+              </div>
 
-          {/* ヒント一覧 */}
-          <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
-
-          {/* 回答フォーム */}
-          {!answered && (
-            <div className="space-y-4">
-              <AnswerInput onSubmit={submitAnswer} />
-
-              {/* 誤答フィードバック */}
               {answerFeedback && (
-                <div className="text-center text-red-600 font-semibold">
-                  {answerFeedback}
-                </div>
+                <p className="text-red-500 text-sm font-semibold">{answerFeedback}</p>
               )}
 
               <div className="flex justify-center">
                 {revealedHintCount < currentQuestion.hints.length ? (
-                  <Button
-                    onClick={revealNextHint}
-                    variant="secondary"
-                  >
+                  <Button onClick={revealNextHint} variant="secondary">
                     次のヒントを開示
                   </Button>
                 ) : revealedHintCount === currentQuestion.hints.length ? (
-                  <Button
-                    onClick={revealNextHint}
-                    variant="secondary"
-                  >
+                  <Button onClick={revealNextHint} variant="secondary">
                     シルエットを表示
                   </Button>
                 ) : (
-                  <Button
-                    onClick={giveUp}
-                    variant="danger"
-                  >
+                  <Button onClick={giveUp} variant="danger">
                     諦めて正解を表示
                   </Button>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* 正解表示 */}
-          {answered && (
+            </>
+          ) : (
             <StudentReveal student={currentQuestion.student} correct={correct} />
           )}
+
+          <div className="text-center">
+            <span className="text-2xl font-bold text-blue-600">{score}点</span>
+            <span className="text-sm text-gray-500 ml-2">
+              ヒント {revealedHintCount}/{currentQuestion.hints.length}
+            </span>
+          </div>
         </div>
-      </div>
+
+        {/* 右ペイン: ヒント一覧 */}
+        <div className="w-72 flex flex-col gap-2">
+          <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
+        </div>
+      </main>
 
       {/* 結果モーダル */}
       <Modal

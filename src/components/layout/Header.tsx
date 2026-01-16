@@ -2,23 +2,24 @@ import { Link } from 'react-router-dom';
 
 function Header() {
   return (
-    <header className="bg-blue-600 text-white shadow-md">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="text-2xl font-bold hover:text-blue-100">
-            ブルアカプロフクイズ
-          </Link>
-
-          <nav className="flex gap-4">
-            <Link
-              to="/regular"
-              className="px-4 py-2 rounded hover:bg-blue-500 transition-colors"
-            >
-              レギュラーモード
-            </Link>
-          </nav>
-        </div>
-      </div>
+    <header className="bg-gradient-to-r from-blue-600 to-blue-500 text-white h-12 flex items-center px-4 shadow-sm">
+      <Link to="/" className="text-lg font-bold hover:opacity-90 transition-opacity">
+        ブルアカプロフクイズ
+      </Link>
+      <nav className="ml-auto flex gap-2">
+        <Link
+          to="/"
+          className="text-sm px-3 py-1 rounded hover:bg-white/20 transition-colors"
+        >
+          日替わり
+        </Link>
+        <Link
+          to="/regular"
+          className="text-sm px-3 py-1 rounded hover:bg-white/20 transition-colors"
+        >
+          レギュラー
+        </Link>
+      </nav>
     </header>
   );
 }

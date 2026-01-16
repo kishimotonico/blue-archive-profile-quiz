@@ -8,6 +8,7 @@ type StudentData = {
   fullName: string | null;
   name: string | null;
   school: string | null;
+  grade: string | null;
   club: string | null;
   age: string | null;
   birthday: string | null;
@@ -26,7 +27,7 @@ type StudentData = {
 
 const BASE_URL = 'https://bluearchive.wikiru.jp/';
 const OUTPUT_DIR = './output/students';
-const IMAGE_DIR = './output/images/portrait';
+const IMAGE_DIR = './output/images/portraits';
 const CACHE_DIR = './cache';
 
 async function downloadImage(url: string, filepath: string): Promise<void> {
@@ -57,7 +58,21 @@ async function scrapeStudentData(page: Page, studentId: string): Promise<{ data:
   // 基本情報の取得
   const name = await getProfileValue('名前');
   const fullName = await getProfileValue('フルネーム');
-  const school = await getProfileValue('学園');
+  const schoolRaw = await getProfileValue('学園');
+
+  // 学校名と学年を分離（例: "ゲヘナ学園2年生" → "ゲヘナ学園", "2年生"）
+  let school: string | null = null;
+  let grade: string | null = null;
+  if (schoolRaw) {
+    const match = schoolRaw.match(/^(.+?)(\d年生)$/);
+    if (match) {
+      school = match[1];
+      grade = match[2];
+    } else {
+      school = schoolRaw;
+    }
+  }
+
   const club = await getProfileValue('部活');
   const age = await getProfileValue('年齢');
   const birthday = await getProfileValue('誕生日');
@@ -126,6 +141,7 @@ async function scrapeStudentData(page: Page, studentId: string): Promise<{ data:
       fullName,
       name,
       school,
+      grade,
       club,
       age,
       birthday,
@@ -175,8 +191,8 @@ async function processStudent(
 
   const { data, imageUrl } = await scrapeStudentData(page, studentId);
 
-  // 画像をダウンロード
-  if (imageUrl) {
+  // 画像をダウンロード（既に存在する場合はスキップ）
+  if (imageUrl && !existsSync(imagePath)) {
     await downloadImage(imageUrl, imagePath);
     console.log(`  -> Image saved: ${imagePath}`);
   }

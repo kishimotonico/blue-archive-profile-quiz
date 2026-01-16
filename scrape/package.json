@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "scrape": "npx tsx index.ts"
+    "scrape": "npx tsx index.ts",
+    "merge": "npx tsx merge.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useQuiz } from '../hooks/useQuiz';
 import { useDailyQuiz } from '../hooks/useDailyQuiz';
 import {
@@ -7,6 +7,7 @@ import {
   getRandomStudent,
   createQuizQuestion,
   getDailyDate,
+  getTimeUntilNextReset,
 } from '../quiz-core';
 import Header from '../components/layout/Header';
 import HintList from '../components/quiz/HintList';
@@ -29,8 +30,10 @@ function DailyQuiz() {
   } = useQuiz();
 
   const { isTodayCompleted, getTodayResult, saveTodayResult } = useDailyQuiz();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
+  const [showGiveUpModal, setShowGiveUpModal] = useState(false);
 
   useEffect(() => {
     const initQuiz = async () => {
@@ -65,6 +68,13 @@ function DailyQuiz() {
     }
   }, [answered, currentQuestion, score, revealedHintCount, saveTodayResult]);
 
+  const handleGiveUp = () => {
+    if (!currentQuestion) return;
+    // ギブアップ = 不正解として扱う（スコア0）
+    submitAnswer(''); // 空文字で不正解
+    setShowGiveUpModal(false);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100">
@@ -98,12 +108,18 @@ function DailyQuiz() {
 
               <div className="mt-6 text-gray-600">
                 <p>使用ヒント数: {todayResult.revealedHintCount}</p>
-                <p className="mt-4">明日また挑戦してください！</p>
+                <p className="mt-4">次の問題まで: {getTimeUntilNextReset()}</p>
               </div>
 
-              <Link to="/" className="block mt-8">
-                <Button variant="primary">ホームに戻る</Button>
-              </Link>
+              <div className="mt-8 space-y-2">
+                <Button
+                  variant="primary"
+                  className="w-full"
+                  onClick={() => navigate('/regular')}
+                >
+                  もっと遊ぶ
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -148,13 +164,21 @@ function DailyQuiz() {
               <AnswerInput onSubmit={submitAnswer} />
 
               <div className="flex justify-center">
-                <Button
-                  onClick={revealNextHint}
-                  variant="secondary"
-                  disabled={revealedHintCount >= currentQuestion.hints.length}
-                >
-                  次のヒントを開示
-                </Button>
+                {revealedHintCount < currentQuestion.hints.length ? (
+                  <Button
+                    onClick={revealNextHint}
+                    variant="secondary"
+                  >
+                    次のヒントを開示
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => setShowGiveUpModal(true)}
+                    variant="danger"
+                  >
+                    諦めて正解を表示
+                  </Button>
+                )}
               </div>
             </div>
           )}
@@ -179,22 +203,58 @@ function DailyQuiz() {
           <p className="text-gray-600 mb-4">
             {correct ? '正解です！' : '不正解でした...'}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mb-2">
             使用ヒント数: {revealedHintCount}
+          </p>
+          <p className="text-sm text-gray-500">
+            次の問題まで: {getTimeUntilNextReset()}
           </p>
 
           <div className="mt-6 space-y-2">
-            <Link to="/" className="block">
-              <Button variant="primary" className="w-full">
-                ホームに戻る
-              </Button>
-            </Link>
+            <Button
+              variant="primary"
+              className="w-full"
+              onClick={() => navigate('/regular')}
+            >
+              もっと遊ぶ
+            </Button>
             <Button
               variant="secondary"
               className="w-full"
               onClick={() => setShowResultModal(false)}
             >
               結果を見る
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ギブアップ確認モーダル */}
+      <Modal
+        isOpen={showGiveUpModal}
+        onClose={() => setShowGiveUpModal(false)}
+        title="ギブアップ確認"
+      >
+        <div className="text-center">
+          <p className="text-gray-700 mb-6">
+            本当にギブアップしますか？<br />
+            スコアは0点になります。
+          </p>
+
+          <div className="space-y-2">
+            <Button
+              variant="danger"
+              className="w-full"
+              onClick={handleGiveUp}
+            >
+              ギブアップする
+            </Button>
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={() => setShowGiveUpModal(false)}
+            >
+              キャンセル
             </Button>
           </div>
         </div>

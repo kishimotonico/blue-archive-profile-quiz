@@ -29,6 +29,8 @@ export {
   dateToSeed,
   getDailySeed,
   getSeedForDate,
+  getNextDailyResetTime,
+  getTimeUntilNextReset,
 } from './daily';
 
 // 回答判定

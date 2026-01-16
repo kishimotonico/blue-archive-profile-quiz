@@ -11,16 +11,10 @@ function Header() {
 
           <nav className="flex gap-4">
             <Link
-              to="/daily"
-              className="px-4 py-2 rounded hover:bg-blue-500 transition-colors"
-            >
-              日替わり
-            </Link>
-            <Link
               to="/regular"
               className="px-4 py-2 rounded hover:bg-blue-500 transition-colors"
             >
-              レギュラー
+              レギュラーモード
             </Link>
           </nav>
         </div>

@@ -20,7 +20,7 @@ function StudentReveal({ student, correct }: StudentRevealProps) {
 
       <div className="flex flex-col items-center">
         <img
-          src={`/blue-archive-profile-quiz/data/${student.portraitImage}`}
+          src={`/data/${student.portraitImage}`}
           alt={student.fullName}
           className="w-64 h-auto mb-4 rounded-lg"
           onError={(e) => {

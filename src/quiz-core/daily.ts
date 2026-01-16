@@ -51,3 +51,44 @@ export function getDailySeed(): number {
 export function getSeedForDate(date: string): number {
   return dateToSeed(date);
 }
+
+/**
+ * 次の4:00 JSTまでの時刻を取得
+ */
+export function getNextDailyResetTime(): Date {
+  const now = new Date();
+
+  // JSTに変換（UTC+9）
+  const jstOffset = 9 * 60 * 60 * 1000;
+  const jstTime = new Date(now.getTime() + jstOffset);
+
+  // 次の4:00 JSTを計算
+  const nextReset = new Date(jstTime);
+  nextReset.setHours(4, 0, 0, 0);
+
+  // 既に4:00を過ぎている場合は翌日の4:00
+  if (jstTime.getHours() >= 4) {
+    nextReset.setDate(nextReset.getDate() + 1);
+  }
+
+  // UTC時刻に変換して返す
+  return new Date(nextReset.getTime() - jstOffset);
+}
+
+/**
+ * 次の更新までの時間を人間が読める形式で取得
+ */
+export function getTimeUntilNextReset(): string {
+  const now = new Date();
+  const nextReset = getNextDailyResetTime();
+  const diff = nextReset.getTime() - now.getTime();
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+  if (hours > 0) {
+    return `${hours}時間${minutes}分後`;
+  } else {
+    return `${minutes}分後`;
+  }
+}

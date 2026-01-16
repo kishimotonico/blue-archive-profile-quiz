@@ -10,7 +10,7 @@ export async function loadStudents(): Promise<Student[]> {
     return studentsCache;
   }
 
-  const response = await fetch('/blue-archive-profile-quiz/data/students.json');
+  const response = await fetch('/data/students.json');
   const data = await response.json() as Record<string, Student>;
 
   studentsCache = Object.values(data);

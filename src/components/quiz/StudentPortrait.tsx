@@ -24,9 +24,9 @@ function StudentPortrait({ student, state }: StudentPortraitProps) {
   return (
     <div className="flex items-center justify-center">
       <img
-        src={`/data/${student.portraitImage}`}
+        src={`/data/images/portraits/${student.id}.png`}
         alt={state === 'silhouette' ? 'シルエット' : student.fullName}
-        className={`w-64 h-auto rounded-lg ${imageClass}`}
+        className={`max-h-80 w-auto rounded-lg ${imageClass}`}
         onError={(e) => {
           e.currentTarget.src = 'https://via.placeholder.com/256x256?text=No+Image';
         }}

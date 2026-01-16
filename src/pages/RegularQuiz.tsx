@@ -11,7 +11,6 @@ import ScoreDisplay from '../components/quiz/ScoreDisplay';
 import StudentReveal from '../components/quiz/StudentReveal';
 import StudentPortrait from '../components/quiz/StudentPortrait';
 import Button from '../components/common/Button';
-import Modal from '../components/common/Modal';
 
 const TOTAL_QUESTIONS = 10;
 
@@ -26,6 +25,7 @@ function RegularQuiz() {
     answerFeedback,
     revealNextHint,
     submitAnswer,
+    giveUp,
     resetQuiz,
   } = useQuiz();
 
@@ -36,7 +36,6 @@ function RegularQuiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [scores, setScores] = useState<number[]>([]);
-  const [showGiveUpModal, setShowGiveUpModal] = useState(false);
 
   // 初期化
   useEffect(() => {
@@ -70,13 +69,6 @@ function RegularQuiz() {
       setScores((prev) => [...prev, score]);
     }
   }, [answered, score]);
-
-  const handleGiveUp = () => {
-    if (!currentQuestion) return;
-    // ギブアップ = 不正解として扱う（スコア0）
-    submitAnswer(''); // 空文字で不正解
-    setShowGiveUpModal(false);
-  };
 
   const handleNext = () => {
     const nextIndex = currentQuestionIndex + 1;
@@ -125,7 +117,7 @@ function RegularQuiz() {
   // 立ち絵の表示状態を計算
   const getPortraitState = () => {
     if (answered) return 'revealed';
-    if (revealedHintCount >= currentQuestion.hints.length) return 'silhouette';
+    if (revealedHintCount > currentQuestion.hints.length) return 'silhouette';
     return 'hidden';
   };
 
@@ -185,9 +177,16 @@ function RegularQuiz() {
                   >
                     次のヒントを開示
                   </Button>
+                ) : revealedHintCount === currentQuestion.hints.length ? (
+                  <Button
+                    onClick={revealNextHint}
+                    variant="secondary"
+                  >
+                    シルエットを表示
+                  </Button>
                 ) : (
                   <Button
-                    onClick={() => setShowGiveUpModal(true)}
+                    onClick={giveUp}
                     variant="danger"
                   >
                     諦めて正解を表示
@@ -213,37 +212,6 @@ function RegularQuiz() {
           )}
         </div>
       </div>
-
-      {/* ギブアップ確認モーダル */}
-      <Modal
-        isOpen={showGiveUpModal}
-        onClose={() => setShowGiveUpModal(false)}
-        title="ギブアップ確認"
-      >
-        <div className="text-center">
-          <p className="text-gray-700 mb-6">
-            本当にギブアップしますか？<br />
-            スコアは0点になります。
-          </p>
-
-          <div className="space-y-2">
-            <Button
-              variant="danger"
-              className="w-full"
-              onClick={handleGiveUp}
-            >
-              ギブアップする
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => setShowGiveUpModal(false)}
-            >
-              キャンセル
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }

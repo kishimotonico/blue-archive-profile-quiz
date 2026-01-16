@@ -25,7 +25,7 @@ export function useQuiz() {
   const revealNextHint = useCallback(() => {
     if (!currentQuestion) return;
     if (answered) return;
-    if (revealedHintCount >= currentQuestion.hints.length) return;
+    if (revealedHintCount > currentQuestion.hints.length) return;
 
     setRevealedHintCount((prev) => prev + 1);
   }, [currentQuestion, answered, revealedHintCount, setRevealedHintCount]);
@@ -62,6 +62,19 @@ export function useQuiz() {
   );
 
   /**
+   * ギブアップ
+   */
+  const giveUp = useCallback(() => {
+    if (!currentQuestion) return;
+    if (answered) return;
+
+    setCorrect(false);
+    setScore(0);
+    setAnswered(true);
+    setAnswerFeedback(null);
+  }, [currentQuestion, answered, setCorrect, setScore, setAnswered]);
+
+  /**
    * クイズをリセット
    */
   const resetQuiz = useCallback(() => {
@@ -83,6 +96,7 @@ export function useQuiz() {
     answerFeedback,
     revealNextHint,
     submitAnswer,
+    giveUp,
     resetQuiz,
   };
 }

@@ -37,6 +37,7 @@ function DailyQuiz() {
     answerFeedback,
     revealNextHint,
     submitAnswer,
+    giveUp,
   } = useQuiz();
 
   const { isTodayCompleted, getTodayResult, saveTodayResult, saveProgress, loadProgress, clearProgress } = useDailyQuiz();
@@ -47,7 +48,6 @@ function DailyQuiz() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
-  const [showGiveUpModal, setShowGiveUpModal] = useState(false);
 
   useEffect(() => {
     const initQuiz = async () => {
@@ -110,16 +110,15 @@ function DailyQuiz() {
         studentId: currentQuestion.student.id,
       });
       clearProgress(); // 進行状態をクリア
-      setShowResultModal(true);
+
+      // 立ち絵のフェードイン演出を見せるため、1.5秒遅延してモーダルを表示
+      const timer = setTimeout(() => {
+        setShowResultModal(true);
+      }, 1500);
+
+      return () => clearTimeout(timer);
     }
   }, [answered, currentQuestion, score, revealedHintCount, saveTodayResult, clearProgress]);
-
-  const handleGiveUp = () => {
-    if (!currentQuestion) return;
-    // ギブアップ = 不正解として扱う（スコア0）
-    submitAnswer(''); // 空文字で不正解
-    setShowGiveUpModal(false);
-  };
 
   if (loading) {
     return (
@@ -187,7 +186,7 @@ function DailyQuiz() {
   // 立ち絵の表示状態を計算
   const getPortraitState = () => {
     if (answered) return 'revealed';
-    if (revealedHintCount >= currentQuestion.hints.length) return 'silhouette';
+    if (revealedHintCount > currentQuestion.hints.length) return 'silhouette';
     return 'hidden';
   };
 
@@ -239,9 +238,16 @@ function DailyQuiz() {
                   >
                     次のヒントを開示
                   </Button>
+                ) : revealedHintCount === currentQuestion.hints.length ? (
+                  <Button
+                    onClick={revealNextHint}
+                    variant="secondary"
+                  >
+                    シルエットを表示
+                  </Button>
                 ) : (
                   <Button
-                    onClick={() => setShowGiveUpModal(true)}
+                    onClick={giveUp}
                     variant="danger"
                   >
                     諦めて正解を表示
@@ -338,37 +344,6 @@ function DailyQuiz() {
               onClick={() => setShowResultModal(false)}
             >
               結果を見る
-            </Button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* ギブアップ確認モーダル */}
-      <Modal
-        isOpen={showGiveUpModal}
-        onClose={() => setShowGiveUpModal(false)}
-        title="ギブアップ確認"
-      >
-        <div className="text-center">
-          <p className="text-gray-700 mb-6">
-            本当にギブアップしますか？<br />
-            スコアは0点になります。
-          </p>
-
-          <div className="space-y-2">
-            <Button
-              variant="danger"
-              className="w-full"
-              onClick={handleGiveUp}
-            >
-              ギブアップする
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => setShowGiveUpModal(false)}
-            >
-              キャンセル
             </Button>
           </div>
         </div>

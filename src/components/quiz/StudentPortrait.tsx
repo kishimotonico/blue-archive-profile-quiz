@@ -22,7 +22,7 @@ function StudentPortrait({ student, state }: StudentPortraitProps) {
       {/* 立ち絵（silhouette/revealed時に表示） */}
       {student && (
         <img
-          src={`/data/images/portraits/${student.id}.png`}
+          src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
           alt={state === 'revealed' ? student.fullName : 'シルエット'}
           className={`absolute inset-0 h-full w-auto mx-auto rounded-2xl shadow-lg transition-all duration-500 ${
             state === 'hidden'

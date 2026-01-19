@@ -10,7 +10,7 @@ export async function loadStudents(): Promise<Student[]> {
     return studentsCache;
   }
 
-  const response = await fetch('/data/students.json');
+  const response = await fetch(`${import.meta.env.BASE_URL}data/students.json`);
   const data = await response.json() as Record<string, Student>;
 
   studentsCache = Object.values(data);

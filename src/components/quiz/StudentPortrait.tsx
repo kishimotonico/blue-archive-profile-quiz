@@ -29,7 +29,7 @@ function StudentPortrait({ student, state, variant = 'default' }: StudentPortrai
       </div>
 
       {/* 立ち絵（silhouette/revealed時に表示） */}
-      {student && (
+      {student && state !== 'hidden' && (
         <img
           src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
           alt={state === 'revealed' ? student.fullName : 'シルエット'}

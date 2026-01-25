@@ -22,7 +22,7 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
         />
       ))}
       {showPortraitInGrid && (
-        <div className="flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 h-40 relative overflow-hidden">
+        <div className="col-span-2 flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 h-36 relative overflow-hidden">
           <span
             className={`absolute inset-0 flex items-center justify-center text-5xl text-gray-400 font-light transition-opacity duration-500 ${
               portraitState === 'hidden' ? 'opacity-100' : 'opacity-0'

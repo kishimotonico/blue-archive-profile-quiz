@@ -213,7 +213,7 @@ function RegularQuiz() {
         </div>
 
         {/* 右ペイン: キャラ画像（PC のみ） */}
-        <div className="hidden md:flex w-40 lg:w-48 shrink-0">
+        <div className="hidden md:flex w-40 lg:w-48 shrink-0 self-stretch items-center">
           <StudentPortrait
             student={currentQuestion.student}
             state={getPortraitState()}

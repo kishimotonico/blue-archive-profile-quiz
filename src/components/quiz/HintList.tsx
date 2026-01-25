@@ -22,15 +22,22 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
         />
       ))}
       {showPortraitInGrid && (
-        <div className="flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 min-h-32 relative overflow-hidden">
-          {portraitState === 'hidden' ? (
-            <span className="text-5xl text-gray-400 font-light">?</span>
-          ) : student ? (
+        <div className="flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 h-40 relative overflow-hidden">
+          <span
+            className={`absolute inset-0 flex items-center justify-center text-5xl text-gray-400 font-light transition-opacity duration-500 ${
+              portraitState === 'hidden' ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            ?
+          </span>
+          {student && (
             <img
               src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
               alt={portraitState === 'revealed' ? student.fullName : 'シルエット'}
-              className={`h-full max-h-40 w-auto object-contain transition-all duration-500 ${
-                portraitState === 'silhouette'
+              className={`absolute inset-0 h-full w-auto mx-auto object-contain transition-all duration-500 ${
+                portraitState === 'hidden'
+                  ? 'opacity-0 pointer-events-none'
+                  : portraitState === 'silhouette'
                   ? 'opacity-50 brightness-0'
                   : 'opacity-100'
               }`}
@@ -38,7 +45,7 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
                 e.currentTarget.src = 'https://via.placeholder.com/256x256?text=No+Image';
               }}
             />
-          ) : null}
+          )}
         </div>
       )}
     </div>

@@ -35,9 +35,7 @@ function StudentPortrait({ student, state, variant = 'default' }: StudentPortrai
           alt={state === 'revealed' ? student.fullName : 'シルエット'}
           draggable={false}
           className={`absolute inset-0 h-full w-auto mx-auto object-contain rounded-2xl shadow-lg transition-all duration-500 select-none ${
-            state === 'hidden'
-              ? 'opacity-0 pointer-events-none'
-              : state === 'silhouette'
+            state === 'silhouette'
               ? 'opacity-50 brightness-0 pointer-events-none'
               : 'opacity-100'
           }`}

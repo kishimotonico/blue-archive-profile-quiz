@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from 'react';
 import type { Hint, Student } from '../../quiz-core';
 import HintCard from './HintCard';
 
@@ -12,17 +13,53 @@ interface HintListProps {
 }
 
 function HintList({ hints, revealedCount, student, portraitState = 'hidden', showPortraitInGrid = false }: HintListProps) {
+  const hintRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const portraitRef = useRef<HTMLDivElement>(null);
+  const prevRevealedCount = useRef(revealedCount);
+  const prevPortraitState = useRef(portraitState);
+  const [showSilhouette, setShowSilhouette] = useState(false);
+
+  // ヒント開示時のスクロール処理
+  useEffect(() => {
+    if (revealedCount > prevRevealedCount.current && revealedCount <= hints.length) {
+      const targetRef = hintRefs.current[revealedCount - 1];
+      if (targetRef) {
+        targetRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    prevRevealedCount.current = revealedCount;
+  }, [revealedCount, hints.length]);
+
+  // シルエット表示時のスクロール＋フェードイン処理
+  useEffect(() => {
+    if (portraitState === 'silhouette' && prevPortraitState.current === 'hidden') {
+      if (portraitRef.current) {
+        portraitRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      setShowSilhouette(false);
+      requestAnimationFrame(() => {
+        setShowSilhouette(true);
+      });
+    } else if (portraitState === 'revealed') {
+      setShowSilhouette(true);
+    } else if (portraitState === 'hidden') {
+      setShowSilhouette(false);
+    }
+    prevPortraitState.current = portraitState;
+  }, [portraitState]);
+
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
       {hints.map((hint, index) => (
-        <HintCard
-          key={index}
-          hint={hint}
-          revealed={index < revealedCount}
-        />
+        <div key={index} ref={(el) => { hintRefs.current[index] = el; }}>
+          <HintCard
+            hint={hint}
+            revealed={index < revealedCount}
+          />
+        </div>
       ))}
       {showPortraitInGrid && (
-        <div className="flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 h-40 relative overflow-hidden">
+        <div ref={portraitRef} className="w-full h-[60vh] flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 relative overflow-hidden">
           <span
             className={`absolute inset-0 flex items-center justify-center text-5xl text-gray-400 font-light transition-opacity duration-500 ${
               portraitState === 'hidden' ? 'opacity-100' : 'opacity-0'
@@ -30,15 +67,14 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
           >
             ?
           </span>
-          {student && (
+          {student && portraitState !== 'hidden' && (
             <img
               src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
               alt={portraitState === 'revealed' ? student.fullName : 'シルエット'}
-              className={`absolute inset-0 h-full w-auto mx-auto object-contain transition-all duration-500 ${
-                portraitState === 'hidden'
-                  ? 'opacity-0 pointer-events-none'
-                  : portraitState === 'silhouette'
-                  ? 'opacity-50 brightness-0'
+              draggable={false}
+              className={`absolute inset-0 h-full w-auto mx-auto object-contain transition-all duration-500 select-none ${
+                portraitState === 'silhouette'
+                  ? showSilhouette ? 'opacity-50 brightness-0 pointer-events-none' : 'opacity-0 brightness-0 pointer-events-none'
                   : 'opacity-100'
               }`}
               onError={(e) => {

@@ -29,15 +29,16 @@ function StudentPortrait({ student, state, variant = 'default' }: StudentPortrai
       </div>
 
       {/* 立ち絵（silhouette/revealed時に表示） */}
-      {student && (
+      {student && state !== 'hidden' && (
         <img
           src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
           alt={state === 'revealed' ? student.fullName : 'シルエット'}
-          className={`absolute inset-0 h-full w-auto mx-auto object-contain rounded-2xl shadow-lg transition-all duration-500 ${
+          draggable={false}
+          className={`absolute inset-0 h-full w-auto mx-auto object-contain rounded-2xl shadow-lg transition-all duration-500 select-none ${
             state === 'hidden'
               ? 'opacity-0 pointer-events-none'
               : state === 'silhouette'
-              ? 'opacity-50 brightness-0'
+              ? 'opacity-50 brightness-0 pointer-events-none'
               : 'opacity-100'
           }`}
           onError={(e) => {

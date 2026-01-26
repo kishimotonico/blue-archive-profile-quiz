@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useQuiz } from '../hooks/useQuiz';
@@ -35,6 +35,7 @@ function RegularQuiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [scores, setScores] = useState<number[]>([]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // 初期化
   useEffect(() => {
@@ -73,6 +74,9 @@ function RegularQuiz() {
     const nextIndex = currentQuestionIndex + 1;
 
     if (nextIndex < students.length) {
+      // スクロール位置をリセット
+      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+
       // 次の問題へ
       const question = createQuizQuestion(students[nextIndex]);
       setCurrentQuestion(question);
@@ -133,7 +137,7 @@ function RegularQuiz() {
           </div>
 
           {/* スクロール可能なヒントエリア */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0">
             {/* モバイル: ヒント+画像（グリッド内） */}
             <div className="md:hidden">
               <HintList
@@ -213,7 +217,7 @@ function RegularQuiz() {
         </div>
 
         {/* 右ペイン: キャラ画像（PC のみ） */}
-        <div className="hidden md:flex w-40 lg:w-48 shrink-0 self-stretch items-center">
+        <div className="hidden md:flex w-40 lg:w-48 xl:w-56 2xl:w-64 shrink-0 self-stretch items-center">
           <StudentPortrait
             student={currentQuestion.student}
             state={getPortraitState()}

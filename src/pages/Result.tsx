@@ -1,7 +1,7 @@
 import { useLocation, Link } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Button from '../components/common/Button';
-import { getMaxScore } from '../quiz-core';
+import { getMaxScore, getScoreRank } from '../quiz-core';
 
 interface ResultState {
   totalScore: number;
@@ -90,7 +90,8 @@ function Result() {
                   }`}
                 >
                   <div className="text-xs text-gray-600">Q{index + 1}</div>
-                  <div className="text-lg font-bold">{score}</div>
+                  <div className="text-lg font-bold">{getScoreRank(score)}</div>
+                  <div className="text-xs">{score}点</div>
                 </div>
               ))}
             </div>

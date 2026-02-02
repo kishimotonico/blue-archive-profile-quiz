@@ -30,13 +30,19 @@ export function getMaxScore(): number {
 }
 
 /**
- * スコアのランク判定（オプション）
+ * スコアのランク判定
+ * - 10点: SS
+ * - 8-9点: S
+ * - 6-7点: A
+ * - 4-5点: B
+ * - 1-3点: C
+ * - 0点: D
  */
 export function getScoreRank(score: number): string {
-  if (score >= 10) return 'S';
-  if (score >= 8) return 'A';
-  if (score >= 6) return 'B';
-  if (score >= 4) return 'C';
-  if (score >= 1) return 'D';
-  return 'F';
+  if (score >= 10) return 'SS';
+  if (score >= 8) return 'S';
+  if (score >= 6) return 'A';
+  if (score >= 4) return 'B';
+  if (score >= 1) return 'C';
+  return 'D';
 }

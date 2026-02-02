@@ -9,6 +9,7 @@ import {
   createQuizQuestion,
   getTimeUntilNextReset,
   loadStudents,
+  getScoreRank,
 } from '../quiz-core';
 import { allStudentsAtom } from '../store/quiz';
 import {
@@ -280,7 +281,10 @@ function DailyQuiz() {
         title="クイズ完了"
       >
         <div className="text-center">
-          <div className="text-4xl font-bold text-blue-600 mb-4">
+          <div className="text-5xl font-bold text-blue-600 mb-2">
+            {getScoreRank(score)}
+          </div>
+          <div className="text-2xl font-bold text-gray-700 mb-4">
             {score}点
           </div>
           <p className="text-gray-600 mb-4">
@@ -309,30 +313,30 @@ function DailyQuiz() {
             </div>
 
             <div className="mt-4">
-              <p className="text-sm text-gray-600 mb-2">スコア分布:</p>
+              <p className="text-sm text-gray-600 mb-2">ランク分布:</p>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span>10点 (完璧):</span>
+                  <span>SS (10点):</span>
                   <span>{scoreDistribution.perfect}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>8-9点:</span>
+                  <span>S (8-9点):</span>
                   <span>{scoreDistribution.veryHigh}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>6-7点:</span>
+                  <span>A (6-7点):</span>
                   <span>{scoreDistribution.high}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>4-5点:</span>
+                  <span>B (4-5点):</span>
                   <span>{scoreDistribution.medium}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>1-3点:</span>
+                  <span>C (1-3点):</span>
                   <span>{scoreDistribution.low}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>0点:</span>
+                  <span>D (0点):</span>
                   <span>{scoreDistribution.zero}回</span>
                 </div>
               </div>

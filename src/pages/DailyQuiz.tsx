@@ -312,23 +312,23 @@ function DailyQuiz() {
               <p className="text-sm text-gray-600 mb-2">スコア分布:</p>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span>9点 (完璧):</span>
+                  <span>10点 (完璧):</span>
                   <span>{scoreDistribution.perfect}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>7-8点:</span>
+                  <span>8-9点:</span>
                   <span>{scoreDistribution.veryHigh}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>5-6点:</span>
+                  <span>6-7点:</span>
                   <span>{scoreDistribution.high}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>3-4点:</span>
+                  <span>4-5点:</span>
                   <span>{scoreDistribution.medium}回</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>1-2点:</span>
+                  <span>1-3点:</span>
                   <span>{scoreDistribution.low}回</span>
                 </div>
                 <div className="flex justify-between">

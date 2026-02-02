@@ -12,9 +12,9 @@ export const allStudentsAtom = atom<Student[]>([]);
 export const currentQuestionAtom = atom<QuizQuestion | null>(null);
 
 /**
- * 開示済みヒント数
+ * 開示済みヒント数（最初から1つヒントを表示）
  */
-export const revealedHintCountAtom = atom(0);
+export const revealedHintCountAtom = atom(1);
 
 /**
  * 回答済みフラグ
@@ -27,9 +27,9 @@ export const answeredAtom = atom(false);
 export const correctAtom = atom(false);
 
 /**
- * 現在のスコア
+ * 現在のスコア（1ヒントで正解時の点数）
  */
-export const scoreAtom = atom(0);
+export const scoreAtom = atom(10);
 
 /**
  * クイズ状態を取得する派生atom

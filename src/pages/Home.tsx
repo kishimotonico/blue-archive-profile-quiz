@@ -23,7 +23,7 @@ function Home() {
             to="/regular"
             className="block w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg text-center transition-colors"
           >
-            レギュラーモード
+            フリープレイ
           </Link>
         </div>
 

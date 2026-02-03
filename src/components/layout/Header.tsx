@@ -72,7 +72,7 @@ function Header() {
             className="text-sm px-3 py-1 rounded hover:bg-white/20 transition-colors"
             aria-current={location.pathname === '/regular' ? 'page' : undefined}
           >
-            レギュラー
+            フリープレイ
           </Link>
         </nav>
       </header>
@@ -128,14 +128,14 @@ function Header() {
             className="px-6 py-4 hover:bg-white/20 transition-colors border-t border-white/10 text-base"
             aria-current={location.pathname === '/' ? 'page' : undefined}
           >
-            日替わり
+            日替わりクイズ
           </Link>
           <Link
             to="/regular"
             className="px-6 py-4 hover:bg-white/20 transition-colors border-t border-white/10 text-base"
             aria-current={location.pathname === '/regular' ? 'page' : undefined}
           >
-            レギュラー
+            フリープレイ
           </Link>
         </nav>
       </div>

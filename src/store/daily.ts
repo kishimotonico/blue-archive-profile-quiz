@@ -1,6 +1,7 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import type { Hint } from '../quiz-core/types';
+import { getDailyDate } from '../quiz-core/daily';
 
 /**
  * 日替わりクイズの結果を保存する型
@@ -36,7 +37,7 @@ export const dailyResultsAtom = atomWithStorage<DailyResult[]>(
  */
 export const isTodayCompletedAtom = atom((get) => {
   const results = get(dailyResultsAtom);
-  const today = new Date().toISOString().split('T')[0];
+  const today = getDailyDate();
   return results.some((r) => r.date === today);
 });
 

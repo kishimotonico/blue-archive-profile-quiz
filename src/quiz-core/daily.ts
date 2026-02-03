@@ -4,25 +4,25 @@
  */
 
 /**
+ * クイズ日付のオフセット（UTC+5 = JST 4:00基準）
+ * JST 4:00 = UTC 19:00 (前日) = UTC+5 0:00 (当日)
+ */
+const QUIZ_DAY_OFFSET_MS = 5 * 60 * 60 * 1000;
+
+/**
  * 現在の日替わりクイズの日付を取得（4:00 JST基準）
  * @returns YYYY-MM-DD形式の日付文字列
  */
 export function getDailyDate(): string {
   const now = new Date();
 
-  // JSTに変換（UTC+9）
-  const jstOffset = 9 * 60 * 60 * 1000;
-  const jstTime = new Date(now.getTime() + jstOffset);
-
-  // 4:00より前の場合は前日とする
-  if (jstTime.getHours() < 4) {
-    jstTime.setDate(jstTime.getDate() - 1);
-  }
+  // UTC+5の時刻に変換（JST 4:00基準）
+  const quizDayTime = new Date(now.getTime() + QUIZ_DAY_OFFSET_MS);
 
   // YYYY-MM-DD形式で返す
-  const year = jstTime.getFullYear();
-  const month = String(jstTime.getMonth() + 1).padStart(2, '0');
-  const day = String(jstTime.getDate()).padStart(2, '0');
+  const year = quizDayTime.getUTCFullYear();
+  const month = String(quizDayTime.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(quizDayTime.getUTCDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
 }
@@ -58,21 +58,19 @@ export function getSeedForDate(date: string): number {
 export function getNextDailyResetTime(): Date {
   const now = new Date();
 
-  // JSTに変換（UTC+9）
-  const jstOffset = 9 * 60 * 60 * 1000;
-  const jstTime = new Date(now.getTime() + jstOffset);
+  // UTC+5の時刻に変換（JST 4:00基準）
+  const quizDayTime = new Date(now.getTime() + QUIZ_DAY_OFFSET_MS);
 
-  // 次の4:00 JSTを計算
-  const nextReset = new Date(jstTime);
-  nextReset.setHours(4, 0, 0, 0);
-
-  // 既に4:00を過ぎている場合は翌日の4:00
-  if (jstTime.getHours() >= 4) {
-    nextReset.setDate(nextReset.getDate() + 1);
-  }
+  // UTC+5での次の0:00（= JST 4:00）を計算
+  const nextReset = new Date(Date.UTC(
+    quizDayTime.getUTCFullYear(),
+    quizDayTime.getUTCMonth(),
+    quizDayTime.getUTCDate() + 1,
+    0, 0, 0, 0
+  ));
 
   // UTC時刻に変換して返す
-  return new Date(nextReset.getTime() - jstOffset);
+  return new Date(nextReset.getTime() - QUIZ_DAY_OFFSET_MS);
 }
 
 /**

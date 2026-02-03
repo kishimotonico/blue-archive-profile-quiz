@@ -31,6 +31,7 @@ export {
   getSeedForDate,
   getNextDailyResetTime,
   getTimeUntilNextReset,
+  createDailyQuestion,
 } from './daily';
 
 // 回答判定

@@ -4,14 +4,17 @@ import { useAtom } from 'jotai';
 import { useQuiz } from '../hooks/useQuiz';
 import { useDailyQuiz } from '../hooks/useDailyQuiz';
 import {
-  getDailySeed,
-  getRandomStudent,
-  createQuizQuestion,
+  createDailyQuestion,
   getTimeUntilNextReset,
   loadStudents,
   getScoreRank,
 } from '../quiz-core';
-import { allStudentsAtom } from '../store/quiz';
+import {
+  allStudentsAtom,
+  answeredAtom,
+  correctAtom,
+  scoreAtom,
+} from '../store/quiz';
 import {
   totalAttemptsAtom,
   scoreDistributionAtom,
@@ -30,6 +33,7 @@ function DailyQuiz() {
     currentQuestion,
     setCurrentQuestion,
     revealedHintCount,
+    setRevealedHintCount,
     answered,
     correct,
     score,
@@ -39,14 +43,18 @@ function DailyQuiz() {
     giveUp,
   } = useQuiz();
 
-  const { isTodayCompleted, getTodayResult, saveTodayResult, saveProgress, loadProgress, clearProgress } = useDailyQuiz();
+  const { getTodayResult, saveTodayResult, saveProgress, loadProgress, clearProgress } = useDailyQuiz();
   const [, setAllStudents] = useAtom(allStudentsAtom);
+  const [, setAnswered] = useAtom(answeredAtom);
+  const [, setCorrect] = useAtom(correctAtom);
+  const [, setScore] = useAtom(scoreAtom);
   const [totalAttempts] = useAtom(totalAttemptsAtom);
   const [scoreDistribution] = useAtom(scoreDistributionAtom);
   const [bestScore] = useAtom(bestScoreAtom);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
+  const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -58,6 +66,17 @@ function DailyQuiz() {
       // 今日の問題が既に完了しているかチェック
       const todayResult = getTodayResult();
       if (todayResult) {
+        // 回答済みの場合も問題を再生成して表示
+        const question = await createDailyQuestion(todayResult.date);
+        setCurrentQuestion(question);
+        setRevealedHintCount(question.hints.length + 1); // 全ヒント + 立ち絵を表示
+
+        // 回答済み状態を復元
+        setAnswered(true);
+        setCorrect(todayResult.score > 0); // スコアが0より大きければ正解
+        setScore(todayResult.score);
+        setIsAlreadyCompleted(true);
+
         setLoading(false);
         return;
       }
@@ -73,22 +92,21 @@ function DailyQuiz() {
             hints: progress.hints,
           };
           setCurrentQuestion(question);
+          setRevealedHintCount(progress.revealedHintCount);
           setLoading(false);
           return;
         }
       }
 
       // 日替わりシードで問題を生成
-      const seed = getDailySeed();
-      const student = await getRandomStudent(seed);
-      const question = createQuizQuestion(student, seed);
+      const question = await createDailyQuestion();
 
       setCurrentQuestion(question);
       setLoading(false);
     };
 
     initQuiz();
-  }, [setCurrentQuestion, getTodayResult, loadProgress, setAllStudents]);
+  }, [setCurrentQuestion, setRevealedHintCount, setAnswered, setCorrect, setScore, getTodayResult, loadProgress, setAllStudents]);
 
   useEffect(() => {
     // 進行状態を保存（ヒント開示時）
@@ -102,8 +120,8 @@ function DailyQuiz() {
   }, [currentQuestion, answered, revealedHintCount, saveProgress]);
 
   useEffect(() => {
-    // 回答が完了したら結果を保存
-    if (answered && currentQuestion) {
+    // 回答が完了したら結果を保存（既に完了済みの場合は除く）
+    if (answered && currentQuestion && !isAlreadyCompleted) {
       saveTodayResult({
         score,
         revealedHintCount,
@@ -118,7 +136,7 @@ function DailyQuiz() {
 
       return () => clearTimeout(timer);
     }
-  }, [answered, currentQuestion, score, revealedHintCount, saveTodayResult, clearProgress]);
+  }, [answered, currentQuestion, score, revealedHintCount, isAlreadyCompleted, saveTodayResult, clearProgress]);
 
   // クイズ開始時にヒントボタンにフォーカス
   useEffect(() => {
@@ -133,40 +151,6 @@ function DailyQuiz() {
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-xl text-gray-600">読み込み中...</div>
-        </div>
-      </div>
-    );
-  }
-
-  const todayResult = getTodayResult();
-
-  if (isTodayCompleted && todayResult) {
-    return (
-      <div className="h-screen flex flex-col bg-slate-50">
-        <Header />
-        <div className="flex-1 flex items-center justify-center p-6">
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              今日のクイズは完了済みです
-            </h2>
-
-            <div className="text-4xl font-bold text-blue-600 mb-4">{todayResult.score}点</div>
-
-            <div className="text-gray-600 space-y-2">
-              <p>使用ヒント数: {todayResult.revealedHintCount}</p>
-              <p>次の問題まで: {getTimeUntilNextReset()}</p>
-            </div>
-
-            <div className="mt-8">
-              <Button
-                variant="primary"
-                className="w-full"
-                onClick={() => navigate('/regular')}
-              >
-                もっと遊ぶ
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
     );
@@ -228,6 +212,19 @@ function DailyQuiz() {
 
           {/* 固定フッター: 入力欄・ボタン類 */}
           <div className="shrink-0 pt-3 border-t border-gray-200 bg-slate-50">
+            {isAlreadyCompleted && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3 text-center">
+                <p className="text-blue-800 font-semibold mb-2">今日のクイズは完了済みです</p>
+                <p className="text-blue-600 text-sm mb-2">次の問題まで: {getTimeUntilNextReset()}</p>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => navigate('/regular')}
+                >
+                  もっと遊ぶ
+                </Button>
+              </div>
+            )}
             {!answered && (
               <div className="flex flex-col items-center gap-3">
                 <div className="w-full max-w-md">

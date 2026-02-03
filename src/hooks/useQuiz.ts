@@ -90,6 +90,7 @@ export function useQuiz() {
     currentQuestion,
     setCurrentQuestion,
     revealedHintCount,
+    setRevealedHintCount,
     answered,
     correct,
     score,

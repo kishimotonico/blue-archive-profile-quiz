@@ -3,6 +3,9 @@
  * 4:00 JST で日付が切り替わる
  */
 
+import { getRandomStudent } from './students';
+import { createQuizQuestion } from './hints';
+
 /**
  * クイズ日付のオフセット（UTC+5 = JST 4:00基準）
  * JST 4:00 = UTC 19:00 (前日) = UTC+5 0:00 (当日)
@@ -89,4 +92,14 @@ export function getTimeUntilNextReset(): string {
   } else {
     return `${minutes}分後`;
   }
+}
+
+/**
+ * 日替わりクイズの問題を生成
+ * @param date 日付文字列（省略時は今日）
+ */
+export async function createDailyQuestion(date?: string) {
+  const seed = date ? getSeedForDate(date) : getDailySeed();
+  const student = await getRandomStudent(seed);
+  return createQuizQuestion(student, seed);
 }

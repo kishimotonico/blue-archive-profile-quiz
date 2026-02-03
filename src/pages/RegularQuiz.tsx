@@ -40,6 +40,9 @@ function RegularQuiz() {
   // 初期化
   useEffect(() => {
     const initQuiz = async () => {
+      // 前のモードからの状態をリセット
+      resetQuiz();
+
       // 全生徒リストを読み込み
       const allStudents = await loadStudents();
       setAllStudents(allStudents);

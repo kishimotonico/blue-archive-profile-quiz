@@ -79,10 +79,10 @@ export function useQuiz() {
    */
   const resetQuiz = useCallback(() => {
     setCurrentQuestion(null);
-    setRevealedHintCount(0);
+    setRevealedHintCount(1); // 最初から1つヒントを表示
     setAnswered(false);
     setCorrect(false);
-    setScore(0);
+    setScore(10); // 初期スコア（1ヒントで正解時の点数）
     setAnswerFeedback(null);
   }, [setCurrentQuestion, setRevealedHintCount, setAnswered, setCorrect, setScore]);
 

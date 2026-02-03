@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm dlx gh-setup-hooks@2.0.1",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}

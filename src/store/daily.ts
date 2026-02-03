@@ -71,17 +71,17 @@ export const dailyProgressAtom = atomWithStorage<DailyProgress | null>(
 export const totalAttemptsAtom = atom((get) => get(dailyResultsAtom).length);
 
 /**
- * スコア分布
+ * スコア分布（10点満点システム）
  */
 export const scoreDistributionAtom = atom((get) => {
   const results = get(dailyResultsAtom);
   return {
     zero: results.filter(r => r.score === 0).length,
-    low: results.filter(r => r.score >= 1 && r.score <= 2).length,
-    medium: results.filter(r => r.score >= 3 && r.score <= 4).length,
-    high: results.filter(r => r.score >= 5 && r.score <= 6).length,
-    veryHigh: results.filter(r => r.score >= 7 && r.score <= 8).length,
-    perfect: results.filter(r => r.score === 9).length,
+    low: results.filter(r => r.score >= 1 && r.score <= 3).length,
+    medium: results.filter(r => r.score >= 4 && r.score <= 5).length,
+    high: results.filter(r => r.score >= 6 && r.score <= 7).length,
+    veryHigh: results.filter(r => r.score >= 8 && r.score <= 9).length,
+    perfect: results.filter(r => r.score === 10).length,
   };
 });
 

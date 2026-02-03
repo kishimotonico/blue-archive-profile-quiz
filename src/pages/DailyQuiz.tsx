@@ -8,6 +8,7 @@ import {
   getTimeUntilNextReset,
   loadStudents,
   getScoreRank,
+  getDailyDate,
 } from '../quiz-core';
 import {
   allStudentsAtom,
@@ -43,7 +44,7 @@ function DailyQuiz() {
     giveUp,
   } = useQuiz();
 
-  const { getTodayResult, saveTodayResult, saveProgress, loadProgress, clearProgress } = useDailyQuiz();
+  const { getTodayResult, saveTodayResult, saveProgress, dailyProgress, clearProgress } = useDailyQuiz();
   const [, setAllStudents] = useAtom(allStudentsAtom);
   const [, setAnswered] = useAtom(answeredAtom);
   const [, setCorrect] = useAtom(correctAtom);
@@ -58,6 +59,9 @@ function DailyQuiz() {
   const hintButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    // loading中のみ初期化を実行（初期化が完了したらloadingをfalseにするため、再実行されない）
+    if (!loading) return;
+
     const initQuiz = async () => {
       // 全生徒リストを読み込み
       const students = await loadStudents();
@@ -82,17 +86,17 @@ function DailyQuiz() {
       }
 
       // 進行状態の復元を試みる
-      const progress = loadProgress();
-      if (progress) {
+      const today = getDailyDate();
+      if (dailyProgress && dailyProgress.date === today) {
         // 進行状態から復元
-        const student = students.find(s => s.id === progress.studentId);
+        const student = students.find(s => s.id === dailyProgress.studentId);
         if (student) {
           const question = {
             student,
-            hints: progress.hints,
+            hints: dailyProgress.hints,
           };
           setCurrentQuestion(question);
-          setRevealedHintCount(progress.revealedHintCount);
+          setRevealedHintCount(dailyProgress.revealedHintCount);
           setLoading(false);
           return;
         }
@@ -106,18 +110,20 @@ function DailyQuiz() {
     };
 
     initQuiz();
-  }, [setCurrentQuestion, setRevealedHintCount, setAnswered, setCorrect, setScore, getTodayResult, loadProgress, setAllStudents]);
+  }, [loading, dailyProgress, getTodayResult, setAllStudents, setCurrentQuestion, setRevealedHintCount, setAnswered, setCorrect, setScore]);
 
   useEffect(() => {
     // 進行状態を保存（ヒント開示時）
-    if (currentQuestion && !answered && revealedHintCount > 0) {
+    // 注意: loading中や回答済みの場合は保存しない
+    if (loading || answered) return;
+    if (currentQuestion && revealedHintCount > 0) {
       saveProgress({
         studentId: currentQuestion.student.id,
         revealedHintCount,
         hints: currentQuestion.hints,
       });
     }
-  }, [currentQuestion, answered, revealedHintCount, saveProgress]);
+  }, [loading, currentQuestion, answered, revealedHintCount, saveProgress]);
 
   useEffect(() => {
     // 回答が完了したら結果を保存（既に完了済みの場合は除く）

@@ -214,13 +214,13 @@ function DailyQuiz() {
           {/* 回答結果表示 */}
           {answered && (
             <div className="py-3 flex justify-center">
-              <StudentReveal student={currentQuestion.student} correct={correct} />
+              <StudentReveal student={currentQuestion.student} correct={correct} score={score} />
             </div>
           )}
 
           {/* 固定フッター: 入力欄・ボタン類 */}
           <div className="shrink-0 pt-3 border-t border-gray-200 bg-slate-50">
-            {!answered ? (
+            {!answered && (
               <div className="flex flex-col items-center gap-3">
                 <div className="w-full max-w-md">
                   <AnswerInput onSubmit={submitAnswer} />
@@ -245,20 +245,6 @@ function DailyQuiz() {
                     </Button>
                   )}
                 </div>
-
-                <div className="text-center">
-                  <span className="text-xl font-bold text-blue-600">{score}点</span>
-                  <span className="text-sm text-gray-500 ml-2">
-                    ヒント {revealedHintCount}/{currentQuestion.hints.length}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center">
-                <span className="text-2xl font-bold text-blue-600">{score}点</span>
-                <span className="text-sm text-gray-500 ml-2">
-                  ヒント {revealedHintCount}/{currentQuestion.hints.length}
-                </span>
               </div>
             )}
           </div>

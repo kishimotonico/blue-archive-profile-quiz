@@ -36,6 +36,7 @@ function RegularQuiz() {
   const [totalScore, setTotalScore] = useState(0);
   const [scores, setScores] = useState<number[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const hintButtonRef = useRef<HTMLButtonElement>(null);
 
   // 初期化
   useEffect(() => {
@@ -72,6 +73,30 @@ function RegularQuiz() {
       setScores((prev) => [...prev, score]);
     }
   }, [answered, score]);
+
+  // 問題切替時にヒントボタンにフォーカス
+  useEffect(() => {
+    if (!loading && !answered && hintButtonRef.current) {
+      hintButtonRef.current.focus();
+    }
+  }, [loading, answered, currentQuestionIndex]);
+
+  // 正解表示時、Enterキーで次の問題へ
+  useEffect(() => {
+    if (!answered) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        handleNext();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answered]);
 
   const handleNext = () => {
     const nextIndex = currentQuestionIndex + 1;
@@ -187,15 +212,15 @@ function RegularQuiz() {
 
                 <div className="flex justify-center">
                   {revealedHintCount < currentQuestion.hints.length ? (
-                    <Button onClick={revealNextHint} variant="secondary" size="sm">
+                    <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" size="sm">
                       次のヒントを開示
                     </Button>
                   ) : revealedHintCount === currentQuestion.hints.length ? (
-                    <Button onClick={revealNextHint} variant="secondary" size="sm">
+                    <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" size="sm">
                       シルエットを表示
                     </Button>
                   ) : (
-                    <Button onClick={giveUp} variant="danger" size="sm">
+                    <Button ref={hintButtonRef} onClick={giveUp} variant="danger" size="sm">
                       諦めて正解を表示
                     </Button>
                   )}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useQuiz } from '../hooks/useQuiz';
@@ -47,6 +47,7 @@ function DailyQuiz() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
+  const hintButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const initQuiz = async () => {
@@ -118,6 +119,13 @@ function DailyQuiz() {
       return () => clearTimeout(timer);
     }
   }, [answered, currentQuestion, score, revealedHintCount, saveTodayResult, clearProgress]);
+
+  // クイズ開始時にヒントボタンにフォーカス
+  useEffect(() => {
+    if (!loading && !answered && hintButtonRef.current) {
+      hintButtonRef.current.focus();
+    }
+  }, [loading, answered]);
 
   if (loading) {
     return (
@@ -232,15 +240,15 @@ function DailyQuiz() {
 
                 <div className="flex justify-center">
                   {revealedHintCount < currentQuestion.hints.length ? (
-                    <Button onClick={revealNextHint} variant="secondary" size="sm">
+                    <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" size="sm">
                       次のヒントを開示
                     </Button>
                   ) : revealedHintCount === currentQuestion.hints.length ? (
-                    <Button onClick={revealNextHint} variant="secondary" size="sm">
+                    <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" size="sm">
                       シルエットを表示
                     </Button>
                   ) : (
-                    <Button onClick={giveUp} variant="danger" size="sm">
+                    <Button ref={hintButtonRef} onClick={giveUp} variant="danger" size="sm">
                       諦めて正解を表示
                     </Button>
                   )}

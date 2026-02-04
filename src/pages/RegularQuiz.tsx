@@ -156,7 +156,7 @@ function RegularQuiz() {
     <div className="h-screen flex flex-col bg-slate-50">
       <Header />
 
-      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 max-w-6xl mx-auto w-full overflow-hidden">
+      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 sm:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
         {/* 左ペイン: ヒント + 入力エリア */}
         <div className="flex-1 flex flex-col min-h-0">
           {/* 進捗表示 */}

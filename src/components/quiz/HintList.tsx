@@ -49,12 +49,7 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
   }, [portraitState]);
 
   return (
-    <div>
-      {/* モバイルでハンバーガーボタン用のスペース確保 */}
-      <div className="sm:hidden flex justify-end">
-        <div className="w-14 h-10" aria-hidden="true" />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {hints.map((hint, index) => (
           <div key={index} ref={(el) => { hintRefs.current[index] = el; }}>
             <HintCard
@@ -89,7 +84,6 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
             )}
           </div>
         )}
-      </div>
     </div>
   );
 }

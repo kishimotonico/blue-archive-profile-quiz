@@ -187,6 +187,14 @@ function DailyQuiz() {
       <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 sm:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
         {/* 左ペイン: ヒント + 入力エリア */}
         <div className="flex-1 flex flex-col min-h-0">
+          {/* 日付表示 */}
+          <div className="shrink-0 text-center text-sm text-gray-600 pb-2 pr-14 sm:pr-0">
+            {(() => {
+              const [, month, day] = getDailyDate().split('-');
+              return `${Number(month)}月${Number(day)}日の問題`;
+            })()}
+          </div>
+
           {/* スクロール可能なヒントエリア */}
           <div className="flex-1 overflow-y-auto min-h-0">
             {/* モバイル: ヒント+画像（グリッド内） */}

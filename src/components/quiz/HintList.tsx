@@ -50,40 +50,40 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-      {hints.map((hint, index) => (
-        <div key={index} ref={(el) => { hintRefs.current[index] = el; }}>
-          <HintCard
-            hint={hint}
-            revealed={index < revealedCount}
-          />
-        </div>
-      ))}
-      {showPortraitInGrid && (
-        <div ref={portraitRef} className="w-full h-[60vh] flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 relative overflow-hidden">
-          <span
-            className={`absolute inset-0 flex items-center justify-center text-5xl text-gray-400 font-light transition-opacity duration-500 ${
-              portraitState === 'hidden' ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            ?
-          </span>
-          {student && portraitState !== 'hidden' && (
-            <img
-              src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
-              alt={portraitState === 'revealed' ? student.fullName : 'シルエット'}
-              draggable={false}
-              className={`absolute inset-0 h-full w-auto mx-auto object-contain transition-all duration-500 select-none ${
-                portraitState === 'silhouette'
-                  ? showSilhouette ? 'opacity-50 brightness-0 pointer-events-none' : 'opacity-0 brightness-0 pointer-events-none'
-                  : 'opacity-100'
-              }`}
-              onError={(e) => {
-                e.currentTarget.src = 'https://via.placeholder.com/256x256?text=No+Image';
-              }}
+        {hints.map((hint, index) => (
+          <div key={index} ref={(el) => { hintRefs.current[index] = el; }}>
+            <HintCard
+              hint={hint}
+              revealed={index < revealedCount}
             />
-          )}
-        </div>
-      )}
+          </div>
+        ))}
+        {showPortraitInGrid && (
+          <div ref={portraitRef} className="w-full h-[60vh] flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 relative overflow-hidden">
+            <span
+              className={`absolute inset-0 flex items-center justify-center text-5xl text-gray-400 font-light transition-opacity duration-500 ${
+                portraitState === 'hidden' ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              ?
+            </span>
+            {student && portraitState !== 'hidden' && (
+              <img
+                src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
+                alt={portraitState === 'revealed' ? student.fullName : 'シルエット'}
+                draggable={false}
+                className={`absolute inset-0 h-full w-auto mx-auto object-contain transition-all duration-500 select-none ${
+                  portraitState === 'silhouette'
+                    ? showSilhouette ? 'opacity-50 brightness-0 pointer-events-none' : 'opacity-0 brightness-0 pointer-events-none'
+                    : 'opacity-100'
+                }`}
+                onError={(e) => {
+                  e.currentTarget.src = 'https://via.placeholder.com/256x256?text=No+Image';
+                }}
+              />
+            )}
+          </div>
+        )}
     </div>
   );
 }

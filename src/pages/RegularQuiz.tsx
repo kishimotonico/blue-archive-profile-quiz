@@ -156,12 +156,12 @@ function RegularQuiz() {
     <div className="h-screen flex flex-col bg-slate-50">
       <Header />
 
-      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 max-w-6xl mx-auto w-full overflow-hidden">
+      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 sm:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
         {/* 左ペイン: ヒント + 入力エリア */}
         <div className="flex-1 flex flex-col min-h-0">
           {/* 進捗表示 */}
-          <div className="shrink-0 text-center text-sm text-gray-600 pb-2">
-            問題 {currentQuestionIndex + 1} / {TOTAL_QUESTIONS} | 合計: {totalScore}点
+          <div className="shrink-0 text-center text-sm text-gray-600 py-3 sm:py-2">
+            クイズ {currentQuestionIndex + 1} / {TOTAL_QUESTIONS} | 合計: {totalScore}点
           </div>
 
           {/* スクロール可能なヒントエリア */}

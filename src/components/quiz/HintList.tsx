@@ -51,8 +51,8 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
   return (
     <div>
       {/* モバイルでハンバーガーボタン用のスペース確保 */}
-      <div className="sm:hidden flex justify-end mb-1">
-        <div className="w-14 h-6" aria-hidden="true" />
+      <div className="sm:hidden flex justify-end">
+        <div className="w-14 h-10" aria-hidden="true" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {hints.map((hint, index) => (

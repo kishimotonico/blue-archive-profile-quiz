@@ -18,7 +18,7 @@ function AnswerInput({ onSubmit, disabled = false }: AnswerInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 justify-center">
+    <form onSubmit={handleSubmit} className="flex gap-2 w-full">
       <input
         type="text"
         value={answer}
@@ -26,7 +26,7 @@ function AnswerInput({ onSubmit, disabled = false }: AnswerInputProps) {
         placeholder="生徒名を入力"
         disabled={disabled}
         autoComplete="off"
-        className="w-48 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 disabled:bg-gray-100 text-center"
+        className="flex-1 min-w-0 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 disabled:bg-gray-100 text-center"
       />
       <Button type="submit" disabled={disabled || !answer.trim()}>
         回答

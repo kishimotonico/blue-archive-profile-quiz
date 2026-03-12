@@ -241,29 +241,25 @@ function DailyQuiz() {
               </div>
             )}
             {!answered && (
-              <div className="flex flex-col items-center gap-3">
-                <div className="flex justify-center">
-                  {revealedHintCount < currentQuestion.hints.length ? (
-                    <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" size="sm">
-                      次のヒントを開示
-                    </Button>
-                  ) : revealedHintCount === currentQuestion.hints.length ? (
-                    <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" size="sm">
-                      シルエットを表示
-                    </Button>
-                  ) : (
-                    <Button ref={hintButtonRef} onClick={giveUp} variant="danger" size="sm">
-                      諦めて正解を表示
-                    </Button>
-                  )}
-                </div>
+              <div className="flex flex-col items-stretch gap-3 max-w-xs mx-auto">
+                {revealedHintCount < currentQuestion.hints.length ? (
+                  <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" className="w-full">
+                    次のヒントを開示
+                  </Button>
+                ) : revealedHintCount === currentQuestion.hints.length ? (
+                  <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" className="w-full">
+                    シルエットを表示
+                  </Button>
+                ) : (
+                  <Button ref={hintButtonRef} onClick={giveUp} variant="danger" className="w-full">
+                    諦めて正解を表示
+                  </Button>
+                )}
 
-                <div className="w-full max-w-md">
-                  <AnswerInput onSubmit={submitAnswer} />
-                </div>
+                <AnswerInput onSubmit={submitAnswer} />
 
                 {answerFeedback && (
-                  <p className="text-red-500 text-sm font-semibold">{answerFeedback}</p>
+                  <p className="text-red-500 text-sm font-semibold text-center">{answerFeedback}</p>
                 )}
               </div>
             )}

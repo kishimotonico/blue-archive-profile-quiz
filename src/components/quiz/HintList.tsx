@@ -49,9 +49,12 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
     prevPortraitState.current = portraitState;
   }, [portraitState]);
 
-  const visibleHints = compactMode
-    ? hints.filter((_, index) => index < revealedCount)
-    : hints;
+  // compactMode: 開示済みヒントのみ表示し、未開示ヒントはグラデーションで見切れ表示
+  const visibleHints = compactMode ? hints.slice(0, revealedCount) : hints;
+  const remaining = hints.length - revealedCount;
+  const peekHints = compactMode && remaining > 0
+    ? hints.slice(revealedCount, revealedCount + Math.min(remaining, 3))
+    : [];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -63,14 +66,21 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
             />
           </div>
         ))}
-        {compactMode && revealedCount < hints.length && (
-          <div className="relative overflow-hidden pointer-events-none max-h-40">
+        {peekHints.length > 0 && (
+          <div className={`relative overflow-hidden pointer-events-none ${peekHints.length >= 2 ? 'max-h-44' : ''}`}>
             <div className="flex flex-col gap-2">
-              {hints.slice(revealedCount, revealedCount + 3).map((hint, i) => (
+              {peekHints.map((hint, i) => (
                 <HintCard key={revealedCount + i} hint={hint} revealed={false} />
               ))}
             </div>
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent from-30% via-slate-50/70 via-55% to-slate-50 to-75%" />
+            {peekHints.length >= 2 && (
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-slate-50 to-85%" />
+            )}
+            {remaining >= 2 && (
+              <div className="absolute bottom-0 left-0 right-0 text-center text-xs text-gray-400 pb-1">
+                残り {remaining} ヒント
+              </div>
+            )}
           </div>
         )}
         {showPortraitInGrid && (

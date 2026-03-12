@@ -10,9 +10,10 @@ interface HintListProps {
   student?: Student | null;
   portraitState?: PortraitState;
   showPortraitInGrid?: boolean;
+  compactMode?: boolean;
 }
 
-function HintList({ hints, revealedCount, student, portraitState = 'hidden', showPortraitInGrid = false }: HintListProps) {
+function HintList({ hints, revealedCount, student, portraitState = 'hidden', showPortraitInGrid = false, compactMode = false }: HintListProps) {
   const hintRefs = useRef<(HTMLDivElement | null)[]>([]);
   const portraitRef = useRef<HTMLDivElement>(null);
   const prevRevealedCount = useRef(revealedCount);
@@ -48,9 +49,13 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
     prevPortraitState.current = portraitState;
   }, [portraitState]);
 
+  const visibleHints = compactMode
+    ? hints.filter((_, index) => index < revealedCount)
+    : hints;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {hints.map((hint, index) => (
+        {visibleHints.map((hint, index) => (
           <div key={index} ref={(el) => { hintRefs.current[index] = el; }}>
             <HintCard
               hint={hint}
@@ -58,6 +63,16 @@ function HintList({ hints, revealedCount, student, portraitState = 'hidden', sho
             />
           </div>
         ))}
+        {compactMode && revealedCount < hints.length && (
+          <div className="relative overflow-hidden pointer-events-none max-h-40">
+            <div className="flex flex-col gap-2">
+              {hints.slice(revealedCount, revealedCount + 3).map((hint, i) => (
+                <HintCard key={revealedCount + i} hint={hint} revealed={false} />
+              ))}
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent from-30% via-slate-50/70 via-55% to-slate-50 to-75%" />
+          </div>
+        )}
         {showPortraitInGrid && (
           <div ref={portraitRef} className="w-full h-[60vh] flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 relative overflow-hidden">
             <span

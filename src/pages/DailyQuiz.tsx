@@ -205,6 +205,7 @@ function DailyQuiz() {
                 student={currentQuestion.student}
                 portraitState={getPortraitState()}
                 showPortraitInGrid={true}
+                compactMode={true}
               />
             </div>
 
@@ -241,14 +242,6 @@ function DailyQuiz() {
             )}
             {!answered && (
               <div className="flex flex-col items-center gap-3">
-                <div className="w-full max-w-md">
-                  <AnswerInput onSubmit={submitAnswer} />
-                </div>
-
-                {answerFeedback && (
-                  <p className="text-red-500 text-sm font-semibold">{answerFeedback}</p>
-                )}
-
                 <div className="flex justify-center">
                   {revealedHintCount < currentQuestion.hints.length ? (
                     <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" size="sm">
@@ -264,6 +257,14 @@ function DailyQuiz() {
                     </Button>
                   )}
                 </div>
+
+                <div className="w-full max-w-md">
+                  <AnswerInput onSubmit={submitAnswer} />
+                </div>
+
+                {answerFeedback && (
+                  <p className="text-red-500 text-sm font-semibold">{answerFeedback}</p>
+                )}
               </div>
             )}
           </div>

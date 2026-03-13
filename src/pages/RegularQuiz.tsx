@@ -1,9 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSetAtom } from 'jotai';
-import { useQuiz } from '../hooks/useQuiz';
-import { getRandomStudents, createQuizQuestion, loadStudents, type Student } from '../quiz-core';
-import { allStudentsAtom } from '../store/quiz';
+import { useEffect, useRef, useCallback } from 'react';
+import { useRegularQuiz } from '../hooks/useRegularQuiz';
 import Header from '../components/layout/Header';
 import HintList from '../components/quiz/HintList';
 import StudentReveal from '../components/quiz/StudentReveal';
@@ -14,12 +10,9 @@ import QuizErrorState from '../components/quiz/QuizErrorState';
 import QuizPlayArea from '../components/quiz/QuizPlayArea';
 import { getPortraitState } from '../components/quiz/portraitUtils';
 
-const TOTAL_QUESTIONS = 10;
-
 function RegularQuiz() {
   const {
     currentQuestion,
-    setCurrentQuestion,
     revealedHintCount,
     answered,
     correct,
@@ -29,54 +22,15 @@ function RegularQuiz() {
     revealNextHint,
     submitAnswer,
     giveUp,
-    resetQuiz,
-  } = useQuiz();
+    loading,
+    currentQuestionIndex,
+    totalScore,
+    goNext,
+    TOTAL_QUESTIONS,
+  } = useRegularQuiz();
 
-  const setAllStudents = useSetAtom(allStudentsAtom);
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [students, setStudents] = useState<Student[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [totalScore, setTotalScore] = useState(0);
-  const [scores, setScores] = useState<number[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
-
-  // 初期化
-  useEffect(() => {
-    const initQuiz = async () => {
-      // 前のモードからの状態をリセット
-      resetQuiz();
-
-      // 全生徒リストを読み込み
-      const allStudents = await loadStudents();
-      setAllStudents(allStudents);
-
-      const randomStudents = await getRandomStudents(TOTAL_QUESTIONS);
-      setStudents(randomStudents);
-
-      if (randomStudents.length > 0) {
-        const question = createQuizQuestion(randomStudents[0]);
-        setCurrentQuestion(question);
-      }
-
-      setLoading(false);
-    };
-
-    initQuiz();
-
-    return () => {
-      resetQuiz();
-    };
-  }, [setCurrentQuestion, resetQuiz, setAllStudents]);
-
-  // 回答完了時の処理
-  useEffect(() => {
-    if (answered) {
-      setTotalScore((prev) => prev + score);
-      setScores((prev) => [...prev, score]);
-    }
-  }, [answered, score]);
 
   // 問題切替時にヒントボタンにフォーカス
   useEffect(() => {
@@ -85,46 +39,20 @@ function RegularQuiz() {
     }
   }, [loading, answered, currentQuestionIndex]);
 
-  // 正解表示時、Enterキーで次の問題へ
+  const handleNext = useCallback(() => {
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+    goNext();
+  }, [goNext]);
+
+  // 回答後、Enterキーで次の問題へ
   useEffect(() => {
     if (!answered) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        e.stopPropagation();
-        handleNext();
-      }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); handleNext(); }
     };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [answered]);
-
-  const handleNext = () => {
-    const nextIndex = currentQuestionIndex + 1;
-
-    if (nextIndex < students.length) {
-      // スクロール位置をリセット
-      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
-
-      // 次の問題へ
-      const question = createQuizQuestion(students[nextIndex]);
-      setCurrentQuestionIndex(nextIndex);
-      resetQuiz();
-      setCurrentQuestion(question);
-    } else {
-      // 全問題完了
-      navigate('/result', {
-        state: {
-          totalScore,
-          scores: [...scores, score],
-          totalQuestions: TOTAL_QUESTIONS,
-        },
-      });
-    }
-  };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [answered, handleNext]);
 
   if (loading) return <QuizLoadingState />;
   if (!currentQuestion) return <QuizErrorState />;

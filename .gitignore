@@ -7,6 +7,8 @@ dist-ssr
 *.local
 *.tsbuildinfo
 
+# Test coverage
+coverage
 
 # Editor
 .vscode/*

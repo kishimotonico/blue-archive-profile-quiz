@@ -1,7 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import type { Hint } from '../quiz-core/types';
-import { getDailyDate } from '../quiz-core/daily';
 
 /**
  * 日替わりクイズの結果を保存する型
@@ -31,32 +30,6 @@ export const dailyResultsAtom = atomWithStorage<DailyResult[]>(
   'blue-archive-quiz-daily-results',
   []
 );
-
-/**
- * 今日の日替わりクイズが完了済みかどうか
- */
-export const isTodayCompletedAtom = atom((get) => {
-  const results = get(dailyResultsAtom);
-  const today = getDailyDate();
-  return results.some((r) => r.date === today);
-});
-
-/**
- * 合計スコアを取得
- */
-export const totalScoreAtom = atom((get) => {
-  const results = get(dailyResultsAtom);
-  return results.reduce((sum, r) => sum + r.score, 0);
-});
-
-/**
- * 平均スコアを取得
- */
-export const averageScoreAtom = atom((get) => {
-  const results = get(dailyResultsAtom);
-  if (results.length === 0) return 0;
-  return get(totalScoreAtom) / results.length;
-});
 
 /**
  * 日替わりクイズの進行状態（ローカルストレージに永続化）

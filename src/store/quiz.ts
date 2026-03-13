@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import type { QuizQuestion, QuizState, Student } from '../quiz-core';
+import type { QuizQuestion, Student } from '../quiz-core';
 
 /**
  * 全生徒リスト
@@ -31,18 +31,4 @@ export const correctAtom = atom(false);
  */
 export const scoreAtom = atom(10);
 
-/**
- * クイズ状態を取得する派生atom
- */
-export const quizStateAtom = atom<QuizState | null>((get) => {
-  const question = get(currentQuestionAtom);
-  if (!question) return null;
 
-  return {
-    question,
-    revealedHintCount: get(revealedHintCountAtom),
-    answered: get(answeredAtom),
-    correct: get(correctAtom),
-    score: get(scoreAtom),
-  };
-});

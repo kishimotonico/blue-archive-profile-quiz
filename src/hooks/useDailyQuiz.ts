@@ -2,7 +2,6 @@ import { useAtom } from 'jotai';
 import { useCallback } from 'react';
 import {
   dailyResultsAtom,
-  isTodayCompletedAtom,
   dailyProgressAtom,
   type DailyResult,
   type DailyProgress,
@@ -11,7 +10,6 @@ import { getDailyDate } from '../quiz-core';
 
 export function useDailyQuiz() {
   const [dailyResults, setDailyResults] = useAtom(dailyResultsAtom);
-  const [isTodayCompleted] = useAtom(isTodayCompletedAtom);
   const [dailyProgress, setDailyProgress] = useAtom(dailyProgressAtom);
 
   /**
@@ -44,13 +42,6 @@ export function useDailyQuiz() {
   }, [dailyResults]);
 
   /**
-   * 全結果をクリア
-   */
-  const clearAllResults = useCallback(() => {
-    setDailyResults([]);
-  }, [setDailyResults]);
-
-  /**
    * 進行状態を保存
    */
   const saveProgress = useCallback(
@@ -65,17 +56,6 @@ export function useDailyQuiz() {
   );
 
   /**
-   * 進行状態を復元
-   */
-  const loadProgress = useCallback(() => {
-    const today = getDailyDate();
-    if (dailyProgress && dailyProgress.date === today) {
-      return dailyProgress;
-    }
-    return null;
-  }, [dailyProgress]);
-
-  /**
    * 進行状態をクリア
    */
   const clearProgress = useCallback(() => {
@@ -84,13 +64,10 @@ export function useDailyQuiz() {
 
   return {
     dailyResults,
-    isTodayCompleted,
     saveTodayResult,
     getTodayResult,
-    clearAllResults,
     dailyProgress,
     saveProgress,
-    loadProgress,
     clearProgress,
   };
 }

@@ -10,8 +10,6 @@ export type {
 // 生徒データ
 export {
   loadStudents,
-  extractFamilyName,
-  getStudentById,
   getRandomStudent,
   getRandomStudents,
 } from './students';
@@ -19,7 +17,6 @@ export {
 // ヒント生成
 export {
   generateHints,
-  shuffleHints,
   createQuizQuestion,
 } from './hints';
 
@@ -28,7 +25,6 @@ export {
   getDailyDate,
   dateToSeed,
   getDailySeed,
-  getSeedForDate,
   getNextDailyResetTime,
   getTimeUntilNextReset,
   createDailyQuestion,
@@ -36,10 +32,7 @@ export {
 
 // 回答判定
 export {
-  hiraganaToKatakana,
-  normalizeAnswer,
   checkAnswer,
-  getAnswerVariants,
   validateAnswer,
 } from './answer';
 

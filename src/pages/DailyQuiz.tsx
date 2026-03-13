@@ -23,11 +23,14 @@ import {
 } from '../store/daily';
 import Header from '../components/layout/Header';
 import HintList from '../components/quiz/HintList';
-import AnswerInput from '../components/quiz/AnswerInput';
 import StudentReveal from '../components/quiz/StudentReveal';
 import StudentPortrait from '../components/quiz/StudentPortrait';
 import Button from '../components/common/Button';
 import Modal from '../components/common/Modal';
+import QuizLoadingState from '../components/quiz/QuizLoadingState';
+import QuizErrorState from '../components/quiz/QuizErrorState';
+import QuizPlayArea from '../components/quiz/QuizPlayArea';
+import { getPortraitState } from '../components/quiz/portraitUtils';
 
 function DailyQuiz() {
   const {
@@ -151,34 +154,10 @@ function DailyQuiz() {
     }
   }, [loading, answered]);
 
-  if (loading) {
-    return (
-      <div className="h-screen flex flex-col bg-slate-50">
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-xl text-gray-600">読み込み中...</div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <QuizLoadingState />;
+  if (!currentQuestion) return <QuizErrorState />;
 
-  if (!currentQuestion) {
-    return (
-      <div className="h-screen flex flex-col bg-slate-50">
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-xl text-gray-600">問題の読み込みに失敗しました</div>
-        </div>
-      </div>
-    );
-  }
-
-  // 立ち絵の表示状態を計算
-  const getPortraitState = () => {
-    if (answered) return 'revealed';
-    if (revealedHintCount > currentQuestion.hints.length) return 'silhouette';
-    return 'hidden';
-  };
+  const portraitState = getPortraitState(answered, revealedHintCount, currentQuestion.hints.length);
 
   return (
     <div className="h-screen flex flex-col bg-slate-50">
@@ -203,7 +182,7 @@ function DailyQuiz() {
                 hints={currentQuestion.hints}
                 revealedCount={revealedHintCount}
                 student={currentQuestion.student}
-                portraitState={getPortraitState()}
+                portraitState={portraitState}
                 showPortraitInGrid={true}
                 compactMode={true}
               />
@@ -240,29 +219,16 @@ function DailyQuiz() {
                 </Button>
               </div>
             )}
-            {!answered && (
-              <div className="flex flex-col items-stretch gap-3 max-w-xs mx-auto">
-                {revealedHintCount < currentQuestion.hints.length ? (
-                  <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" className="w-full">
-                    次のヒントを開示
-                  </Button>
-                ) : revealedHintCount === currentQuestion.hints.length ? (
-                  <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" className="w-full">
-                    シルエットを表示
-                  </Button>
-                ) : (
-                  <Button ref={hintButtonRef} onClick={giveUp} variant="danger" className="w-full">
-                    諦めて正解を表示
-                  </Button>
-                )}
-
-                <AnswerInput onSubmit={submitAnswer} />
-
-                {answerFeedback && (
-                  <p className="text-red-500 text-sm font-semibold text-center">{answerFeedback}</p>
-                )}
-              </div>
-            )}
+            <QuizPlayArea
+              hintButtonRef={hintButtonRef}
+              revealedHintCount={revealedHintCount}
+              hintsLength={currentQuestion.hints.length}
+              revealNextHint={revealNextHint}
+              submitAnswer={submitAnswer}
+              giveUp={giveUp}
+              answerFeedback={answerFeedback}
+              answered={answered}
+            />
           </div>
         </div>
 
@@ -270,7 +236,7 @@ function DailyQuiz() {
         <div className="hidden md:flex w-40 lg:w-48 xl:w-56 2xl:w-64 shrink-0 self-stretch items-center">
           <StudentPortrait
             student={currentQuestion.student}
-            state={getPortraitState()}
+            state={portraitState}
             variant="sidebar"
           />
         </div>

@@ -1,36 +1,27 @@
-import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAtom, useSetAtom } from 'jotai';
-import { useQuiz } from '../hooks/useQuiz';
-import { useDailyQuiz } from '../hooks/useDailyQuiz';
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAtom, useSetAtom } from "jotai";
+import { useQuiz } from "../hooks/useQuiz";
+import { useDailyQuiz } from "../hooks/useDailyQuiz";
 import {
   createDailyQuestion,
   getTimeUntilNextReset,
   loadStudents,
   getScoreRank,
   getDailyDate,
-} from '../quiz-core';
-import {
-  allStudentsAtom,
-  answeredAtom,
-  correctAtom,
-  scoreAtom,
-} from '../store/quiz';
-import {
-  totalAttemptsAtom,
-  scoreDistributionAtom,
-  bestScoreAtom,
-} from '../store/daily';
-import Header from '../components/layout/Header';
-import HintList from '../components/quiz/HintList';
-import StudentReveal from '../components/quiz/StudentReveal';
-import StudentPortrait from '../components/quiz/StudentPortrait';
-import Button from '../components/common/Button';
-import Modal from '../components/common/Modal';
-import QuizLoadingState from '../components/quiz/QuizLoadingState';
-import QuizErrorState from '../components/quiz/QuizErrorState';
-import QuizPlayArea from '../components/quiz/QuizPlayArea';
-import { getPortraitState } from '../components/quiz/portraitUtils';
+} from "../quiz-core";
+import { allStudentsAtom, answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
+import { totalAttemptsAtom, scoreDistributionAtom, bestScoreAtom } from "../store/daily";
+import Header from "../components/layout/Header";
+import HintList from "../components/quiz/HintList";
+import StudentReveal from "../components/quiz/StudentReveal";
+import StudentPortrait from "../components/quiz/StudentPortrait";
+import Button from "../components/common/Button";
+import Modal from "../components/common/Modal";
+import QuizLoadingState from "../components/quiz/QuizLoadingState";
+import QuizErrorState from "../components/quiz/QuizErrorState";
+import QuizPlayArea from "../components/quiz/QuizPlayArea";
+import { getPortraitState } from "../components/quiz/portraitUtils";
 
 function DailyQuiz() {
   const {
@@ -48,7 +39,8 @@ function DailyQuiz() {
     giveUp,
   } = useQuiz();
 
-  const { getTodayResult, saveTodayResult, saveProgress, dailyProgress, clearProgress } = useDailyQuiz();
+  const { getTodayResult, saveTodayResult, saveProgress, dailyProgress, clearProgress } =
+    useDailyQuiz();
   const setAllStudents = useSetAtom(allStudentsAtom);
   const setAnswered = useSetAtom(answeredAtom);
   const setCorrect = useSetAtom(correctAtom);
@@ -93,7 +85,7 @@ function DailyQuiz() {
       const today = getDailyDate();
       if (dailyProgress && dailyProgress.date === today) {
         // 進行状態から復元
-        const student = students.find(s => s.id === dailyProgress.studentId);
+        const student = students.find((s) => s.id === dailyProgress.studentId);
         if (student) {
           const question = {
             student,
@@ -114,7 +106,17 @@ function DailyQuiz() {
     };
 
     initQuiz();
-  }, [loading, dailyProgress, getTodayResult, setAllStudents, setCurrentQuestion, setRevealedHintCount, setAnswered, setCorrect, setScore]);
+  }, [
+    loading,
+    dailyProgress,
+    getTodayResult,
+    setAllStudents,
+    setCurrentQuestion,
+    setRevealedHintCount,
+    setAnswered,
+    setCorrect,
+    setScore,
+  ]);
 
   useEffect(() => {
     // 進行状態を保存（ヒント開示時）
@@ -146,7 +148,15 @@ function DailyQuiz() {
 
       return () => clearTimeout(timer);
     }
-  }, [answered, currentQuestion, score, revealedHintCount, isAlreadyCompleted, saveTodayResult, clearProgress]);
+  }, [
+    answered,
+    currentQuestion,
+    score,
+    revealedHintCount,
+    isAlreadyCompleted,
+    saveTodayResult,
+    clearProgress,
+  ]);
 
   // クイズ開始時にヒントボタンにフォーカス
   useEffect(() => {
@@ -170,7 +180,7 @@ function DailyQuiz() {
           {/* 日付表示 */}
           <div className="shrink-0 text-center text-sm text-gray-600 py-3 sm:py-2">
             {(() => {
-              const [, month, day] = getDailyDate().split('-');
+              const [, month, day] = getDailyDate().split("-");
               return `${Number(month)}月${Number(day)}日のクイズ`;
             })()}
           </div>
@@ -191,10 +201,7 @@ function DailyQuiz() {
 
             {/* PC: ヒントのみ（2列グリッド） */}
             <div className="hidden md:block">
-              <HintList
-                hints={currentQuestion.hints}
-                revealedCount={revealedHintCount}
-              />
+              <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
             </div>
           </div>
 
@@ -210,12 +217,10 @@ function DailyQuiz() {
             {isAlreadyCompleted && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3 text-center">
                 <p className="text-blue-800 font-semibold mb-2">今日のクイズは完了済みです</p>
-                <p className="text-blue-600 text-sm mb-2">次の問題まで: {getTimeUntilNextReset()}</p>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => navigate('/regular')}
-                >
+                <p className="text-blue-600 text-sm mb-2">
+                  次の問題まで: {getTimeUntilNextReset()}
+                </p>
+                <Button variant="primary" size="sm" onClick={() => navigate("/regular")}>
                   もっと遊ぶ
                 </Button>
               </div>
@@ -245,27 +250,13 @@ function DailyQuiz() {
       </main>
 
       {/* 結果モーダル */}
-      <Modal
-        isOpen={showResultModal}
-        onClose={() => setShowResultModal(false)}
-        title="クイズ完了"
-      >
+      <Modal isOpen={showResultModal} onClose={() => setShowResultModal(false)} title="クイズ完了">
         <div className="text-center">
-          <div className="text-5xl font-bold text-blue-600 mb-2">
-            {getScoreRank(score)}
-          </div>
-          <div className="text-2xl font-bold text-gray-700 mb-4">
-            {score}点
-          </div>
-          <p className="text-gray-600 mb-4">
-            {correct ? '正解です！' : '不正解でした...'}
-          </p>
-          <p className="text-sm text-gray-500 mb-2">
-            使用ヒント数: {revealedHintCount}
-          </p>
-          <p className="text-sm text-gray-500 mb-6">
-            次の問題まで: {getTimeUntilNextReset()}
-          </p>
+          <div className="text-5xl font-bold text-blue-600 mb-2">{getScoreRank(score)}</div>
+          <div className="text-2xl font-bold text-gray-700 mb-4">{score}点</div>
+          <p className="text-gray-600 mb-4">{correct ? "正解です！" : "不正解でした..."}</p>
+          <p className="text-sm text-gray-500 mb-2">使用ヒント数: {revealedHintCount}</p>
+          <p className="text-sm text-gray-500 mb-6">次の問題まで: {getTimeUntilNextReset()}</p>
 
           {/* 統計情報 */}
           <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
@@ -314,11 +305,7 @@ function DailyQuiz() {
           </div>
 
           <div className="mt-6 space-y-2">
-            <Button
-              variant="primary"
-              className="w-full"
-              onClick={() => navigate('/regular')}
-            >
+            <Button variant="primary" className="w-full" onClick={() => navigate("/regular")}>
               もっと遊ぶ
             </Button>
             <Button

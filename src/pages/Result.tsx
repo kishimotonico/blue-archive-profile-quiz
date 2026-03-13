@@ -1,7 +1,7 @@
-import { useLocation, Link } from 'react-router-dom';
-import Header from '../components/layout/Header';
-import Button from '../components/common/Button';
-import { getMaxScore, getScoreRank } from '../quiz-core';
+import { useLocation, Link } from "react-router-dom";
+import Header from "../components/layout/Header";
+import Button from "../components/common/Button";
+import { getMaxScore, getScoreRank } from "../quiz-core";
 
 interface ResultState {
   totalScore: number;
@@ -45,12 +45,8 @@ function Result() {
           {/* 合計スコア */}
           <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
             <div className="text-center">
-              <div className="text-6xl font-bold text-blue-600 mb-4">
-                {totalScore}
-              </div>
-              <div className="text-xl text-gray-600 mb-2">
-                / {maxPossibleScore} 点
-              </div>
+              <div className="text-6xl font-bold text-blue-600 mb-4">{totalScore}</div>
+              <div className="text-xl text-gray-600 mb-2">/ {maxPossibleScore} 点</div>
               <div className="text-sm text-gray-500">
                 正解率: {((correctCount / totalQuestions) * 100).toFixed(1)}%
               </div>
@@ -69,9 +65,7 @@ function Result() {
               </div>
               <div>
                 <div className="text-sm text-gray-600">平均スコア</div>
-                <div className="text-2xl font-bold text-blue-600">
-                  {averageScore.toFixed(1)}
-                </div>
+                <div className="text-2xl font-bold text-blue-600">{averageScore.toFixed(1)}</div>
               </div>
             </div>
           </div>
@@ -84,9 +78,7 @@ function Result() {
                 <div
                   key={index}
                   className={`p-3 rounded text-center ${
-                    score > 0
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
+                    score > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                   }`}
                 >
                   <div className="text-xs text-gray-600">Q{index + 1}</div>

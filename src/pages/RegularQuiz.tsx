@@ -1,14 +1,14 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { useRegularQuiz } from '../hooks/useRegularQuiz';
-import Header from '../components/layout/Header';
-import HintList from '../components/quiz/HintList';
-import StudentReveal from '../components/quiz/StudentReveal';
-import StudentPortrait from '../components/quiz/StudentPortrait';
-import Button from '../components/common/Button';
-import QuizLoadingState from '../components/quiz/QuizLoadingState';
-import QuizErrorState from '../components/quiz/QuizErrorState';
-import QuizPlayArea from '../components/quiz/QuizPlayArea';
-import { getPortraitState } from '../components/quiz/portraitUtils';
+import { useEffect, useRef, useCallback } from "react";
+import { useRegularQuiz } from "../hooks/useRegularQuiz";
+import Header from "../components/layout/Header";
+import HintList from "../components/quiz/HintList";
+import StudentReveal from "../components/quiz/StudentReveal";
+import StudentPortrait from "../components/quiz/StudentPortrait";
+import Button from "../components/common/Button";
+import QuizLoadingState from "../components/quiz/QuizLoadingState";
+import QuizErrorState from "../components/quiz/QuizErrorState";
+import QuizPlayArea from "../components/quiz/QuizPlayArea";
+import { getPortraitState } from "../components/quiz/portraitUtils";
 
 function RegularQuiz() {
   const {
@@ -40,7 +40,7 @@ function RegularQuiz() {
   }, [loading, answered, currentQuestionIndex]);
 
   const handleNext = useCallback(() => {
-    scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" });
     goNext();
   }, [goNext]);
 
@@ -48,10 +48,14 @@ function RegularQuiz() {
   useEffect(() => {
     if (!answered) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); handleNext(); }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+        handleNext();
+      }
     };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [answered, handleNext]);
 
   if (loading) return <QuizLoadingState />;
@@ -87,10 +91,7 @@ function RegularQuiz() {
 
             {/* PC: ヒントのみ（2列グリッド） */}
             <div className="hidden md:block">
-              <HintList
-                hints={currentQuestion.hints}
-                revealedCount={revealedHintCount}
-              />
+              <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
             </div>
           </div>
 
@@ -99,9 +100,7 @@ function RegularQuiz() {
             <div className="py-3 flex flex-col items-center gap-3">
               <StudentReveal student={currentQuestion.student} correct={correct} score={score} />
               <Button onClick={handleNext} variant="primary">
-                {currentQuestionIndex + 1 < TOTAL_QUESTIONS
-                  ? '次の問題へ'
-                  : '結果を見る'}
+                {currentQuestionIndex + 1 < TOTAL_QUESTIONS ? "次の問題へ" : "結果を見る"}
               </Button>
             </div>
           )}

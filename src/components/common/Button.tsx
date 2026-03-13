@@ -1,25 +1,26 @@
-import { forwardRef, type ButtonHTMLAttributes } from 'react';
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'success' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "primary" | "secondary" | "success" | "danger";
+  size?: "sm" | "md" | "lg";
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', className = '', children, ...props }, ref) => {
-    const baseClasses = 'font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+  ({ variant = "primary", size = "md", className = "", children, ...props }, ref) => {
+    const baseClasses =
+      "font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
     const variantClasses = {
-      primary: 'bg-blue-500 hover:bg-blue-600 text-white',
-      secondary: 'bg-gray-500 hover:bg-gray-600 text-white',
-      success: 'bg-green-500 hover:bg-green-600 text-white',
-      danger: 'bg-red-500 hover:bg-red-600 text-white',
+      primary: "bg-blue-500 hover:bg-blue-600 text-white",
+      secondary: "bg-gray-500 hover:bg-gray-600 text-white",
+      success: "bg-green-500 hover:bg-green-600 text-white",
+      danger: "bg-red-500 hover:bg-red-600 text-white",
     };
 
     const sizeClasses = {
-      sm: 'py-2 px-4 text-sm',
-      md: 'py-3 px-6 text-base',
-      lg: 'py-4 px-8 text-lg',
+      sm: "py-2 px-4 text-sm",
+      md: "py-3 px-6 text-base",
+      lg: "py-4 px-8 text-lg",
     };
 
     const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
@@ -29,9 +30,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </button>
     );
-  }
+  },
 );
 
-Button.displayName = 'Button';
+Button.displayName = "Button";
 
 export default Button;

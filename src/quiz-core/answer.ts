@@ -1,12 +1,12 @@
-import type { Student } from './types';
+import type { Student } from "./types";
 
 /**
  * 回答結果の型
  */
 export type AnswerResult =
-  | { type: 'correct' }
-  | { type: 'wrong_student'; answeredStudent: Student }
-  | { type: 'unknown' };
+  | { type: "correct" }
+  | { type: "wrong_student"; answeredStudent: Student }
+  | { type: "unknown" };
 
 /**
  * ひらがなをカタカナに変換
@@ -23,7 +23,7 @@ export function hiraganaToKatakana(str: string): string {
  */
 export function normalizeAnswer(answer: string): string {
   return hiraganaToKatakana(answer)
-    .replace(/\s+/g, '') // 空白を除去
+    .replace(/\s+/g, "") // 空白を除去
     .toLowerCase();
 }
 
@@ -65,23 +65,21 @@ export function getAnswerVariants(student: Student): string[] {
 export function validateAnswer(
   answer: string,
   correctStudent: Student,
-  allStudents: Student[]
+  allStudents: Student[],
 ): AnswerResult {
   // 正解判定
   if (checkAnswer(answer, correctStudent)) {
-    return { type: 'correct' };
+    return { type: "correct" };
   }
 
   // 全生徒から該当する生徒を検索
-  const matchedStudent = allStudents.find((student) =>
-    checkAnswer(answer, student)
-  );
+  const matchedStudent = allStudents.find((student) => checkAnswer(answer, student));
 
   if (matchedStudent) {
     // 存在する生徒だが、正解ではない
-    return { type: 'wrong_student', answeredStudent: matchedStudent };
+    return { type: "wrong_student", answeredStudent: matchedStudent };
   } else {
     // 該当する生徒が存在しない
-    return { type: 'unknown' };
+    return { type: "unknown" };
   }
 }

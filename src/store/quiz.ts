@@ -1,5 +1,5 @@
-import { atom } from 'jotai';
-import type { QuizQuestion, Student } from '../quiz-core';
+import { atom } from "jotai";
+import type { QuizQuestion, Student } from "../quiz-core";
 
 /**
  * 全生徒リスト
@@ -30,5 +30,3 @@ export const correctAtom = atom(false);
  * 現在のスコア（1ヒントで正解時の点数）
  */
 export const scoreAtom = atom(10);
-
-

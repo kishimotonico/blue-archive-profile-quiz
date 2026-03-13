@@ -3,8 +3,8 @@
  * 4:00 JST で日付が切り替わる
  */
 
-import { getRandomStudent } from './students';
-import { createQuizQuestion } from './hints';
+import { getRandomStudent } from "./students";
+import { createQuizQuestion } from "./hints";
 
 /**
  * クイズ日付のオフセット（UTC+5 = JST 4:00基準）
@@ -24,8 +24,8 @@ export function getDailyDate(): string {
 
   // YYYY-MM-DD形式で返す
   const year = quizDayTime.getUTCFullYear();
-  const month = String(quizDayTime.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(quizDayTime.getUTCDate()).padStart(2, '0');
+  const month = String(quizDayTime.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(quizDayTime.getUTCDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
 }
@@ -35,7 +35,7 @@ export function getDailyDate(): string {
  */
 export function dateToSeed(date: string): number {
   // YYYY-MM-DD を数値に変換
-  const [year, month, day] = date.split('-').map(Number);
+  const [year, month, day] = date.split("-").map(Number);
   // 日付を一意の数値に変換
   return year * 10000 + month * 100 + day;
 }
@@ -58,12 +58,17 @@ export function getNextDailyResetTime(): Date {
   const quizDayTime = new Date(now.getTime() + QUIZ_DAY_OFFSET_MS);
 
   // UTC+5での次の0:00（= JST 4:00）を計算
-  const nextReset = new Date(Date.UTC(
-    quizDayTime.getUTCFullYear(),
-    quizDayTime.getUTCMonth(),
-    quizDayTime.getUTCDate() + 1,
-    0, 0, 0, 0
-  ));
+  const nextReset = new Date(
+    Date.UTC(
+      quizDayTime.getUTCFullYear(),
+      quizDayTime.getUTCMonth(),
+      quizDayTime.getUTCDate() + 1,
+      0,
+      0,
+      0,
+      0,
+    ),
+  );
 
   // UTC時刻に変換して返す
   return new Date(nextReset.getTime() - QUIZ_DAY_OFFSET_MS);

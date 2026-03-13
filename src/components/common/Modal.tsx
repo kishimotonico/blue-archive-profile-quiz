@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,16 +13,11 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* オーバーレイ */}
-      <div
-        className="absolute inset-0 bg-black bg-opacity-50"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
 
       {/* モーダルコンテンツ */}
       <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-        {title && (
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
-        )}
+        {title && <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>}
 
         <div className="mb-4">{children}</div>
 
@@ -30,12 +25,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

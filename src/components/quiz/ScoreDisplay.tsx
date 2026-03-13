@@ -1,4 +1,4 @@
-import { getMaxScore } from '../../quiz-core';
+import { getMaxScore } from "../../quiz-core";
 
 interface ScoreDisplayProps {
   score: number;

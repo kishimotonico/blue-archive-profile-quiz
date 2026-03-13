@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai';
-import { useCallback, useState } from 'react';
+import { useAtom } from "jotai";
+import { useCallback, useState } from "react";
 import {
   currentQuestionAtom,
   revealedHintCountAtom,
@@ -7,8 +7,8 @@ import {
   correctAtom,
   scoreAtom,
   allStudentsAtom,
-} from '../store/quiz';
-import { validateAnswer, calculateScore } from '../quiz-core';
+} from "../store/quiz";
+import { validateAnswer, calculateScore } from "../quiz-core";
 
 export function useQuiz() {
   const [currentQuestion, setCurrentQuestion] = useAtom(currentQuestionAtom);
@@ -41,14 +41,14 @@ export function useQuiz() {
 
       const result = validateAnswer(answer, currentQuestion.student, allStudents);
 
-      if (result.type === 'correct') {
+      if (result.type === "correct") {
         // 正解
         const calculatedScore = calculateScore(revealedHintCount, true);
         setCorrect(true);
         setScore(calculatedScore);
         setAnswered(true);
         setAnswerFeedback(null);
-      } else if (result.type === 'wrong_student') {
+      } else if (result.type === "wrong_student") {
         // 存在する生徒だが間違い → 0点で終了
         setCorrect(false);
         setScore(0);
@@ -56,11 +56,11 @@ export function useQuiz() {
         setAnswerFeedback(null);
       } else {
         // 該当する生徒が存在しない → 続行可能
-        setAnswerFeedback('該当する生徒が見つかりません');
+        setAnswerFeedback("該当する生徒が見つかりません");
         setErrorKey((prev) => prev + 1);
       }
     },
-    [currentQuestion, answered, revealedHintCount, allStudents, setCorrect, setScore, setAnswered]
+    [currentQuestion, answered, revealedHintCount, allStudents, setCorrect, setScore, setAnswered],
   );
 
   /**

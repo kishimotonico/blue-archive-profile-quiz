@@ -1,5 +1,5 @@
-import type { Student } from './types';
-import { seededRandom, shuffle } from './random';
+import type { Student } from "./types";
+import { seededRandom, shuffle } from "./random";
 
 let studentsCache: Student[] | null = null;
 
@@ -12,7 +12,7 @@ export async function loadStudents(): Promise<Student[]> {
   }
 
   const response = await fetch(`${import.meta.env.BASE_URL}data/students.json`);
-  const data = await response.json() as Record<string, Student>;
+  const data = (await response.json()) as Record<string, Student>;
 
   studentsCache = Object.values(data);
   return studentsCache;
@@ -37,7 +37,7 @@ export function extractFamilyName(fullName: string): string {
  */
 export async function getStudentById(id: string): Promise<Student | undefined> {
   const students = await loadStudents();
-  return students.find(s => s.id === id);
+  return students.find((s) => s.id === id);
 }
 
 /**

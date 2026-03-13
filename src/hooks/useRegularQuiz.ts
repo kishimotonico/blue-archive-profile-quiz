@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSetAtom } from 'jotai';
-import { useQuiz } from './useQuiz';
-import { getRandomStudents, createQuizQuestion, loadStudents } from '../quiz-core';
-import { allStudentsAtom } from '../store/quiz';
-import type { Student } from '../quiz-core';
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSetAtom } from "jotai";
+import { useQuiz } from "./useQuiz";
+import { getRandomStudents, createQuizQuestion, loadStudents } from "../quiz-core";
+import { allStudentsAtom } from "../store/quiz";
+import type { Student } from "../quiz-core";
 
 const TOTAL_QUESTIONS = 10;
 
@@ -39,7 +39,10 @@ export function useRegularQuiz() {
       setLoading(false);
     };
     initQuiz();
-    return () => { cancelled = true; resetQuiz(); };
+    return () => {
+      cancelled = true;
+      resetQuiz();
+    };
   }, [setCurrentQuestion, resetQuiz, setAllStudents]);
 
   // スコアを追加して次の問題へ、または結果画面へ
@@ -54,7 +57,7 @@ export function useRegularQuiz() {
       resetQuiz();
       setCurrentQuestion(createQuizQuestion(students[nextIndex]));
     } else {
-      navigate('/result', {
+      navigate("/result", {
         state: {
           totalScore: newScores.reduce((sum, s) => sum + s, 0),
           scores: newScores,
@@ -62,7 +65,16 @@ export function useRegularQuiz() {
         },
       });
     }
-  }, [answered, scores, score, currentQuestionIndex, students, resetQuiz, setCurrentQuestion, navigate]);
+  }, [
+    answered,
+    scores,
+    score,
+    currentQuestionIndex,
+    students,
+    resetQuiz,
+    setCurrentQuestion,
+    navigate,
+  ]);
 
   return {
     ...quiz,

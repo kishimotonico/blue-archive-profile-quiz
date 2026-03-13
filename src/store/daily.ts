@@ -1,6 +1,6 @@
-import { atom } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
-import type { Hint } from '../quiz-core/types';
+import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
+import type { Hint } from "../quiz-core/types";
 
 /**
  * 日替わりクイズの結果を保存する型
@@ -20,23 +20,23 @@ export interface DailyProgress {
   date: string;
   studentId: string;
   revealedHintCount: number;
-  hints: Hint[];  // シャッフル順を復元用
+  hints: Hint[]; // シャッフル順を復元用
 }
 
 /**
  * 日替わりクイズの結果履歴（ローカルストレージに永続化）
  */
 export const dailyResultsAtom = atomWithStorage<DailyResult[]>(
-  'blue-archive-quiz-daily-results',
-  []
+  "blue-archive-quiz-daily-results",
+  [],
 );
 
 /**
  * 日替わりクイズの進行状態（ローカルストレージに永続化）
  */
 export const dailyProgressAtom = atomWithStorage<DailyProgress | null>(
-  'blue-archive-quiz-daily-progress',
-  null
+  "blue-archive-quiz-daily-progress",
+  null,
 );
 
 /**
@@ -50,12 +50,12 @@ export const totalAttemptsAtom = atom((get) => get(dailyResultsAtom).length);
 export const scoreDistributionAtom = atom((get) => {
   const results = get(dailyResultsAtom);
   return {
-    zero: results.filter(r => r.score === 0).length,
-    low: results.filter(r => r.score >= 1 && r.score <= 3).length,
-    medium: results.filter(r => r.score >= 4 && r.score <= 5).length,
-    high: results.filter(r => r.score >= 6 && r.score <= 7).length,
-    veryHigh: results.filter(r => r.score >= 8 && r.score <= 9).length,
-    perfect: results.filter(r => r.score === 10).length,
+    zero: results.filter((r) => r.score === 0).length,
+    low: results.filter((r) => r.score >= 1 && r.score <= 3).length,
+    medium: results.filter((r) => r.score >= 4 && r.score <= 5).length,
+    high: results.filter((r) => r.score >= 6 && r.score <= 7).length,
+    veryHigh: results.filter((r) => r.score >= 8 && r.score <= 9).length,
+    perfect: results.filter((r) => r.score === 10).length,
   };
 });
 
@@ -63,5 +63,5 @@ export const scoreDistributionAtom = atom((get) => {
  * ベストスコア
  */
 export const bestScoreAtom = atom((get) =>
-  Math.max(0, ...get(dailyResultsAtom).map(r => r.score))
+  Math.max(0, ...get(dailyResultsAtom).map((r) => r.score)),
 );

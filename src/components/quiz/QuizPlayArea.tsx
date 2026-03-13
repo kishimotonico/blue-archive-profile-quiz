@@ -1,6 +1,6 @@
-import { type RefObject } from 'react';
-import Button from '../common/Button';
-import AnswerInput from './AnswerInput';
+import { type RefObject } from "react";
+import Button from "../common/Button";
+import AnswerInput from "./AnswerInput";
 
 interface QuizPlayAreaProps {
   hintButtonRef: RefObject<HTMLButtonElement | null>;

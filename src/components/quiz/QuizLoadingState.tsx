@@ -1,4 +1,4 @@
-import Header from '../layout/Header';
+import Header from "../layout/Header";
 
 function QuizLoadingState() {
   return (

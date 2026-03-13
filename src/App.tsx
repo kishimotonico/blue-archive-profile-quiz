@@ -1,7 +1,7 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import DailyQuiz from './pages/DailyQuiz';
-import RegularQuiz from './pages/RegularQuiz';
-import Result from './pages/Result';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DailyQuiz from "./pages/DailyQuiz";
+import RegularQuiz from "./pages/RegularQuiz";
+import Result from "./pages/Result";
 
 function App() {
   return (
@@ -15,4 +15,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

@@ -1,22 +1,22 @@
-import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 
 function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
   return (
     <div className="w-6 h-6 flex flex-col justify-center items-center gap-1.5">
       <span
         className={`block w-5 h-0.5 bg-blue-600 transition-all duration-300 ${
-          isOpen ? 'rotate-45 translate-y-2' : ''
+          isOpen ? "rotate-45 translate-y-2" : ""
         }`}
       />
       <span
         className={`block w-5 h-0.5 bg-blue-600 transition-all duration-300 ${
-          isOpen ? 'opacity-0' : ''
+          isOpen ? "opacity-0" : ""
         }`}
       />
       <span
         className={`block w-5 h-0.5 bg-blue-600 transition-all duration-300 ${
-          isOpen ? '-rotate-45 -translate-y-2' : ''
+          isOpen ? "-rotate-45 -translate-y-2" : ""
         }`}
       />
     </div>
@@ -41,13 +41,13 @@ function Header() {
   // Escapeキーでメニューを閉じる
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMenuOpen) {
+      if (e.key === "Escape" && isMenuOpen) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [isMenuOpen]);
 
   return (
@@ -63,14 +63,14 @@ function Header() {
           <Link
             to="/"
             className="text-sm px-3 py-1 rounded hover:bg-white/20 transition-colors"
-            aria-current={location.pathname === '/' ? 'page' : undefined}
+            aria-current={location.pathname === "/" ? "page" : undefined}
           >
             日替わり
           </Link>
           <Link
             to="/regular"
             className="text-sm px-3 py-1 rounded hover:bg-white/20 transition-colors"
-            aria-current={location.pathname === '/regular' ? 'page' : undefined}
+            aria-current={location.pathname === "/regular" ? "page" : undefined}
           >
             フリープレイ
           </Link>
@@ -102,7 +102,7 @@ function Header() {
         ref={menuRef}
         id="mobile-menu"
         className={`sm:hidden fixed top-0 right-0 h-full w-64 bg-gradient-to-b from-blue-600 to-blue-500 text-white shadow-2xl z-50 transition-transform duration-300 ${
-          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* 閉じるボタン */}
@@ -112,7 +112,12 @@ function Header() {
           aria-label="メニューを閉じる"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
@@ -126,14 +131,14 @@ function Header() {
           <Link
             to="/"
             className="px-6 py-4 hover:bg-white/20 transition-colors border-t border-white/10 text-base"
-            aria-current={location.pathname === '/' ? 'page' : undefined}
+            aria-current={location.pathname === "/" ? "page" : undefined}
           >
             日替わりクイズ
           </Link>
           <Link
             to="/regular"
             className="px-6 py-4 hover:bg-white/20 transition-colors border-t border-white/10 text-base"
-            aria-current={location.pathname === '/regular' ? 'page' : undefined}
+            aria-current={location.pathname === "/regular" ? "page" : undefined}
           >
             フリープレイ
           </Link>

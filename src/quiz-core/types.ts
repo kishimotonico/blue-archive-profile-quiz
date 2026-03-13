@@ -1,9 +1,9 @@
 export interface Student {
   id: string;
-  fullName: string;       // 陸八魔アル
-  name: string;           // アル
+  fullName: string; // 陸八魔アル
+  name: string; // アル
   school: string;
-  grade: string;          // 2年生
+  grade: string; // 2年生
   club: string;
   age: string;
   birthday: string;
@@ -21,28 +21,28 @@ export interface Student {
 }
 
 export type HintType =
-  | 'school'
-  | 'club'
-  | 'age'
-  | 'birthday'
-  | 'height'
-  | 'hobby'
-  | 'weaponName'
-  | 'cv'
-  | 'familyName';
+  | "school"
+  | "club"
+  | "age"
+  | "birthday"
+  | "height"
+  | "hobby"
+  | "weaponName"
+  | "cv"
+  | "familyName";
 
 export interface Hint {
   type: HintType;
-  label: string;          // 表示用ラベル
-  value: string;          // ヒント値
+  label: string; // 表示用ラベル
+  value: string; // ヒント値
 }
 
 export interface QuizQuestion {
   student: Student;
-  hints: Hint[];          // シャッフル済み
+  hints: Hint[]; // シャッフル済み
 }
 
-export type PortraitState = 'hidden' | 'silhouette' | 'revealed';
+export type PortraitState = "hidden" | "silhouette" | "revealed";
 
 export interface QuizState {
   question: QuizQuestion;

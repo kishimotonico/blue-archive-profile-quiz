@@ -1,12 +1,12 @@
-import { useAtom } from 'jotai';
-import { useCallback } from 'react';
+import { useAtom } from "jotai";
+import { useCallback } from "react";
 import {
   dailyResultsAtom,
   dailyProgressAtom,
   type DailyResult,
   type DailyProgress,
-} from '../store/daily';
-import { getDailyDate } from '../quiz-core';
+} from "../store/daily";
+import { getDailyDate } from "../quiz-core";
 
 export function useDailyQuiz() {
   const [dailyResults, setDailyResults] = useAtom(dailyResultsAtom);
@@ -16,7 +16,7 @@ export function useDailyQuiz() {
    * 今日の結果を保存
    */
   const saveTodayResult = useCallback(
-    (result: Omit<DailyResult, 'date' | 'timestamp'>) => {
+    (result: Omit<DailyResult, "date" | "timestamp">) => {
       const today = getDailyDate();
       const newResult: DailyResult = {
         ...result,
@@ -30,7 +30,7 @@ export function useDailyQuiz() {
         return [...filtered, newResult];
       });
     },
-    [setDailyResults]
+    [setDailyResults],
   );
 
   /**
@@ -45,14 +45,14 @@ export function useDailyQuiz() {
    * 進行状態を保存
    */
   const saveProgress = useCallback(
-    (progress: Omit<DailyProgress, 'date'>) => {
+    (progress: Omit<DailyProgress, "date">) => {
       const today = getDailyDate();
       setDailyProgress({
         ...progress,
         date: today,
       });
     },
-    [setDailyProgress]
+    [setDailyProgress],
   );
 
   /**

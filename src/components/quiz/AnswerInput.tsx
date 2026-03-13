@@ -1,6 +1,6 @@
-import { useState, useEffect, type FormEvent } from 'react';
-import { motion, useAnimationControls } from 'motion/react';
-import Button from '../common/Button';
+import { useState, useEffect, type FormEvent } from "react";
+import { motion, useAnimationControls } from "motion/react";
+import Button from "../common/Button";
 
 interface AnswerInputProps {
   onSubmit: (answer: string) => void;
@@ -10,7 +10,7 @@ interface AnswerInputProps {
 }
 
 function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInputProps) {
-  const [answer, setAnswer] = useState('');
+  const [answer, setAnswer] = useState("");
   const [showError, setShowError] = useState(false);
   const controls = useAnimationControls();
 
@@ -26,16 +26,16 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
     e.preventDefault();
     if (answer.trim()) {
       onSubmit(answer.trim());
-      setAnswer('');
+      setAnswer("");
     }
   };
 
   const inputClass = [
-    'flex-1 min-w-0 px-4 py-3 border-2 rounded-lg focus:outline-none disabled:bg-gray-100 text-center transition-colors duration-200',
+    "flex-1 min-w-0 px-4 py-3 border-2 rounded-lg focus:outline-none disabled:bg-gray-100 text-center transition-colors duration-200",
     showError
-      ? 'border-red-500 bg-red-50 focus:border-red-600'
-      : 'border-gray-300 focus:border-blue-500',
-  ].join(' ');
+      ? "border-red-500 bg-red-50 focus:border-red-600"
+      : "border-gray-300 focus:border-blue-500",
+  ].join(" ");
 
   return (
     <div className="relative w-full">

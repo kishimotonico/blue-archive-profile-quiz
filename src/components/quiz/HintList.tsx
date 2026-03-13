@@ -1,8 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
-import type { Hint, Student } from '../../quiz-core';
+import type { Hint, Student, PortraitState } from '../../quiz-core';
 import HintCard from './HintCard';
-
-type PortraitState = 'hidden' | 'silhouette' | 'revealed';
 
 interface HintListProps {
   hints: Hint[];

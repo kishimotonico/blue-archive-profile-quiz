@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useQuiz } from '../hooks/useQuiz';
 import { useDailyQuiz } from '../hooks/useDailyQuiz';
 import {
@@ -45,10 +45,10 @@ function DailyQuiz() {
   } = useQuiz();
 
   const { getTodayResult, saveTodayResult, saveProgress, dailyProgress, clearProgress } = useDailyQuiz();
-  const [, setAllStudents] = useAtom(allStudentsAtom);
-  const [, setAnswered] = useAtom(answeredAtom);
-  const [, setCorrect] = useAtom(correctAtom);
-  const [, setScore] = useAtom(scoreAtom);
+  const setAllStudents = useSetAtom(allStudentsAtom);
+  const setAnswered = useSetAtom(answeredAtom);
+  const setCorrect = useSetAtom(correctAtom);
+  const setScore = useSetAtom(scoreAtom);
   const [totalAttempts] = useAtom(totalAttemptsAtom);
   const [scoreDistribution] = useAtom(scoreDistributionAtom);
   const [bestScore] = useAtom(bestScoreAtom);

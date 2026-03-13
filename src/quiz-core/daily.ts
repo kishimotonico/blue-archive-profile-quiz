@@ -49,13 +49,6 @@ export function getDailySeed(): number {
 }
 
 /**
- * 特定の日付の日替わりクイズ用のシードを取得
- */
-export function getSeedForDate(date: string): number {
-  return dateToSeed(date);
-}
-
-/**
  * 次の4:00 JSTまでの時刻を取得
  */
 export function getNextDailyResetTime(): Date {
@@ -99,7 +92,7 @@ export function getTimeUntilNextReset(): string {
  * @param date 日付文字列（省略時は今日）
  */
 export async function createDailyQuestion(date?: string) {
-  const seed = date ? getSeedForDate(date) : getDailySeed();
+  const seed = date ? dateToSeed(date) : getDailySeed();
   const student = await getRandomStudent(seed);
   return createQuizQuestion(student, seed);
 }

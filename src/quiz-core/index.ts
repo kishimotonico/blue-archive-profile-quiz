@@ -5,6 +5,7 @@ export type {
   Hint,
   QuizQuestion,
   QuizState,
+  PortraitState,
 } from './types';
 
 // 生徒データ

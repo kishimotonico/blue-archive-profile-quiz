@@ -42,6 +42,8 @@ export interface QuizQuestion {
   hints: Hint[];          // シャッフル済み
 }
 
+export type PortraitState = 'hidden' | 'silhouette' | 'revealed';
+
 export interface QuizState {
   question: QuizQuestion;
   revealedHintCount: number;

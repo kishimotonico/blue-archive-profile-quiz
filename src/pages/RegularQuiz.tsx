@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { useQuiz } from '../hooks/useQuiz';
 import { getRandomStudents, createQuizQuestion, loadStudents, type Student } from '../quiz-core';
 import { allStudentsAtom } from '../store/quiz';
@@ -28,7 +28,7 @@ function RegularQuiz() {
     resetQuiz,
   } = useQuiz();
 
-  const [, setAllStudents] = useAtom(allStudentsAtom);
+  const setAllStudents = useSetAtom(allStudentsAtom);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
@@ -107,7 +107,6 @@ function RegularQuiz() {
 
       // 次の問題へ
       const question = createQuizQuestion(students[nextIndex]);
-      setCurrentQuestion(question);
       setCurrentQuestionIndex(nextIndex);
       resetQuiz();
       setCurrentQuestion(question);

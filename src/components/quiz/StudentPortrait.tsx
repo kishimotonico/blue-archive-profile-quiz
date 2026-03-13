@@ -1,6 +1,4 @@
-import type { Student } from '../../quiz-core';
-
-type PortraitState = 'hidden' | 'silhouette' | 'revealed';
+import type { Student, PortraitState } from '../../quiz-core';
 
 interface StudentPortraitProps {
   student: Student | null;

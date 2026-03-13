@@ -25,6 +25,7 @@ function RegularQuiz() {
     correct,
     score,
     answerFeedback,
+    errorKey,
     revealNextHint,
     submitAnswer,
     giveUp,
@@ -187,6 +188,7 @@ function RegularQuiz() {
               submitAnswer={submitAnswer}
               giveUp={giveUp}
               answerFeedback={answerFeedback}
+              errorKey={errorKey}
               answered={answered}
             />
           </div>

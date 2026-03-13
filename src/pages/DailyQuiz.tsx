@@ -42,6 +42,7 @@ function DailyQuiz() {
     correct,
     score,
     answerFeedback,
+    errorKey,
     revealNextHint,
     submitAnswer,
     giveUp,
@@ -227,6 +228,7 @@ function DailyQuiz() {
               submitAnswer={submitAnswer}
               giveUp={giveUp}
               answerFeedback={answerFeedback}
+              errorKey={errorKey}
               answered={answered}
             />
           </div>

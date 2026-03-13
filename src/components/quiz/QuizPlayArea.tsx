@@ -10,6 +10,7 @@ interface QuizPlayAreaProps {
   submitAnswer: (answer: string) => void;
   giveUp: () => void;
   answerFeedback: string | null;
+  errorKey: number;
   answered: boolean;
 }
 
@@ -21,6 +22,7 @@ function QuizPlayArea({
   submitAnswer,
   giveUp,
   answerFeedback,
+  errorKey,
   answered,
 }: QuizPlayAreaProps) {
   if (answered) return null;
@@ -41,11 +43,7 @@ function QuizPlayArea({
         </Button>
       )}
 
-      <AnswerInput onSubmit={submitAnswer} />
-
-      {answerFeedback && (
-        <p className="text-red-500 text-sm font-semibold text-center">{answerFeedback}</p>
-      )}
+      <AnswerInput onSubmit={submitAnswer} error={answerFeedback} errorKey={errorKey} />
     </div>
   );
 }

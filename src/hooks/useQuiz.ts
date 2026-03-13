@@ -18,6 +18,7 @@ export function useQuiz() {
   const [score, setScore] = useAtom(scoreAtom);
   const [allStudents] = useAtom(allStudentsAtom);
   const [answerFeedback, setAnswerFeedback] = useState<string | null>(null);
+  const [errorKey, setErrorKey] = useState(0);
 
   /**
    * 次のヒントを開示
@@ -56,6 +57,7 @@ export function useQuiz() {
       } else {
         // 該当する生徒が存在しない → 続行可能
         setAnswerFeedback('該当する生徒が見つかりません');
+        setErrorKey((prev) => prev + 1);
       }
     },
     [currentQuestion, answered, revealedHintCount, allStudents, setCorrect, setScore, setAnswered]
@@ -84,6 +86,7 @@ export function useQuiz() {
     setCorrect(false);
     setScore(10); // 初期スコア（1ヒントで正解時の点数）
     setAnswerFeedback(null);
+    setErrorKey(0);
   }, [setCurrentQuestion, setRevealedHintCount, setAnswered, setCorrect, setScore]);
 
   return {
@@ -95,6 +98,7 @@ export function useQuiz() {
     correct,
     score,
     answerFeedback,
+    errorKey,
     revealNextHint,
     submitAnswer,
     giveUp,

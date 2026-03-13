@@ -1,4 +1,5 @@
 import type { Student } from './types';
+import { seededRandom, shuffle } from './random';
 
 let studentsCache: Student[] | null = null;
 
@@ -62,19 +63,7 @@ export async function getRandomStudents(count: number, seed?: number): Promise<S
   const students = await loadStudents();
   const shuffled = [...students];
 
-  if (seed !== undefined) {
-    // シードベースのシャッフル（簡易版）
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = (seed * (i + 1)) % (i + 1);
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-  } else {
-    // Fisher-Yates shuffle
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-  }
+  shuffle(shuffled, seed !== undefined ? seededRandom(seed) : Math.random);
 
   return shuffled.slice(0, count);
 }

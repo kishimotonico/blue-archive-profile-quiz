@@ -1,5 +1,6 @@
 import type { Student, Hint, HintType, QuizQuestion } from './types';
 import { extractFamilyName } from './students';
+import { seededRandom, shuffle } from './random';
 
 /**
  * ヒントタイプごとのラベル定義
@@ -36,38 +37,10 @@ export function generateHints(student: Student): Hint[] {
 }
 
 /**
- * シンプルなシード付き乱数生成器
- */
-function seededRandom(seed: number): () => number {
-  let state = seed;
-  return () => {
-    state = (state * 1103515245 + 12345) & 0x7fffffff;
-    return state / 0x7fffffff;
-  };
-}
-
-/**
  * ヒント配列をシャッフル
  */
-export function shuffleHints(hints: Hint[], seed?: number): Hint[] {
-  const shuffled = [...hints];
-
-  if (seed !== undefined) {
-    // シードベースのシャッフル
-    const random = seededRandom(seed);
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-  } else {
-    // Fisher-Yates shuffle
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-  }
-
-  return shuffled;
+function shuffleHints(hints: Hint[], seed?: number): Hint[] {
+  return shuffle([...hints], seed !== undefined ? seededRandom(seed) : Math.random);
 }
 
 /**

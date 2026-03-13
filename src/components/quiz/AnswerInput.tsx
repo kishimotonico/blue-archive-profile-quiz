@@ -51,6 +51,9 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
             placeholder="生徒名を入力"
             disabled={disabled}
             autoComplete="off"
+            data-1p-ignore
+            data-lpignore="true"
+            data-form-type="other"
             className={inputClass}
           />
           <Button type="submit" disabled={disabled || !answer.trim()}>

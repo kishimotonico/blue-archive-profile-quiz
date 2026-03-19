@@ -84,7 +84,7 @@ function HintList({
             ))}
           </div>
           {peekHints.length >= 2 && (
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-slate-50 to-85%" />
+            <div className="absolute inset-0 bg-linear-to-b from-transparent from-40% to-slate-50 to-85%" />
           )}
           {remaining >= 2 && (
             <div className="absolute bottom-0 left-0 right-0 text-center text-xs text-gray-400 pb-1">
@@ -96,7 +96,7 @@ function HintList({
       {showPortraitInGrid && (
         <div
           ref={portraitRef}
-          className="w-full h-[60vh] flex items-center justify-center bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 relative overflow-hidden"
+          className="w-full h-[60vh] flex items-center justify-center bg-linear-to-b from-gray-100 to-gray-200 rounded-lg border-2 border-dashed border-gray-300 relative overflow-hidden"
         >
           <span
             className={`absolute inset-0 flex items-center justify-center text-5xl text-gray-400 font-light transition-opacity duration-500 ${

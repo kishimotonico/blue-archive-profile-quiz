@@ -17,7 +17,7 @@ function StudentPortrait({ student, state, variant = "default" }: StudentPortrai
     >
       {/* ?マーク（hidden時に表示） */}
       <div
-        className={`absolute inset-0 bg-gradient-to-b from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-300 transition-opacity duration-500 ${
+        className={`absolute inset-0 bg-linear-to-b from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-300 transition-opacity duration-500 ${
           state === "hidden" ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >

@@ -31,7 +31,7 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
   };
 
   const inputClass = [
-    "flex-1 min-w-0 px-4 py-3 border-2 rounded-lg focus:outline-none disabled:bg-gray-100 text-center transition-colors duration-200",
+    "flex-1 min-w-0 px-4 py-3 border-2 rounded-lg focus:outline-hidden disabled:bg-gray-100 text-center transition-colors duration-200",
     showError
       ? "border-red-500 bg-red-50 focus:border-red-600"
       : "border-gray-300 focus:border-blue-500",
@@ -67,7 +67,7 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
           className="absolute left-0 bottom-full mb-2 z-10 max-w-xs cursor-pointer"
           onClick={() => setShowError(false)}
         >
-          <div className="bg-red-50 border border-red-300 text-red-600 text-xs font-semibold rounded-lg px-3 py-1.5 shadow-sm whitespace-nowrap">
+          <div className="bg-red-50 border border-red-300 text-red-600 text-xs font-semibold rounded-lg px-3 py-1.5 shadow-xs whitespace-nowrap">
             {error}
           </div>
           {/* 吹き出し三角形（下向き） */}

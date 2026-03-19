@@ -53,7 +53,7 @@ function Header() {
   return (
     <>
       {/* デスクトップヘッダー（640px以上） */}
-      <header className="hidden sm:flex bg-gradient-to-r from-blue-600 to-blue-500 text-white h-12 items-center px-4 shadow-sm relative z-50">
+      <header className="hidden sm:flex bg-linear-to-r from-blue-600 to-blue-500 text-white h-12 items-center px-4 shadow-xs relative z-50">
         <Link to="/" className="text-lg font-bold hover:opacity-90 transition-opacity">
           ブルアカプロフクイズ
         </Link>
@@ -62,14 +62,14 @@ function Header() {
         <nav className="ml-auto flex gap-2">
           <Link
             to="/"
-            className="text-sm px-3 py-1 rounded hover:bg-white/20 transition-colors"
+            className="text-sm px-3 py-1 rounded-sm hover:bg-white/20 transition-colors"
             aria-current={location.pathname === "/" ? "page" : undefined}
           >
             日替わり
           </Link>
           <Link
             to="/regular"
-            className="text-sm px-3 py-1 rounded hover:bg-white/20 transition-colors"
+            className="text-sm px-3 py-1 rounded-sm hover:bg-white/20 transition-colors"
             aria-current={location.pathname === "/regular" ? "page" : undefined}
           >
             フリープレイ
@@ -79,7 +79,7 @@ function Header() {
 
       {/* モバイルハンバーガーボタン（640px未満、固定配置） */}
       <button
-        className="sm:hidden fixed top-3 right-3 z-50 w-11 h-11 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-lg shadow-lg hover:bg-white transition-colors"
+        className="sm:hidden fixed top-3 right-3 z-50 w-11 h-11 flex items-center justify-center bg-white/90 backdrop-blur-xs rounded-lg shadow-lg hover:bg-white transition-colors"
         onClick={toggleMenu}
         aria-label="メニュー"
         aria-expanded={isMenuOpen}
@@ -101,7 +101,7 @@ function Header() {
       <div
         ref={menuRef}
         id="mobile-menu"
-        className={`sm:hidden fixed top-0 right-0 h-full w-64 bg-gradient-to-b from-blue-600 to-blue-500 text-white shadow-2xl z-50 transition-transform duration-300 ${
+        className={`sm:hidden fixed top-0 right-0 h-full w-64 bg-linear-to-b from-blue-600 to-blue-500 text-white shadow-2xl z-50 transition-transform duration-300 ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

@@ -6,7 +6,14 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md" | "lg";
 }
 
-function Button({ ref, variant = "primary", size = "md", className = "", children, ...props }: ButtonProps) {
+function Button({
+  ref,
+  variant = "primary",
+  size = "md",
+  className = "",
+  children,
+  ...props
+}: ButtonProps) {
   const baseClasses =
     "font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 

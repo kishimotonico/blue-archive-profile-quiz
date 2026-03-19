@@ -25,9 +25,7 @@ const setupHook = (store: ReturnType<typeof createStore>) => {
   return renderHook(() => useDailyQuiz(), { wrapper });
 };
 
-const makeResultPayload = (
-  studentId = "s1",
-): Omit<DailyResult, "date" | "timestamp"> => ({
+const makeResultPayload = (studentId = "s1"): Omit<DailyResult, "date" | "timestamp"> => ({
   score: 8,
   revealedHintCount: 3,
   studentId,
@@ -175,12 +173,8 @@ describe("useDailyQuiz - saveProgress", () => {
     const store = createStore();
     const { result } = setupHook(store);
 
-    act(() =>
-      result.current.saveProgress({ studentId: "s1", revealedHintCount: 2, hints: [] }),
-    );
-    act(() =>
-      result.current.saveProgress({ studentId: "s1", revealedHintCount: 5, hints: [] }),
-    );
+    act(() => result.current.saveProgress({ studentId: "s1", revealedHintCount: 2, hints: [] }));
+    act(() => result.current.saveProgress({ studentId: "s1", revealedHintCount: 5, hints: [] }));
 
     expect(result.current.dailyProgress?.revealedHintCount).toBe(5);
   });

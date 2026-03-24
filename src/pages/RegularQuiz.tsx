@@ -64,7 +64,7 @@ function RegularQuiz() {
   const portraitState = getPortraitState(answered, revealedHintCount, currentQuestion.hints.length);
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50">
+    <div className="h-[100dvh] flex flex-col bg-slate-50">
       <Header />
 
       <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 sm:pt-4 max-w-6xl mx-auto w-full overflow-hidden">

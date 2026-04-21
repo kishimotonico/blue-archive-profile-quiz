@@ -2854,5 +2854,68 @@
       "passive": "助かったっす！",
       "sub": "やれるもんならやってみなよ！"
     }
+  },
+  "niko": {
+    "id": "niko",
+    "fullName": "吉野ニコ",
+    "name": "ニコ",
+    "school": "SRT特殊学園",
+    "grade": "3年生",
+    "club": "FOX小隊",
+    "age": "17歳",
+    "birthday": "2月11日",
+    "height": "160cm",
+    "hobby": "料理（特にいなり寿司）",
+    "weaponName": "FOX-870式ショットガン",
+    "cv": "浅見香月",
+    "portraitImage": "images/portrait/niko.png",
+    "skills": {
+      "ex": "CSAR",
+      "normal": "ブロークンアロー",
+      "passive": "火器熟練",
+      "sub": "小隊のお世話焼き"
+    }
+  },
+  "kurumi": {
+    "id": "kurumi",
+    "fullName": "高倉クルミ",
+    "name": "クルミ",
+    "school": "SRT特殊学園",
+    "grade": "3年生",
+    "club": "FOX小隊",
+    "age": "17歳",
+    "birthday": "9月30日",
+    "height": "151cm",
+    "hobby": "シール集め、掃除",
+    "weaponName": "FOX-45式サブマシンガン",
+    "cv": "橘一花",
+    "portraitImage": "images/portrait/kurumi.png",
+    "skills": {
+      "ex": "防護盾、展開",
+      "normal": "攻勢転換",
+      "passive": "セラミック装甲板",
+      "sub": "槌支える鉄床"
+    }
+  },
+  "otogi": {
+    "id": "otogi",
+    "fullName": "天神山オトギ",
+    "name": "オトギ",
+    "school": "SRT特殊学園",
+    "grade": "3年生",
+    "club": "FOX小隊",
+    "age": "17歳",
+    "birthday": "5月20日",
+    "height": "150cm",
+    "hobby": "",
+    "weaponName": "FOX-82式スナイパーライフル",
+    "cv": "咲々木瞳",
+    "portraitImage": "images/portrait/otogi.png",
+    "skills": {
+      "ex": "指定射撃開始",
+      "normal": "HEIAP弾切替",
+      "passive": "速射熟練",
+      "sub": "狙撃手の勘"
+    }
   }
 }

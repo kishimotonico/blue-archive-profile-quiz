@@ -51,7 +51,7 @@ pnpm preview
 
 ## デプロイ
 
-**公開URL:** https://blue-archive-quiz.kishmotonico.dev
+**公開URL:** https://blue-archive-quiz.kishimotonico.dev
 
 Cloudflare Pages の Git連携で自動デプロイされます。`master` ブランチへの push で自動的にビルド・デプロイが実行されます。
 

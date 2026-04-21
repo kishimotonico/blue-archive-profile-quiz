@@ -2791,5 +2791,68 @@
       "passive": "経営哲学",
       "sub": "契約更新"
     }
+  },
+  "kei": {
+    "id": "kei",
+    "fullName": "ケイ",
+    "name": "ケイ",
+    "school": "ミレニアムサイエンススクール",
+    "grade": "1年生",
+    "club": "特異現象捜査部",
+    "age": "??歳",
+    "birthday": "3月25日",
+    "height": "152cm",
+    "hobby": "アリスのお世話、おしゃれ、ゲーム（本人は否定）",
+    "weaponName": "ルミナス・ノヴァ",
+    "cv": "田中美海",
+    "portraitImage": "images/portrait/kei.png",
+    "skills": {
+      "ex": "ここにいる私",
+      "normal": "怒らせましたね！？",
+      "passive": "私は抗い続けます！",
+      "sub": "共に歩む仲間"
+    }
+  },
+  "rena": {
+    "id": "rena",
+    "fullName": "衣斐レナ",
+    "name": "レナ",
+    "school": "ワイルドハント芸術学院",
+    "grade": "1年生",
+    "club": "オカルト研究会（第4寮404号室）",
+    "age": "15歳",
+    "birthday": "9月21日",
+    "height": "152cm",
+    "hobby": "衣装、アクセサリー製作",
+    "weaponName": "護身用ミシンガン",
+    "cv": "梅澤めぐ",
+    "portraitImage": "images/portrait/rena.png",
+    "skills": {
+      "ex": "解き明かしてやるんだから！",
+      "normal": "仕立ててあげる！",
+      "passive": "怖くなんかないわよ！",
+      "sub": "あんたも怖くないでしょ！？"
+    }
+  },
+  "konoka": {
+    "id": "konoka",
+    "fullName": "志真コノカ",
+    "name": "コノカ",
+    "school": "ヴァルキューレ警察学校",
+    "grade": "2年生",
+    "club": "公安局",
+    "age": "16歳",
+    "birthday": "8月19日",
+    "height": "165cm",
+    "hobby": "マッサージチェアを使うこと、新聞のクロスワードパズルを解くこと",
+    "weaponName": "道具",
+    "cv": "千本木彩花",
+    "portraitImage": "images/portrait/konoka.png",
+    "skills": {
+      "ex": "正当防衛ってやつ？",
+      "normal": "やりがいがあるじゃん？",
+      "passive": "助かったっす！",
+      "sub": "やれるもんならやってみなよ！"
+    }
   }
 }

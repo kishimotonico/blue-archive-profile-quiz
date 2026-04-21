@@ -5,7 +5,7 @@ import Result from "./pages/Result";
 
 function App() {
   return (
-    <BrowserRouter basename="/blue-archive-prof-quiz">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<DailyQuiz />} />
         <Route path="/regular" element={<RegularQuiz />} />

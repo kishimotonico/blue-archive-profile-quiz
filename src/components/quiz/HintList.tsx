@@ -107,7 +107,7 @@ function HintList({
           </span>
           {student && portraitState !== "hidden" && (
             <img
-              src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
+              src={`${import.meta.env.VITE_IMAGE_BASE_URL ?? '/data/images/portrait/'}${student.id}.png`}
               alt={portraitState === "revealed" ? student.fullName : "シルエット"}
               draggable={false}
               className={`absolute inset-0 h-full w-auto mx-auto object-contain transition-all duration-500 select-none ${

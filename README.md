@@ -37,21 +37,25 @@
 
 ```bash
 # 依存関係のインストール
-npm install
+pnpm install
 
 # 開発サーバーの起動
-npm run dev
+pnpm dev
 
 # ビルド
-npm run build
+pnpm build
 
 # プレビュー
-npm run preview
+pnpm preview
 ```
 
 ## デプロイ
 
-GitHub Pagesへの自動デプロイが設定されています。`master`ブランチへのpushで自動的にデプロイされます。
+**公開URL:** https://blue-archive-quiz.kishmotonico.dev
+
+Cloudflare Pages の Git連携で自動デプロイされます。`master` ブランチへの push で自動的にビルド・デプロイが実行されます。
+
+立ち絵画像は Cloudflare R2 から配信されます。ビルド時に環境変数 `VITE_IMAGE_BASE_URL` で R2 の公開URLを指定してください。
 
 ## ディレクトリ構成
 

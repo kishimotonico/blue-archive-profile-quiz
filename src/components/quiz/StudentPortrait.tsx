@@ -27,7 +27,7 @@ function StudentPortrait({ student, state, variant = "default" }: StudentPortrai
       {/* 立ち絵（silhouette/revealed時に表示） */}
       {student && state !== "hidden" && (
         <img
-          src={`${import.meta.env.BASE_URL}data/images/portraits/${student.id}.png`}
+          src={`${import.meta.env.VITE_IMAGE_BASE_URL ?? '/data/images/portrait/'}${student.id}.png`}
           alt={state === "revealed" ? student.fullName : "シルエット"}
           draggable={false}
           className={`absolute inset-0 h-full w-auto mx-auto object-contain rounded-2xl shadow-lg transition-all duration-500 select-none ${

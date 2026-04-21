@@ -1,5 +1,5 @@
 import { chromium, Page } from 'playwright';
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync } from 'node:fs';
 import { parse } from 'yaml';
 
 // 生徒データの型定義
@@ -171,8 +171,12 @@ async function processStudent(
   const jsonPath = `${OUTPUT_DIR}/${studentId}.json`;
   const imagePath = `${IMAGE_DIR}/${studentId}.png`;
 
+  const CACHE_TTL_MS = 180 * 24 * 60 * 60 * 1000;
+  const isCacheValid = existsSync(cachePath) &&
+    Date.now() - statSync(cachePath).mtimeMs < CACHE_TTL_MS;
+
   // キャッシュからHTMLを読み込むか、Webから取得
-  if (useCache && existsSync(cachePath)) {
+  if (useCache && isCacheValid) {
     console.log(`  -> Using cached HTML`);
     const html = readFileSync(cachePath, 'utf-8');
     await page.setContent(html, { waitUntil: 'domcontentloaded' });
@@ -185,8 +189,8 @@ async function processStudent(
     writeFileSync(cachePath, html, 'utf-8');
     console.log(`  -> HTML cached`);
 
-    // サーバー負荷軽減のため少し待機
-    await page.waitForTimeout(500);
+    // サーバー負荷軽減のため待機
+    await page.waitForTimeout(3000);
   }
 
   const { data, imageUrl } = await scrapeStudentData(page, studentId);

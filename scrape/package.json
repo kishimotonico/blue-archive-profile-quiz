@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
-    "scrape": "npx tsx index.ts",
-    "merge": "npx tsx merge.ts"
+    "scrape": "pnpm exec tsx index.ts",
+    "merge": "pnpm exec tsx merge.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

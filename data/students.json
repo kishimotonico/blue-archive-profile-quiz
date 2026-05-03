@@ -1,2921 +1,3477 @@
 {
   "aru": {
-    "id": "aru",
-    "fullName": "陸八魔アル",
-    "name": "アル",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "便利屋68",
-    "age": "16歳",
-    "birthday": "3月12日",
-    "height": "160cm",
-    "hobby": "経営の勉強",
-    "weaponName": "ワインレッド・アドマイアー",
-    "cv": "近藤玲奈",
-    "portraitImage": "images/portrait/aru.png",
-    "skills": {
-      "ex": "ハードボイルドショット",
-      "normal": "ノワールシュート",
-      "passive": "社長の威厳",
-      "sub": "アウトローの流儀"
-    }
+    "profile": {
+      "fullName": "陸八魔アル",
+      "name": "アル",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "便利屋68",
+      "age": "16歳",
+      "birthday": "3月12日",
+      "height": "160cm",
+      "hobby": "経営の勉強",
+      "weaponName": "ワインレッド・アドマイアー",
+      "cv": "近藤玲奈",
+      "skills": {
+        "ex": "ハードボイルドショット",
+        "normal": "ノワールシュート",
+        "passive": "社長の威厳",
+        "sub": "アウトローの流儀"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/aru.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "iori": {
-    "id": "iori",
-    "fullName": "銀鏡イオリ",
-    "name": "イオリ",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "風紀委員会",
-    "age": "16歳",
-    "birthday": "11月8日",
-    "height": "157cm",
-    "hobby": "パトロール、大声を出すこと",
-    "weaponName": "クラックショット",
-    "cv": "佐倉綾音",
-    "portraitImage": "images/portrait/iori.png",
-    "skills": {
-      "ex": "一網打尽",
-      "normal": "指名手配",
-      "passive": "一撃必中",
-      "sub": "風紀委員の度胸"
-    }
+    "profile": {
+      "fullName": "銀鏡イオリ",
+      "name": "イオリ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "風紀委員会",
+      "age": "16歳",
+      "birthday": "11月8日",
+      "height": "157cm",
+      "hobby": "パトロール、大声を出すこと",
+      "weaponName": "クラックショット",
+      "cv": "佐倉綾音",
+      "skills": {
+        "ex": "一網打尽",
+        "normal": "指名手配",
+        "passive": "一撃必中",
+        "sub": "風紀委員の度胸"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/iori.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "izumi": {
-    "id": "izumi",
-    "fullName": "獅子堂イズミ",
-    "name": "イズミ",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "美食研究会",
-    "age": "16歳",
-    "birthday": "5月11日",
-    "height": "161cm",
-    "hobby": "ゲテモノ料理を食べること、作ること",
-    "weaponName": "デイリーカトラリー",
-    "cv": "久保ユリカ",
-    "portraitImage": "images/portrait/izumi.png",
-    "skills": {
-      "ex": "チーズチョコレートバーガー！",
-      "normal": "よーーい、BANG！",
-      "passive": "次は何をたべよっか？",
-      "sub": "美味しいのが一番だよね～"
-    }
+    "profile": {
+      "fullName": "獅子堂イズミ",
+      "name": "イズミ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "美食研究会",
+      "age": "16歳",
+      "birthday": "5月11日",
+      "height": "161cm",
+      "hobby": "ゲテモノ料理を食べること、作ること",
+      "weaponName": "デイリーカトラリー",
+      "cv": "久保ユリカ",
+      "skills": {
+        "ex": "チーズチョコレートバーガー！",
+        "normal": "よーーい、BANG！",
+        "passive": "次は何をたべよっか？",
+        "sub": "美味しいのが一番だよね～"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/izumi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "eimi": {
-    "id": "eimi",
-    "fullName": "和泉元エイミ",
-    "name": "エイミ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "特異現象捜査部",
-    "age": "15歳",
-    "birthday": "5月1日",
-    "height": "167cm",
-    "hobby": "ボーっとすること、音楽鑑賞",
-    "weaponName": "マルチタクティカル",
-    "cv": "松永あかね",
-    "portraitImage": "images/portrait/eimi.png",
-    "skills": {
-      "ex": "不屈の意思",
-      "normal": "執念の猛撃",
-      "passive": "スペシャリストの休憩",
-      "sub": "強靭な精神力"
-    }
+    "profile": {
+      "fullName": "和泉元エイミ",
+      "name": "エイミ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "特異現象捜査部",
+      "age": "15歳",
+      "birthday": "5月1日",
+      "height": "167cm",
+      "hobby": "ボーっとすること、音楽鑑賞",
+      "weaponName": "マルチタクティカル",
+      "cv": "松永あかね",
+      "skills": {
+        "ex": "不屈の意思",
+        "normal": "執念の猛撃",
+        "passive": "スペシャリストの休憩",
+        "sub": "強靭な精神力"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/eimi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "karin": {
-    "id": "karin",
-    "fullName": "角楯カリン",
-    "name": "カリン",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "2年生",
-    "club": "Cleaning&Clearing",
-    "age": "16歳",
-    "birthday": "2月2日",
-    "height": "170cm",
-    "hobby": "お掃除",
-    "weaponName": "ホークアイ",
-    "cv": "沼倉愛美",
-    "portraitImage": "images/portrait/karin.png",
-    "skills": {
-      "ex": "ターゲット、排除する",
-      "normal": "火力支援、開始",
-      "passive": "武装強化、完了",
-      "sub": "支援活動、開始"
-    }
+    "profile": {
+      "fullName": "角楯カリン",
+      "name": "カリン",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "2年生",
+      "club": "Cleaning&Clearing",
+      "age": "16歳",
+      "birthday": "2月2日",
+      "height": "170cm",
+      "hobby": "お掃除",
+      "weaponName": "ホークアイ",
+      "cv": "沼倉愛美",
+      "skills": {
+        "ex": "ターゲット、排除する",
+        "normal": "火力支援、開始",
+        "passive": "武装強化、完了",
+        "sub": "支援活動、開始"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/karin.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "saya": {
-    "id": "saya",
-    "fullName": "薬子サヤ",
-    "name": "サヤ",
-    "school": "山海経高級中学校",
-    "grade": "2年生",
-    "club": "錬丹術研究会",
-    "age": "16歳",
-    "birthday": "1月3日",
-    "height": "149cm",
-    "hobby": "研究",
-    "weaponName": "ぼく様特製拳銃",
-    "cv": "田村ゆかり",
-    "portraitImage": "images/portrait/saya.png",
-    "skills": {
-      "ex": "ぼく様の傑作なのだ！",
-      "normal": "新しい実験なのだ！",
-      "passive": "ぼく様はやっぱり偉大なのだ！",
-      "sub": "ぼく様だけを信じてて！"
-    }
+    "profile": {
+      "fullName": "薬子サヤ",
+      "name": "サヤ",
+      "school": "山海経高級中学校",
+      "grade": "2年生",
+      "club": "錬丹術研究会",
+      "age": "16歳",
+      "birthday": "1月3日",
+      "height": "149cm",
+      "hobby": "研究",
+      "weaponName": "ぼく様特製拳銃",
+      "cv": "田村ゆかり",
+      "skills": {
+        "ex": "ぼく様の傑作なのだ！",
+        "normal": "新しい実験なのだ！",
+        "passive": "ぼく様はやっぱり偉大なのだ！",
+        "sub": "ぼく様だけを信じてて！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/saya.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "shun": {
-    "id": "shun",
-    "fullName": "春原シュン",
-    "name": "シュン",
-    "school": "山海経高級中学校",
-    "grade": "3年生",
-    "club": "訓育支援部「梅花園」",
-    "age": "極秘",
-    "birthday": "2月5日",
-    "height": "174cm",
-    "hobby": "子供たちと遊ぶこと",
-    "weaponName": "愛のムチ",
-    "cv": "伊藤静",
-    "portraitImage": "images/portrait/shun.png",
-    "skills": {
-      "ex": "悪い子はどこですか？",
-      "normal": "みなさん、集中してください！",
-      "passive": "教官としての品格",
-      "sub": "梅花園の教育"
-    }
+    "profile": {
+      "fullName": "春原シュン",
+      "name": "シュン",
+      "school": "山海経高級中学校",
+      "grade": "3年生",
+      "club": "訓育支援部「梅花園」",
+      "age": "極秘",
+      "birthday": "2月5日",
+      "height": "174cm",
+      "hobby": "子供たちと遊ぶこと",
+      "weaponName": "愛のムチ",
+      "cv": "伊藤静",
+      "skills": {
+        "ex": "悪い子はどこですか？",
+        "normal": "みなさん、集中してください！",
+        "passive": "教官としての品格",
+        "sub": "梅花園の教育"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/shun.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "shiroko": {
-    "id": "shiroko",
-    "fullName": "砂狼シロコ",
-    "name": "シロコ",
-    "school": "アビドス高等学校",
-    "grade": "2年生",
-    "club": "対策委員会",
-    "age": "16歳",
-    "birthday": "5月16日",
-    "height": "156cm",
-    "hobby": "ジョギング、体力トレーニング、ロードバイク",
-    "weaponName": "WHITE FANG 465",
-    "cv": "小倉唯",
-    "portraitImage": "images/portrait/shiroko.png",
-    "skills": {
-      "ex": "ドローン召喚：火力支援",
-      "normal": "手榴弾投擲",
-      "passive": "ピンポイント",
-      "sub": "高速連射"
-    }
+    "profile": {
+      "fullName": "砂狼シロコ",
+      "name": "シロコ",
+      "school": "アビドス高等学校",
+      "grade": "2年生",
+      "club": "対策委員会",
+      "age": "16歳",
+      "birthday": "5月16日",
+      "height": "156cm",
+      "hobby": "ジョギング、体力トレーニング、ロードバイク",
+      "weaponName": "WHITE FANG 465",
+      "cv": "小倉唯",
+      "skills": {
+        "ex": "ドローン召喚：火力支援",
+        "normal": "手榴弾投擲",
+        "passive": "ピンポイント",
+        "sub": "高速連射"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/shiroko.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "sumire": {
-    "id": "sumire",
-    "fullName": "乙花スミレ",
-    "name": "スミレ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "2年生",
-    "club": "トレーニング部",
-    "age": "16歳",
-    "birthday": "8月20日",
-    "height": "167cm",
-    "hobby": "トレーニング、ガーデニング",
-    "weaponName": "ミレニアム製最新型ダンベル",
-    "cv": "今井麻美",
-    "portraitImage": "images/portrait/sumire.png",
-    "skills": {
-      "ex": "スパートをかけます！",
-      "normal": "ウォーミングアップ",
-      "passive": "ピンポイントアタック",
-      "sub": "テンションアップ"
-    }
+    "profile": {
+      "fullName": "乙花スミレ",
+      "name": "スミレ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "2年生",
+      "club": "トレーニング部",
+      "age": "16歳",
+      "birthday": "8月20日",
+      "height": "167cm",
+      "hobby": "トレーニング、ガーデニング",
+      "weaponName": "ミレニアム製最新型ダンベル",
+      "cv": "今井麻美",
+      "skills": {
+        "ex": "スパートをかけます！",
+        "normal": "ウォーミングアップ",
+        "passive": "ピンポイントアタック",
+        "sub": "テンションアップ"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/sumire.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "tsurugi": {
-    "id": "tsurugi",
-    "fullName": "剣先ツルギ",
-    "name": "ツルギ",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "正義実現委員会",
-    "age": "17歳",
-    "birthday": "6月24日",
-    "height": "162cm",
-    "hobby": "映画鑑賞、読書（恋愛小説）",
-    "weaponName": "ブラッド＆ガンパウダー",
-    "cv": "小林ゆう",
-    "portraitImage": "images/portrait/tsurugi.png",
-    "skills": {
-      "ex": "奇奇怪怪",
-      "normal": "激情",
-      "passive": "機敏",
-      "sub": "制御不能の力"
-    }
+    "profile": {
+      "fullName": "剣先ツルギ",
+      "name": "ツルギ",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "正義実現委員会",
+      "age": "17歳",
+      "birthday": "6月24日",
+      "height": "162cm",
+      "hobby": "映画鑑賞、読書（恋愛小説）",
+      "weaponName": "ブラッド＆ガンパウダー",
+      "cv": "小林ゆう",
+      "skills": {
+        "ex": "奇奇怪怪",
+        "normal": "激情",
+        "passive": "機敏",
+        "sub": "制御不能の力"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/tsurugi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "neru": {
-    "id": "neru",
-    "fullName": "美甘ネル",
-    "name": "ネル",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "3年生",
-    "club": "Cleaning&Clearing",
-    "age": "17歳",
-    "birthday": "8月17日",
-    "height": "146cm",
-    "hobby": "勝利",
-    "weaponName": "ツイン・ドラゴン",
-    "cv": "小清水亜美",
-    "portraitImage": "images/portrait/neru.png",
-    "skills": {
-      "ex": "あぁ？ぶっ殺されてぇか？",
-      "normal": "あぁ？ふざけんな！",
-      "passive": "コールサインダブルオー",
-      "sub": "激昂"
-    }
+    "profile": {
+      "fullName": "美甘ネル",
+      "name": "ネル",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "3年生",
+      "club": "Cleaning&Clearing",
+      "age": "17歳",
+      "birthday": "8月17日",
+      "height": "146cm",
+      "hobby": "勝利",
+      "weaponName": "ツイン・ドラゴン",
+      "cv": "小清水亜美",
+      "skills": {
+        "ex": "あぁ？ぶっ殺されてぇか？",
+        "normal": "あぁ？ふざけんな！",
+        "passive": "コールサインダブルオー",
+        "sub": "激昂"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/neru.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "haruna": {
-    "id": "haruna",
-    "fullName": "黒舘ハルナ",
-    "name": "ハルナ",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "美食研究会",
-    "age": "17歳",
-    "birthday": "3月1日",
-    "height": "163cm",
-    "hobby": "美味しいもの探し",
-    "weaponName": "アイディール",
-    "cv": "田所あずさ",
-    "portraitImage": "images/portrait/haruna.png",
-    "skills": {
-      "ex": "貫くエレガンス",
-      "normal": "爆発するエキゾチック",
-      "passive": "美食家の気品",
-      "sub": "美食家の冷静さ"
-    }
+    "profile": {
+      "fullName": "黒舘ハルナ",
+      "name": "ハルナ",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "美食研究会",
+      "age": "17歳",
+      "birthday": "3月1日",
+      "height": "163cm",
+      "hobby": "美味しいもの探し",
+      "weaponName": "アイディール",
+      "cv": "田所あずさ",
+      "skills": {
+        "ex": "貫くエレガンス",
+        "normal": "爆発するエキゾチック",
+        "passive": "美食家の気品",
+        "sub": "美食家の冷静さ"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/haruna.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hina": {
-    "id": "hina",
-    "fullName": "空崎ヒナ",
-    "name": "ヒナ",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "風紀委員会",
-    "age": "17歳",
-    "birthday": "2月19日",
-    "height": "142cm",
-    "hobby": "睡眠、休憩",
-    "weaponName": "終幕：デストロイヤー",
-    "cv": "広橋涼",
-    "portraitImage": "images/portrait/hina.png",
-    "skills": {
-      "ex": "終幕：イシュ・ボシェテ",
-      "normal": "リロードアンドデストロイ",
-      "passive": "冷徹な風紀委員会",
-      "sub": "徹頭徹尾"
-    }
+    "profile": {
+      "fullName": "空崎ヒナ",
+      "name": "ヒナ",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "風紀委員会",
+      "age": "17歳",
+      "birthday": "2月19日",
+      "height": "142cm",
+      "hobby": "睡眠、休憩",
+      "weaponName": "終幕：デストロイヤー",
+      "cv": "広橋涼",
+      "skills": {
+        "ex": "終幕：イシュ・ボシェテ",
+        "normal": "リロードアンドデストロイ",
+        "passive": "冷徹な風紀委員会",
+        "sub": "徹頭徹尾"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hina.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hibiki": {
-    "id": "hibiki",
-    "fullName": "猫塚ヒビキ",
-    "name": "ヒビキ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "エンジニア部",
-    "age": "15歳",
-    "birthday": "4月2日",
-    "height": "154cm",
-    "hobby": "買い物、コスプレ",
-    "weaponName": "ファンシーライト",
-    "cv": "名塚佳織",
-    "portraitImage": "images/portrait/hibiki.png",
-    "skills": {
-      "ex": "これは高確率で痛いよ",
-      "normal": "火力は十分",
-      "passive": "これは危険だよ",
-      "sub": "役に立つといいけど"
-    }
+    "profile": {
+      "fullName": "猫塚ヒビキ",
+      "name": "ヒビキ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "エンジニア部",
+      "age": "15歳",
+      "birthday": "4月2日",
+      "height": "154cm",
+      "hobby": "買い物、コスプレ",
+      "weaponName": "ファンシーライト",
+      "cv": "名塚佳織",
+      "skills": {
+        "ex": "これは高確率で痛いよ",
+        "normal": "火力は十分",
+        "passive": "これは危険だよ",
+        "sub": "役に立つといいけど"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hibiki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hifumi": {
-    "id": "hifumi",
-    "fullName": "阿慈谷ヒフミ",
-    "name": "ヒフミ",
-    "school": "トリニティ総合学園",
-    "grade": "2年生",
-    "club": "補習授業部",
-    "age": "16歳",
-    "birthday": "11月27日",
-    "height": "158cm",
-    "hobby": "ペロログッズ集め、可愛いもの集め、ショッピング、相談に乗ること",
-    "weaponName": "マイ・ネセシティ",
-    "cv": "本渡楓",
-    "portraitImage": "images/portrait/hifumi.png",
-    "skills": {
-      "ex": "助けて、ペロロ様！",
-      "normal": "ペロロ様の応援",
-      "passive": "コレクター根性",
-      "sub": "すばしっこいコレクター"
-    }
+    "profile": {
+      "fullName": "阿慈谷ヒフミ",
+      "name": "ヒフミ",
+      "school": "トリニティ総合学園",
+      "grade": "2年生",
+      "club": "補習授業部",
+      "age": "16歳",
+      "birthday": "11月27日",
+      "height": "158cm",
+      "hobby": "ペロログッズ集め、可愛いもの集め、ショッピング、相談に乗ること",
+      "weaponName": "マイ・ネセシティ",
+      "cv": "本渡楓",
+      "skills": {
+        "ex": "助けて、ペロロ様！",
+        "normal": "ペロロ様の応援",
+        "passive": "コレクター根性",
+        "sub": "すばしっこいコレクター"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hifumi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hoshino": {
-    "id": "hoshino",
-    "fullName": "小鳥遊ホシノ",
-    "name": "ホシノ",
-    "school": "アビドス高等学校",
-    "grade": "3年生",
-    "club": "対策委員会",
-    "age": "17歳",
-    "birthday": "1月2日",
-    "height": "145cm",
-    "hobby": "昼寝、ゴロゴロすること",
-    "weaponName": "Eye of Horus",
-    "cv": "花守ゆみり",
-    "portraitImage": "images/portrait/hoshino.png",
-    "skills": {
-      "ex": "戦術的鎮圧",
-      "normal": "応急手当",
-      "passive": "対策委員会の委員長",
-      "sub": "鎮圧のベテラン"
-    }
+    "profile": {
+      "fullName": "小鳥遊ホシノ",
+      "name": "ホシノ",
+      "school": "アビドス高等学校",
+      "grade": "3年生",
+      "club": "対策委員会",
+      "age": "17歳",
+      "birthday": "1月2日",
+      "height": "145cm",
+      "hobby": "昼寝、ゴロゴロすること",
+      "weaponName": "Eye of Horus",
+      "cv": "花守ゆみり",
+      "skills": {
+        "ex": "戦術的鎮圧",
+        "normal": "応急手当",
+        "passive": "対策委員会の委員長",
+        "sub": "鎮圧のベテラン"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hoshino.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "maki": {
-    "id": "maki",
-    "fullName": "小塗マキ",
-    "name": "マキ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "ヴェリタス",
-    "age": "15歳",
-    "birthday": "8月1日",
-    "height": "149cm",
-    "hobby": "グラフィティ、ゲーム",
-    "weaponName": "オートラッカー",
-    "cv": "三上枝織",
-    "portraitImage": "images/portrait/maki.png",
-    "skills": {
-      "ex": "世界をもっと色鮮やかに！",
-      "normal": "くらえ、ペイントボール！",
-      "passive": "芸術的な演出",
-      "sub": "芸術の苦しみ"
-    }
+    "profile": {
+      "fullName": "小塗マキ",
+      "name": "マキ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "ヴェリタス",
+      "age": "15歳",
+      "birthday": "8月1日",
+      "height": "149cm",
+      "hobby": "グラフィティ、ゲーム",
+      "weaponName": "オートラッカー",
+      "cv": "三上枝織",
+      "skills": {
+        "ex": "世界をもっと色鮮やかに！",
+        "normal": "くらえ、ペイントボール！",
+        "passive": "芸術的な演出",
+        "sub": "芸術の苦しみ"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/maki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "airi": {
-    "id": "airi",
-    "fullName": "栗村アイリ",
-    "name": "アイリ",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "放課後スイーツ部",
-    "age": "15歳",
-    "birthday": "1月30日",
-    "height": "160cm",
-    "hobby": "美味しいスイーツ探し、お茶会",
-    "weaponName": "爽やかチョコミント",
-    "cv": "水森ちこ",
-    "portraitImage": "images/portrait/airi.png",
-    "skills": {
-      "ex": "勿体ないけど……えぇいっ！",
-      "normal": "頭がキーンってするかも……",
-      "passive": "デザートの力",
-      "sub": "アイリの声援"
-    }
+    "profile": {
+      "fullName": "栗村アイリ",
+      "name": "アイリ",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "放課後スイーツ部",
+      "age": "15歳",
+      "birthday": "1月30日",
+      "height": "160cm",
+      "hobby": "美味しいスイーツ探し、お茶会",
+      "weaponName": "爽やかチョコミント",
+      "cv": "水森ちこ",
+      "skills": {
+        "ex": "勿体ないけど……えぇいっ！",
+        "normal": "頭がキーンってするかも……",
+        "passive": "デザートの力",
+        "sub": "アイリの声援"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/airi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "akane": {
-    "id": "akane",
-    "fullName": "室笠アカネ",
-    "name": "アカネ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "2年生",
-    "club": "Cleaning&Clearing",
-    "age": "16歳",
-    "birthday": "4月1日",
-    "height": "164cm",
-    "hobby": "お掃除",
-    "weaponName": "サイレントソリューション",
-    "cv": "原由実",
-    "portraitImage": "images/portrait/akane.png",
-    "skills": {
-      "ex": "優雅に排除します",
-      "normal": "上品に貫きます",
-      "passive": "速やかに前進します",
-      "sub": "的確に制圧します"
-    }
+    "profile": {
+      "fullName": "室笠アカネ",
+      "name": "アカネ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "2年生",
+      "club": "Cleaning&Clearing",
+      "age": "16歳",
+      "birthday": "4月1日",
+      "height": "164cm",
+      "hobby": "お掃除",
+      "weaponName": "サイレントソリューション",
+      "cv": "原由実",
+      "skills": {
+        "ex": "優雅に排除します",
+        "normal": "上品に貫きます",
+        "passive": "速やかに前進します",
+        "sub": "的確に制圧します"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/akane.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "akari": {
-    "id": "akari",
-    "fullName": "鰐渕アカリ",
-    "name": "アカリ",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "美食研究会",
-    "age": "17歳",
-    "birthday": "12月9日",
-    "height": "167cm",
-    "hobby": "大食い",
-    "weaponName": "ボトムレス",
-    "cv": "森嶋優花",
-    "portraitImage": "images/portrait/akari.png",
-    "skills": {
-      "ex": "グレネード、大盛りで！",
-      "normal": "おかわり、ちょっと辛めで！",
-      "passive": "ごちそうさまです！",
-      "sub": "まだまだ食べられますよ！"
-    }
+    "profile": {
+      "fullName": "鰐渕アカリ",
+      "name": "アカリ",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "美食研究会",
+      "age": "17歳",
+      "birthday": "12月9日",
+      "height": "167cm",
+      "hobby": "大食い",
+      "weaponName": "ボトムレス",
+      "cv": "森嶋優花",
+      "skills": {
+        "ex": "グレネード、大盛りで！",
+        "normal": "おかわり、ちょっと辛めで！",
+        "passive": "ごちそうさまです！",
+        "sub": "まだまだ食べられますよ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/akari.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "ayane": {
-    "id": "ayane",
-    "fullName": "奥空アヤネ",
-    "name": "アヤネ",
-    "school": "アビドス高等学校",
-    "grade": "1年生",
-    "club": "対策委員会",
-    "age": "15歳",
-    "birthday": "11月12日",
-    "height": "153cm",
-    "hobby": "家計簿をつけること、骨董品収集",
-    "weaponName": "コモンセンス",
-    "cv": "原田彩楓",
-    "portraitImage": "images/portrait/ayane.png",
-    "skills": {
-      "ex": "支援特急便",
-      "normal": "学習サポート",
-      "passive": "向学心",
-      "sub": "士気の向上"
-    }
+    "profile": {
+      "fullName": "奥空アヤネ",
+      "name": "アヤネ",
+      "school": "アビドス高等学校",
+      "grade": "1年生",
+      "club": "対策委員会",
+      "age": "15歳",
+      "birthday": "11月12日",
+      "height": "153cm",
+      "hobby": "家計簿をつけること、骨董品収集",
+      "weaponName": "コモンセンス",
+      "cv": "原田彩楓",
+      "skills": {
+        "ex": "支援特急便",
+        "normal": "学習サポート",
+        "passive": "向学心",
+        "sub": "士気の向上"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/ayane.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "utaha": {
-    "id": "utaha",
-    "fullName": "白石ウタハ",
-    "name": "ウタハ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "3年生",
-    "club": "エンジニア部",
-    "age": "17歳",
-    "birthday": "11月13日",
-    "height": "162cm",
-    "hobby": "発明や修理全般",
-    "weaponName": "マイスター・ゼロ",
-    "cv": "青地希望",
-    "portraitImage": "images/portrait/utaha.png",
-    "skills": {
-      "ex": "雷いかずちちゃん、召喚",
-      "normal": "雷ちゃんMK-Ⅱ、駆動",
-      "passive": "技術革命",
-      "sub": "マイスターの誓い"
-    }
+    "profile": {
+      "fullName": "白石ウタハ",
+      "name": "ウタハ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "3年生",
+      "club": "エンジニア部",
+      "age": "17歳",
+      "birthday": "11月13日",
+      "height": "162cm",
+      "hobby": "発明や修理全般",
+      "weaponName": "マイスター・ゼロ",
+      "cv": "青地希望",
+      "skills": {
+        "ex": "雷いかずちちゃん、召喚",
+        "normal": "雷ちゃんMK-Ⅱ、駆動",
+        "passive": "技術革命",
+        "sub": "マイスターの誓い"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/utaha.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kayoko": {
-    "id": "kayoko",
-    "fullName": "鬼方カヨコ",
-    "name": "カヨコ",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "便利屋68",
-    "age": "18歳",
-    "birthday": "3月17日",
-    "height": "157cm",
-    "hobby": "音楽CD収集",
-    "weaponName": "デモンズロア",
-    "cv": "藤井ゆきよ",
-    "portraitImage": "images/portrait/kayoko.png",
-    "skills": {
-      "ex": "パニックブリンガー",
-      "normal": "パニックショット",
-      "passive": "怖い顔",
-      "sub": "仕方ない"
-    }
+    "profile": {
+      "fullName": "鬼方カヨコ",
+      "name": "カヨコ",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "便利屋68",
+      "age": "18歳",
+      "birthday": "3月17日",
+      "height": "157cm",
+      "hobby": "音楽CD収集",
+      "weaponName": "デモンズロア",
+      "cv": "藤井ゆきよ",
+      "skills": {
+        "ex": "パニックブリンガー",
+        "normal": "パニックショット",
+        "passive": "怖い顔",
+        "sub": "仕方ない"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kayoko.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "junko": {
-    "id": "junko",
-    "fullName": "赤司ジュンコ",
-    "name": "ジュンコ",
-    "school": "ゲヘナ学園",
-    "grade": "1年生",
-    "club": "美食研究会",
-    "age": "15歳",
-    "birthday": "12月27日",
-    "height": "149cm",
-    "hobby": "グルメ巡り",
-    "weaponName": "ダイナーズアウトロー",
-    "cv": "金元寿子",
-    "portraitImage": "images/portrait/junko.png",
-    "skills": {
-      "ex": "空腹のイライラ",
-      "normal": "お腹空いてる時は話しかけないで！",
-      "passive": "小柄のメリット",
-      "sub": "空腹の美食家"
-    }
+    "profile": {
+      "fullName": "赤司ジュンコ",
+      "name": "ジュンコ",
+      "school": "ゲヘナ学園",
+      "grade": "1年生",
+      "club": "美食研究会",
+      "age": "15歳",
+      "birthday": "12月27日",
+      "height": "149cm",
+      "hobby": "グルメ巡り",
+      "weaponName": "ダイナーズアウトロー",
+      "cv": "金元寿子",
+      "skills": {
+        "ex": "空腹のイライラ",
+        "normal": "お腹空いてる時は話しかけないで！",
+        "passive": "小柄のメリット",
+        "sub": "空腹の美食家"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/junko.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "serika": {
-    "id": "serika",
-    "fullName": "黒見セリカ",
-    "name": "セリカ",
-    "school": "アビドス高等学校",
-    "grade": "1年生",
-    "club": "対策委員会",
-    "age": "15歳",
-    "birthday": "6月25日",
-    "height": "153cm",
-    "hobby": "貯金、アルバイト",
-    "weaponName": "シンシアリティ",
-    "cv": "大橋彩香",
-    "portraitImage": "images/portrait/serika.png",
-    "skills": {
-      "ex": "邪魔よ！",
-      "normal": "狙い撃ち",
-      "passive": "バイト根性",
-      "sub": "対策委員会の怒り"
-    }
+    "profile": {
+      "fullName": "黒見セリカ",
+      "name": "セリカ",
+      "school": "アビドス高等学校",
+      "grade": "1年生",
+      "club": "対策委員会",
+      "age": "15歳",
+      "birthday": "6月25日",
+      "height": "153cm",
+      "hobby": "貯金、アルバイト",
+      "weaponName": "シンシアリティ",
+      "cv": "大橋彩香",
+      "skills": {
+        "ex": "邪魔よ！",
+        "normal": "狙い撃ち",
+        "passive": "バイト根性",
+        "sub": "対策委員会の怒り"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/serika.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "chise": {
-    "id": "chise",
-    "fullName": "和楽チセ",
-    "name": "チセ",
-    "school": "百鬼夜行連合学院",
-    "grade": "2年生",
-    "club": "陰陽部",
-    "age": "16歳",
-    "birthday": "7月13日",
-    "height": "159cm",
-    "hobby": "俳句",
-    "weaponName": "五七五式榴弾砲",
-    "cv": "嶋村侑",
-    "portraitImage": "images/portrait/chise.png",
-    "skills": {
-      "ex": "これは痛いかもよ～",
-      "normal": "撃つよ～",
-      "passive": "よーし、頑張ろ～",
-      "sub": "ちょっと痛むよ～"
-    }
+    "profile": {
+      "fullName": "和楽チセ",
+      "name": "チセ",
+      "school": "百鬼夜行連合学院",
+      "grade": "2年生",
+      "club": "陰陽部",
+      "age": "16歳",
+      "birthday": "7月13日",
+      "height": "159cm",
+      "hobby": "俳句",
+      "weaponName": "五七五式榴弾砲",
+      "cv": "嶋村侑",
+      "skills": {
+        "ex": "これは痛いかもよ～",
+        "normal": "撃つよ～",
+        "passive": "よーし、頑張ろ～",
+        "sub": "ちょっと痛むよ～"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/chise.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "tsubaki": {
-    "id": "tsubaki",
-    "fullName": "春日ツバキ",
-    "name": "ツバキ",
-    "school": "百鬼夜行連合学院",
-    "grade": "2年生",
-    "club": "修行部",
-    "age": "16歳",
-    "birthday": "2月3日",
-    "height": "162cm",
-    "hobby": "昼寝",
-    "weaponName": "安眠のお供Ⅱ",
-    "cv": "白砂沙帆",
-    "portraitImage": "images/portrait/tsubaki.png",
-    "skills": {
-      "ex": "戦闘用シールド、装着",
-      "normal": "疲れたら寝るのが一番",
-      "passive": "胆力",
-      "sub": "手慣れたリロード"
-    }
+    "profile": {
+      "fullName": "春日ツバキ",
+      "name": "ツバキ",
+      "school": "百鬼夜行連合学院",
+      "grade": "2年生",
+      "club": "修行部",
+      "age": "16歳",
+      "birthday": "2月3日",
+      "height": "162cm",
+      "hobby": "昼寝",
+      "weaponName": "安眠のお供Ⅱ",
+      "cv": "白砂沙帆",
+      "skills": {
+        "ex": "戦闘用シールド、装着",
+        "normal": "疲れたら寝るのが一番",
+        "passive": "胆力",
+        "sub": "手慣れたリロード"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/tsubaki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "nonomi": {
-    "id": "nonomi",
-    "fullName": "十六夜ノノミ",
-    "name": "ノノミ",
-    "school": "アビドス高等学校",
-    "grade": "2年生",
-    "club": "対策委員会",
-    "age": "16歳",
-    "birthday": "9月1日",
-    "height": "160cm",
-    "hobby": "ショッピング",
-    "weaponName": "リトルマシンガンⅤ",
-    "cv": "三浦千幸",
-    "portraitImage": "images/portrait/nonomi.png",
-    "skills": {
-      "ex": "お仕置きの時間です～♣",
-      "normal": "じゃ～ん☆",
-      "passive": "めっ、ですよ！",
-      "sub": "綺麗にお掃除します～♧"
-    }
+    "profile": {
+      "fullName": "十六夜ノノミ",
+      "name": "ノノミ",
+      "school": "アビドス高等学校",
+      "grade": "2年生",
+      "club": "対策委員会",
+      "age": "16歳",
+      "birthday": "9月1日",
+      "height": "160cm",
+      "hobby": "ショッピング",
+      "weaponName": "リトルマシンガンⅤ",
+      "cv": "三浦千幸",
+      "skills": {
+        "ex": "お仕置きの時間です～♣",
+        "normal": "じゃ～ん☆",
+        "passive": "めっ、ですよ！",
+        "sub": "綺麗にお掃除します～♧"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/nonomi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hasumi": {
-    "id": "hasumi",
-    "fullName": "羽川ハスミ",
-    "name": "ハスミ",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "正義実現委員会",
-    "age": "17歳",
-    "birthday": "12月12日",
-    "height": "179cm",
-    "hobby": "読書、人間観察",
-    "weaponName": "インペイルメント",
-    "cv": "瀬戸麻沙美",
-    "portraitImage": "images/portrait/hasumi.png",
-    "skills": {
-      "ex": "アーマーピアッシング弾",
-      "normal": "冷徹な心",
-      "passive": "照準よし",
-      "sub": "目標探索"
-    }
+    "profile": {
+      "fullName": "羽川ハスミ",
+      "name": "ハスミ",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "正義実現委員会",
+      "age": "17歳",
+      "birthday": "12月12日",
+      "height": "179cm",
+      "hobby": "読書、人間観察",
+      "weaponName": "インペイルメント",
+      "cv": "瀬戸麻沙美",
+      "skills": {
+        "ex": "アーマーピアッシング弾",
+        "normal": "冷徹な心",
+        "passive": "照準よし",
+        "sub": "目標探索"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hasumi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hanae": {
-    "id": "hanae",
-    "fullName": "朝顔ハナエ",
-    "name": "ハナエ",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "救護騎士団",
-    "age": "15歳",
-    "birthday": "5月12日",
-    "height": "150cm",
-    "hobby": "ダンス、チアリーディング",
-    "weaponName": "ハッピースマイリー",
-    "cv": "優木かな",
-    "portraitImage": "images/portrait/hanae.png",
-    "skills": {
-      "ex": "治療の時間ですよ～！",
-      "normal": "倒れちゃダメです！",
-      "passive": "腕前上達",
-      "sub": "みなさん頑張ってくださ～い！"
-    }
+    "profile": {
+      "fullName": "朝顔ハナエ",
+      "name": "ハナエ",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "救護騎士団",
+      "age": "15歳",
+      "birthday": "5月12日",
+      "height": "150cm",
+      "hobby": "ダンス、チアリーディング",
+      "weaponName": "ハッピースマイリー",
+      "cv": "優木かな",
+      "skills": {
+        "ex": "治療の時間ですよ～！",
+        "normal": "倒れちゃダメです！",
+        "passive": "腕前上達",
+        "sub": "みなさん頑張ってくださ～い！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hanae.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hare": {
-    "id": "hare",
-    "fullName": "小鈎ハレ",
-    "name": "ハレ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "2年生",
-    "club": "ヴェリタス",
-    "age": "16歳",
-    "birthday": "4月19日",
-    "height": "153cm",
-    "hobby": "ゲーム、映画鑑賞",
-    "weaponName": "オートエイマー",
-    "cv": "貝原怜奈",
-    "portraitImage": "images/portrait/hare.png",
-    "skills": {
-      "ex": "EMPドローン展開",
-      "normal": "破壊工作：プランA",
-      "passive": "武装強化：プランB",
-      "sub": "迎撃システム作動"
-    }
+    "profile": {
+      "fullName": "小鈎ハレ",
+      "name": "ハレ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "2年生",
+      "club": "ヴェリタス",
+      "age": "16歳",
+      "birthday": "4月19日",
+      "height": "153cm",
+      "hobby": "ゲーム、映画鑑賞",
+      "weaponName": "オートエイマー",
+      "cv": "貝原怜奈",
+      "skills": {
+        "ex": "EMPドローン展開",
+        "normal": "破壊工作：プランA",
+        "passive": "武装強化：プランB",
+        "sub": "迎撃システム作動"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hare.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "fuuka": {
-    "id": "fuuka",
-    "fullName": "愛清フウカ",
-    "name": "フウカ",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "給食部",
-    "age": "16歳",
-    "birthday": "4月30日",
-    "height": "159cm",
-    "hobby": "家庭料理、お弁当作り",
-    "weaponName": "給食部の護身用銃typeA",
-    "cv": "ファイルーズあい",
-    "portraitImage": "images/portrait/fuuka.png",
-    "skills": {
-      "ex": "給食の時間です！",
-      "normal": "給食部の優しさ",
-      "passive": "新鮮な材料を集めましょう！",
-      "sub": "給食部としての誇り"
-    }
+    "profile": {
+      "fullName": "愛清フウカ",
+      "name": "フウカ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "給食部",
+      "age": "16歳",
+      "birthday": "4月30日",
+      "height": "159cm",
+      "hobby": "家庭料理、お弁当作り",
+      "weaponName": "給食部の護身用銃typeA",
+      "cv": "ファイルーズあい",
+      "skills": {
+        "ex": "給食の時間です！",
+        "normal": "給食部の優しさ",
+        "passive": "新鮮な材料を集めましょう！",
+        "sub": "給食部としての誇り"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/fuuka.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "mutsuki": {
-    "id": "mutsuki",
-    "fullName": "浅黄ムツキ",
-    "name": "ムツキ",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "便利屋68",
-    "age": "16歳",
-    "birthday": "7月29日",
-    "height": "144cm",
-    "hobby": "爆弾収集",
-    "weaponName": "トリックオアトリック",
-    "cv": "大久保瑠美",
-    "portraitImage": "images/portrait/mutsuki.png",
-    "skills": {
-      "ex": "灼熱のセレナーデ",
-      "normal": "爆裂のアリア",
-      "passive": "楽しく遊ぼう！",
-      "sub": "楽しくいこっか？"
-    }
+    "profile": {
+      "fullName": "浅黄ムツキ",
+      "name": "ムツキ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "便利屋68",
+      "age": "16歳",
+      "birthday": "7月29日",
+      "height": "144cm",
+      "hobby": "爆弾収集",
+      "weaponName": "トリックオアトリック",
+      "cv": "大久保瑠美",
+      "skills": {
+        "ex": "灼熱のセレナーデ",
+        "normal": "爆裂のアリア",
+        "passive": "楽しく遊ぼう！",
+        "sub": "楽しくいこっか？"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/mutsuki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "yuuka": {
-    "id": "yuuka",
-    "fullName": "早瀬ユウカ",
-    "name": "ユウカ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "2年生",
-    "club": "セミナー",
-    "age": "16歳",
-    "birthday": "3月14日",
-    "height": "156cm",
-    "hobby": "計算",
-    "weaponName": "ロジック＆リーズン",
-    "cv": "春花らん",
-    "portraitImage": "images/portrait/yuuka.png",
-    "skills": {
-      "ex": "Q.E.D",
-      "normal": "I.F.F",
-      "passive": "最適解の導出",
-      "sub": "高速暗算"
-    }
+    "profile": {
+      "fullName": "早瀬ユウカ",
+      "name": "ユウカ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "2年生",
+      "club": "セミナー",
+      "age": "16歳",
+      "birthday": "3月14日",
+      "height": "156cm",
+      "hobby": "計算",
+      "weaponName": "ロジック＆リーズン",
+      "cv": "春花らん",
+      "skills": {
+        "ex": "Q.E.D",
+        "normal": "I.F.F",
+        "passive": "最適解の導出",
+        "sub": "高速暗算"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/yuuka.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "asuna": {
-    "id": "asuna",
-    "fullName": "一之瀬アスナ",
-    "name": "アスナ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "3年生",
-    "club": "Cleaning&Clearing",
-    "age": "17歳",
-    "birthday": "3月24日",
-    "height": "167cm",
-    "hobby": "襲撃",
-    "weaponName": "サプライズパーティー",
-    "cv": "長谷川育美",
-    "portraitImage": "images/portrait/asuna.png",
-    "skills": {
-      "ex": "行っくよー！",
-      "normal": "撃つよーっ！",
-      "passive": "これは痛いよ？",
-      "sub": "スピード上げるね？"
-    }
+    "profile": {
+      "fullName": "一之瀬アスナ",
+      "name": "アスナ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "3年生",
+      "club": "Cleaning&Clearing",
+      "age": "17歳",
+      "birthday": "3月24日",
+      "height": "167cm",
+      "hobby": "襲撃",
+      "weaponName": "サプライズパーティー",
+      "cv": "長谷川育美",
+      "skills": {
+        "ex": "行っくよー！",
+        "normal": "撃つよーっ！",
+        "passive": "これは痛いよ？",
+        "sub": "スピード上げるね？"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/asuna.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kotama": {
-    "id": "kotama",
-    "fullName": "音瀬コタマ",
-    "name": "コタマ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "3年生",
-    "club": "ヴェリタス",
-    "age": "17歳",
-    "birthday": "1月5日",
-    "height": "158cm",
-    "hobby": "無線通信、盗聴",
-    "weaponName": "エコーリンク",
-    "cv": "高川みな",
-    "portraitImage": "images/portrait/kotama.png",
-    "skills": {
-      "ex": "傍受開始",
-      "normal": "弱点を盗聴",
-      "passive": "集中解析",
-      "sub": "電波拡散"
-    }
+    "profile": {
+      "fullName": "音瀬コタマ",
+      "name": "コタマ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "3年生",
+      "club": "ヴェリタス",
+      "age": "17歳",
+      "birthday": "1月5日",
+      "height": "158cm",
+      "hobby": "無線通信、盗聴",
+      "weaponName": "エコーリンク",
+      "cv": "高川みな",
+      "skills": {
+        "ex": "傍受開始",
+        "normal": "弱点を盗聴",
+        "passive": "集中解析",
+        "sub": "電波拡散"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kotama.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kotori": {
-    "id": "kotori",
-    "fullName": "豊見コトリ",
-    "name": "コトリ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "エンジニア部",
-    "age": "15歳",
-    "birthday": "12月31日",
-    "height": "151cm",
-    "hobby": "おしゃべり",
-    "weaponName": "プロフェッサーK",
-    "cv": "篠原なるみ",
-    "portraitImage": "images/portrait/kotori.png",
-    "skills": {
-      "ex": "ブラックボックス",
-      "normal": "ごめんなさい！",
-      "passive": "論点把握能力",
-      "sub": "理解しました！"
-    }
+    "profile": {
+      "fullName": "豊見コトリ",
+      "name": "コトリ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "エンジニア部",
+      "age": "15歳",
+      "birthday": "12月31日",
+      "height": "151cm",
+      "hobby": "おしゃべり",
+      "weaponName": "プロフェッサーK",
+      "cv": "篠原なるみ",
+      "skills": {
+        "ex": "ブラックボックス",
+        "normal": "ごめんなさい！",
+        "passive": "論点把握能力",
+        "sub": "理解しました！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kotori.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "shimiko": {
-    "id": "shimiko",
-    "fullName": "円堂シミコ",
-    "name": "シミコ",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "図書委員会",
-    "age": "15歳",
-    "birthday": "11月30日",
-    "height": "157cm",
-    "hobby": "読書、しおりづくり",
-    "weaponName": "ライブラリールーラー",
-    "cv": "富田美憂",
-    "portraitImage": "images/portrait/shimiko.png",
-    "skills": {
-      "ex": "知識の盾",
-      "normal": "心の栄養剤",
-      "passive": "知識を蓄えましょう！",
-      "sub": "みんなで読書会を開きましょう！"
-    }
+    "profile": {
+      "fullName": "円堂シミコ",
+      "name": "シミコ",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "図書委員会",
+      "age": "15歳",
+      "birthday": "11月30日",
+      "height": "157cm",
+      "hobby": "読書、しおりづくり",
+      "weaponName": "ライブラリールーラー",
+      "cv": "富田美憂",
+      "skills": {
+        "ex": "知識の盾",
+        "normal": "心の栄養剤",
+        "passive": "知識を蓄えましょう！",
+        "sub": "みんなで読書会を開きましょう！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/shimiko.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "juri": {
-    "id": "juri",
-    "fullName": "牛牧ジュリ",
-    "name": "ジュリ",
-    "school": "ゲヘナ学園",
-    "grade": "1年生",
-    "club": "給食部",
-    "age": "15歳",
-    "birthday": "10月20日",
-    "height": "170cm",
-    "hobby": "自己流の料理研究",
-    "weaponName": "給食部の護身用銃typeB",
-    "cv": "田辺留依",
-    "portraitImage": "images/portrait/juri.png",
-    "skills": {
-      "ex": "ジュリのクッキングタイム！",
-      "normal": "最高のお料理",
-      "passive": "やる気は十分！",
-      "sub": "召し上がれ！"
-    }
+    "profile": {
+      "fullName": "牛牧ジュリ",
+      "name": "ジュリ",
+      "school": "ゲヘナ学園",
+      "grade": "1年生",
+      "club": "給食部",
+      "age": "15歳",
+      "birthday": "10月20日",
+      "height": "170cm",
+      "hobby": "自己流の料理研究",
+      "weaponName": "給食部の護身用銃typeB",
+      "cv": "田辺留依",
+      "skills": {
+        "ex": "ジュリのクッキングタイム！",
+        "normal": "最高のお料理",
+        "passive": "やる気は十分！",
+        "sub": "召し上がれ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/juri.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "suzumi": {
-    "id": "suzumi",
-    "fullName": "守月スズミ",
-    "name": "スズミ",
-    "school": "トリニティ総合学園",
-    "grade": "2年生",
-    "club": "トリニティ自警団",
-    "age": "16歳",
-    "birthday": "8月31日",
-    "height": "162cm",
-    "hobby": "巡回、散策",
-    "weaponName": "セーフティー",
-    "cv": "社本悠",
-    "portraitImage": "images/portrait/suzumi.png",
-    "skills": {
-      "ex": "オーダーメイド閃光弾",
-      "normal": "自警団の底力",
-      "passive": "緊急回避",
-      "sub": "自警団の猛襲"
-    }
+    "profile": {
+      "fullName": "守月スズミ",
+      "name": "スズミ",
+      "school": "トリニティ総合学園",
+      "grade": "2年生",
+      "club": "トリニティ自警団",
+      "age": "16歳",
+      "birthday": "8月31日",
+      "height": "162cm",
+      "hobby": "巡回、散策",
+      "weaponName": "セーフティー",
+      "cv": "社本悠",
+      "skills": {
+        "ex": "オーダーメイド閃光弾",
+        "normal": "自警団の底力",
+        "passive": "緊急回避",
+        "sub": "自警団の猛襲"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/suzumi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "serina": {
-    "id": "serina",
-    "fullName": "鷲見セリナ",
-    "name": "セリナ",
-    "school": "トリニティ総合学園",
-    "grade": "2年生",
-    "club": "救護騎士団",
-    "age": "16歳",
-    "birthday": "1月6日",
-    "height": "156cm",
-    "hobby": "病院のボランティア",
-    "weaponName": "タクティカルセラピー",
-    "cv": "涼本あきほ",
-    "portraitImage": "images/portrait/serina.png",
-    "skills": {
-      "ex": "集中治療セットA",
-      "normal": "緊急治療セットB",
-      "passive": "白衣の天使",
-      "sub": "天使のほほ笑み"
-    }
+    "profile": {
+      "fullName": "鷲見セリナ",
+      "name": "セリナ",
+      "school": "トリニティ総合学園",
+      "grade": "2年生",
+      "club": "救護騎士団",
+      "age": "16歳",
+      "birthday": "1月6日",
+      "height": "156cm",
+      "hobby": "病院のボランティア",
+      "weaponName": "タクティカルセラピー",
+      "cv": "涼本あきほ",
+      "skills": {
+        "ex": "集中治療セットA",
+        "normal": "緊急治療セットB",
+        "passive": "白衣の天使",
+        "sub": "天使のほほ笑み"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/serina.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "chinatsu": {
-    "id": "chinatsu",
-    "fullName": "火宮チナツ",
-    "name": "チナツ",
-    "school": "ゲヘナ学園",
-    "grade": "1年生",
-    "club": "風紀委員会",
-    "age": "15歳",
-    "birthday": "8月22日",
-    "height": "159cm",
-    "hobby": "哲学書を読むこと",
-    "weaponName": "サポートポインター",
-    "cv": "香月はるか",
-    "portraitImage": "images/portrait/chinatsu.png",
-    "skills": {
-      "ex": "戦傷治療",
-      "normal": "戦況の立て直し",
-      "passive": "医療支援を強化",
-      "sub": "防御支援を強化"
-    }
+    "profile": {
+      "fullName": "火宮チナツ",
+      "name": "チナツ",
+      "school": "ゲヘナ学園",
+      "grade": "1年生",
+      "club": "風紀委員会",
+      "age": "15歳",
+      "birthday": "8月22日",
+      "height": "159cm",
+      "hobby": "哲学書を読むこと",
+      "weaponName": "サポートポインター",
+      "cv": "香月はるか",
+      "skills": {
+        "ex": "戦傷治療",
+        "normal": "戦況の立て直し",
+        "passive": "医療支援を強化",
+        "sub": "防御支援を強化"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/chinatsu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "haruka": {
-    "id": "haruka",
-    "fullName": "伊草ハルカ",
-    "name": "ハルカ",
-    "school": "ゲヘナ学園",
-    "grade": "1年生",
-    "club": "便利屋68",
-    "age": "15歳",
-    "birthday": "5月13日",
-    "height": "157cm",
-    "hobby": "雑草を育てること",
-    "weaponName": "ブローアウェイ",
-    "cv": "石飛恵里花",
-    "portraitImage": "images/portrait/haruka.png",
-    "skills": {
-      "ex": "乱れ撃ち",
-      "normal": "トリガーオーバー",
-      "passive": "が、頑張ります！",
-      "sub": "うわああああっ！？"
-    }
+    "profile": {
+      "fullName": "伊草ハルカ",
+      "name": "ハルカ",
+      "school": "ゲヘナ学園",
+      "grade": "1年生",
+      "club": "便利屋68",
+      "age": "15歳",
+      "birthday": "5月13日",
+      "height": "157cm",
+      "hobby": "雑草を育てること",
+      "weaponName": "ブローアウェイ",
+      "cv": "石飛恵里花",
+      "skills": {
+        "ex": "乱れ撃ち",
+        "normal": "トリガーオーバー",
+        "passive": "が、頑張ります！",
+        "sub": "うわああああっ！？"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/haruka.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "pina": {
-    "id": "pina",
-    "fullName": "朝比奈フィーナ",
-    "name": "フィーナ",
-    "school": "百鬼夜行連合学院",
-    "grade": "1年生",
-    "club": "お祭り運営委員会",
-    "age": "17歳",
-    "birthday": "11月3日",
-    "height": "165cm",
-    "hobby": "任侠映画鑑賞",
-    "weaponName": "仁義なき撃ち合い",
-    "cv": "木戸衣吹",
-    "portraitImage": "images/portrait/pina.png",
-    "skills": {
-      "ex": "連射モード、デス！",
-      "normal": "もう一度燃やすのデス！",
-      "passive": "鋭い直感",
-      "sub": "射撃準備、OK！"
-    }
+    "profile": {
+      "fullName": "朝比奈フィーナ",
+      "name": "フィーナ",
+      "school": "百鬼夜行連合学院",
+      "grade": "1年生",
+      "club": "お祭り運営委員会",
+      "age": "17歳",
+      "birthday": "11月3日",
+      "height": "165cm",
+      "hobby": "任侠映画鑑賞",
+      "weaponName": "仁義なき撃ち合い",
+      "cv": "木戸衣吹",
+      "skills": {
+        "ex": "連射モード、デス！",
+        "normal": "もう一度燃やすのデス！",
+        "passive": "鋭い直感",
+        "sub": "射撃準備、OK！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/pina.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "yoshimi": {
-    "id": "yoshimi",
-    "fullName": "伊原木ヨシミ",
-    "name": "ヨシミ",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "放課後スイーツ部",
-    "age": "15歳",
-    "birthday": "8月29日",
-    "height": "146cm",
-    "hobby": "イベントごと、限定スイーツ巡り",
-    "weaponName": "スイーツドライバー",
-    "cv": "真野あゆみ",
-    "portraitImage": "images/portrait/yoshimi.png",
-    "skills": {
-      "ex": "だ、誰が慌ててるって！？",
-      "normal": "痛い目に遭ってみる？！",
-      "passive": "な、舐めないで！",
-      "sub": "私の話を聞きなさいよおっ！"
-    }
+    "profile": {
+      "fullName": "伊原木ヨシミ",
+      "name": "ヨシミ",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "放課後スイーツ部",
+      "age": "15歳",
+      "birthday": "8月29日",
+      "height": "146cm",
+      "hobby": "イベントごと、限定スイーツ巡り",
+      "weaponName": "スイーツドライバー",
+      "cv": "真野あゆみ",
+      "skills": {
+        "ex": "だ、誰が慌ててるって！？",
+        "normal": "痛い目に遭ってみる？！",
+        "passive": "な、舐めないで！",
+        "sub": "私の話を聞きなさいよおっ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/yoshimi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "mashiro": {
-    "id": "mashiro",
-    "fullName": "静山マシロ",
-    "name": "マシロ",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "正義実現委員会",
-    "age": "15歳",
-    "birthday": "6月5日",
-    "height": "155cm",
-    "hobby": "高いところに登ること、観察日記を書くこと",
-    "weaponName": "正義の顕現",
-    "cv": "鬼頭明里",
-    "portraitImage": "images/portrait/mashiro.png",
-    "skills": {
-      "ex": "正義の一撃",
-      "normal": "正義の決断",
-      "passive": "正義の気概",
-      "sub": "正義の結束"
-    }
+    "profile": {
+      "fullName": "静山マシロ",
+      "name": "マシロ",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "正義実現委員会",
+      "age": "15歳",
+      "birthday": "6月5日",
+      "height": "155cm",
+      "hobby": "高いところに登ること、観察日記を書くこと",
+      "weaponName": "正義の顕現",
+      "cv": "鬼頭明里",
+      "skills": {
+        "ex": "正義の一撃",
+        "normal": "正義の決断",
+        "passive": "正義の気概",
+        "sub": "正義の結束"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/mashiro.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "izuna": {
-    "id": "izuna",
-    "fullName": "久田イズナ",
-    "name": "イズナ",
-    "school": "百鬼夜行連合学院",
-    "grade": "1年生",
-    "club": "忍術研究部",
-    "age": "15歳",
-    "birthday": "12月16日",
-    "height": "155cm",
-    "hobby": "忍術の勉強、主殿の護衛",
-    "weaponName": "イズナ流スーパー忍具",
-    "cv": "阿澄佳奈",
-    "portraitImage": "images/portrait/izuna.png",
-    "skills": {
-      "ex": "これぞイズナ流忍法！",
-      "normal": "秘技！爆裂手裏剣！",
-      "passive": "イズナ流、奇襲の術！",
-      "sub": "イズナ流、興起の術！"
-    }
+    "profile": {
+      "fullName": "久田イズナ",
+      "name": "イズナ",
+      "school": "百鬼夜行連合学院",
+      "grade": "1年生",
+      "club": "忍術研究部",
+      "age": "15歳",
+      "birthday": "12月16日",
+      "height": "155cm",
+      "hobby": "忍術の勉強、主殿の護衛",
+      "weaponName": "イズナ流スーパー忍具",
+      "cv": "阿澄佳奈",
+      "skills": {
+        "ex": "これぞイズナ流忍法！",
+        "normal": "秘技！爆裂手裏剣！",
+        "passive": "イズナ流、奇襲の術！",
+        "sub": "イズナ流、興起の術！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/izuna.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "shizuko": {
-    "id": "shizuko",
-    "fullName": "河和シズコ",
-    "name": "シズコ",
-    "school": "百鬼夜行連合学院",
-    "grade": "2年生",
-    "club": "お祭り運営委員会",
-    "age": "16歳",
-    "birthday": "7月7日",
-    "height": "153cm",
-    "hobby": "可愛く接客すること、看板娘パンチ",
-    "weaponName": "桜ボンボン",
-    "cv": "森永千才",
-    "portraitImage": "images/portrait/shizuko.png",
-    "skills": {
-      "ex": "百夜堂出張サービス！",
-      "normal": "営業妨害しないで！",
-      "passive": "て、てへぺろっ？",
-      "sub": "にゃんにゃんっ！"
-    }
+    "profile": {
+      "fullName": "河和シズコ",
+      "name": "シズコ",
+      "school": "百鬼夜行連合学院",
+      "grade": "2年生",
+      "club": "お祭り運営委員会",
+      "age": "16歳",
+      "birthday": "7月7日",
+      "height": "153cm",
+      "hobby": "可愛く接客すること、看板娘パンチ",
+      "weaponName": "桜ボンボン",
+      "cv": "森永千才",
+      "skills": {
+        "ex": "百夜堂出張サービス！",
+        "normal": "営業妨害しないで！",
+        "passive": "て、てへぺろっ？",
+        "sub": "にゃんにゃんっ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/shizuko.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "arisu": {
-    "id": "arisu",
-    "fullName": "天童アリス",
-    "name": "アリス",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "ゲーム開発部",
-    "age": "??歳",
-    "birthday": "3月25日",
-    "height": "152cm",
-    "hobby": "ゲーム（特にRPG）",
-    "weaponName": "光の剣：スーパーノヴァ",
-    "cv": "田中美海",
-    "portraitImage": "images/portrait/arisu.png",
-    "skills": {
-      "ex": "世界の 法則が 崩壊します！",
-      "normal": "光よ！",
-      "passive": "強化魔法です！",
-      "sub": "覚醒せよ、スーパーノヴァ！"
-    }
+    "profile": {
+      "fullName": "天童アリス",
+      "name": "アリス",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "ゲーム開発部",
+      "age": "??歳",
+      "birthday": "3月25日",
+      "height": "152cm",
+      "hobby": "ゲーム（特にRPG）",
+      "weaponName": "光の剣：スーパーノヴァ",
+      "cv": "田中美海",
+      "skills": {
+        "ex": "世界の 法則が 崩壊します！",
+        "normal": "光よ！",
+        "passive": "強化魔法です！",
+        "sub": "覚醒せよ、スーパーノヴァ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/arisu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "midori": {
-    "id": "midori",
-    "fullName": "才羽ミドリ",
-    "name": "ミドリ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "ゲーム開発部",
-    "age": "15歳",
-    "birthday": "12月8日",
-    "height": "143cm",
-    "hobby": "絵を描くこと",
-    "weaponName": "フレッシュ・インスピレーション",
-    "cv": "高田憂希",
-    "portraitImage": "images/portrait/midori.png",
-    "skills": {
-      "ex": "ドローイングアート",
-      "normal": "磨き上げるセンス",
-      "passive": "アーティストインスピレーション",
-      "sub": "開発者シナジー：モモイ"
-    }
+    "profile": {
+      "fullName": "才羽ミドリ",
+      "name": "ミドリ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "ゲーム開発部",
+      "age": "15歳",
+      "birthday": "12月8日",
+      "height": "143cm",
+      "hobby": "絵を描くこと",
+      "weaponName": "フレッシュ・インスピレーション",
+      "cv": "高田憂希",
+      "skills": {
+        "ex": "ドローイングアート",
+        "normal": "磨き上げるセンス",
+        "passive": "アーティストインスピレーション",
+        "sub": "開発者シナジー：モモイ"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/midori.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "momoi": {
-    "id": "momoi",
-    "fullName": "才羽モモイ",
-    "name": "モモイ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "ゲーム開発部",
-    "age": "15歳",
-    "birthday": "12月8日",
-    "height": "143cm",
-    "hobby": "ゲーム",
-    "weaponName": "ユニーク・アイディア",
-    "cv": "徳井青空",
-    "portraitImage": "images/portrait/momoi.png",
-    "skills": {
-      "ex": "生みの苦しみ",
-      "normal": "締切厳守",
-      "passive": "クリエイティブセンス",
-      "sub": "開発者シナジー：ミドリ"
-    }
+    "profile": {
+      "fullName": "才羽モモイ",
+      "name": "モモイ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "ゲーム開発部",
+      "age": "15歳",
+      "birthday": "12月8日",
+      "height": "143cm",
+      "hobby": "ゲーム",
+      "weaponName": "ユニーク・アイディア",
+      "cv": "徳井青空",
+      "skills": {
+        "ex": "生みの苦しみ",
+        "normal": "締切厳守",
+        "passive": "クリエイティブセンス",
+        "sub": "開発者シナジー：ミドリ"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/momoi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "cherino": {
-    "id": "cherino",
-    "fullName": "連河チェリノ",
-    "name": "チェリノ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "3年生",
-    "club": "レッドウィンター事務局",
-    "age": "??歳",
-    "birthday": "10月27日",
-    "height": "128cm",
-    "hobby": "粛清、雪合戦",
-    "weaponName": "チーストカ",
-    "cv": "矢野妃菜喜*1",
-    "portraitImage": "images/portrait/cherino.png",
-    "skills": {
-      "ex": "親衛隊、集合！",
-      "normal": "あいつを粛清しろ！",
-      "passive": "これが髭の力だ！",
-      "sub": "髭の権威にひれ伏せ！"
-    }
+    "profile": {
+      "fullName": "連河チェリノ",
+      "name": "チェリノ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "3年生",
+      "club": "レッドウィンター事務局",
+      "age": "??歳",
+      "birthday": "10月27日",
+      "height": "128cm",
+      "hobby": "粛清、雪合戦",
+      "weaponName": "チーストカ",
+      "cv": "矢野妃菜喜*1",
+      "skills": {
+        "ex": "親衛隊、集合！",
+        "normal": "あいつを粛清しろ！",
+        "passive": "これが髭の力だ！",
+        "sub": "髭の権威にひれ伏せ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/cherino.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "nodoka": {
-    "id": "nodoka",
-    "fullName": "天見ノドカ",
-    "name": "ノドカ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "2年生",
-    "club": "227号特別クラス",
-    "age": "16歳",
-    "birthday": "2月20日",
-    "height": "147cm",
-    "hobby": "天体観測",
-    "weaponName": "サジタリウスナイト",
-    "cv": "佐藤聡美",
-    "portraitImage": "images/portrait/nodoka.png",
-    "skills": {
-      "ex": "観測支援",
-      "normal": "頑なな視線",
-      "passive": "美学に基づいた観測",
-      "sub": "特別クラスの絆"
-    }
+    "profile": {
+      "fullName": "天見ノドカ",
+      "name": "ノドカ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "2年生",
+      "club": "227号特別クラス",
+      "age": "16歳",
+      "birthday": "2月20日",
+      "height": "147cm",
+      "hobby": "天体観測",
+      "weaponName": "サジタリウスナイト",
+      "cv": "佐藤聡美",
+      "skills": {
+        "ex": "観測支援",
+        "normal": "頑なな視線",
+        "passive": "美学に基づいた観測",
+        "sub": "特別クラスの絆"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/nodoka.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "yuzu": {
-    "id": "yuzu",
-    "fullName": "花岡ユズ",
-    "name": "ユズ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "ゲーム開発部",
-    "age": "16歳",
-    "birthday": "08月12日",
-    "height": "150cm",
-    "hobby": "ゲーム制作",
-    "weaponName": "にゃん's ダッシュ",
-    "cv": "寺澤百花",
-    "portraitImage": "images/portrait/yuzu.png",
-    "skills": {
-      "ex": "ゲームスタート！",
-      "normal": "連続コンボ！",
-      "passive": "デバッグ中……",
-      "sub": "ふりしぼる勇気"
-    }
+    "profile": {
+      "fullName": "花岡ユズ",
+      "name": "ユズ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "ゲーム開発部",
+      "age": "16歳",
+      "birthday": "08月12日",
+      "height": "150cm",
+      "hobby": "ゲーム制作",
+      "weaponName": "にゃん's ダッシュ",
+      "cv": "寺澤百花",
+      "skills": {
+        "ex": "ゲームスタート！",
+        "normal": "連続コンボ！",
+        "passive": "デバッグ中……",
+        "sub": "ふりしぼる勇気"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/yuzu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "azusa": {
-    "id": "azusa",
-    "fullName": "白洲アズサ",
-    "name": "アズサ",
-    "school": "トリニティ総合学園",
-    "grade": "2年生",
-    "club": "補習授業部",
-    "age": "16歳",
-    "birthday": "12月26日",
-    "height": "149cm",
-    "hobby": "なし",
-    "weaponName": "Et Omnia Vanitas",
-    "cv": "種田梨沙",
-    "portraitImage": "images/portrait/azusa.png",
-    "skills": {
-      "ex": "intulit mortem",
-      "normal": "sagitta mortis",
-      "passive": "過酷な訓練",
-      "sub": "弱点を狙う"
-    }
+    "profile": {
+      "fullName": "白洲アズサ",
+      "name": "アズサ",
+      "school": "トリニティ総合学園",
+      "grade": "2年生",
+      "club": "補習授業部",
+      "age": "16歳",
+      "birthday": "12月26日",
+      "height": "149cm",
+      "hobby": "なし",
+      "weaponName": "Et Omnia Vanitas",
+      "cv": "種田梨沙",
+      "skills": {
+        "ex": "intulit mortem",
+        "normal": "sagitta mortis",
+        "passive": "過酷な訓練",
+        "sub": "弱点を狙う"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/azusa.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hanako": {
-    "id": "hanako",
-    "fullName": "浦和ハナコ",
-    "name": "ハナコ",
-    "school": "トリニティ総合学園",
-    "grade": "2年生",
-    "club": "補習授業部",
-    "age": "16歳",
-    "birthday": "1月3日",
-    "height": "161cm",
-    "hobby": "徘徊",
-    "weaponName": "オネストウィッシュ",
-    "cv": "豊田萌絵",
-    "portraitImage": "images/portrait/hanako.png",
-    "skills": {
-      "ex": "禁じられた遊びを始めましょう",
-      "normal": "固くなあれ♪",
-      "passive": "ヤル気マンマンです",
-      "sub": "一緒なら恥ずかしくありません！"
-    }
+    "profile": {
+      "fullName": "浦和ハナコ",
+      "name": "ハナコ",
+      "school": "トリニティ総合学園",
+      "grade": "2年生",
+      "club": "補習授業部",
+      "age": "16歳",
+      "birthday": "1月3日",
+      "height": "161cm",
+      "hobby": "徘徊",
+      "weaponName": "オネストウィッシュ",
+      "cv": "豊田萌絵",
+      "skills": {
+        "ex": "禁じられた遊びを始めましょう",
+        "normal": "固くなあれ♪",
+        "passive": "ヤル気マンマンです",
+        "sub": "一緒なら恥ずかしくありません！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hanako.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "koharu": {
-    "id": "koharu",
-    "fullName": "下江コハル",
-    "name": "コハル",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "正義実現委員会↓補習授業部",
-    "age": "15歳",
-    "birthday": "4月16日",
-    "height": "148cm",
-    "hobby": "空想、妄想、エッチな雑誌集め",
-    "weaponName": "ジャスティス・ブラック",
-    "cv": "赤尾ひかる",
-    "portraitImage": "images/portrait/koharu.png",
-    "skills": {
-      "ex": "セイなる手榴弾",
-      "normal": "わ、私が治療するっ！",
-      "passive": "これでも頑張ってるの！",
-      "sub": "エリートだから！"
-    }
+    "profile": {
+      "fullName": "下江コハル",
+      "name": "コハル",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "正義実現委員会↓補習授業部",
+      "age": "15歳",
+      "birthday": "4月16日",
+      "height": "148cm",
+      "hobby": "空想、妄想、エッチな雑誌集め",
+      "weaponName": "ジャスティス・ブラック",
+      "cv": "赤尾ひかる",
+      "skills": {
+        "ex": "セイなる手榴弾",
+        "normal": "わ、私が治療するっ！",
+        "passive": "これでも頑張ってるの！",
+        "sub": "エリートだから！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/koharu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kirino": {
-    "id": "kirino",
-    "fullName": "中務キリノ",
-    "name": "キリノ",
-    "school": "ヴァルキューレ警察学校",
-    "grade": "1年生",
-    "club": "生活安全局",
-    "age": "15歳",
-    "birthday": "10月22日",
-    "height": "161cm",
-    "hobby": "食べ歩き",
-    "weaponName": "第3号ヴァルキューレ制式拳銃",
-    "cv": "中島優衣",
-    "portraitImage": "images/portrait/kirino.png",
-    "skills": {
-      "ex": "交渉はここまでですね……！",
-      "normal": "制圧します！",
-      "passive": "速やかに処置を！",
-      "sub": "休んでなんていられません！"
-    }
+    "profile": {
+      "fullName": "中務キリノ",
+      "name": "キリノ",
+      "school": "ヴァルキューレ警察学校",
+      "grade": "1年生",
+      "club": "生活安全局",
+      "age": "15歳",
+      "birthday": "10月22日",
+      "height": "161cm",
+      "hobby": "食べ歩き",
+      "weaponName": "第3号ヴァルキューレ制式拳銃",
+      "cv": "中島優衣",
+      "skills": {
+        "ex": "交渉はここまでですね……！",
+        "normal": "制圧します！",
+        "passive": "速やかに処置を！",
+        "sub": "休んでなんていられません！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kirino.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "natsu": {
-    "id": "natsu",
-    "fullName": "柚鳥ナツ",
-    "name": "ナツ",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "放課後スイーツ部",
-    "age": "15歳",
-    "birthday": "12月4日",
-    "height": "152cm",
-    "hobby": "ロマンチックなこと、思索",
-    "weaponName": "ビヨンド・ザ・ルミネーション",
-    "cv": "長縄まりあ",
-    "portraitImage": "images/portrait/natsu.png",
-    "skills": {
-      "ex": "こういう時のとっておき",
-      "normal": "これ食べて元気出してー",
-      "passive": "腹が減っては……！",
-      "sub": "お口いっぱいの幸せ"
-    }
+    "profile": {
+      "fullName": "柚鳥ナツ",
+      "name": "ナツ",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "放課後スイーツ部",
+      "age": "15歳",
+      "birthday": "12月4日",
+      "height": "152cm",
+      "hobby": "ロマンチックなこと、思索",
+      "weaponName": "ビヨンド・ザ・ルミネーション",
+      "cv": "長縄まりあ",
+      "skills": {
+        "ex": "こういう時のとっておき",
+        "normal": "これ食べて元気出してー",
+        "passive": "腹が減っては……！",
+        "sub": "お口いっぱいの幸せ"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/natsu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "mari": {
-    "id": "mari",
-    "fullName": "伊落マリー",
-    "name": "マリー",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "シスターフッド",
-    "age": "15歳",
-    "birthday": "9月12日",
-    "height": "151cm",
-    "hobby": "お祈り、考えごと",
-    "weaponName": "パイエティー",
-    "cv": "小澤亜李",
-    "portraitImage": "images/portrait/mari.png",
-    "skills": {
-      "ex": "聖なる加護",
-      "normal": "浄化の洗礼",
-      "passive": "決然たる思い",
-      "sub": "慈愛の心"
-    }
+    "profile": {
+      "fullName": "伊落マリー",
+      "name": "マリー",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "シスターフッド",
+      "age": "15歳",
+      "birthday": "9月12日",
+      "height": "151cm",
+      "hobby": "お祈り、考えごと",
+      "weaponName": "パイエティー",
+      "cv": "小澤亜李",
+      "skills": {
+        "ex": "聖なる加護",
+        "normal": "浄化の洗礼",
+        "passive": "決然たる思い",
+        "sub": "慈愛の心"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/mari.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "ako": {
-    "id": "ako",
-    "fullName": "天雨アコ",
-    "name": "アコ",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "風紀委員会",
-    "age": "17歳",
-    "birthday": "12月22日",
-    "height": "165cm",
-    "hobby": "ヒナ委員長",
-    "weaponName": "ホットショット",
-    "cv": "高野麻里佳",
-    "portraitImage": "images/portrait/ako.png",
-    "skills": {
-      "ex": "偵察データを共有します",
-      "normal": "補給プランB",
-      "passive": "支援を開始します",
-      "sub": "サポートはお任せください"
-    }
+    "profile": {
+      "fullName": "天雨アコ",
+      "name": "アコ",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "風紀委員会",
+      "age": "17歳",
+      "birthday": "12月22日",
+      "height": "165cm",
+      "hobby": "ヒナ委員長",
+      "weaponName": "ホットショット",
+      "cv": "高野麻里佳",
+      "skills": {
+        "ex": "偵察データを共有します",
+        "normal": "補給プランB",
+        "passive": "支援を開始します",
+        "sub": "サポートはお任せください"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/ako.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "tomoe": {
-    "id": "tomoe",
-    "fullName": "佐城トモエ",
-    "name": "トモエ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "3年生",
-    "club": "レッドウィンター事務局",
-    "age": "17歳",
-    "birthday": "11月10日",
-    "height": "165cm",
-    "hobby": "アジテーション",
-    "weaponName": "ヴィエールナシチ",
-    "cv": "厚木那奈美",
-    "portraitImage": "images/portrait/tomoe.png",
-    "skills": {
-      "ex": "みなさん、こちらに耳を傾けてください！",
-      "normal": "巧妙なアジテーション",
-      "passive": "一瀉千里",
-      "sub": "反駁不能な言い回し"
-    }
+    "profile": {
+      "fullName": "佐城トモエ",
+      "name": "トモエ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "3年生",
+      "club": "レッドウィンター事務局",
+      "age": "17歳",
+      "birthday": "11月10日",
+      "height": "165cm",
+      "hobby": "アジテーション",
+      "weaponName": "ヴィエールナシチ",
+      "cv": "厚木那奈美",
+      "skills": {
+        "ex": "みなさん、こちらに耳を傾けてください！",
+        "normal": "巧妙なアジテーション",
+        "passive": "一瀉千里",
+        "sub": "反駁不能な言い回し"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/tomoe.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "wakamo": {
-    "id": "wakamo",
-    "fullName": "狐坂ワカモ",
-    "name": "ワカモ",
-    "school": "百鬼夜行連合学院（停学中）",
-    "grade": null,
-    "club": "無所属",
-    "age": "18歳",
-    "birthday": "4月3日",
-    "height": "161cm",
-    "hobby": "破壊、略奪",
-    "weaponName": "真紅の災厄",
-    "cv": "斎藤千和",
-    "portraitImage": "images/portrait/wakamo.png",
-    "skills": {
-      "ex": "深紅の花占い",
-      "normal": "乱れ散る花吹雪",
-      "passive": "花開く破壊衝動",
-      "sub": "狂い咲く闘争本能"
-    }
+    "profile": {
+      "fullName": "狐坂ワカモ",
+      "name": "ワカモ",
+      "school": "百鬼夜行連合学院（停学中）",
+      "grade": null,
+      "club": "無所属",
+      "age": "18歳",
+      "birthday": "4月3日",
+      "height": "161cm",
+      "hobby": "破壊、略奪",
+      "weaponName": "真紅の災厄",
+      "cv": "斎藤千和",
+      "skills": {
+        "ex": "深紅の花占い",
+        "normal": "乱れ散る花吹雪",
+        "passive": "花開く破壊衝動",
+        "sub": "狂い咲く闘争本能"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/wakamo.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "fubuki": {
-    "id": "fubuki",
-    "fullName": "合歓垣フブキ",
-    "name": "フブキ",
-    "school": "ヴァルキューレ警察学校",
-    "grade": "1年生",
-    "club": "生活安全局",
-    "age": "15歳",
-    "birthday": "10月21日",
-    "height": "148cm",
-    "hobby": "クロスワード、ラジオ",
-    "weaponName": "第14号ヴァルキューレ制式ライフル",
-    "cv": "平山笑美",
-    "portraitImage": "images/portrait/fubuki.png",
-    "skills": {
-      "ex": "まずは甘い休憩から",
-      "normal": "最後のひと口！",
-      "passive": "交通整理",
-      "sub": "便乗させてもらおっかな"
-    }
+    "profile": {
+      "fullName": "合歓垣フブキ",
+      "name": "フブキ",
+      "school": "ヴァルキューレ警察学校",
+      "grade": "1年生",
+      "club": "生活安全局",
+      "age": "15歳",
+      "birthday": "10月21日",
+      "height": "148cm",
+      "hobby": "クロスワード、ラジオ",
+      "weaponName": "第14号ヴァルキューレ制式ライフル",
+      "cv": "平山笑美",
+      "skills": {
+        "ex": "まずは甘い休憩から",
+        "normal": "最後のひと口！",
+        "passive": "交通整理",
+        "sub": "便乗させてもらおっかな"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/fubuki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "sena": {
-    "id": "sena",
-    "fullName": "氷室セナ",
-    "name": "セナ",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "救急医学部",
-    "age": "17歳",
-    "birthday": "4月7日",
-    "height": "155cm",
-    "hobby": "待機、薬品の整備",
-    "weaponName": "救急用突入キット",
-    "cv": "大西沙織",
-    "portraitImage": "images/portrait/sena.png",
-    "skills": {
-      "ex": "緊急出動",
-      "normal": "エネルギー剤注入",
-      "passive": "救急支援",
-      "sub": "可及的速やかに"
-    }
+    "profile": {
+      "fullName": "氷室セナ",
+      "name": "セナ",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "救急医学部",
+      "age": "17歳",
+      "birthday": "4月7日",
+      "height": "155cm",
+      "hobby": "待機、薬品の整備",
+      "weaponName": "救急用突入キット",
+      "cv": "大西沙織",
+      "skills": {
+        "ex": "緊急出動",
+        "normal": "エネルギー剤注入",
+        "passive": "救急支援",
+        "sub": "可及的速やかに"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/sena.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "chihiro": {
-    "id": "chihiro",
-    "fullName": "各務チヒロ",
-    "name": "チヒロ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "3年生",
-    "club": "ヴェリタス",
-    "age": "17歳",
-    "birthday": "4月26日",
-    "height": "160cm",
-    "hobby": "電子機器類の買い物",
-    "weaponName": "バックドア",
-    "cv": "山村響",
-    "portraitImage": "images/portrait/chihiro.png",
-    "skills": {
-      "ex": "オーバーライド",
-      "normal": "イントゥ・ザ・バックドア",
-      "passive": "エクスプロイト",
-      "sub": "ファイアウォール構築"
-    }
+    "profile": {
+      "fullName": "各務チヒロ",
+      "name": "チヒロ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "3年生",
+      "club": "ヴェリタス",
+      "age": "17歳",
+      "birthday": "4月26日",
+      "height": "160cm",
+      "hobby": "電子機器類の買い物",
+      "weaponName": "バックドア",
+      "cv": "山村響",
+      "skills": {
+        "ex": "オーバーライド",
+        "normal": "イントゥ・ザ・バックドア",
+        "passive": "エクスプロイト",
+        "sub": "ファイアウォール構築"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/chihiro.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "mimori": {
-    "id": "mimori",
-    "fullName": "水羽ミモリ",
-    "name": "ミモリ",
-    "school": "百鬼夜行連合学院",
-    "grade": "2年生",
-    "club": "修行部",
-    "age": "16歳",
-    "birthday": "3月15日",
-    "height": "156cm",
-    "hobby": "少女漫画、家事全般",
-    "weaponName": "柔らかな決意",
-    "cv": "田中理恵",
-    "portraitImage": "images/portrait/mimori.png",
-    "skills": {
-      "ex": "お花見日和ですね",
-      "normal": "お弁当を作ってきたんです",
-      "passive": "まだたくさんありますよ",
-      "sub": "味見してみませんか？"
-    }
+    "profile": {
+      "fullName": "水羽ミモリ",
+      "name": "ミモリ",
+      "school": "百鬼夜行連合学院",
+      "grade": "2年生",
+      "club": "修行部",
+      "age": "16歳",
+      "birthday": "3月15日",
+      "height": "156cm",
+      "hobby": "少女漫画、家事全般",
+      "weaponName": "柔らかな決意",
+      "cv": "田中理恵",
+      "skills": {
+        "ex": "お花見日和ですね",
+        "normal": "お弁当を作ってきたんです",
+        "passive": "まだたくさんありますよ",
+        "sub": "味見してみませんか？"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/mimori.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "ui": {
-    "id": "ui",
-    "fullName": "古関ウイ",
-    "name": "ウイ",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "図書委員会",
-    "age": "17歳",
-    "birthday": "4月23日",
-    "height": "165cm",
-    "hobby": "読書、書籍の管理、古書の研究",
-    "weaponName": "ボリュームサプレッサー",
-    "cv": "後藤沙緒里",
-    "portraitImage": "images/portrait/ui.png",
-    "skills": {
-      "ex": "古書の専門家",
-      "normal": "伝授されていく知識",
-      "passive": "専門家の知見",
-      "sub": "神経過敏"
-    }
+    "profile": {
+      "fullName": "古関ウイ",
+      "name": "ウイ",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "図書委員会",
+      "age": "17歳",
+      "birthday": "4月23日",
+      "height": "165cm",
+      "hobby": "読書、書籍の管理、古書の研究",
+      "weaponName": "ボリュームサプレッサー",
+      "cv": "後藤沙緒里",
+      "skills": {
+        "ex": "古書の専門家",
+        "normal": "伝授されていく知識",
+        "passive": "専門家の知見",
+        "sub": "神経過敏"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/ui.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hinata": {
-    "id": "hinata",
-    "fullName": "若葉ヒナタ",
-    "name": "ヒナタ",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "シスターフッド",
-    "age": "17歳",
-    "birthday": "5月17日",
-    "height": "166cm",
-    "hobby": "お祈り、整理整頓",
-    "weaponName": "ブレッシング",
-    "cv": "日高里菜",
-    "portraitImage": "images/portrait/hinata.png",
-    "skills": {
-      "ex": "最終手段",
-      "normal": "まずはお話を……！",
-      "passive": "思いがけない展開",
-      "sub": "力仕事はお任せを！"
-    }
+    "profile": {
+      "fullName": "若葉ヒナタ",
+      "name": "ヒナタ",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "シスターフッド",
+      "age": "17歳",
+      "birthday": "5月17日",
+      "height": "166cm",
+      "hobby": "お祈り、整理整頓",
+      "weaponName": "ブレッシング",
+      "cv": "日高里菜",
+      "skills": {
+        "ex": "最終手段",
+        "normal": "まずはお話を……！",
+        "passive": "思いがけない展開",
+        "sub": "力仕事はお任せを！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hinata.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "marina": {
-    "id": "marina",
-    "fullName": "池倉マリナ",
-    "name": "マリナ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "2年生",
-    "club": "レッドウィンター事務局",
-    "age": "16歳",
-    "birthday": "11月4日",
-    "height": "166cm",
-    "hobby": "散歩、突撃",
-    "weaponName": "バラライカ",
-    "cv": "平井祥恵",
-    "portraitImage": "images/portrait/marina.png",
-    "skills": {
-      "ex": "革命的突撃！",
-      "normal": "退いてなるものか！",
-      "passive": "これは後退ではない！",
-      "sub": "決断力"
-    }
+    "profile": {
+      "fullName": "池倉マリナ",
+      "name": "マリナ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "2年生",
+      "club": "レッドウィンター事務局",
+      "age": "16歳",
+      "birthday": "11月4日",
+      "height": "166cm",
+      "hobby": "散歩、突撃",
+      "weaponName": "バラライカ",
+      "cv": "平井祥恵",
+      "skills": {
+        "ex": "革命的突撃！",
+        "normal": "退いてなるものか！",
+        "passive": "これは後退ではない！",
+        "sub": "決断力"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/marina.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "miyako": {
-    "id": "miyako",
-    "fullName": "月雪ミヤコ",
-    "name": "ミヤコ",
-    "school": "SRT特殊学園",
-    "grade": "1年生",
-    "club": "RABBIT小隊",
-    "age": "15歳",
-    "birthday": "1月7日",
-    "height": "156cm",
-    "hobby": "動物系の動画鑑賞",
-    "weaponName": "RABBIT-31式短機関銃",
-    "cv": "藤田茜",
-    "portraitImage": "images/portrait/miyako.png",
-    "skills": {
-      "ex": "自走式閃光ドローン",
-      "normal": "クレイモア",
-      "passive": "特殊防弾プレート",
-      "sub": "攪乱作戦"
-    }
+    "profile": {
+      "fullName": "月雪ミヤコ",
+      "name": "ミヤコ",
+      "school": "SRT特殊学園",
+      "grade": "1年生",
+      "club": "RABBIT小隊",
+      "age": "15歳",
+      "birthday": "1月7日",
+      "height": "156cm",
+      "hobby": "動物系の動画鑑賞",
+      "weaponName": "RABBIT-31式短機関銃",
+      "cv": "藤田茜",
+      "skills": {
+        "ex": "自走式閃光ドローン",
+        "normal": "クレイモア",
+        "passive": "特殊防弾プレート",
+        "sub": "攪乱作戦"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/miyako.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "saki": {
-    "id": "saki",
-    "fullName": "空井サキ",
-    "name": "サキ",
-    "school": "SRT特殊学園",
-    "grade": "1年生",
-    "club": "RABBIT小隊",
-    "age": "15歳",
-    "birthday": "4月9日",
-    "height": "161cm",
-    "hobby": "銃器の整備、植物などの採集",
-    "weaponName": "RABBIT-26式機関銃",
-    "cv": "友永朱音",
-    "portraitImage": "images/portrait/saki.png",
-    "skills": {
-      "ex": "支援射撃、開始！",
-      "normal": "制圧射撃",
-      "passive": "準備万端",
-      "sub": "ポイントマンの先導"
-    }
+    "profile": {
+      "fullName": "空井サキ",
+      "name": "サキ",
+      "school": "SRT特殊学園",
+      "grade": "1年生",
+      "club": "RABBIT小隊",
+      "age": "15歳",
+      "birthday": "4月9日",
+      "height": "161cm",
+      "hobby": "銃器の整備、植物などの採集",
+      "weaponName": "RABBIT-26式機関銃",
+      "cv": "友永朱音",
+      "skills": {
+        "ex": "支援射撃、開始！",
+        "normal": "制圧射撃",
+        "passive": "準備万端",
+        "sub": "ポイントマンの先導"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/saki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "miyu": {
-    "id": "miyu",
-    "fullName": "霞沢ミユ",
-    "name": "ミユ",
-    "school": "SRT特殊学園",
-    "grade": "1年生",
-    "club": "RABBIT小隊",
-    "age": "15歳",
-    "birthday": "7月12日",
-    "height": "149cm",
-    "hobby": "否定的な妄想、現実逃避、小石探し",
-    "weaponName": "RABBIT-39式小銃",
-    "cv": "後藤邑子",
-    "portraitImage": "images/portrait/miyu.png",
-    "skills": {
-      "ex": "小心者の観測",
-      "normal": "予期せぬ角度からの一撃",
-      "passive": "深呼吸",
-      "sub": "狙撃用の特殊弾"
-    }
+    "profile": {
+      "fullName": "霞沢ミユ",
+      "name": "ミユ",
+      "school": "SRT特殊学園",
+      "grade": "1年生",
+      "club": "RABBIT小隊",
+      "age": "15歳",
+      "birthday": "7月12日",
+      "height": "149cm",
+      "hobby": "否定的な妄想、現実逃避、小石探し",
+      "weaponName": "RABBIT-39式小銃",
+      "cv": "後藤邑子",
+      "skills": {
+        "ex": "小心者の観測",
+        "normal": "予期せぬ角度からの一撃",
+        "passive": "深呼吸",
+        "sub": "狙撃用の特殊弾"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/miyu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "michiru": {
-    "id": "michiru",
-    "fullName": "千鳥ミチル",
-    "name": "ミチル",
-    "school": "百鬼夜行連合学院",
-    "grade": "3年生",
-    "club": "忍術研究部",
-    "age": "17歳",
-    "birthday": "2月22日",
-    "height": "153cm",
-    "hobby": "新しい忍術の考案、動画づくり",
-    "weaponName": "ミチル流オーバーフローショットガン",
-    "cv": "水橋かおり",
-    "portraitImage": "images/portrait/michiru.png",
-    "skills": {
-      "ex": "ミチル流忍法っ！！",
-      "normal": "捌け、地獄忍魔刀！",
-      "passive": "見て見て、自作の忍術！",
-      "sub": "ミチル流忍術、奥義！"
-    }
+    "profile": {
+      "fullName": "千鳥ミチル",
+      "name": "ミチル",
+      "school": "百鬼夜行連合学院",
+      "grade": "3年生",
+      "club": "忍術研究部",
+      "age": "17歳",
+      "birthday": "2月22日",
+      "height": "153cm",
+      "hobby": "新しい忍術の考案、動画づくり",
+      "weaponName": "ミチル流オーバーフローショットガン",
+      "cv": "水橋かおり",
+      "skills": {
+        "ex": "ミチル流忍法っ！！",
+        "normal": "捌け、地獄忍魔刀！",
+        "passive": "見て見て、自作の忍術！",
+        "sub": "ミチル流忍術、奥義！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/michiru.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "iroha": {
-    "id": "iroha",
-    "fullName": "棗イロハ",
-    "name": "イロハ",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "万魔殿",
-    "age": "16歳",
-    "birthday": "11月16日",
-    "height": "151cm",
-    "hobby": "読書、サボること",
-    "weaponName": "万魔殿制式拳銃",
-    "cv": "福圓美里",
-    "portraitImage": "images/portrait/iroha.png",
-    "skills": {
-      "ex": "行きますよ、虎丸",
-      "normal": "めんどくさいですね……",
-      "passive": "仕方ありません",
-      "sub": "しっかりしてください"
-    }
+    "profile": {
+      "fullName": "棗イロハ",
+      "name": "イロハ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "万魔殿",
+      "age": "16歳",
+      "birthday": "11月16日",
+      "height": "151cm",
+      "hobby": "読書、サボること",
+      "weaponName": "万魔殿制式拳銃",
+      "cv": "福圓美里",
+      "skills": {
+        "ex": "行きますよ、虎丸",
+        "normal": "めんどくさいですね……",
+        "passive": "仕方ありません",
+        "sub": "しっかりしてください"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/iroha.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kaede": {
-    "id": "kaede",
-    "fullName": "勇美カエデ",
-    "name": "カエデ",
-    "school": "百鬼夜行連合学院",
-    "grade": "1年生",
-    "club": "修行部",
-    "age": "15歳",
-    "birthday": "7月9日",
-    "height": "142cm",
-    "hobby": "いたずら（できるだけ我慢してる）、カブトムシを捕まえること",
-    "weaponName": "ファニー・ファイアワークス",
-    "cv": "加藤英美里",
-    "portraitImage": "images/portrait/kaede.png",
-    "skills": {
-      "ex": "信号弾、発射！！",
-      "normal": "カブトムシシールド！",
-      "passive": "癒しの波動、とりゃぁっ！",
-      "sub": "まだまだ頑張れるよ！"
-    }
+    "profile": {
+      "fullName": "勇美カエデ",
+      "name": "カエデ",
+      "school": "百鬼夜行連合学院",
+      "grade": "1年生",
+      "club": "修行部",
+      "age": "15歳",
+      "birthday": "7月9日",
+      "height": "142cm",
+      "hobby": "いたずら（できるだけ我慢してる）、カブトムシを捕まえること",
+      "weaponName": "ファニー・ファイアワークス",
+      "cv": "加藤英美里",
+      "skills": {
+        "ex": "信号弾、発射！！",
+        "normal": "カブトムシシールド！",
+        "passive": "癒しの波動、とりゃぁっ！",
+        "sub": "まだまだ頑張れるよ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kaede.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "tsukuyo": {
-    "id": "tsukuyo",
-    "fullName": "大野ツクヨ",
-    "name": "ツクヨ",
-    "school": "百鬼夜行連合学院",
-    "grade": "1年生",
-    "club": "忍術研究部",
-    "age": "15歳",
-    "birthday": "4月5日",
-    "height": "180cm",
-    "hobby": "身代わりの術、息を潜めること",
-    "weaponName": "ツクヨ流サブマシンガン",
-    "cv": "後藤彩佐",
-    "portraitImage": "images/portrait/tsukuyo.png",
-    "skills": {
-      "ex": "ツクヨ流、忍法……！",
-      "normal": "たくさん、練習しましたので……！",
-      "passive": "生まれ持った素質",
-      "sub": "まだ、倒れる、わけには……！"
-    }
+    "profile": {
+      "fullName": "大野ツクヨ",
+      "name": "ツクヨ",
+      "school": "百鬼夜行連合学院",
+      "grade": "1年生",
+      "club": "忍術研究部",
+      "age": "15歳",
+      "birthday": "4月5日",
+      "height": "180cm",
+      "hobby": "身代わりの術、息を潜めること",
+      "weaponName": "ツクヨ流サブマシンガン",
+      "cv": "後藤彩佐",
+      "skills": {
+        "ex": "ツクヨ流、忍法……！",
+        "normal": "たくさん、練習しましたので……！",
+        "passive": "生まれ持った素質",
+        "sub": "まだ、倒れる、わけには……！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/tsukuyo.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "misaki": {
-    "id": "misaki",
-    "fullName": "戒野ミサキ",
-    "name": "ミサキ",
-    "school": "アリウス分校",
-    "grade": "2年生",
-    "club": "アリウススクワッド",
-    "age": "16歳",
-    "birthday": "1月13日",
-    "height": "163cm",
-    "hobby": "ひとりで過ごすこと",
-    "weaponName": "セイントプレデター",
-    "cv": "土屋李央",
-    "portraitImage": "images/portrait/misaki.png",
-    "skills": {
-      "ex": "虚しい世界",
-      "normal": "早く終わらせたい",
-      "passive": "無意味な技術",
-      "sub": "等価交換"
-    }
+    "profile": {
+      "fullName": "戒野ミサキ",
+      "name": "ミサキ",
+      "school": "アリウス分校",
+      "grade": "2年生",
+      "club": "アリウススクワッド",
+      "age": "16歳",
+      "birthday": "1月13日",
+      "height": "163cm",
+      "hobby": "ひとりで過ごすこと",
+      "weaponName": "セイントプレデター",
+      "cv": "土屋李央",
+      "skills": {
+        "ex": "虚しい世界",
+        "normal": "早く終わらせたい",
+        "passive": "無意味な技術",
+        "sub": "等価交換"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/misaki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hiyori": {
-    "id": "hiyori",
-    "fullName": "槌永ヒヨリ",
-    "name": "ヒヨリ",
-    "school": "アリウス分校",
-    "grade": "2年生",
-    "club": "アリウススクワッド",
-    "age": "16歳",
-    "birthday": "1月8日",
-    "height": "155cm",
-    "hobby": "雑誌の収集",
-    "weaponName": "アイデンティティ",
-    "cv": "中原麻衣",
-    "portraitImage": "images/portrait/hiyori.png",
-    "skills": {
-      "ex": "い、今支援します！",
-      "normal": "い、痛くなりますよ！",
-      "passive": "雑誌に書いてありました",
-      "sub": "付録の力です"
-    }
+    "profile": {
+      "fullName": "槌永ヒヨリ",
+      "name": "ヒヨリ",
+      "school": "アリウス分校",
+      "grade": "2年生",
+      "club": "アリウススクワッド",
+      "age": "16歳",
+      "birthday": "1月8日",
+      "height": "155cm",
+      "hobby": "雑誌の収集",
+      "weaponName": "アイデンティティ",
+      "cv": "中原麻衣",
+      "skills": {
+        "ex": "い、今支援します！",
+        "normal": "い、痛くなりますよ！",
+        "passive": "雑誌に書いてありました",
+        "sub": "付録の力です"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hiyori.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "atsuko": {
-    "id": "atsuko",
-    "fullName": "秤アツコ",
-    "name": "アツコ",
-    "school": "アリウス分校",
-    "grade": "1年生",
-    "club": "アリウススクワッド",
-    "age": "15歳",
-    "birthday": "1月20日",
-    "height": "158cm",
-    "hobby": "花のお手入れ",
-    "weaponName": "スコルピウス",
-    "cv": "花澤香菜",
-    "portraitImage": "images/portrait/atsuko.png",
-    "skills": {
-      "ex": "これも私の力……？",
-      "normal": "隠れるよ",
-      "passive": "教えられた事",
-      "sub": "痛いのは慣れてる"
-    }
+    "profile": {
+      "fullName": "秤アツコ",
+      "name": "アツコ",
+      "school": "アリウス分校",
+      "grade": "1年生",
+      "club": "アリウススクワッド",
+      "age": "15歳",
+      "birthday": "1月20日",
+      "height": "158cm",
+      "hobby": "花のお手入れ",
+      "weaponName": "スコルピウス",
+      "cv": "花澤香菜",
+      "skills": {
+        "ex": "これも私の力……？",
+        "normal": "隠れるよ",
+        "passive": "教えられた事",
+        "sub": "痛いのは慣れてる"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/atsuko.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "saori": {
-    "id": "saori",
-    "fullName": "錠前サオリ",
-    "name": "サオリ",
-    "school": "アリウス分校",
-    "grade": "2年生",
-    "club": "アリウススクワッド",
-    "age": "17歳",
-    "birthday": "9月3日",
-    "height": "167cm",
-    "hobby": "なし",
-    "weaponName": "アリウス製アサルトライフル",
-    "cv": "石上静香",
-    "portraitImage": "images/portrait/saori.png",
-    "skills": {
-      "ex": "et omnia vanitas！",
-      "normal": "即時射撃",
-      "passive": "訓練の成果",
-      "sub": "リーダーの責任感"
-    }
+    "profile": {
+      "fullName": "錠前サオリ",
+      "name": "サオリ",
+      "school": "アリウス分校",
+      "grade": "2年生",
+      "club": "アリウススクワッド",
+      "age": "17歳",
+      "birthday": "9月3日",
+      "height": "167cm",
+      "hobby": "なし",
+      "weaponName": "アリウス製アサルトライフル",
+      "cv": "石上静香",
+      "skills": {
+        "ex": "et omnia vanitas！",
+        "normal": "即時射撃",
+        "passive": "訓練の成果",
+        "sub": "リーダーの責任感"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/saori.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kazusa": {
-    "id": "kazusa",
-    "fullName": "杏山カズサ",
-    "name": "カズサ",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "放課後スイーツ部",
-    "age": "15歳",
-    "birthday": "8月5日",
-    "height": "155cm",
-    "hobby": "「普通に」スイーツを食べること",
-    "weaponName": "マビノギオン",
-    "cv": "夏吉ゆうこ",
-    "portraitImage": "images/portrait/kazusa.png",
-    "skills": {
-      "ex": "スイート・ファイア",
-      "normal": "しみついたクセ",
-      "passive": "シュガー・ハイ",
-      "sub": "つまみ食い"
-    }
+    "profile": {
+      "fullName": "杏山カズサ",
+      "name": "カズサ",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "放課後スイーツ部",
+      "age": "15歳",
+      "birthday": "8月5日",
+      "height": "155cm",
+      "hobby": "「普通に」スイーツを食べること",
+      "weaponName": "マビノギオン",
+      "cv": "夏吉ゆうこ",
+      "skills": {
+        "ex": "スイート・ファイア",
+        "normal": "しみついたクセ",
+        "passive": "シュガー・ハイ",
+        "sub": "つまみ食い"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kazusa.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "moe": {
-    "id": "moe",
-    "fullName": "風倉モエ",
-    "name": "モエ",
-    "school": "SRT特殊学園",
-    "grade": "1年生",
-    "club": "RABBIT小隊",
-    "age": "15歳",
-    "birthday": "9月13日",
-    "height": "163cm",
-    "hobby": "打ち上げ花火",
-    "weaponName": "RABBIT-224式拳銃",
-    "cv": "井澤詩織",
-    "portraitImage": "images/portrait/moe.png",
-    "skills": {
-      "ex": "鋼鉄の雨",
-      "normal": "集中砲火",
-      "passive": "破滅の快感",
-      "sub": "作戦支援"
-    }
+    "profile": {
+      "fullName": "風倉モエ",
+      "name": "モエ",
+      "school": "SRT特殊学園",
+      "grade": "1年生",
+      "club": "RABBIT小隊",
+      "age": "15歳",
+      "birthday": "9月13日",
+      "height": "163cm",
+      "hobby": "打ち上げ花火",
+      "weaponName": "RABBIT-224式拳銃",
+      "cv": "井澤詩織",
+      "skills": {
+        "ex": "鋼鉄の雨",
+        "normal": "集中砲火",
+        "passive": "破滅の快感",
+        "sub": "作戦支援"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/moe.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kokona": {
-    "id": "kokona",
-    "fullName": "春原ココナ",
-    "name": "ココナ",
-    "school": "山海経高級中学校",
-    "grade": "1年生",
-    "club": "訓育支援部「梅花園」",
-    "age": "11歳",
-    "birthday": "6月1日",
-    "height": "139cm",
-    "hobby": "絵本を読むこと",
-    "weaponName": "レディーの気品",
-    "cv": "五十嵐裕美",
-    "portraitImage": "images/portrait/kokona.png",
-    "skills": {
-      "ex": "たいへんよくできました！",
-      "normal": "次も楽しみにしてますよ！",
-      "passive": "教官としての責任",
-      "sub": "梅花園の指導法"
-    }
+    "profile": {
+      "fullName": "春原ココナ",
+      "name": "ココナ",
+      "school": "山海経高級中学校",
+      "grade": "1年生",
+      "club": "訓育支援部「梅花園」",
+      "age": "11歳",
+      "birthday": "6月1日",
+      "height": "139cm",
+      "hobby": "絵本を読むこと",
+      "weaponName": "レディーの気品",
+      "cv": "五十嵐裕美",
+      "skills": {
+        "ex": "たいへんよくできました！",
+        "normal": "次も楽しみにしてますよ！",
+        "passive": "教官としての責任",
+        "sub": "梅花園の指導法"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kokona.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "noa": {
-    "id": "noa",
-    "fullName": "生塩ノア",
-    "name": "ノア",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "2年生",
-    "club": "セミナー",
-    "age": "16歳",
-    "birthday": "4月13日",
-    "height": "161cm",
-    "hobby": "読書、暗唱",
-    "weaponName": "書記の採決",
-    "cv": "鈴代紗弓",
-    "portraitImage": "images/portrait/noa.png",
-    "skills": {
-      "ex": "記録はスピードが命ですから",
-      "normal": "隙だらけですよ！",
-      "passive": "書記の余裕",
-      "sub": "書記のこだわり"
-    }
+    "profile": {
+      "fullName": "生塩ノア",
+      "name": "ノア",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "2年生",
+      "club": "セミナー",
+      "age": "16歳",
+      "birthday": "4月13日",
+      "height": "161cm",
+      "hobby": "読書、暗唱",
+      "weaponName": "書記の採決",
+      "cv": "鈴代紗弓",
+      "skills": {
+        "ex": "記録はスピードが命ですから",
+        "normal": "隙だらけですよ！",
+        "passive": "書記の余裕",
+        "sub": "書記のこだわり"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/noa.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "himari": {
-    "id": "himari",
-    "fullName": "明星ヒマリ",
-    "name": "ヒマリ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "3年生",
-    "club": "特異現象捜査部",
-    "age": "17歳",
-    "birthday": "12月10日",
-    "height": "162cm",
-    "hobby": "今日の運勢の確認オカルト全般",
-    "weaponName": "高嶺の花",
-    "cv": "ゆかな",
-    "portraitImage": "images/portrait/himari.png",
-    "skills": {
-      "ex": "実力をお見せしましょう",
-      "normal": "少し驚くかもしれませんね",
-      "passive": "清楚な高嶺の花",
-      "sub": "超天才清楚系病弱美少女の真骨頂"
-    }
+    "profile": {
+      "fullName": "明星ヒマリ",
+      "name": "ヒマリ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "3年生",
+      "club": "特異現象捜査部",
+      "age": "17歳",
+      "birthday": "12月10日",
+      "height": "162cm",
+      "hobby": "今日の運勢の確認オカルト全般",
+      "weaponName": "高嶺の花",
+      "cv": "ゆかな",
+      "skills": {
+        "ex": "実力をお見せしましょう",
+        "normal": "少し驚くかもしれませんね",
+        "passive": "清楚な高嶺の花",
+        "sub": "超天才清楚系病弱美少女の真骨頂"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/himari.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "shigure": {
-    "id": "shigure",
-    "fullName": "間宵シグレ",
-    "name": "シグレ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "2年生",
-    "club": "227号特別クラス",
-    "age": "16歳",
-    "birthday": "1月22日",
-    "height": "156cm",
-    "hobby": "自家製ドリンクを作ること",
-    "weaponName": "スプリングパンチ",
-    "cv": "河瀬茉希",
-    "portraitImage": "images/portrait/shigure.png",
-    "skills": {
-      "ex": "シグレ特製ボトルグレネード",
-      "normal": "一杯、どう？",
-      "passive": "甘い発酵",
-      "sub": "野生の勘"
-    }
+    "profile": {
+      "fullName": "間宵シグレ",
+      "name": "シグレ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "2年生",
+      "club": "227号特別クラス",
+      "age": "16歳",
+      "birthday": "1月22日",
+      "height": "156cm",
+      "hobby": "自家製ドリンクを作ること",
+      "weaponName": "スプリングパンチ",
+      "cv": "河瀬茉希",
+      "skills": {
+        "ex": "シグレ特製ボトルグレネード",
+        "normal": "一杯、どう？",
+        "passive": "甘い発酵",
+        "sub": "野生の勘"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/shigure.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "mine": {
-    "id": "mine",
-    "fullName": "蒼森ミネ",
-    "name": "ミネ",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "救護騎士団",
-    "age": "17歳",
-    "birthday": "11月23日",
-    "height": "168cm",
-    "hobby": "医療品集め",
-    "weaponName": "救護の証明",
-    "cv": "堀江由衣",
-    "portraitImage": "images/portrait/mine.png",
-    "skills": {
-      "ex": "誇りと信念",
-      "normal": "峻厳な宣告",
-      "passive": "騎士団の意志",
-      "sub": "不屈の勇気"
-    }
+    "profile": {
+      "fullName": "蒼森ミネ",
+      "name": "ミネ",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "救護騎士団",
+      "age": "17歳",
+      "birthday": "11月23日",
+      "height": "168cm",
+      "hobby": "医療品集め",
+      "weaponName": "救護の証明",
+      "cv": "堀江由衣",
+      "skills": {
+        "ex": "誇りと信念",
+        "normal": "峻厳な宣告",
+        "passive": "騎士団の意志",
+        "sub": "不屈の勇気"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/mine.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "mika": {
-    "id": "mika",
-    "fullName": "聖園ミカ",
-    "name": "ミカ",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "ティーパーティー",
-    "age": "17歳",
-    "birthday": "5月8日",
-    "height": "157cm",
-    "hobby": "おしゃべり、アクセサリー集め",
-    "weaponName": "Quis ut Deus",
-    "cv": "東山奈央",
-    "portraitImage": "images/portrait/mika.png",
-    "skills": {
-      "ex": "Kyrie Eleison",
-      "normal": "星の呼び声",
-      "passive": "Gloria Patri",
-      "sub": "Benedictio"
-    }
+    "profile": {
+      "fullName": "聖園ミカ",
+      "name": "ミカ",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "ティーパーティー",
+      "age": "17歳",
+      "birthday": "5月8日",
+      "height": "157cm",
+      "hobby": "おしゃべり、アクセサリー集め",
+      "weaponName": "Quis ut Deus",
+      "cv": "東山奈央",
+      "skills": {
+        "ex": "Kyrie Eleison",
+        "normal": "星の呼び声",
+        "passive": "Gloria Patri",
+        "sub": "Benedictio"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/mika.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "megu": {
-    "id": "megu",
-    "fullName": "下倉メグ",
-    "name": "メグ",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "温泉開発部",
-    "age": "17歳",
-    "birthday": "4月25日",
-    "height": "164cm",
-    "hobby": "撤去",
-    "weaponName": "メグマパワー！",
-    "cv": "愛原ありさ",
-    "portraitImage": "images/portrait/megu.png",
-    "skills": {
-      "ex": "熱いの好きだよね～！",
-      "normal": "あっためてあげる！",
-      "passive": "よゆ～よゆ～！",
-      "sub": "あ～すっきりした！"
-    }
+    "profile": {
+      "fullName": "下倉メグ",
+      "name": "メグ",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "温泉開発部",
+      "age": "17歳",
+      "birthday": "4月25日",
+      "height": "164cm",
+      "hobby": "撤去",
+      "weaponName": "メグマパワー！",
+      "cv": "愛原ありさ",
+      "skills": {
+        "ex": "熱いの好きだよね～！",
+        "normal": "あっためてあげる！",
+        "passive": "よゆ～よゆ～！",
+        "sub": "あ～すっきりした！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/megu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kanna": {
-    "id": "kanna",
-    "fullName": "尾刃カンナ",
-    "name": "カンナ",
-    "school": "ヴァルキューレ警察学校",
-    "grade": "3年生",
-    "club": "公安局",
-    "age": "17歳",
-    "birthday": "9月7日",
-    "height": "166cm",
-    "hobby": "読書、映画鑑賞（推理もの）",
-    "weaponName": "第17号ヴァルキューレ制式拳銃",
-    "cv": "松岡美里",
-    "portraitImage": "images/portrait/kanna.png",
-    "skills": {
-      "ex": "公安局長の手腕",
-      "normal": "苛烈な尋問",
-      "passive": "狂犬の執念",
-      "sub": "公安局特製弾"
-    }
+    "profile": {
+      "fullName": "尾刃カンナ",
+      "name": "カンナ",
+      "school": "ヴァルキューレ警察学校",
+      "grade": "3年生",
+      "club": "公安局",
+      "age": "17歳",
+      "birthday": "9月7日",
+      "height": "166cm",
+      "hobby": "読書、映画鑑賞（推理もの）",
+      "weaponName": "第17号ヴァルキューレ制式拳銃",
+      "cv": "松岡美里",
+      "skills": {
+        "ex": "公安局長の手腕",
+        "normal": "苛烈な尋問",
+        "passive": "狂犬の執念",
+        "sub": "公安局特製弾"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kanna.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "sakurako": {
-    "id": "sakurako",
-    "fullName": "歌住サクラコ",
-    "name": "サクラコ",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "シスターフッド",
-    "age": "17歳",
-    "birthday": "10月4日",
-    "height": "160cm",
-    "hobby": "お祈り",
-    "weaponName": "浄化の織り手",
-    "cv": "加隈亜衣",
-    "portraitImage": "images/portrait/sakurako.png",
-    "skills": {
-      "ex": "洗礼の印",
-      "normal": "シスターの身支度",
-      "passive": "罪悪を裁く者",
-      "sub": "光と共にあらんことを"
-    }
+    "profile": {
+      "fullName": "歌住サクラコ",
+      "name": "サクラコ",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "シスターフッド",
+      "age": "17歳",
+      "birthday": "10月4日",
+      "height": "160cm",
+      "hobby": "お祈り",
+      "weaponName": "浄化の織り手",
+      "cv": "加隈亜衣",
+      "skills": {
+        "ex": "洗礼の印",
+        "normal": "シスターの身支度",
+        "passive": "罪悪を裁く者",
+        "sub": "光と共にあらんことを"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/sakurako.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "toki": {
-    "id": "toki",
-    "fullName": "飛鳥馬トキ",
-    "name": "トキ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "Cleaning&Clearing",
-    "age": "16歳",
-    "birthday": "8月16日",
-    "height": "165cm",
-    "hobby": "探している最中",
-    "weaponName": "シークレットタイム",
-    "cv": "石川由依",
-    "portraitImage": "images/portrait/toki.png",
-    "skills": {
-      "ex": "システム：アビ・エシュフ",
-      "normal": "戦術的判断",
-      "passive": "コールサインゼロフォー",
-      "sub": "目には目を"
-    }
+    "profile": {
+      "fullName": "飛鳥馬トキ",
+      "name": "トキ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "Cleaning&Clearing",
+      "age": "16歳",
+      "birthday": "8月16日",
+      "height": "165cm",
+      "hobby": "探している最中",
+      "weaponName": "シークレットタイム",
+      "cv": "石川由依",
+      "skills": {
+        "ex": "システム：アビ・エシュフ",
+        "normal": "戦術的判断",
+        "passive": "コールサインゼロフォー",
+        "sub": "目には目を"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/toki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "nagisa": {
-    "id": "nagisa",
-    "fullName": "桐藤ナギサ",
-    "name": "ナギサ",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "ティーパーティー",
-    "age": "17歳",
-    "birthday": "7月4日",
-    "height": "160cm",
-    "hobby": "茶葉収集、お菓子作り、庭の手入れ",
-    "weaponName": "ロイヤルブレンド",
-    "cv": "早見沙織",
-    "portraitImage": "images/portrait/nagisa.png",
-    "skills": {
-      "ex": "Time On Target",
-      "normal": "Afternoon Tea",
-      "passive": "Pride of Tea Party",
-      "sub": "Noblesse oblige"
-    }
+    "profile": {
+      "fullName": "桐藤ナギサ",
+      "name": "ナギサ",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "ティーパーティー",
+      "age": "17歳",
+      "birthday": "7月4日",
+      "height": "160cm",
+      "hobby": "茶葉収集、お菓子作り、庭の手入れ",
+      "weaponName": "ロイヤルブレンド",
+      "cv": "早見沙織",
+      "skills": {
+        "ex": "Time On Target",
+        "normal": "Afternoon Tea",
+        "passive": "Pride of Tea Party",
+        "sub": "Noblesse oblige"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/nagisa.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "koyuki": {
-    "id": "koyuki",
-    "fullName": "黒崎コユキ",
-    "name": "コユキ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "セミナー",
-    "age": "15歳",
-    "birthday": "2月14日",
-    "height": "149cm",
-    "hobby": "運試し、脱出",
-    "weaponName": "マリ・ガン",
-    "cv": "乾夏寧",
-    "portraitImage": "images/portrait/koyuki.png",
-    "skills": {
-      "ex": "トリッキーな変数",
-      "normal": "1人だと思いましたか！？",
-      "passive": "ミラクルを信じてますか？",
-      "sub": "カオス理論"
-    }
+    "profile": {
+      "fullName": "黒崎コユキ",
+      "name": "コユキ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "セミナー",
+      "age": "15歳",
+      "birthday": "2月14日",
+      "height": "149cm",
+      "hobby": "運試し、脱出",
+      "weaponName": "マリ・ガン",
+      "cv": "乾夏寧",
+      "skills": {
+        "ex": "トリッキーな変数",
+        "normal": "1人だと思いましたか！？",
+        "passive": "ミラクルを信じてますか？",
+        "sub": "カオス理論"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/koyuki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kaho": {
-    "id": "kaho",
-    "fullName": "桑上カホ",
-    "name": "カホ",
-    "school": "百鬼夜行連合学院",
-    "grade": "3年生",
-    "club": "陰陽部",
-    "age": "17歳",
-    "birthday": "10月9日",
-    "height": "173cm",
-    "hobby": "百鬼夜行文化の広報、百鬼夜行グッズ集め",
-    "weaponName": "戦略リーダーのノウハウ",
-    "cv": "松井恵理子",
-    "portraitImage": "images/portrait/kaho.png",
-    "skills": {
-      "ex": "ファンたるもの",
-      "normal": "精神統一",
-      "passive": "ひたむきな情熱",
-      "sub": "静かなる余裕"
-    }
+    "profile": {
+      "fullName": "桑上カホ",
+      "name": "カホ",
+      "school": "百鬼夜行連合学院",
+      "grade": "3年生",
+      "club": "陰陽部",
+      "age": "17歳",
+      "birthday": "10月9日",
+      "height": "173cm",
+      "hobby": "百鬼夜行文化の広報、百鬼夜行グッズ集め",
+      "weaponName": "戦略リーダーのノウハウ",
+      "cv": "松井恵理子",
+      "skills": {
+        "ex": "ファンたるもの",
+        "normal": "精神統一",
+        "passive": "ひたむきな情熱",
+        "sub": "静かなる余裕"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kaho.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "reisa": {
-    "id": "reisa",
-    "fullName": "宇沢レイサ",
-    "name": "レイサ",
-    "school": "トリニティ総合学園",
-    "grade": "1年生",
-    "club": "トリニティ自警団",
-    "age": "15歳",
-    "birthday": "5月31日",
-    "height": "153cm",
-    "hobby": "決闘申込み、自己紹介",
-    "weaponName": "シューティング☆スター",
-    "cv": "根本京里",
-    "portraitImage": "images/portrait/reisa.png",
-    "skills": {
-      "ex": "挑戦状を受け取ってください！",
-      "normal": "勝利のポーズ！",
-      "passive": "一日中でも！",
-      "sub": "宇沢レイサの存在感"
-    }
+    "profile": {
+      "fullName": "宇沢レイサ",
+      "name": "レイサ",
+      "school": "トリニティ総合学園",
+      "grade": "1年生",
+      "club": "トリニティ自警団",
+      "age": "15歳",
+      "birthday": "5月31日",
+      "height": "153cm",
+      "hobby": "決闘申込み、自己紹介",
+      "weaponName": "シューティング☆スター",
+      "cv": "根本京里",
+      "skills": {
+        "ex": "挑戦状を受け取ってください！",
+        "normal": "勝利のポーズ！",
+        "passive": "一日中でも！",
+        "sub": "宇沢レイサの存在感"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/reisa.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "rumi": {
-    "id": "rumi",
-    "fullName": "朱城ルミ",
-    "name": "ルミ",
-    "school": "山海経高級中学校",
-    "grade": "3年生",
-    "club": "玄武商会",
-    "age": "17歳",
-    "birthday": "3月5日",
-    "height": "168cm",
-    "hobby": "料理、食品開発",
-    "weaponName": "温故知新",
-    "cv": "青山吉能",
-    "portraitImage": "images/portrait/rumi.png",
-    "skills": {
-      "ex": "天下一味てんかいちみ！",
-      "normal": "クレーマーお断り！",
-      "passive": "商会長の矜持",
-      "sub": "記憶に残る味"
-    }
+    "profile": {
+      "fullName": "朱城ルミ",
+      "name": "ルミ",
+      "school": "山海経高級中学校",
+      "grade": "3年生",
+      "club": "玄武商会",
+      "age": "17歳",
+      "birthday": "3月5日",
+      "height": "168cm",
+      "hobby": "料理、食品開発",
+      "weaponName": "温故知新",
+      "cv": "青山吉能",
+      "skills": {
+        "ex": "天下一味てんかいちみ！",
+        "normal": "クレーマーお断り！",
+        "passive": "商会長の矜持",
+        "sub": "記憶に残る味"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/rumi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "mina": {
-    "id": "mina",
-    "fullName": "近衛ミナ",
-    "name": "ミナ",
-    "school": "山海経高級中学校",
-    "grade": "2年生",
-    "club": "玄龍門",
-    "age": "16歳",
-    "birthday": "9月9日",
-    "height": "166cm",
-    "hobby": "映画鑑賞（主にハードボイルド系）",
-    "weaponName": "玄龍＆白虎",
-    "cv": "佐藤利奈",
-    "portraitImage": "images/portrait/mina.png",
-    "skills": {
-      "ex": "竜虎相搏りゅうこそうはく",
-      "normal": "破竹之勢はちくのいきおい",
-      "passive": "一志不退いっしふたい",
-      "sub": "騎虎之勢きこのいきおい"
-    }
+    "profile": {
+      "fullName": "近衛ミナ",
+      "name": "ミナ",
+      "school": "山海経高級中学校",
+      "grade": "2年生",
+      "club": "玄龍門",
+      "age": "16歳",
+      "birthday": "9月9日",
+      "height": "166cm",
+      "hobby": "映画鑑賞（主にハードボイルド系）",
+      "weaponName": "玄龍＆白虎",
+      "cv": "佐藤利奈",
+      "skills": {
+        "ex": "竜虎相搏りゅうこそうはく",
+        "normal": "破竹之勢はちくのいきおい",
+        "passive": "一志不退いっしふたい",
+        "sub": "騎虎之勢きこのいきおい"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/mina.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "minori": {
-    "id": "minori",
-    "fullName": "安守ミノリ",
-    "name": "ミノリ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "3年生",
-    "club": "工務部",
-    "age": "17歳",
-    "birthday": "7月14日",
-    "height": "158cm",
-    "hobby": "ストライキ、デモ、工作",
-    "weaponName": "鋼鉄の松明",
-    "cv": "菊池紗矢香",
-    "portraitImage": "images/portrait/minori.png",
-    "skills": {
-      "ex": "奮い立て！",
-      "normal": "一つになった意志",
-      "passive": "手を取り合って",
-      "sub": "労働の結実"
-    }
+    "profile": {
+      "fullName": "安守ミノリ",
+      "name": "ミノリ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "3年生",
+      "club": "工務部",
+      "age": "17歳",
+      "birthday": "7月14日",
+      "height": "158cm",
+      "hobby": "ストライキ、デモ、工作",
+      "weaponName": "鋼鉄の松明",
+      "cv": "菊池紗矢香",
+      "skills": {
+        "ex": "奮い立て！",
+        "normal": "一つになった意志",
+        "passive": "手を取り合って",
+        "sub": "労働の結実"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/minori.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "meru": {
-    "id": "meru",
-    "fullName": "姫木メル",
-    "name": "メル",
-    "school": "レッドウィンター連邦学園",
-    "grade": "2年生",
-    "club": "知識解放戦線",
-    "age": "16歳",
-    "birthday": "12月21日",
-    "height": "137cm",
-    "hobby": "漫画を描くこと、妄想",
-    "weaponName": "創作の……苦しみ！",
-    "cv": "新井里美",
-    "portraitImage": "images/portrait/meru.png",
-    "skills": {
-      "ex": "最強のアイデア",
-      "normal": "妄想は無限大",
-      "passive": "インプット",
-      "sub": "設定崩壊！"
-    }
+    "profile": {
+      "fullName": "姫木メル",
+      "name": "メル",
+      "school": "レッドウィンター連邦学園",
+      "grade": "2年生",
+      "club": "知識解放戦線",
+      "age": "16歳",
+      "birthday": "12月21日",
+      "height": "137cm",
+      "hobby": "漫画を描くこと、妄想",
+      "weaponName": "創作の……苦しみ！",
+      "cv": "新井里美",
+      "skills": {
+        "ex": "最強のアイデア",
+        "normal": "妄想は無限大",
+        "passive": "インプット",
+        "sub": "設定崩壊！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/meru.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "momiji": {
-    "id": "momiji",
-    "fullName": "秋泉モミジ",
-    "name": "モミジ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "1年生",
-    "club": "知識解放戦線",
-    "age": "15歳",
-    "birthday": "8月7日",
-    "height": "135cm",
-    "hobby": "漫画収集",
-    "weaponName": "図書館利用規則第7号",
-    "cv": "大亀あすか",
-    "portraitImage": "images/portrait/momiji.png",
-    "skills": {
-      "ex": "図書館ではお静かに",
-      "normal": "知識の力",
-      "passive": "コレクターの熱量",
-      "sub": "旅の始まり"
-    }
+    "profile": {
+      "fullName": "秋泉モミジ",
+      "name": "モミジ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "1年生",
+      "club": "知識解放戦線",
+      "age": "15歳",
+      "birthday": "8月7日",
+      "height": "135cm",
+      "hobby": "漫画収集",
+      "weaponName": "図書館利用規則第7号",
+      "cv": "大亀あすか",
+      "skills": {
+        "ex": "図書館ではお静かに",
+        "normal": "知識の力",
+        "passive": "コレクターの熱量",
+        "sub": "旅の始まり"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/momiji.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "ichika": {
-    "id": "ichika",
-    "fullName": "仲正イチカ",
-    "name": "イチカ",
-    "school": "トリニティ総合学園",
-    "grade": "2年生",
-    "club": "正義実現委員会",
-    "age": "16歳",
-    "birthday": "11月11日",
-    "height": "163cm",
-    "hobby": "人助け、色々手を出している最中",
-    "weaponName": "レッドドラゴン",
-    "cv": "鷲見友美ジェナ",
-    "portraitImage": "images/portrait/ichika.png",
-    "skills": {
-      "ex": "ちょっと失礼するっす",
-      "normal": "正義実現委員会の連絡網",
-      "passive": "鋭い本能",
-      "sub": "そういう時もあるっすよね"
-    }
+    "profile": {
+      "fullName": "仲正イチカ",
+      "name": "イチカ",
+      "school": "トリニティ総合学園",
+      "grade": "2年生",
+      "club": "正義実現委員会",
+      "age": "16歳",
+      "birthday": "11月11日",
+      "height": "163cm",
+      "hobby": "人助け、色々手を出している最中",
+      "weaponName": "レッドドラゴン",
+      "cv": "鷲見友美ジェナ",
+      "skills": {
+        "ex": "ちょっと失礼するっす",
+        "normal": "正義実現委員会の連絡網",
+        "passive": "鋭い本能",
+        "sub": "そういう時もあるっすよね"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/ichika.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kasumi": {
-    "id": "kasumi",
-    "fullName": "鬼怒川カスミ",
-    "name": "カスミ",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "温泉開発部",
-    "age": "16歳",
-    "birthday": "5月24日",
-    "height": "148cm",
-    "hobby": "爆破、温泉開発",
-    "weaponName": "レッド·レクター",
-    "cv": "上坂すみれ",
-    "portraitImage": "images/portrait/kasumi.png",
-    "skills": {
-      "ex": "ジャイアントヒール・クラッシュ",
-      "normal": "大切なメッセージだよ",
-      "passive": "狂人の戦略",
-      "sub": "ドリルの音は止まったのか？"
-    }
+    "profile": {
+      "fullName": "鬼怒川カスミ",
+      "name": "カスミ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "温泉開発部",
+      "age": "16歳",
+      "birthday": "5月24日",
+      "height": "148cm",
+      "hobby": "爆破、温泉開発",
+      "weaponName": "レッド·レクター",
+      "cv": "上坂すみれ",
+      "skills": {
+        "ex": "ジャイアントヒール・クラッシュ",
+        "normal": "大切なメッセージだよ",
+        "passive": "狂人の戦略",
+        "sub": "ドリルの音は止まったのか？"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kasumi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "yukari": {
-    "id": "yukari",
-    "fullName": "勘解由小路ユカリ",
-    "name": "ユカリ",
-    "school": "百鬼夜行連合学院",
-    "grade": "1年生",
-    "club": "百花繚乱紛争調停委員会",
-    "age": "15歳",
-    "birthday": "6月16日",
-    "height": "155cm",
-    "hobby": "お祈り、駄菓子屋巡り",
-    "weaponName": "百花繚乱制式ライフル-少女の決意",
-    "cv": "村上まなつ",
-    "portraitImage": "images/portrait/yukari.png",
-    "skills": {
-      "ex": "まっすぐに芽生えた決意",
-      "normal": "待ち侘びた再会",
-      "passive": "百花繚乱のえり～と",
-      "sub": "面を上げて向き合う責務"
-    }
+    "profile": {
+      "fullName": "勘解由小路ユカリ",
+      "name": "ユカリ",
+      "school": "百鬼夜行連合学院",
+      "grade": "1年生",
+      "club": "百花繚乱紛争調停委員会",
+      "age": "15歳",
+      "birthday": "6月16日",
+      "height": "155cm",
+      "hobby": "お祈り、駄菓子屋巡り",
+      "weaponName": "百花繚乱制式ライフル-少女の決意",
+      "cv": "村上まなつ",
+      "skills": {
+        "ex": "まっすぐに芽生えた決意",
+        "normal": "待ち侘びた再会",
+        "passive": "百花繚乱のえり～と",
+        "sub": "面を上げて向き合う責務"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/yukari.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "renge": {
-    "id": "renge",
-    "fullName": "不破レンゲ",
-    "name": "レンゲ",
-    "school": "百鬼夜行連合学院",
-    "grade": "2年生",
-    "club": "百花繚乱紛争調停委員会",
-    "age": "16歳",
-    "birthday": "7月23日",
-    "height": "157cm",
-    "hobby": "ライトノベルを読むこと、鍛錬",
-    "weaponName": "百花繚乱制式ライフル-青春の火花",
-    "cv": "小市眞琴",
-    "portraitImage": "images/portrait/renge.png",
-    "skills": {
-      "ex": "百花繚乱式射撃術",
-      "normal": "燃え上がる情熱",
-      "passive": "百花繚乱の鬼教官",
-      "sub": "切り込み隊長としての本分"
-    }
+    "profile": {
+      "fullName": "不破レンゲ",
+      "name": "レンゲ",
+      "school": "百鬼夜行連合学院",
+      "grade": "2年生",
+      "club": "百花繚乱紛争調停委員会",
+      "age": "16歳",
+      "birthday": "7月23日",
+      "height": "157cm",
+      "hobby": "ライトノベルを読むこと、鍛錬",
+      "weaponName": "百花繚乱制式ライフル-青春の火花",
+      "cv": "小市眞琴",
+      "skills": {
+        "ex": "百花繚乱式射撃術",
+        "normal": "燃え上がる情熱",
+        "passive": "百花繚乱の鬼教官",
+        "sub": "切り込み隊長としての本分"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/renge.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kikyou": {
-    "id": "kikyou",
-    "fullName": "桐生キキョウ",
-    "name": "キキョウ",
-    "school": "百鬼夜行連合学院",
-    "grade": "2年生",
-    "club": "百花繚乱紛争調停委員会",
-    "age": "16歳",
-    "birthday": "8月8日",
-    "height": "160cm",
-    "hobby": "あやとり、兵法書を読むこと、日光浴",
-    "weaponName": "百花繚乱制式ライフル-紺碧の知恵",
-    "cv": "小松未可子",
-    "portraitImage": "images/portrait/kikyou.png",
-    "skills": {
-      "ex": "神機妙算の一手",
-      "normal": "敵を知り己を知れば百戦殆からず",
-      "passive": "作戦参謀としての素養",
-      "sub": "風林火山の計略"
-    }
+    "profile": {
+      "fullName": "桐生キキョウ",
+      "name": "キキョウ",
+      "school": "百鬼夜行連合学院",
+      "grade": "2年生",
+      "club": "百花繚乱紛争調停委員会",
+      "age": "16歳",
+      "birthday": "8月8日",
+      "height": "160cm",
+      "hobby": "あやとり、兵法書を読むこと、日光浴",
+      "weaponName": "百花繚乱制式ライフル-紺碧の知恵",
+      "cv": "小松未可子",
+      "skills": {
+        "ex": "神機妙算の一手",
+        "normal": "敵を知り己を知れば百戦殆からず",
+        "passive": "作戦参謀としての素養",
+        "sub": "風林火山の計略"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kikyou.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "makoto": {
-    "id": "makoto",
-    "fullName": "羽沼マコト",
-    "name": "マコト",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "万魔殿",
-    "age": "18歳",
-    "birthday": "3月19日",
-    "height": "169cm",
-    "hobby": "計略、悪巧み、イブキと遊ぶこと",
-    "weaponName": "唯我独尊",
-    "cv": "浅川悠",
-    "portraitImage": "images/portrait/makoto.png",
-    "skills": {
-      "ex": "ま、間違えたあ！",
-      "normal": "聞くが良い！",
-      "passive": "万魔殿の偉大な議長",
-      "sub": "天下無敵！ゲヘナの真のリーダー！"
-    }
+    "profile": {
+      "fullName": "羽沼マコト",
+      "name": "マコト",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "万魔殿",
+      "age": "18歳",
+      "birthday": "3月19日",
+      "height": "169cm",
+      "hobby": "計略、悪巧み、イブキと遊ぶこと",
+      "weaponName": "唯我独尊",
+      "cv": "浅川悠",
+      "skills": {
+        "ex": "ま、間違えたあ！",
+        "normal": "聞くが良い！",
+        "passive": "万魔殿の偉大な議長",
+        "sub": "天下無敵！ゲヘナの真のリーダー！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/makoto.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "ibuki": {
-    "id": "ibuki",
-    "fullName": "丹花イブキ",
-    "name": "イブキ",
-    "school": "ゲヘナ学園",
-    "grade": "1年生",
-    "club": "万魔殿",
-    "age": "11歳",
-    "birthday": "4月14日",
-    "height": "128cm",
-    "hobby": "予習・復習、ぬいぐるみ集め",
-    "weaponName": "バンバーン！ちゃん",
-    "cv": "春瀬なつみ",
-    "portraitImage": "images/portrait/ibuki.png",
-    "skills": {
-      "ex": "イブキのお絵かきタイム！",
-      "normal": "悪い子はメッだよ！",
-      "passive": "品行方正な女の子",
-      "sub": "万魔殿のマスコット"
-    }
+    "profile": {
+      "fullName": "丹花イブキ",
+      "name": "イブキ",
+      "school": "ゲヘナ学園",
+      "grade": "1年生",
+      "club": "万魔殿",
+      "age": "11歳",
+      "birthday": "4月14日",
+      "height": "128cm",
+      "hobby": "予習・復習、ぬいぐるみ集め",
+      "weaponName": "バンバーン！ちゃん",
+      "cv": "春瀬なつみ",
+      "skills": {
+        "ex": "イブキのお絵かきタイム！",
+        "normal": "悪い子はメッだよ！",
+        "passive": "品行方正な女の子",
+        "sub": "万魔殿のマスコット"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/ibuki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "umika": {
-    "id": "umika",
-    "fullName": "里浜ウミカ",
-    "name": "ウミカ",
-    "school": "百鬼夜行連合学院",
-    "grade": "1年生",
-    "club": "お祭り運営委員会",
-    "age": "15歳",
-    "birthday": "7月1日",
-    "height": "165cm",
-    "hobby": "お祭り体験、お祭り関連グッズ（パンフレット）集め",
-    "weaponName": "お祭りの熱気",
-    "cv": "新田ひより",
-    "portraitImage": "images/portrait/umika.png",
-    "skills": {
-      "ex": "お祭り開始です！",
-      "normal": "た～まや～！です！",
-      "passive": "現地の熱気",
-      "sub": "お祭りのときめき"
-    }
+    "profile": {
+      "fullName": "里浜ウミカ",
+      "name": "ウミカ",
+      "school": "百鬼夜行連合学院",
+      "grade": "1年生",
+      "club": "お祭り運営委員会",
+      "age": "15歳",
+      "birthday": "7月1日",
+      "height": "165cm",
+      "hobby": "お祭り体験、お祭り関連グッズ（パンフレット）集め",
+      "weaponName": "お祭りの熱気",
+      "cv": "新田ひより",
+      "skills": {
+        "ex": "お祭り開始です！",
+        "normal": "た～まや～！です！",
+        "passive": "現地の熱気",
+        "sub": "お祭りのときめき"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/umika.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kirara": {
-    "id": "kirara",
-    "fullName": "夜桜キララ",
-    "name": "キララ",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "帰宅部→キラキラ部",
-    "age": "16歳",
-    "birthday": "2月24日",
-    "height": "159cm",
-    "hobby": "おしゃべり",
-    "weaponName": "チョコレート＆ストロベリー",
-    "cv": "山下七海",
-    "portraitImage": "images/portrait/kirara.png",
-    "skills": {
-      "ex": "ゲヘナのセレブリティー！",
-      "normal": "いつもキラキラ！",
-      "passive": "クレープの甘さ",
-      "sub": "トキメキ☆って感じ？"
-    }
+    "profile": {
+      "fullName": "夜桜キララ",
+      "name": "キララ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "帰宅部→キラキラ部",
+      "age": "16歳",
+      "birthday": "2月24日",
+      "height": "159cm",
+      "hobby": "おしゃべり",
+      "weaponName": "チョコレート＆ストロベリー",
+      "cv": "山下七海",
+      "skills": {
+        "ex": "ゲヘナのセレブリティー！",
+        "normal": "いつもキラキラ！",
+        "passive": "クレープの甘さ",
+        "sub": "トキメキ☆って感じ？"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kirara.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "shiroko_terror": {
-    "id": "shiroko_terror",
-    "fullName": "砂狼シロコ",
-    "name": "シロコ＊テラー",
-    "school": "アビドス高等学校",
-    "grade": "3年生",
-    "club": "アビドス生徒会",
-    "age": "17歳",
-    "birthday": "5月16日",
-    "height": "165cm",
-    "hobby": "ジョギング、体力トレーニング、ロードバイク",
-    "weaponName": "BLACK FANG 465",
-    "cv": "小倉唯",
-    "portraitImage": "images/portrait/shiroko_terror.png",
-    "skills": {
-      "ex": "火力強化",
-      "normal": "手榴弾投擲・改",
-      "passive": "精密照準",
-      "sub": "呼吸を整える時間"
-    }
+    "profile": {
+      "fullName": "砂狼シロコ",
+      "name": "シロコ＊テラー",
+      "school": "アビドス高等学校",
+      "grade": "3年生",
+      "club": "アビドス生徒会",
+      "age": "17歳",
+      "birthday": "5月16日",
+      "height": "165cm",
+      "hobby": "ジョギング、体力トレーニング、ロードバイク",
+      "weaponName": "BLACK FANG 465",
+      "cv": "小倉唯",
+      "skills": {
+        "ex": "火力強化",
+        "normal": "手榴弾投擲・改",
+        "passive": "精密照準",
+        "sub": "呼吸を整える時間"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/shiroko_terror.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kisaki": {
-    "id": "kisaki",
-    "fullName": "竜華キサキ",
-    "name": "キサキ",
-    "school": "山海経高級中学校",
-    "grade": "3年生",
-    "club": "玄龍門",
-    "age": "17歳",
-    "birthday": "2月19日",
-    "height": "142cm",
-    "hobby": "茶道、密行",
-    "weaponName": "知彼知己",
-    "cv": "相坂優歌",
-    "portraitImage": "images/portrait/kisaki.png",
-    "skills": {
-      "ex": "詔令：格物致知",
-      "normal": "勅令：修身斉家",
-      "passive": "制令：克己復礼",
-      "sub": "布告天下"
-    }
+    "profile": {
+      "fullName": "竜華キサキ",
+      "name": "キサキ",
+      "school": "山海経高級中学校",
+      "grade": "3年生",
+      "club": "玄龍門",
+      "age": "17歳",
+      "birthday": "2月19日",
+      "height": "142cm",
+      "hobby": "茶道、密行",
+      "weaponName": "知彼知己",
+      "cv": "相坂優歌",
+      "skills": {
+        "ex": "詔令：格物致知",
+        "normal": "勅令：修身斉家",
+        "passive": "制令：克己復礼",
+        "sub": "布告天下"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kisaki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "reijo": {
-    "id": "reijo",
-    "fullName": "鹿山レイジョ",
-    "name": "レイジョ",
-    "school": "山海経高級中学校",
-    "grade": "3年生",
-    "club": "玄武商会",
-    "age": "17歳",
-    "birthday": "3月3日",
-    "height": "169cm",
-    "hobby": "カンフーの練習、グルメ",
-    "weaponName": "明鏡止水",
-    "cv": "菅沼千紗",
-    "portraitImage": "images/portrait/reijo.png",
-    "skills": {
-      "ex": "腿法：破蹴手榴弾",
-      "normal": "招式：昇龍之形",
-      "passive": "気功：プロテインシェイク",
-      "sub": "心法：ウェイトトレーニング"
-    }
+    "profile": {
+      "fullName": "鹿山レイジョ",
+      "name": "レイジョ",
+      "school": "山海経高級中学校",
+      "grade": "3年生",
+      "club": "玄武商会",
+      "age": "17歳",
+      "birthday": "3月3日",
+      "height": "169cm",
+      "hobby": "カンフーの練習、グルメ",
+      "weaponName": "明鏡止水",
+      "cv": "菅沼千紗",
+      "skills": {
+        "ex": "腿法：破蹴手榴弾",
+        "normal": "招式：昇龍之形",
+        "passive": "気功：プロテインシェイク",
+        "sub": "心法：ウェイトトレーニング"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/reijo.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "satsuki": {
-    "id": "satsuki",
-    "fullName": "京極サツキ",
-    "name": "サツキ",
-    "school": "ゲヘナ学園",
-    "grade": "3年生",
-    "club": "万魔殿",
-    "age": "17歳",
-    "birthday": "4月10日",
-    "height": "172cm",
-    "hobby": "マインドコントロールの研究、ショッピング",
-    "weaponName": "NKデルタ",
-    "cv": "櫻井浩美",
-    "portraitImage": "images/portrait/satsuki.png",
-    "skills": {
-      "ex": "つよくな～るつよくな～る",
-      "normal": "情報収集",
-      "passive": "NKウルトラ計画",
-      "sub": "万魔殿に忠誠を誓いなさい"
-    }
+    "profile": {
+      "fullName": "京極サツキ",
+      "name": "サツキ",
+      "school": "ゲヘナ学園",
+      "grade": "3年生",
+      "club": "万魔殿",
+      "age": "17歳",
+      "birthday": "4月10日",
+      "height": "172cm",
+      "hobby": "マインドコントロールの研究、ショッピング",
+      "weaponName": "NKデルタ",
+      "cv": "櫻井浩美",
+      "skills": {
+        "ex": "つよくな～るつよくな～る",
+        "normal": "情報収集",
+        "passive": "NKウルトラ計画",
+        "sub": "万魔殿に忠誠を誓いなさい"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/satsuki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "chiaki": {
-    "id": "chiaki",
-    "fullName": "元宮チアキ",
-    "name": "チアキ",
-    "school": "ゲヘナ学園",
-    "grade": "2年生",
-    "club": "万魔殿",
-    "age": "16歳",
-    "birthday": "9月22日",
-    "height": "167cm",
-    "hobby": "週刊誌発行、友達づくり",
-    "weaponName": "カメラブリッツ",
-    "cv": "菅野真衣",
-    "portraitImage": "images/portrait/chiaki.png",
-    "skills": {
-      "ex": "本当ですか？",
-      "normal": "はい、チーズ！",
-      "passive": "特ダネです！",
-      "sub": "はい！分かりました！"
-    }
+    "profile": {
+      "fullName": "元宮チアキ",
+      "name": "チアキ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "万魔殿",
+      "age": "16歳",
+      "birthday": "9月22日",
+      "height": "167cm",
+      "hobby": "週刊誌発行、友達づくり",
+      "weaponName": "カメラブリッツ",
+      "cv": "菅野真衣",
+      "skills": {
+        "ex": "本当ですか？",
+        "normal": "はい、チーズ！",
+        "passive": "特ダネです！",
+        "sub": "はい！分かりました！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/chiaki.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "seia": {
-    "id": "seia",
-    "fullName": "百合園セイア",
-    "name": "セイア",
-    "school": "トリニティ総合学園",
-    "grade": "3年生",
-    "club": "ティーパーティー",
-    "age": "17歳",
-    "birthday": "9月29日",
-    "height": "149cm",
-    "hobby": "謎解き、読書",
-    "weaponName": "鋭き光彩",
-    "cv": "種﨑敦美",
-    "portraitImage": "images/portrait/seia.png",
-    "skills": {
-      "ex": "まどろみの庭",
-      "normal": "智者の助言",
-      "passive": "静心",
-      "sub": "智者の勘"
-    }
+    "profile": {
+      "fullName": "百合園セイア",
+      "name": "セイア",
+      "school": "トリニティ総合学園",
+      "grade": "3年生",
+      "club": "ティーパーティー",
+      "age": "17歳",
+      "birthday": "9月29日",
+      "height": "149cm",
+      "hobby": "謎解き、読書",
+      "weaponName": "鋭き光彩",
+      "cv": "種﨑敦美",
+      "skills": {
+        "ex": "まどろみの庭",
+        "normal": "智者の助言",
+        "passive": "静心",
+        "sub": "智者の勘"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/seia.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "rio": {
-    "id": "rio",
-    "fullName": "調月リオ",
-    "name": "リオ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "3年生",
-    "club": "セミナー",
-    "age": "17歳",
-    "birthday": "6月6日",
-    "height": "171cm",
-    "hobby": "デザイン",
-    "weaponName": "立案者",
-    "cv": "Lynn",
-    "portraitImage": "images/portrait/rio.png",
-    "skills": {
-      "ex": "ビッグシスター",
-      "normal": "ただ一つの解",
-      "passive": "星を追う者",
-      "sub": "アバンギャルド"
-    }
+    "profile": {
+      "fullName": "調月リオ",
+      "name": "リオ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "3年生",
+      "club": "セミナー",
+      "age": "17歳",
+      "birthday": "6月6日",
+      "height": "171cm",
+      "hobby": "デザイン",
+      "weaponName": "立案者",
+      "cv": "Lynn",
+      "skills": {
+        "ex": "ビッグシスター",
+        "normal": "ただ一つの解",
+        "passive": "星を追う者",
+        "sub": "アバンギャルド"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/rio.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "rei": {
-    "id": "rei",
-    "fullName": "野正レイ",
-    "name": "レイ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "野球部↓トレーニング部",
-    "age": "15歳",
-    "birthday": "8月9日",
-    "height": "159cm",
-    "hobby": "スポーツ観戦、年鑑分析",
-    "weaponName": "ムーンショット！",
-    "cv": "稲垣好",
-    "portraitImage": "images/portrait/rei.png",
-    "skills": {
-      "ex": "ミレニアムの4番バッター！",
-      "normal": "ファインプレー",
-      "passive": "明日の強打者",
-      "sub": "スリーアウトチェンジ"
-    }
+    "profile": {
+      "fullName": "野正レイ",
+      "name": "レイ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "野球部↓トレーニング部",
+      "age": "15歳",
+      "birthday": "8月9日",
+      "height": "159cm",
+      "hobby": "スポーツ観戦、年鑑分析",
+      "weaponName": "ムーンショット！",
+      "cv": "稲垣好",
+      "skills": {
+        "ex": "ミレニアムの4番バッター！",
+        "normal": "ファインプレー",
+        "passive": "明日の強打者",
+        "sub": "スリーアウトチェンジ"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/rei.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "hikari": {
-    "id": "hikari",
-    "fullName": "橘ヒカリ",
-    "name": "ヒカリ",
-    "school": "ハイランダー鉄道学園",
-    "grade": "1年生",
-    "club": "CCC",
-    "age": "15歳",
-    "birthday": "6月14日",
-    "height": "147cm",
-    "hobby": "（奇怪な）運転練習、アリの観察",
-    "weaponName": "チケット・パンチ",
-    "cv": "石見舞菜香",
-    "portraitImage": "images/portrait/hikari.png",
-    "skills": {
-      "ex": "にゅ～きょ～の時間",
-      "normal": "れっつどっきんぐ～",
-      "passive": "運行じゅんび～",
-      "sub": "大活躍のよて～"
-    }
+    "profile": {
+      "fullName": "橘ヒカリ",
+      "name": "ヒカリ",
+      "school": "ハイランダー鉄道学園",
+      "grade": "1年生",
+      "club": "CCC",
+      "age": "15歳",
+      "birthday": "6月14日",
+      "height": "147cm",
+      "hobby": "（奇怪な）運転練習、アリの観察",
+      "weaponName": "チケット・パンチ",
+      "cv": "石見舞菜香",
+      "skills": {
+        "ex": "にゅ～きょ～の時間",
+        "normal": "れっつどっきんぐ～",
+        "passive": "運行じゅんび～",
+        "sub": "大活躍のよて～"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/hikari.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "nozomi": {
-    "id": "nozomi",
-    "fullName": "橘ノゾミ",
-    "name": "ノゾミ",
-    "school": "ハイランダー鉄道学園",
-    "grade": "1年生",
-    "club": "CCC",
-    "age": "15歳",
-    "birthday": "6月14日",
-    "height": "147cm",
-    "hobby": "最速記録の更新",
-    "weaponName": "デッドリー・スイッチ",
-    "cv": "星谷美緒",
-    "portraitImage": "images/portrait/nozomi.png",
-    "skills": {
-      "ex": "ブースターオン！",
-      "normal": "こっちこっち～！",
-      "passive": "急行準備",
-      "sub": "出発進行！"
-    }
+    "profile": {
+      "fullName": "橘ノゾミ",
+      "name": "ノゾミ",
+      "school": "ハイランダー鉄道学園",
+      "grade": "1年生",
+      "club": "CCC",
+      "age": "15歳",
+      "birthday": "6月14日",
+      "height": "147cm",
+      "hobby": "最速記録の更新",
+      "weaponName": "デッドリー・スイッチ",
+      "cv": "星谷美緒",
+      "skills": {
+        "ex": "ブースターオン！",
+        "normal": "こっちこっち～！",
+        "passive": "急行準備",
+        "sub": "出発進行！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/nozomi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "aoba": {
-    "id": "aoba",
-    "fullName": "内海アオバ",
-    "name": "アオバ",
-    "school": "ハイランダー鉄道学園",
-    "grade": "2年生",
-    "club": "貨物輸送管理部",
-    "age": "16歳",
-    "birthday": "7月19日",
-    "height": "151cm",
-    "hobby": "妄想、さりげない毒舌発言",
-    "weaponName": "半端な期待",
-    "cv": "田嶌紗蘭",
-    "portraitImage": "images/portrait/aoba.png",
-    "skills": {
-      "ex": "しゅ、修理に行かなきゃ……！",
-      "normal": "じゅ、準備完了……",
-      "passive": "絶望的な激務",
-      "sub": "期待なんて、してません"
-    }
+    "profile": {
+      "fullName": "内海アオバ",
+      "name": "アオバ",
+      "school": "ハイランダー鉄道学園",
+      "grade": "2年生",
+      "club": "貨物輸送管理部",
+      "age": "16歳",
+      "birthday": "7月19日",
+      "height": "151cm",
+      "hobby": "妄想、さりげない毒舌発言",
+      "weaponName": "半端な期待",
+      "cv": "田嶌紗蘭",
+      "skills": {
+        "ex": "しゅ、修理に行かなきゃ……！",
+        "normal": "じゅ、準備完了……",
+        "passive": "絶望的な激務",
+        "sub": "期待なんて、してません"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/aoba.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "nagusa": {
-    "id": "nagusa",
-    "fullName": "御稜ナグサ",
-    "name": "ナグサ",
-    "school": "百鬼夜行連合学院",
-    "grade": "3年生",
-    "club": "百花繚乱紛争調停委員会",
-    "age": "17歳",
-    "birthday": "12月7日",
-    "height": "161cm",
-    "hobby": "瞑想、読書",
-    "weaponName": "百蓮",
-    "cv": "佐倉薫",
-    "portraitImage": "images/portrait/nagusa.png",
-    "skills": {
-      "ex": "桜花爛漫",
-      "normal": "錦上添花",
-      "passive": "黄昏を射抜く言霊",
-      "sub": "雪原に咲く花"
-    }
+    "profile": {
+      "fullName": "御稜ナグサ",
+      "name": "ナグサ",
+      "school": "百鬼夜行連合学院",
+      "grade": "3年生",
+      "club": "百花繚乱紛争調停委員会",
+      "age": "17歳",
+      "birthday": "12月7日",
+      "height": "161cm",
+      "hobby": "瞑想、読書",
+      "weaponName": "百蓮",
+      "cv": "佐倉薫",
+      "skills": {
+        "ex": "桜花爛漫",
+        "normal": "錦上添花",
+        "passive": "黄昏を射抜く言霊",
+        "sub": "雪原に咲く花"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/nagusa.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "niya": {
-    "id": "niya",
-    "fullName": "天地ニヤ",
-    "name": "ニヤ",
-    "school": "百鬼夜行連合学院",
-    "grade": "3年生",
-    "club": "陰陽部",
-    "age": "17歳",
-    "birthday": "1月1日",
-    "height": "166cm",
-    "hobby": "後輩たちを可愛がること、陰謀",
-    "weaponName": "口蜜腹剣",
-    "cv": "植田佳奈",
-    "portraitImage": "images/portrait/niya.png",
-    "skills": {
-      "ex": "なぁんにも、してませんよ？",
-      "normal": "悪霊退散",
-      "passive": "ドーマン・セーマン",
-      "sub": "急急如律令"
-    }
+    "profile": {
+      "fullName": "天地ニヤ",
+      "name": "ニヤ",
+      "school": "百鬼夜行連合学院",
+      "grade": "3年生",
+      "club": "陰陽部",
+      "age": "17歳",
+      "birthday": "1月1日",
+      "height": "166cm",
+      "hobby": "後輩たちを可愛がること、陰謀",
+      "weaponName": "口蜜腹剣",
+      "cv": "植田佳奈",
+      "skills": {
+        "ex": "なぁんにも、してませんよ？",
+        "normal": "悪霊退散",
+        "passive": "ドーマン・セーマン",
+        "sub": "急急如律令"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/niya.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "eri": {
-    "id": "eri",
-    "fullName": "白尾エリ",
-    "name": "エリ",
-    "school": "ワイルドハント芸術学院",
-    "grade": "2年生",
-    "club": "オカルト研究会（第4寮404号室）",
-    "age": "16歳",
-    "birthday": "10月31日",
-    "height": "158cm",
-    "hobby": "タロット占い、オカルト書籍の耽読",
-    "weaponName": "アルカナ・魔法の杖",
-    "cv": "今泉りおな",
-    "portraitImage": "images/portrait/eri.png",
-    "skills": {
-      "ex": "閃光のアルカナ",
-      "normal": "魔導書の導き",
-      "passive": "吉兆",
-      "sub": "巨匠を目指して"
-    }
+    "profile": {
+      "fullName": "白尾エリ",
+      "name": "エリ",
+      "school": "ワイルドハント芸術学院",
+      "grade": "2年生",
+      "club": "オカルト研究会（第4寮404号室）",
+      "age": "16歳",
+      "birthday": "10月31日",
+      "height": "158cm",
+      "hobby": "タロット占い、オカルト書籍の耽読",
+      "weaponName": "アルカナ・魔法の杖",
+      "cv": "今泉りおな",
+      "skills": {
+        "ex": "閃光のアルカナ",
+        "normal": "魔導書の導き",
+        "passive": "吉兆",
+        "sub": "巨匠を目指して"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/eri.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kanoe": {
-    "id": "kanoe",
-    "fullName": "板垣カノエ",
-    "name": "カノエ",
-    "school": "ワイルドハント芸術学院",
-    "grade": "3年生",
-    "club": "オカルト研究会（第4寮404号室）",
-    "age": "17歳",
-    "birthday": "11月2日",
-    "height": "144cm",
-    "hobby": "妄想",
-    "weaponName": "トリスメギストス",
-    "cv": "氷青",
-    "portraitImage": "images/portrait/kanoe.png",
-    "skills": {
-      "ex": "おいしいよぉ……",
-      "normal": "想いを込めた……",
-      "passive": "おともだち",
-      "sub": "前世の加護"
-    }
+    "profile": {
+      "fullName": "板垣カノエ",
+      "name": "カノエ",
+      "school": "ワイルドハント芸術学院",
+      "grade": "3年生",
+      "club": "オカルト研究会（第4寮404号室）",
+      "age": "17歳",
+      "birthday": "11月2日",
+      "height": "144cm",
+      "hobby": "妄想",
+      "weaponName": "トリスメギストス",
+      "cv": "氷青",
+      "skills": {
+        "ex": "おいしいよぉ……",
+        "normal": "想いを込めた……",
+        "passive": "おともだち",
+        "sub": "前世の加護"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kanoe.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "miyo": {
-    "id": "miyo",
-    "fullName": "桜井ミヨ",
-    "name": "ミヨ",
-    "school": "ワイルドハント芸術学院",
-    "grade": "2年生",
-    "club": "特殊交易部",
-    "age": "16歳",
-    "birthday": "8月24日",
-    "height": "155cm",
-    "hobby": "タイプライター集め",
-    "weaponName": "キヴォトス・タイプライター",
-    "cv": "花岩香奈",
-    "portraitImage": "images/portrait/miyo.png",
-    "skills": {
-      "ex": "これで終わり……！",
-      "normal": "読んだこと、ありますか……？",
-      "passive": "文学的筆致",
-      "sub": "クリミナルテキスト"
-    }
+    "profile": {
+      "fullName": "桜井ミヨ",
+      "name": "ミヨ",
+      "school": "ワイルドハント芸術学院",
+      "grade": "2年生",
+      "club": "特殊交易部",
+      "age": "16歳",
+      "birthday": "8月24日",
+      "height": "155cm",
+      "hobby": "タイプライター集め",
+      "weaponName": "キヴォトス・タイプライター",
+      "cv": "花岩香奈",
+      "skills": {
+        "ex": "これで終わり……！",
+        "normal": "読んだこと、ありますか……？",
+        "passive": "文学的筆致",
+        "sub": "クリミナルテキスト"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/miyo.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "fuyu": {
-    "id": "fuyu",
-    "fullName": "若狭フユ",
-    "name": "フユ",
-    "school": "ワイルドハント芸術学院",
-    "grade": "2年生",
-    "club": "特殊交易部",
-    "age": "16歳",
-    "birthday": "9月5日",
-    "height": "173cm",
-    "hobby": "テレビ視聴、家電の改造",
-    "weaponName": "親切な誘い",
-    "cv": "十二稜子",
-    "portraitImage": "images/portrait/fuyu.png",
-    "skills": {
-      "ex": "弾丸のお届け",
-      "normal": "お届け完了です！",
-      "passive": "営業の真髄",
-      "sub": "交渉決裂"
-    }
+    "profile": {
+      "fullName": "若狭フユ",
+      "name": "フユ",
+      "school": "ワイルドハント芸術学院",
+      "grade": "2年生",
+      "club": "特殊交易部",
+      "age": "16歳",
+      "birthday": "9月5日",
+      "height": "173cm",
+      "hobby": "テレビ視聴、家電の改造",
+      "weaponName": "親切な誘い",
+      "cv": "十二稜子",
+      "skills": {
+        "ex": "弾丸のお届け",
+        "normal": "お届け完了です！",
+        "passive": "営業の真髄",
+        "sub": "交渉決裂"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/fuyu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "ritsu": {
-    "id": "ritsu",
-    "fullName": "薄葉リツ",
-    "name": "リツ",
-    "school": "ワイルドハント芸術学院",
-    "grade": "1年生",
-    "club": "特殊交易部",
-    "age": "15歳",
-    "birthday": "3月6日",
-    "height": "140cm",
-    "hobby": "密輸、採石",
-    "weaponName": "携帯用穿孔機",
-    "cv": "瀬戸桃子",
-    "portraitImage": "images/portrait/ritsu.png",
-    "skills": {
-      "ex": "一緒に食べよっ！",
-      "normal": "えーっと、これじゃない！",
-      "passive": "彫ってみよっかな？",
-      "sub": "形象の解放"
-    }
+    "profile": {
+      "fullName": "薄葉リツ",
+      "name": "リツ",
+      "school": "ワイルドハント芸術学院",
+      "grade": "1年生",
+      "club": "特殊交易部",
+      "age": "15歳",
+      "birthday": "3月6日",
+      "height": "140cm",
+      "hobby": "密輸、採石",
+      "weaponName": "携帯用穿孔機",
+      "cv": "瀬戸桃子",
+      "skills": {
+        "ex": "一緒に食べよっ！",
+        "normal": "えーっと、これじゃない！",
+        "passive": "彫ってみよっかな？",
+        "sub": "形象の解放"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/ritsu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "rabu": {
-    "id": "rabu",
-    "fullName": "河駒風ラブ",
-    "name": "ラブ",
-    "school": "トリニティ総合学園 中退",
-    "grade": null,
-    "club": "無し",
-    "age": "16歳",
-    "birthday": "5月6日",
-    "height": "161cm",
-    "hobby": "ヘルメット拭き、自販機の下を漁ること",
-    "weaponName": "ピンチヒッター",
-    "cv": "鈴木日菜",
-    "portraitImage": "images/portrait/rabu.png",
-    "skills": {
-      "ex": "それなら、やっぱり！",
-      "normal": "みんな、いくわよ！！",
-      "passive": "もう！腹立つわね！！",
-      "sub": "今日は焼肉よ！"
-    }
+    "profile": {
+      "fullName": "河駒風ラブ",
+      "name": "ラブ",
+      "school": "トリニティ総合学園 中退",
+      "grade": null,
+      "club": "無し",
+      "age": "16歳",
+      "birthday": "5月6日",
+      "height": "161cm",
+      "hobby": "ヘルメット拭き、自販機の下を漁ること",
+      "weaponName": "ピンチヒッター",
+      "cv": "鈴木日菜",
+      "skills": {
+        "ex": "それなら、やっぱり！",
+        "normal": "みんな、いくわよ！！",
+        "passive": "もう！腹立つわね！！",
+        "sub": "今日は焼肉よ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/rabu.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "subaru": {
-    "id": "subaru",
-    "fullName": "梯スバル",
-    "name": "スバル",
-    "school": "アリウス分校",
-    "grade": "3年生",
-    "club": "ニコメディアトゥループ",
-    "age": "17歳",
-    "birthday": "3月9日",
-    "height": "166cm",
-    "hobby": "ハーモニカ演奏",
-    "weaponName": "Anomoios",
-    "cv": "天海由梨奈",
-    "portraitImage": "images/portrait/subaru.png",
-    "skills": {
-      "ex": "残業手当",
-      "normal": "薬莢回収",
-      "passive": "みんなの先輩",
-      "sub": "ハーモニカ"
-    }
+    "profile": {
+      "fullName": "梯スバル",
+      "name": "スバル",
+      "school": "アリウス分校",
+      "grade": "3年生",
+      "club": "ニコメディアトゥループ",
+      "age": "17歳",
+      "birthday": "3月9日",
+      "height": "166cm",
+      "hobby": "ハーモニカ演奏",
+      "weaponName": "Anomoios",
+      "cv": "天海由梨奈",
+      "skills": {
+        "ex": "残業手当",
+        "normal": "薬莢回収",
+        "passive": "みんなの先輩",
+        "sub": "ハーモニカ"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/subaru.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "takane": {
-    "id": "takane",
-    "fullName": "三善タカネ",
-    "name": "タカネ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "2年生",
-    "club": "出版部",
-    "age": "16歳",
-    "birthday": "6月18日",
-    "height": "148cm",
-    "hobby": "読書、写真撮影、アイスホッケー観戦",
-    "weaponName": "シュヴィーブジク",
-    "cv": "春海百乃",
-    "portraitImage": "images/portrait/takane.png",
-    "skills": {
-      "ex": "評論家の一筆",
-      "normal": "少女の身だしなみ",
-      "passive": "100万本の薔薇",
-      "sub": "舞台上の銃"
-    }
+    "profile": {
+      "fullName": "三善タカネ",
+      "name": "タカネ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "2年生",
+      "club": "出版部",
+      "age": "16歳",
+      "birthday": "6月18日",
+      "height": "148cm",
+      "hobby": "読書、写真撮影、アイスホッケー観戦",
+      "weaponName": "シュヴィーブジク",
+      "cv": "春海百乃",
+      "skills": {
+        "ex": "評論家の一筆",
+        "normal": "少女の身だしなみ",
+        "passive": "100万本の薔薇",
+        "sub": "舞台上の銃"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/takane.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "yakumo": {
-    "id": "yakumo",
-    "fullName": "荒槇ヤクモ",
-    "name": "ヤクモ",
-    "school": "レッドウィンター連邦学園",
-    "grade": "3年生",
-    "club": "出版部",
-    "age": "17歳",
-    "birthday": "5月18日",
-    "height": "144cm",
-    "hobby": "事業計画書の作成、鉄道路線の分析",
-    "weaponName": "プラウダ",
-    "cv": "碧乃梨心",
-    "portraitImage": "images/portrait/yakumo.png",
-    "skills": {
-      "ex": "出版、重版、流通",
-      "normal": "売上拡大",
-      "passive": "経営哲学",
-      "sub": "契約更新"
-    }
+    "profile": {
+      "fullName": "荒槇ヤクモ",
+      "name": "ヤクモ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "3年生",
+      "club": "出版部",
+      "age": "17歳",
+      "birthday": "5月18日",
+      "height": "144cm",
+      "hobby": "事業計画書の作成、鉄道路線の分析",
+      "weaponName": "プラウダ",
+      "cv": "碧乃梨心",
+      "skills": {
+        "ex": "出版、重版、流通",
+        "normal": "売上拡大",
+        "passive": "経営哲学",
+        "sub": "契約更新"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/yakumo.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kei": {
-    "id": "kei",
-    "fullName": "ケイ",
-    "name": "ケイ",
-    "school": "ミレニアムサイエンススクール",
-    "grade": "1年生",
-    "club": "特異現象捜査部",
-    "age": "??歳",
-    "birthday": "3月25日",
-    "height": "152cm",
-    "hobby": "アリスのお世話、おしゃれ、ゲーム（本人は否定）",
-    "weaponName": "ルミナス・ノヴァ",
-    "cv": "田中美海",
-    "portraitImage": "images/portrait/kei.png",
-    "skills": {
-      "ex": "ここにいる私",
-      "normal": "怒らせましたね！？",
-      "passive": "私は抗い続けます！",
-      "sub": "共に歩む仲間"
-    }
+    "profile": {
+      "fullName": "ケイ",
+      "name": "ケイ",
+      "school": "ミレニアムサイエンススクール",
+      "grade": "1年生",
+      "club": "特異現象捜査部",
+      "age": "??歳",
+      "birthday": "3月25日",
+      "height": "152cm",
+      "hobby": "アリスのお世話、おしゃれ、ゲーム（本人は否定）",
+      "weaponName": "ルミナス・ノヴァ",
+      "cv": "田中美海",
+      "skills": {
+        "ex": "ここにいる私",
+        "normal": "怒らせましたね！？",
+        "passive": "私は抗い続けます！",
+        "sub": "共に歩む仲間"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kei.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "rena": {
-    "id": "rena",
-    "fullName": "衣斐レナ",
-    "name": "レナ",
-    "school": "ワイルドハント芸術学院",
-    "grade": "1年生",
-    "club": "オカルト研究会（第4寮404号室）",
-    "age": "15歳",
-    "birthday": "9月21日",
-    "height": "152cm",
-    "hobby": "衣装、アクセサリー製作",
-    "weaponName": "護身用ミシンガン",
-    "cv": "梅澤めぐ",
-    "portraitImage": "images/portrait/rena.png",
-    "skills": {
-      "ex": "解き明かしてやるんだから！",
-      "normal": "仕立ててあげる！",
-      "passive": "怖くなんかないわよ！",
-      "sub": "あんたも怖くないでしょ！？"
-    }
+    "profile": {
+      "fullName": "衣斐レナ",
+      "name": "レナ",
+      "school": "ワイルドハント芸術学院",
+      "grade": "1年生",
+      "club": "オカルト研究会（第4寮404号室）",
+      "age": "15歳",
+      "birthday": "9月21日",
+      "height": "152cm",
+      "hobby": "衣装、アクセサリー製作",
+      "weaponName": "護身用ミシンガン",
+      "cv": "梅澤めぐ",
+      "skills": {
+        "ex": "解き明かしてやるんだから！",
+        "normal": "仕立ててあげる！",
+        "passive": "怖くなんかないわよ！",
+        "sub": "あんたも怖くないでしょ！？"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/rena.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "konoka": {
-    "id": "konoka",
-    "fullName": "志真コノカ",
-    "name": "コノカ",
-    "school": "ヴァルキューレ警察学校",
-    "grade": "2年生",
-    "club": "公安局",
-    "age": "16歳",
-    "birthday": "8月19日",
-    "height": "165cm",
-    "hobby": "マッサージチェアを使うこと、新聞のクロスワードパズルを解くこと",
-    "weaponName": "道具",
-    "cv": "千本木彩花",
-    "portraitImage": "images/portrait/konoka.png",
-    "skills": {
-      "ex": "正当防衛ってやつ？",
-      "normal": "やりがいがあるじゃん？",
-      "passive": "助かったっす！",
-      "sub": "やれるもんならやってみなよ！"
-    }
+    "profile": {
+      "fullName": "志真コノカ",
+      "name": "コノカ",
+      "school": "ヴァルキューレ警察学校",
+      "grade": "2年生",
+      "club": "公安局",
+      "age": "16歳",
+      "birthday": "8月19日",
+      "height": "165cm",
+      "hobby": "マッサージチェアを使うこと、新聞のクロスワードパズルを解くこと",
+      "weaponName": "道具",
+      "cv": "千本木彩花",
+      "skills": {
+        "ex": "正当防衛ってやつ？",
+        "normal": "やりがいがあるじゃん？",
+        "passive": "助かったっす！",
+        "sub": "やれるもんならやってみなよ！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/konoka.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "niko": {
-    "id": "niko",
-    "fullName": "吉野ニコ",
-    "name": "ニコ",
-    "school": "SRT特殊学園",
-    "grade": "3年生",
-    "club": "FOX小隊",
-    "age": "17歳",
-    "birthday": "2月11日",
-    "height": "160cm",
-    "hobby": "料理（特にいなり寿司）",
-    "weaponName": "FOX-870式ショットガン",
-    "cv": "浅見香月",
-    "portraitImage": "images/portrait/niko.png",
-    "skills": {
-      "ex": "CSAR",
-      "normal": "ブロークンアロー",
-      "passive": "火器熟練",
-      "sub": "小隊のお世話焼き"
-    }
+    "profile": {
+      "fullName": "吉野ニコ",
+      "name": "ニコ",
+      "school": "SRT特殊学園",
+      "grade": "3年生",
+      "club": "FOX小隊",
+      "age": "17歳",
+      "birthday": "2月11日",
+      "height": "160cm",
+      "hobby": "料理（特にいなり寿司）",
+      "weaponName": "FOX-870式ショットガン",
+      "cv": "浅見香月",
+      "skills": {
+        "ex": "CSAR",
+        "normal": "ブロークンアロー",
+        "passive": "火器熟練",
+        "sub": "小隊のお世話焼き"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/niko.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "kurumi": {
-    "id": "kurumi",
-    "fullName": "高倉クルミ",
-    "name": "クルミ",
-    "school": "SRT特殊学園",
-    "grade": "3年生",
-    "club": "FOX小隊",
-    "age": "17歳",
-    "birthday": "9月30日",
-    "height": "151cm",
-    "hobby": "シール集め、掃除",
-    "weaponName": "FOX-45式サブマシンガン",
-    "cv": "橘一花",
-    "portraitImage": "images/portrait/kurumi.png",
-    "skills": {
-      "ex": "防護盾、展開",
-      "normal": "攻勢転換",
-      "passive": "セラミック装甲板",
-      "sub": "槌支える鉄床"
-    }
+    "profile": {
+      "fullName": "高倉クルミ",
+      "name": "クルミ",
+      "school": "SRT特殊学園",
+      "grade": "3年生",
+      "club": "FOX小隊",
+      "age": "17歳",
+      "birthday": "9月30日",
+      "height": "151cm",
+      "hobby": "シール集め、掃除",
+      "weaponName": "FOX-45式サブマシンガン",
+      "cv": "橘一花",
+      "skills": {
+        "ex": "防護盾、展開",
+        "normal": "攻勢転換",
+        "passive": "セラミック装甲板",
+        "sub": "槌支える鉄床"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kurumi.png"
+    },
+    "availableFrom": "2026-04-21"
   },
   "otogi": {
-    "id": "otogi",
-    "fullName": "天神山オトギ",
-    "name": "オトギ",
-    "school": "SRT特殊学園",
-    "grade": "3年生",
-    "club": "FOX小隊",
-    "age": "17歳",
-    "birthday": "5月20日",
-    "height": "150cm",
-    "hobby": "パズル、空想",
-    "weaponName": "FOX-82式スナイパーライフル",
-    "cv": "咲々木瞳",
-    "portraitImage": "images/portrait/otogi.png",
-    "skills": {
-      "ex": "指定射撃開始",
-      "normal": "HEIAP弾切替",
-      "passive": "速射熟練",
-      "sub": "狙撃手の勘"
-    }
+    "profile": {
+      "fullName": "天神山オトギ",
+      "name": "オトギ",
+      "school": "SRT特殊学園",
+      "grade": "3年生",
+      "club": "FOX小隊",
+      "age": "17歳",
+      "birthday": "5月20日",
+      "height": "150cm",
+      "hobby": "パズル、空想",
+      "weaponName": "FOX-82式スナイパーライフル",
+      "cv": "咲々木瞳",
+      "skills": {
+        "ex": "指定射撃開始",
+        "normal": "HEIAP弾切替",
+        "passive": "速射熟練",
+        "sub": "狙撃手の勘"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/otogi.png"
+    },
+    "availableFrom": "2026-04-21"
   }
 }

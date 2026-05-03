@@ -1,9 +1,11 @@
+import type { QuizKey } from "./key";
+
 export interface Student {
   id: string;
-  fullName: string; // 陸八魔アル
-  name: string; // アル
+  fullName: string;
+  name: string;
   school: string;
-  grade: string; // 2年生
+  grade: string;
   club: string;
   age: string;
   birthday: string;
@@ -18,6 +20,7 @@ export interface Student {
     passive: string;
     sub: string;
   };
+  availableFrom: string; // ISO YYYY-MM-DD: クイズで出題対象になった日
 }
 
 export type HintType =
@@ -33,13 +36,14 @@ export type HintType =
 
 export interface Hint {
   type: HintType;
-  label: string; // 表示用ラベル
-  value: string; // ヒント値
+  label: string;
+  value: string;
 }
 
 export interface QuizQuestion {
   student: Student;
-  hints: Hint[]; // シャッフル済み
+  hints: Hint[];
+  key: QuizKey;
 }
 
 export type PortraitState = "hidden" | "silhouette" | "revealed";

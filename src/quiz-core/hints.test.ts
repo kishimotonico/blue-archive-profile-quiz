@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateHints, createQuizQuestion } from "./hints";
+import { generateHintsV1 } from "./hints";
 import type { Student, HintType } from "./types";
 
 const makeStudent = (overrides: Partial<Student> = {}): Student => ({
@@ -16,6 +16,7 @@ const makeStudent = (overrides: Partial<Student> = {}): Student => ({
   weaponName: "RABBIT-31式短機関銃",
   cv: "藤田茜",
   portraitImage: "images/portrait/miyako.png",
+  availableFrom: "2026-04-21",
   skills: {
     ex: "自走式閃光ドローン",
     normal: "クレイモア",
@@ -37,10 +38,9 @@ const ALL_HINT_TYPES: HintType[] = [
   "familyName",
 ];
 
-describe("generateHints", () => {
+describe("generateHintsV1", () => {
   it("9種類のヒントがすべて生成される", () => {
-    const student = makeStudent();
-    const hints = generateHints(student);
+    const hints = generateHintsV1(makeStudent(), 42);
     expect(hints).toHaveLength(9);
 
     const types = hints.map((h) => h.type);
@@ -50,9 +50,7 @@ describe("generateHints", () => {
   });
 
   it("各ヒントの値が正しくマッピングされている", () => {
-    const student = makeStudent();
-    const hints = generateHints(student);
-
+    const hints = generateHintsV1(makeStudent(), 42);
     const byType = Object.fromEntries(hints.map((h) => [h.type, h]));
 
     expect(byType.school.value).toBe("SRT特殊学園 / 1年生");
@@ -67,38 +65,23 @@ describe("generateHints", () => {
   });
 
   it("各ヒントにlabelが設定されている", () => {
-    const hints = generateHints(makeStudent());
+    const hints = generateHintsV1(makeStudent(), 42);
     for (const hint of hints) {
       expect(hint.label).toBeTruthy();
     }
   });
-});
 
-describe("createQuizQuestion", () => {
-  it("生徒情報が正しく設定される", () => {
+  it("同じseedで同じ順序を返す（再現性）", () => {
     const student = makeStudent();
-    const question = createQuizQuestion(student);
-    expect(question.student).toBe(student);
-  });
-
-  it("seedあり時にヒント順序が決定論的", () => {
-    const student = makeStudent();
-    const q1 = createQuizQuestion(student, 42);
-    const q2 = createQuizQuestion(student, 42);
-    expect(q1.hints.map((h) => h.type)).toEqual(q2.hints.map((h) => h.type));
+    const h1 = generateHintsV1(student, 42);
+    const h2 = generateHintsV1(student, 42);
+    expect(h1.map((h) => h.type)).toEqual(h2.map((h) => h.type));
   });
 
   it("異なるseedでは異なる順序になりうる", () => {
     const student = makeStudent();
-    const q1 = createQuizQuestion(student, 1);
-    const q2 = createQuizQuestion(student, 9999);
-    // 同じ順序になる確率は非常に低い
-    expect(q1.hints.map((h) => h.type)).not.toEqual(q2.hints.map((h) => h.type));
-  });
-
-  it("seedなしでも9つのヒントが含まれる", () => {
-    const student = makeStudent();
-    const question = createQuizQuestion(student);
-    expect(question.hints).toHaveLength(9);
+    const h1 = generateHintsV1(student, 1);
+    const h2 = generateHintsV1(student, 9999);
+    expect(h1.map((h) => h.type)).not.toEqual(h2.map((h) => h.type));
   });
 });

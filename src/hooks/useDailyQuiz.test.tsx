@@ -4,9 +4,8 @@ import { Provider, createStore } from "jotai";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { ReactNode } from "react";
 import { useDailyQuiz } from "./useDailyQuiz";
-import type { DailyResult } from "../store/daily";
-
-// --- モック ---
+import type { DailyResult, DailyProgress } from "../store/daily";
+import type { QuizKey } from "../quiz-core";
 
 vi.mock("../quiz-core", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../quiz-core")>();
@@ -16,8 +15,6 @@ vi.mock("../quiz-core", async (importOriginal) => {
   };
 });
 
-// --- ヘルパー ---
-
 const setupHook = (store: ReturnType<typeof createStore>) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <Provider store={store}>{children}</Provider>
@@ -25,13 +22,19 @@ const setupHook = (store: ReturnType<typeof createStore>) => {
   return renderHook(() => useDailyQuiz(), { wrapper });
 };
 
-const makeResultPayload = (studentId = "s1"): Omit<DailyResult, "date" | "timestamp"> => ({
-  score: 8,
-  revealedHintCount: 3,
-  studentId,
+const makeKey = (baseDate = "2026-03-14"): QuizKey => ({
+  version: 1,
+  baseDate,
+  seed: 20260314,
 });
 
-// --- テスト ---
+const makeResultPayload = (baseDate = "2026-03-14"): Omit<DailyResult, "timestamp"> => ({
+  key: makeKey(baseDate),
+  studentId: "s1",
+  score: 8,
+  revealedHintCount: 3,
+  correct: true,
+});
 
 describe("useDailyQuiz - saveTodayResult", () => {
   let mockGetDailyDate: ReturnType<typeof vi.mocked<() => string>>;
@@ -43,7 +46,7 @@ describe("useDailyQuiz - saveTodayResult", () => {
     mockGetDailyDate.mockReturnValue("2026-03-14");
   });
 
-  it("結果が保存され、date と timestamp が自動付与される", () => {
+  it("結果が保存され、key.baseDate と timestamp が設定される", () => {
     const store = createStore();
     const { result } = setupHook(store);
 
@@ -51,7 +54,7 @@ describe("useDailyQuiz - saveTodayResult", () => {
 
     const saved = result.current.dailyResults;
     expect(saved).toHaveLength(1);
-    expect(saved[0].date).toBe("2026-03-14");
+    expect(saved[0].key.baseDate).toBe("2026-03-14");
     expect(saved[0].studentId).toBe("s1");
     expect(saved[0].timestamp).toBeGreaterThan(0);
   });
@@ -72,18 +75,16 @@ describe("useDailyQuiz - saveTodayResult", () => {
     const store = createStore();
     const { result } = setupHook(store);
 
-    // 昨日の日付で保存（mockReturnValue で全呼び出しに適用）
     mockGetDailyDate.mockReturnValue("2026-03-13");
-    act(() => result.current.saveTodayResult({ ...makeResultPayload("s2"), score: 6 }));
+    act(() => result.current.saveTodayResult(makeResultPayload("2026-03-13")));
 
-    // 今日の日付に切り替えて保存
     mockGetDailyDate.mockReturnValue("2026-03-14");
-    act(() => result.current.saveTodayResult({ ...makeResultPayload("s1"), score: 8 }));
+    act(() => result.current.saveTodayResult(makeResultPayload("2026-03-14")));
 
     const saved = result.current.dailyResults;
     expect(saved).toHaveLength(2);
-    expect(saved.find((r) => r.date === "2026-03-13")).toBeDefined();
-    expect(saved.find((r) => r.date === "2026-03-14")).toBeDefined();
+    expect(saved.find((r) => r.key.baseDate === "2026-03-13")).toBeDefined();
+    expect(saved.find((r) => r.key.baseDate === "2026-03-14")).toBeDefined();
   });
 });
 
@@ -105,28 +106,44 @@ describe("useDailyQuiz - getTodayResult", () => {
 
     const todayResult = result.current.getTodayResult();
     expect(todayResult).toBeDefined();
-    expect(todayResult?.date).toBe("2026-03-14");
+    expect(todayResult?.key.baseDate).toBe("2026-03-14");
   });
 
   it("本日の結果が存在しない場合は undefined を返す", () => {
     const store = createStore();
     const { result } = setupHook(store);
 
-    const todayResult = result.current.getTodayResult();
-    expect(todayResult).toBeUndefined();
+    expect(result.current.getTodayResult()).toBeUndefined();
   });
 
   it("昨日の結果のみ存在する場合は undefined を返す", () => {
     const store = createStore();
     const { result } = setupHook(store);
 
-    // 昨日の日付で結果を保存
     mockGetDailyDate.mockReturnValue("2026-03-13");
-    act(() => result.current.saveTodayResult(makeResultPayload()));
+    act(() => result.current.saveTodayResult(makeResultPayload("2026-03-13")));
 
-    // 今日の日付に戻して取得
     mockGetDailyDate.mockReturnValue("2026-03-14");
     expect(result.current.getTodayResult()).toBeUndefined();
+  });
+});
+
+describe("useDailyQuiz - discardTodayResult", () => {
+  beforeEach(async () => {
+    localStorage.clear();
+    const { getDailyDate } = await import("../quiz-core");
+    vi.mocked(getDailyDate).mockReturnValue("2026-03-14");
+  });
+
+  it("今日の結果を削除する", () => {
+    const store = createStore();
+    const { result } = setupHook(store);
+
+    act(() => result.current.saveTodayResult(makeResultPayload()));
+    expect(result.current.dailyResults).toHaveLength(1);
+
+    act(() => result.current.discardTodayResult());
+    expect(result.current.dailyResults).toHaveLength(0);
   });
 });
 
@@ -137,44 +154,28 @@ describe("useDailyQuiz - saveProgress", () => {
     vi.mocked(getDailyDate).mockReturnValue("2026-03-14");
   });
 
-  it("保存した内容に date が自動付与される", () => {
-    const store = createStore();
-    const { result } = setupHook(store);
-
-    act(() =>
-      result.current.saveProgress({
-        studentId: "s1",
-        revealedHintCount: 2,
-        hints: [{ type: "school", label: "学園", value: "テスト学園" }],
-      }),
-    );
-
-    expect(result.current.dailyProgress?.date).toBe("2026-03-14");
+  const makeProgress = (baseDate = "2026-03-14"): DailyProgress => ({
+    key: makeKey(baseDate),
+    revealedHintCount: 2,
   });
 
   it("dailyProgress に値がセットされる", () => {
     const store = createStore();
     const { result } = setupHook(store);
 
-    act(() =>
-      result.current.saveProgress({
-        studentId: "s1",
-        revealedHintCount: 3,
-        hints: [],
-      }),
-    );
+    act(() => result.current.saveProgress(makeProgress()));
 
     expect(result.current.dailyProgress).not.toBeNull();
-    expect(result.current.dailyProgress?.studentId).toBe("s1");
-    expect(result.current.dailyProgress?.revealedHintCount).toBe(3);
+    expect(result.current.dailyProgress?.key.baseDate).toBe("2026-03-14");
+    expect(result.current.dailyProgress?.revealedHintCount).toBe(2);
   });
 
   it("2回保存すると最新の値で上書きされる", () => {
     const store = createStore();
     const { result } = setupHook(store);
 
-    act(() => result.current.saveProgress({ studentId: "s1", revealedHintCount: 2, hints: [] }));
-    act(() => result.current.saveProgress({ studentId: "s1", revealedHintCount: 5, hints: [] }));
+    act(() => result.current.saveProgress({ ...makeProgress(), revealedHintCount: 2 }));
+    act(() => result.current.saveProgress({ ...makeProgress(), revealedHintCount: 5 }));
 
     expect(result.current.dailyProgress?.revealedHintCount).toBe(5);
   });
@@ -193,15 +194,13 @@ describe("useDailyQuiz - clearProgress", () => {
 
     act(() =>
       result.current.saveProgress({
-        studentId: "s1",
+        key: makeKey(),
         revealedHintCount: 2,
-        hints: [],
       }),
     );
     expect(result.current.dailyProgress).not.toBeNull();
 
     act(() => result.current.clearProgress());
-
     expect(result.current.dailyProgress).toBeNull();
   });
 });

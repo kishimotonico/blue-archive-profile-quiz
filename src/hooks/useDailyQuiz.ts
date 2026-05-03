@@ -12,52 +12,39 @@ export function useDailyQuiz() {
   const [dailyResults, setDailyResults] = useAtom(dailyResultsAtom);
   const [dailyProgress, setDailyProgress] = useAtom(dailyProgressAtom);
 
-  /**
-   * 今日の結果を保存
-   */
   const saveTodayResult = useCallback(
-    (result: Omit<DailyResult, "date" | "timestamp">) => {
+    (result: Omit<DailyResult, "timestamp">) => {
       const today = getDailyDate();
       const newResult: DailyResult = {
         ...result,
-        date: today,
         timestamp: Date.now(),
       };
 
       setDailyResults((prev) => {
-        // 既存の今日の結果を削除
-        const filtered = prev.filter((r) => r.date !== today);
+        const filtered = prev.filter((r) => r.key.baseDate !== today);
         return [...filtered, newResult];
       });
     },
     [setDailyResults],
   );
 
-  /**
-   * 今日の結果を取得
-   */
   const getTodayResult = useCallback(() => {
     const today = getDailyDate();
-    return dailyResults.find((r) => r.date === today);
+    return dailyResults.find((r) => r.key.baseDate === today);
   }, [dailyResults]);
 
-  /**
-   * 進行状態を保存
-   */
+  const discardTodayResult = useCallback(() => {
+    const today = getDailyDate();
+    setDailyResults((prev) => prev.filter((r) => r.key.baseDate !== today));
+  }, [setDailyResults]);
+
   const saveProgress = useCallback(
-    (progress: Omit<DailyProgress, "date">) => {
-      const today = getDailyDate();
-      setDailyProgress({
-        ...progress,
-        date: today,
-      });
+    (progress: DailyProgress) => {
+      setDailyProgress(progress);
     },
     [setDailyProgress],
   );
 
-  /**
-   * 進行状態をクリア
-   */
   const clearProgress = useCallback(() => {
     setDailyProgress(null);
   }, [setDailyProgress]);
@@ -66,6 +53,7 @@ export function useDailyQuiz() {
     dailyResults,
     saveTodayResult,
     getTodayResult,
+    discardTodayResult,
     dailyProgress,
     saveProgress,
     clearProgress,

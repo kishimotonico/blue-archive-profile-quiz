@@ -28,6 +28,7 @@ const makeStudent = (id: string): Student => ({
   weaponName: "テスト銃",
   cv: "テストCV",
   portraitImage: `images/${id}.png`,
+  availableFrom: "2026-04-21",
   skills: { ex: "", normal: "", passive: "", sub: "" },
 });
 
@@ -41,6 +42,7 @@ const mockQuestion: QuizQuestion = {
     { type: "club", label: "部活", value: "テスト部" },
     { type: "age", label: "年齢", value: "15歳" },
   ],
+  key: { version: 1, baseDate: "2026-04-21", seed: 12345 },
 };
 
 // --- ヘルパー ---

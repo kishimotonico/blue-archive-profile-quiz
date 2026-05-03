@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { dateToSeed, getDailyDate, getDailySeed, getNextDailyResetTime } from "./daily";
+import { dateToSeed, getDailyDate, getDailyQuizKey, getNextDailyResetTime, getNextQuizDate } from "./daily";
+import { CURRENT_ALGORITHM_VERSION } from "./key";
 
 afterEach(() => {
   vi.useRealTimers();
@@ -40,11 +41,34 @@ describe("getDailyDate", () => {
   });
 });
 
-describe("getDailySeed", () => {
-  it("getDailyDate()をdateToSeedに渡した値と同値", () => {
+describe("getDailyQuizKey", () => {
+  it("getDailyDate() のseedと一致する", () => {
     vi.setSystemTime(new Date("2026-03-13T20:00:00Z"));
     const date = getDailyDate();
-    expect(getDailySeed()).toBe(dateToSeed(date));
+    const key = getDailyQuizKey();
+    expect(key.seed).toBe(dateToSeed(date));
+    expect(key.baseDate).toBe(date);
+    expect(key.version).toBe(CURRENT_ALGORITHM_VERSION);
+  });
+
+  it("日付を渡すとその日のキーが生成される", () => {
+    const key = getDailyQuizKey("2026-04-21");
+    expect(key.baseDate).toBe("2026-04-21");
+    expect(key.seed).toBe(dateToSeed("2026-04-21"));
+  });
+});
+
+describe("getNextQuizDate", () => {
+  it("翌クイズ日を返す", () => {
+    expect(getNextQuizDate("2026-04-21")).toBe("2026-04-22");
+  });
+
+  it("月末を正しく越える", () => {
+    expect(getNextQuizDate("2026-03-31")).toBe("2026-04-01");
+  });
+
+  it("年末を正しく越える", () => {
+    expect(getNextQuizDate("2026-12-31")).toBe("2027-01-01");
   });
 });
 

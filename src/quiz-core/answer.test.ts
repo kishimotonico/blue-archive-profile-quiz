@@ -16,6 +16,7 @@ const makeStudent = (overrides: Partial<Student> = {}): Student => ({
   weaponName: "RABBIT-31式短機関銃",
   cv: "藤田茜",
   portraitImage: "images/portrait/miyako.png",
+  availableFrom: "2026-04-21",
   skills: {
     ex: "自走式閃光ドローン",
     normal: "クレイモア",

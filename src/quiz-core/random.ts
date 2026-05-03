@@ -1,7 +1,4 @@
-/**
- * シンプルなシード付き乱数生成器（LCG実装）
- */
-export function seededRandom(seed: number): () => number {
+export function seededRandomV1(seed: number): () => number {
   let state = seed;
   return () => {
     state = (state * 1103515245 + 12345) & 0x7fffffff;
@@ -9,15 +6,18 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-/**
- * Fisher-Yates シャッフル（破壊的）
- * @param array シャッフル対象の配列（コピー済みであること）
- * @param randomFn 乱数生成関数（省略時は Math.random）
- */
-export function shuffle<T>(array: T[], randomFn: () => number = Math.random): T[] {
+export function shuffleV1<T>(array: T[], seed: number): T[] {
+  const rng = seededRandomV1(seed);
   for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(randomFn() * (i + 1));
+    const j = Math.floor(rng() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+
+export function deriveSeedV1(master: number, tag: string, index = 0): number {
+  let h = master ^ 0x9e3779b9;
+  for (const ch of tag) h = (((h << 5) - h) + ch.charCodeAt(0)) | 0;
+  h = (h * 16777619) ^ index;
+  return h >>> 0;
 }

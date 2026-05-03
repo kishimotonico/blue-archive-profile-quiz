@@ -5,6 +5,7 @@ import { useQuiz } from "../hooks/useQuiz";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
 import {
   createDailyQuestion,
+  createQuestion,
   getTimeUntilNextReset,
   loadStudents,
   getScoreRank,
@@ -39,8 +40,14 @@ function DailyQuiz() {
     giveUp,
   } = useQuiz();
 
-  const { getTodayResult, saveTodayResult, saveProgress, dailyProgress, clearProgress } =
-    useDailyQuiz();
+  const {
+    getTodayResult,
+    saveTodayResult,
+    discardTodayResult,
+    saveProgress,
+    dailyProgress,
+    clearProgress,
+  } = useDailyQuiz();
   const setAllStudents = useSetAtom(allStudentsAtom);
   const setAnswered = useSetAtom(answeredAtom);
   const setCorrect = useSetAtom(correctAtom);
@@ -59,48 +66,50 @@ function DailyQuiz() {
     if (!loading) return;
 
     const initQuiz = async () => {
-      // 全生徒リストを読み込み
+      // 全生徒リストを読み込み（回答バリデーション用）
       const students = await loadStudents();
       setAllStudents(students);
 
       // 今日の問題が既に完了しているかチェック
       const todayResult = getTodayResult();
       if (todayResult) {
-        // 回答済みの場合も問題を再生成して表示
-        const question = await createDailyQuestion(todayResult.date);
-        setCurrentQuestion(question);
-        setRevealedHintCount(question.hints.length + 1); // 全ヒント + 立ち絵を表示
+        const restored = await createQuestion(todayResult.key);
 
-        // 回答済み状態を復元
+        // 整合性チェック: key から復元した生徒と保存した studentId が一致するか確認
+        if (restored.student.id !== todayResult.studentId) {
+          console.warn(
+            `Quiz integrity mismatch: expected ${todayResult.studentId}, got ${restored.student.id}. Discarding stored result.`,
+          );
+          discardTodayResult();
+          clearProgress();
+          const question = await createDailyQuestion();
+          setCurrentQuestion(question);
+          setLoading(false);
+          return;
+        }
+
+        setCurrentQuestion(restored);
+        setRevealedHintCount(restored.hints.length + 1); // 全ヒント + 立ち絵を表示
         setAnswered(true);
-        setCorrect(todayResult.score > 0); // スコアが0より大きければ正解
+        setCorrect(todayResult.correct);
         setScore(todayResult.score);
         setIsAlreadyCompleted(true);
-
         setLoading(false);
         return;
       }
 
-      // 進行状態の復元を試みる
+      // 進行中の復元を試みる
       const today = getDailyDate();
-      if (dailyProgress && dailyProgress.date === today) {
-        // 進行状態から復元
-        const student = students.find((s) => s.id === dailyProgress.studentId);
-        if (student) {
-          const question = {
-            student,
-            hints: dailyProgress.hints,
-          };
-          setCurrentQuestion(question);
-          setRevealedHintCount(dailyProgress.revealedHintCount);
-          setLoading(false);
-          return;
-        }
+      if (dailyProgress && dailyProgress.key.baseDate === today) {
+        const restored = await createQuestion(dailyProgress.key);
+        setCurrentQuestion(restored);
+        setRevealedHintCount(dailyProgress.revealedHintCount);
+        setLoading(false);
+        return;
       }
 
-      // 日替わりシードで問題を生成
+      // 新規プレイ
       const question = await createDailyQuestion();
-
       setCurrentQuestion(question);
       setLoading(false);
     };
@@ -110,6 +119,7 @@ function DailyQuiz() {
     loading,
     dailyProgress,
     getTodayResult,
+    discardTodayResult,
     setAllStudents,
     setCurrentQuestion,
     setRevealedHintCount,
@@ -120,13 +130,11 @@ function DailyQuiz() {
 
   useEffect(() => {
     // 進行状態を保存（ヒント開示時）
-    // 注意: loading中や回答済みの場合は保存しない
     if (loading || answered) return;
     if (currentQuestion && revealedHintCount > 0) {
       saveProgress({
-        studentId: currentQuestion.student.id,
+        key: currentQuestion.key,
         revealedHintCount,
-        hints: currentQuestion.hints,
       });
     }
   }, [loading, currentQuestion, answered, revealedHintCount, saveProgress]);
@@ -135,9 +143,11 @@ function DailyQuiz() {
     // 回答が完了したら結果を保存（既に完了済みの場合は除く）
     if (answered && currentQuestion && !isAlreadyCompleted) {
       saveTodayResult({
+        key: currentQuestion.key,
+        studentId: currentQuestion.student.id,
         score,
         revealedHintCount,
-        studentId: currentQuestion.student.id,
+        correct,
       });
       clearProgress(); // 進行状態をクリア
 
@@ -153,6 +163,7 @@ function DailyQuiz() {
     currentQuestion,
     score,
     revealedHintCount,
+    correct,
     isAlreadyCompleted,
     saveTodayResult,
     clearProgress,

@@ -2,9 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetAtom } from "jotai";
 import { useQuiz } from "./useQuiz";
-import { getRandomStudents, createQuizQuestion, loadStudents } from "../quiz-core";
+import {
+  createQuestionSet,
+  loadStudents,
+  getDailyDate,
+  CURRENT_ALGORITHM_VERSION,
+} from "../quiz-core";
 import { allStudentsAtom } from "../store/quiz";
-import type { Student } from "../quiz-core";
+import type { QuizQuestion } from "../quiz-core";
 
 const TOTAL_QUESTIONS = 10;
 
@@ -16,13 +21,12 @@ export function useRegularQuiz() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
-  const [students, setStudents] = useState<Student[]>([]);
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [scores, setScores] = useState<number[]>([]);
 
   const totalScore = scores.reduce((sum, s) => sum + s, 0);
 
-  // 初期化
   useEffect(() => {
     let cancelled = false;
     const initQuiz = async () => {
@@ -30,11 +34,19 @@ export function useRegularQuiz() {
       const allStudents = await loadStudents();
       if (cancelled) return;
       setAllStudents(allStudents);
-      const randomStudents = await getRandomStudents(TOTAL_QUESTIONS);
+
+      // マスターシードを生成してフリープレイセットを一括生成
+      const masterSeed = Math.floor(Math.random() * 0x7fffffff);
+      const masterKey = {
+        version: CURRENT_ALGORITHM_VERSION,
+        baseDate: getDailyDate(),
+        seed: masterSeed,
+      };
+      const generatedQuestions = await createQuestionSet(masterKey, TOTAL_QUESTIONS);
       if (cancelled) return;
-      setStudents(randomStudents);
-      if (randomStudents.length > 0) {
-        setCurrentQuestion(createQuizQuestion(randomStudents[0]));
+      setQuestions(generatedQuestions);
+      if (generatedQuestions.length > 0) {
+        setCurrentQuestion(generatedQuestions[0]);
       }
       setLoading(false);
     };
@@ -45,17 +57,16 @@ export function useRegularQuiz() {
     };
   }, [setCurrentQuestion, resetQuiz, setAllStudents]);
 
-  // スコアを追加して次の問題へ、または結果画面へ
   const goNext = useCallback(() => {
     if (!answered) return;
     const newScores = [...scores, score];
     const nextIndex = currentQuestionIndex + 1;
 
-    if (nextIndex < students.length) {
+    if (nextIndex < questions.length) {
       setScores(newScores);
       setCurrentQuestionIndex(nextIndex);
       resetQuiz();
-      setCurrentQuestion(createQuizQuestion(students[nextIndex]));
+      setCurrentQuestion(questions[nextIndex]);
     } else {
       navigate("/result", {
         state: {
@@ -70,7 +81,7 @@ export function useRegularQuiz() {
     scores,
     score,
     currentQuestionIndex,
-    students,
+    questions,
     resetQuiz,
     setCurrentQuestion,
     navigate,

@@ -1,10 +1,12 @@
 import { atom } from "jotai";
-import type { QuizQuestion, Student } from "../quiz-core";
+import type { QuizQuestion } from "../quiz-core";
+import { loadStudents } from "../quiz-core";
 
 /**
- * 全生徒リスト
+ * 全生徒リスト（Suspense 対応の async atom）。
+ * loadStudents() のモジュールキャッシュにより 2 回目以降は即時解決する。
  */
-export const allStudentsAtom = atom<Student[]>([]);
+export const allStudentsAtom = atom(async () => loadStudents());
 
 /**
  * 現在のクイズ問題

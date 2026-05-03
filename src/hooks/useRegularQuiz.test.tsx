@@ -2,7 +2,7 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { Provider, createStore } from "jotai";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { useRegularQuiz } from "./useRegularQuiz";
 import { answeredAtom, scoreAtom } from "../store/quiz";
 
@@ -64,15 +64,21 @@ describe("useRegularQuiz - goNext() の二重計上防止", () => {
 
   const createWrapper = () => {
     const Wrapper = ({ children }: { children: ReactNode }) => (
-      <Provider store={store}>{children}</Provider>
+      <Provider store={store}>
+        <Suspense fallback={null}>{children}</Suspense>
+      </Provider>
     );
     return Wrapper;
   };
 
   it("answered=false のとき goNext() を呼んでもスコアが追加されない", async () => {
-    const { result } = renderHook(() => useRegularQuiz(), {
-      wrapper: createWrapper(),
+    let rendered!: ReturnType<typeof renderHook<ReturnType<typeof useRegularQuiz>, unknown>>;
+    await act(async () => {
+      rendered = renderHook(() => useRegularQuiz(), {
+        wrapper: createWrapper(),
+      });
     });
+    const { result } = rendered;
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
@@ -85,9 +91,13 @@ describe("useRegularQuiz - goNext() の二重計上防止", () => {
   });
 
   it("answered=true のとき goNext() でスコアが1回だけ追加される", async () => {
-    const { result } = renderHook(() => useRegularQuiz(), {
-      wrapper: createWrapper(),
+    let rendered!: ReturnType<typeof renderHook<ReturnType<typeof useRegularQuiz>, unknown>>;
+    await act(async () => {
+      rendered = renderHook(() => useRegularQuiz(), {
+        wrapper: createWrapper(),
+      });
     });
+    const { result } = rendered;
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
@@ -104,9 +114,13 @@ describe("useRegularQuiz - goNext() の二重計上防止", () => {
   });
 
   it("goNext() を素早く2回呼んでもスコアは1回だけ追加される（二重計上防止）", async () => {
-    const { result } = renderHook(() => useRegularQuiz(), {
-      wrapper: createWrapper(),
+    let rendered!: ReturnType<typeof renderHook<ReturnType<typeof useRegularQuiz>, unknown>>;
+    await act(async () => {
+      rendered = renderHook(() => useRegularQuiz(), {
+        wrapper: createWrapper(),
+      });
     });
+    const { result } = rendered;
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
@@ -126,9 +140,13 @@ describe("useRegularQuiz - goNext() の二重計上防止", () => {
   });
 
   it("全問回答後に navigate('/result') が正しい totalScore で呼ばれる", async () => {
-    const { result } = renderHook(() => useRegularQuiz(), {
-      wrapper: createWrapper(),
+    let rendered!: ReturnType<typeof renderHook<ReturnType<typeof useRegularQuiz>, unknown>>;
+    await act(async () => {
+      rendered = renderHook(() => useRegularQuiz(), {
+        wrapper: createWrapper(),
+      });
     });
+    const { result } = rendered;
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 

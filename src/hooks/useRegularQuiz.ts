@@ -1,15 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetAtom } from "jotai";
 import { useQuiz } from "./useQuiz";
 import {
   createQuestionSet,
-  loadStudents,
   getDailyDate,
   CURRENT_ALGORITHM_VERSION,
 } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
-import { allStudentsAtom } from "../store/quiz";
 import type { QuizQuestion } from "../quiz-core";
 
 const TOTAL_QUESTIONS = 10;
@@ -18,7 +15,6 @@ export function useRegularQuiz() {
   const quiz = useQuiz();
   const { score, answered, resetQuiz, setCurrentQuestion } = quiz;
 
-  const setAllStudents = useSetAtom(allStudentsAtom);
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -32,9 +28,6 @@ export function useRegularQuiz() {
     let cancelled = false;
     const initQuiz = async () => {
       resetQuiz();
-      const allStudents = await loadStudents();
-      if (cancelled) return;
-      setAllStudents(allStudents);
 
       // マスターシードを生成してフリープレイセットを一括生成
       const masterSeed = Math.floor(Math.random() * 0x7fffffff);
@@ -58,7 +51,7 @@ export function useRegularQuiz() {
       cancelled = true;
       resetQuiz();
     };
-  }, [setCurrentQuestion, resetQuiz, setAllStudents]);
+  }, [setCurrentQuestion, resetQuiz]);
 
   const goNext = useCallback(() => {
     if (!answered) return;

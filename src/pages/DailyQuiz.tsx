@@ -7,11 +7,10 @@ import {
   createDailyQuestion,
   createQuestion,
   getTimeUntilNextReset,
-  loadStudents,
   getScoreRank,
   getDailyDate,
 } from "../quiz-core";
-import { allStudentsAtom, answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
+import { answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
 import { totalAttemptsAtom, scoreDistributionAtom, bestScoreAtom } from "../store/daily";
 import Header from "../components/layout/Header";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
@@ -49,7 +48,6 @@ function DailyQuiz() {
     dailyProgress,
     clearProgress,
   } = useDailyQuiz();
-  const setAllStudents = useSetAtom(allStudentsAtom);
   const setAnswered = useSetAtom(answeredAtom);
   const setCorrect = useSetAtom(correctAtom);
   const setScore = useSetAtom(scoreAtom);
@@ -67,10 +65,6 @@ function DailyQuiz() {
     if (!loading) return;
 
     const initQuiz = async () => {
-      // 全生徒リストを読み込み（回答バリデーション用）
-      const students = await loadStudents();
-      setAllStudents(students);
-
       // 今日の問題が既に完了しているかチェック
       const todayResult = getTodayResult();
       if (todayResult) {
@@ -125,7 +119,6 @@ function DailyQuiz() {
     dailyProgress,
     getTodayResult,
     discardTodayResult,
-    setAllStudents,
     setCurrentQuestion,
     setRevealedHintCount,
     setAnswered,

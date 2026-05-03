@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSetAtom } from "jotai";
 import { useQuiz } from "./useQuiz";
 import {
   createQuestionSet,
@@ -7,13 +8,41 @@ import {
   CURRENT_ALGORITHM_VERSION,
 } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
-import type { QuizQuestion } from "../quiz-core";
+import {
+  loadRegularQuizProgress,
+  saveRegularQuizProgress,
+  clearRegularQuizProgress,
+  DEFAULT_CURRENT_QUESTION_STATE,
+  type RegularQuizProgress,
+} from "../store/regular";
+import { answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
+import type { QuizQuestion, QuizKey } from "../quiz-core";
 
 const TOTAL_QUESTIONS = 10;
 
+function generateMasterKey(): QuizKey {
+  return {
+    version: CURRENT_ALGORITHM_VERSION,
+    baseDate: getDailyDate(),
+    seed: Math.floor(Math.random() * 0x7fffffff),
+  };
+}
+
 export function useRegularQuiz() {
   const quiz = useQuiz();
-  const { score, answered, resetQuiz, setCurrentQuestion } = quiz;
+  const {
+    revealedHintCount,
+    answered,
+    correct,
+    score,
+    setCurrentQuestion,
+    setRevealedHintCount,
+    resetQuiz,
+  } = quiz;
+
+  const setAnswered = useSetAtom(answeredAtom);
+  const setCorrect = useSetAtom(correctAtom);
+  const setScore = useSetAtom(scoreAtom);
 
   const navigate = useNavigate();
 
@@ -21,6 +50,7 @@ export function useRegularQuiz() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [scores, setScores] = useState<number[]>([]);
+  const [masterKey, setMasterKey] = useState<QuizKey | null>(null);
 
   const totalScore = scores.reduce((sum, s) => sum + s, 0);
 
@@ -29,21 +59,40 @@ export function useRegularQuiz() {
     const initQuiz = async () => {
       resetQuiz();
 
-      // マスターシードを生成してフリープレイセットを一括生成
-      const masterSeed = Math.floor(Math.random() * 0x7fffffff);
-      const masterKey = {
-        version: CURRENT_ALGORITHM_VERSION,
-        baseDate: getDailyDate(),
-        seed: masterSeed,
-      };
-      const generatedQuestions = await createQuestionSet(masterKey, TOTAL_QUESTIONS);
+      const stored = loadRegularQuizProgress();
+      const restored = stored && stored.totalQuestions === TOTAL_QUESTIONS ? stored : null;
+      const key = restored ? restored.masterKey : generateMasterKey();
+
+      const generatedQuestions = await createQuestionSet(key, TOTAL_QUESTIONS);
       if (cancelled) return;
-      // 全問の立ち絵を非同期で事前読み込み（DOM をブロックしない）
+
       generatedQuestions.forEach((q) => preloadPortraitImage(q.student));
       setQuestions(generatedQuestions);
-      if (generatedQuestions.length > 0) {
-        setCurrentQuestion(generatedQuestions[0]);
+      setMasterKey(key);
+
+      if (restored) {
+        const safeIndex = Math.min(restored.currentQuestionIndex, generatedQuestions.length - 1);
+        setCurrentQuestionIndex(safeIndex);
+        setScores(restored.scores);
+        setCurrentQuestion(generatedQuestions[safeIndex]);
+        setRevealedHintCount(restored.currentQuestionState.revealedHintCount);
+        setAnswered(restored.currentQuestionState.answered);
+        setCorrect(restored.currentQuestionState.correct);
+        setScore(restored.currentQuestionState.score);
+      } else {
+        const freshProgress: RegularQuizProgress = {
+          masterKey: key,
+          totalQuestions: TOTAL_QUESTIONS,
+          currentQuestionIndex: 0,
+          scores: [],
+          currentQuestionState: DEFAULT_CURRENT_QUESTION_STATE,
+        };
+        saveRegularQuizProgress(freshProgress);
+        if (generatedQuestions.length > 0) {
+          setCurrentQuestion(generatedQuestions[0]);
+        }
       }
+
       setLoading(false);
     };
     initQuiz();
@@ -51,7 +100,30 @@ export function useRegularQuiz() {
       cancelled = true;
       resetQuiz();
     };
-  }, [setCurrentQuestion, resetQuiz]);
+    // 初期化は1回だけ実行する。setter 群は安定しているが過度な依存を避けるため意図的に空配列。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 進行中の状態を sessionStorage に同期
+  useEffect(() => {
+    if (loading || !masterKey) return;
+    saveRegularQuizProgress({
+      masterKey,
+      totalQuestions: TOTAL_QUESTIONS,
+      currentQuestionIndex,
+      scores,
+      currentQuestionState: { revealedHintCount, answered, correct, score },
+    });
+  }, [
+    loading,
+    masterKey,
+    currentQuestionIndex,
+    scores,
+    revealedHintCount,
+    answered,
+    correct,
+    score,
+  ]);
 
   const goNext = useCallback(() => {
     if (!answered) return;
@@ -64,6 +136,8 @@ export function useRegularQuiz() {
       resetQuiz();
       setCurrentQuestion(questions[nextIndex]);
     } else {
+      // 全問終了 → 進捗をクリアしてから結果画面へ
+      clearRegularQuizProgress();
       navigate("/result", {
         state: {
           totalScore: newScores.reduce((sum, s) => sum + s, 0),

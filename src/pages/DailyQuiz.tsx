@@ -14,6 +14,7 @@ import {
 import { allStudentsAtom, answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
 import { totalAttemptsAtom, scoreDistributionAtom, bestScoreAtom } from "../store/daily";
 import Header from "../components/layout/Header";
+import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import HintList from "../components/quiz/HintList";
 import StudentReveal from "../components/quiz/StudentReveal";
 import StudentPortrait from "../components/quiz/StudentPortrait";
@@ -83,11 +84,13 @@ function DailyQuiz() {
           discardTodayResult();
           clearProgress();
           const question = await createDailyQuestion();
+          preloadPortraitImage(question.student);
           setCurrentQuestion(question);
           setLoading(false);
           return;
         }
 
+        preloadPortraitImage(restored.student);
         setCurrentQuestion(restored);
         setRevealedHintCount(restored.hints.length + 1); // 全ヒント + 立ち絵を表示
         setAnswered(true);
@@ -102,6 +105,7 @@ function DailyQuiz() {
       const today = getDailyDate();
       if (dailyProgress && dailyProgress.key.baseDate === today) {
         const restored = await createQuestion(dailyProgress.key);
+        preloadPortraitImage(restored.student);
         setCurrentQuestion(restored);
         setRevealedHintCount(dailyProgress.revealedHintCount);
         setLoading(false);
@@ -110,6 +114,7 @@ function DailyQuiz() {
 
       // 新規プレイ
       const question = await createDailyQuestion();
+      preloadPortraitImage(question.student);
       setCurrentQuestion(question);
       setLoading(false);
     };

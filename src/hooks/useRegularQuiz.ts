@@ -8,6 +8,7 @@ import {
   getDailyDate,
   CURRENT_ALGORITHM_VERSION,
 } from "../quiz-core";
+import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import { allStudentsAtom } from "../store/quiz";
 import type { QuizQuestion } from "../quiz-core";
 
@@ -44,6 +45,8 @@ export function useRegularQuiz() {
       };
       const generatedQuestions = await createQuestionSet(masterKey, TOTAL_QUESTIONS);
       if (cancelled) return;
+      // 全問の立ち絵を非同期で事前読み込み（DOM をブロックしない）
+      generatedQuestions.forEach((q) => preloadPortraitImage(q.student));
       setQuestions(generatedQuestions);
       if (generatedQuestions.length > 0) {
         setCurrentQuestion(generatedQuestions[0]);

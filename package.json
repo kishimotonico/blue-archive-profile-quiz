@@ -4,8 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "packageManager": "pnpm@10.32.1",
+  "portless": {
+    "name": "baq"
+  },
   "scripts": {
-    "dev": "vite",
+    "dev": "PORTLESS_PORT=1355 PORTLESS_HTTPS=0 portless baq vite",
+    "proxy": "portless proxy start --no-tls -p 1355",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "oxlint src",
@@ -32,6 +36,7 @@
     "jsdom": "^28.1.0",
     "oxfmt": "^0.40.0",
     "oxlint": "^1.55.0",
+    "portless": "^0.10.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.2.2",
     "typescript": "~5.9.3",

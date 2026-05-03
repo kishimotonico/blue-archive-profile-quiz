@@ -39,14 +39,11 @@
 # 依存関係のインストール
 pnpm install
 
-# 開発サーバーの起動
+# 開発サーバーの起動: http://baq.localhost:1355
 pnpm dev
 
 # ビルド
 pnpm build
-
-# プレビュー
-pnpm preview
 ```
 
 ## デプロイ

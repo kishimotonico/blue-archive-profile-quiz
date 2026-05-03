@@ -1,4 +1,5 @@
 import type { Student, PortraitState } from "../../quiz-core";
+import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
 interface StudentPortraitProps {
   student: Student | null;
@@ -27,14 +28,14 @@ function StudentPortrait({ student, state, variant = "default" }: StudentPortrai
       {/* 立ち絵（silhouette/revealed時に表示） */}
       {student && state !== "hidden" && (
         <img
-          src={`${import.meta.env.VITE_IMAGE_BASE_URL ?? '/data/images/portrait/'}${student.id}.png`}
+          src={getPortraitImageUrl(student)}
           alt={state === "revealed" ? student.fullName : "シルエット"}
           draggable={false}
           className={`absolute inset-0 h-full w-auto mx-auto object-contain rounded-2xl shadow-lg transition-all duration-500 select-none ${
             state === "silhouette" ? "opacity-50 brightness-0 pointer-events-none" : "opacity-100"
           }`}
           onError={(e) => {
-            e.currentTarget.src = "https://via.placeholder.com/256x256?text=No+Image";
+            e.currentTarget.src = NO_IMAGE_URL;
           }}
         />
       )}

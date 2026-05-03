@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import type { Hint, Student, PortraitState } from "../../quiz-core";
 import HintCard from "./HintCard";
+import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
 interface HintListProps {
   hints: Hint[];
@@ -107,7 +108,7 @@ function HintList({
           </span>
           {student && portraitState !== "hidden" && (
             <img
-              src={`${import.meta.env.VITE_IMAGE_BASE_URL ?? '/data/images/portrait/'}${student.id}.png`}
+              src={getPortraitImageUrl(student)}
               alt={portraitState === "revealed" ? student.fullName : "シルエット"}
               draggable={false}
               className={`absolute inset-0 h-full w-auto mx-auto object-contain transition-all duration-500 select-none ${
@@ -118,7 +119,7 @@ function HintList({
                   : "opacity-100"
               }`}
               onError={(e) => {
-                e.currentTarget.src = "https://via.placeholder.com/256x256?text=No+Image";
+                e.currentTarget.src = NO_IMAGE_URL;
               }}
             />
           )}

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useSetAtom, useStore } from "jotai";
 import { useQuiz } from "../hooks/useQuiz";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
 import {
@@ -11,7 +11,13 @@ import {
   getDailyDate,
 } from "../quiz-core";
 import { answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
-import { totalAttemptsAtom, scoreDistributionAtom, bestScoreAtom } from "../store/daily";
+import {
+  totalAttemptsAtom,
+  scoreDistributionAtom,
+  bestScoreAtom,
+  dailyProgressAtom,
+  dailyResultsStorageAtom,
+} from "../store/daily";
 import Header from "../components/layout/Header";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import HintList from "../components/quiz/HintList";
@@ -40,20 +46,14 @@ function DailyQuiz() {
     giveUp,
   } = useQuiz();
 
-  const {
-    getTodayResult,
-    saveTodayResult,
-    discardTodayResult,
-    saveProgress,
-    dailyProgress,
-    clearProgress,
-  } = useDailyQuiz();
+  const { saveTodayResult, discardTodayResult, saveProgress, clearProgress } = useDailyQuiz();
   const setAnswered = useSetAtom(answeredAtom);
   const setCorrect = useSetAtom(correctAtom);
   const setScore = useSetAtom(scoreAtom);
   const [totalAttempts] = useAtom(totalAttemptsAtom);
   const [scoreDistribution] = useAtom(scoreDistributionAtom);
   const [bestScore] = useAtom(bestScoreAtom);
+  const store = useStore();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
@@ -61,14 +61,18 @@ function DailyQuiz() {
   const hintButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // loading中のみ初期化を実行（初期化が完了したらloadingをfalseにするため、再実行されない）
-    if (!loading) return;
+    let cancelled = false;
 
     const initQuiz = async () => {
-      // 今日の問題が既に完了しているかチェック
-      const todayResult = getTodayResult();
+      // 永続化値を同期的に取得する。store.get は購読を介さないため、useAtom の
+      // onMount より前のタイミングでも安全に値が読める（getOnInit: true 必須）。
+      const today = getDailyDate();
+      const storedResults = store.get(dailyResultsStorageAtom);
+      const todayResult = storedResults.recent.find((r) => r.key.baseDate === today);
+
       if (todayResult) {
         const restored = await createQuestion(todayResult.key);
+        if (cancelled) return;
 
         // 整合性チェック: key から復元した生徒と保存した studentId が一致するか確認
         if (restored.student.id !== todayResult.studentId) {
@@ -78,6 +82,7 @@ function DailyQuiz() {
           discardTodayResult();
           clearProgress();
           const question = await createDailyQuestion();
+          if (cancelled) return;
           preloadPortraitImage(question.student);
           setCurrentQuestion(question);
           setLoading(false);
@@ -96,35 +101,34 @@ function DailyQuiz() {
       }
 
       // 進行中の復元を試みる
-      const today = getDailyDate();
-      if (dailyProgress && dailyProgress.key.baseDate === today) {
-        const restored = await createQuestion(dailyProgress.key);
+      const storedProgress = store.get(dailyProgressAtom);
+      if (storedProgress && storedProgress.key.baseDate === today) {
+        const restored = await createQuestion(storedProgress.key);
+        if (cancelled) return;
         preloadPortraitImage(restored.student);
         setCurrentQuestion(restored);
-        setRevealedHintCount(dailyProgress.revealedHintCount);
+        setRevealedHintCount(storedProgress.revealedHintCount);
         setLoading(false);
         return;
       }
 
       // 新規プレイ
       const question = await createDailyQuestion();
+      if (cancelled) return;
       preloadPortraitImage(question.student);
       setCurrentQuestion(question);
       setLoading(false);
     };
 
     initQuiz();
-  }, [
-    loading,
-    dailyProgress,
-    getTodayResult,
-    discardTodayResult,
-    setCurrentQuestion,
-    setRevealedHintCount,
-    setAnswered,
-    setCorrect,
-    setScore,
-  ]);
+    return () => {
+      cancelled = true;
+    };
+    // 初期化はマウント時に 1 回だけ実行する。永続化値は store.get で同期取得しているため
+    // 依存配列に atom を入れる必要は無く、入れると onMount の hydration で再実行されて
+    // 競合するので意図的に空配列にしている。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     // 進行状態を保存（ヒント開示時）

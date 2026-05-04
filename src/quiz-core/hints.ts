@@ -14,9 +14,13 @@ const HINT_LABELS: Record<HintType, string> = {
   familyName: "姓",
 };
 
+function formatSchoolHintValue(student: Student): string {
+  return student.grade ? `${student.school} / ${student.grade}` : student.school;
+}
+
 export function generateHintsV1(student: Student, seed: number): Hint[] {
   const hints: Hint[] = [
-    { type: "school", label: HINT_LABELS.school, value: `${student.school} / ${student.grade}` },
+    { type: "school", label: HINT_LABELS.school, value: formatSchoolHintValue(student) },
     { type: "club", label: HINT_LABELS.club, value: student.club },
     { type: "age", label: HINT_LABELS.age, value: student.age },
     { type: "birthday", label: HINT_LABELS.birthday, value: student.birthday },

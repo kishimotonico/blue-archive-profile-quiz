@@ -30,6 +30,44 @@ const OUTPUT_DIR = './output/students';
 const IMAGE_DIR = './output/images/portraits';
 const CACHE_DIR = './cache';
 
+const SCHOOL_NAME_PATTERN = /^(.*?(?:学園|学校|学院|スクール|分校))(.*)$/;
+
+function parseSchoolAndGrade(schoolRaw: string | null): Pick<StudentData, 'school' | 'grade'> {
+  if (!schoolRaw) {
+    return { school: null, grade: null };
+  }
+
+  const normalized = schoolRaw.trim();
+  const match = normalized.match(SCHOOL_NAME_PATTERN);
+  if (!match) {
+    return { school: normalized, grade: null };
+  }
+
+  const school = match[1].trim();
+  const rawSuffix = match[2];
+  const suffix = rawSuffix.trim();
+
+  if (!suffix) {
+    return { school, grade: null };
+  }
+
+  const yearMatch = suffix.match(/^(\d年生)$/);
+  if (yearMatch) {
+    return { school, grade: yearMatch[1] };
+  }
+
+  const parenthesizedStatusMatch = suffix.match(/^（(.+)）$/);
+  if (parenthesizedStatusMatch) {
+    return { school, grade: parenthesizedStatusMatch[1].trim() };
+  }
+
+  if (/^\s+/.test(rawSuffix)) {
+    return { school, grade: suffix.trim() };
+  }
+
+  return { school: normalized, grade: null };
+}
+
 async function downloadImage(url: string, filepath: string): Promise<void> {
   const response = await fetch(url);
   if (!response.ok) {
@@ -59,19 +97,7 @@ async function scrapeStudentData(page: Page, studentId: string): Promise<{ data:
   const name = await getProfileValue('名前');
   const fullName = await getProfileValue('フルネーム');
   const schoolRaw = await getProfileValue('学園');
-
-  // 学校名と学年を分離（例: "ゲヘナ学園2年生" → "ゲヘナ学園", "2年生"）
-  let school: string | null = null;
-  let grade: string | null = null;
-  if (schoolRaw) {
-    const match = schoolRaw.match(/^(.+?)(\d年生)$/);
-    if (match) {
-      school = match[1];
-      grade = match[2];
-    } else {
-      school = schoolRaw;
-    }
-  }
+  const { school, grade } = parseSchoolAndGrade(schoolRaw);
 
   const club = await getProfileValue('部活');
   const age = await getProfileValue('年齢');

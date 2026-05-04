@@ -1553,8 +1553,8 @@
     "profile": {
       "fullName": "狐坂ワカモ",
       "name": "ワカモ",
-      "school": "百鬼夜行連合学院（停学中）",
-      "grade": null,
+      "school": "百鬼夜行連合学院",
+      "grade": "停学中",
       "club": "無所属",
       "age": "18歳",
       "birthday": "4月3日",
@@ -3228,8 +3228,8 @@
     "profile": {
       "fullName": "河駒風ラブ",
       "name": "ラブ",
-      "school": "トリニティ総合学園 中退",
-      "grade": null,
+      "school": "トリニティ総合学園",
+      "grade": "中退",
       "club": "無し",
       "age": "16歳",
       "birthday": "5月6日",

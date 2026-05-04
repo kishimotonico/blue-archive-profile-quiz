@@ -5,7 +5,7 @@ export interface Student {
   fullName: string;
   name: string;
   school: string;
-  grade: string;
+  grade: string | null; // 学年に加えて中退・停学中などの例外値も許容する
   club: string;
   age: string;
   birthday: string;

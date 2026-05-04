@@ -64,6 +64,19 @@ describe("generateHintsV1", () => {
     expect(byType.familyName.value).toBe("月雪");
   });
 
+  it("例外的な grade の値もそのまま表示できる", () => {
+    const hints = generateHintsV1(
+      makeStudent({
+        school: "トリニティ総合学園",
+        grade: "中退",
+      }),
+      42,
+    );
+    const byType = Object.fromEntries(hints.map((h) => [h.type, h]));
+
+    expect(byType.school.value).toBe("トリニティ総合学園 / 中退");
+  });
+
   it("各ヒントにlabelが設定されている", () => {
     const hints = generateHintsV1(makeStudent(), 42);
     for (const hint of hints) {

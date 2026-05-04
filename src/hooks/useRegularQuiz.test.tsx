@@ -275,6 +275,38 @@ describe("useRegularQuiz - 進捗永続化", () => {
     });
   });
 
+  it("version が CURRENT_ALGORITHM_VERSION と異なる進捗は破棄して新規生成される", async () => {
+    const stale = {
+      masterKey: { version: 999, baseDate: "2026-04-21", seed: 12345 },
+      totalQuestions: 10,
+      currentQuestionIndex: 3,
+      scores: [10, 9, 8],
+      currentQuestionState: { revealedHintCount: 4, answered: false, correct: false, score: 7 },
+    };
+    sessionStorage.setItem(REGULAR_QUIZ_PROGRESS_KEY, JSON.stringify(stale));
+
+    const { result } = await mountHook();
+
+    expect(result.current.currentQuestionIndex).toBe(0);
+    expect(result.current.totalScore).toBe(0);
+    const progress = readProgress();
+    expect(progress?.masterKey.version).toBe(1);
+    expect(progress?.masterKey.seed).not.toBe(12345);
+  });
+
+  it("shape が壊れた進捗は破棄して新規生成される", async () => {
+    sessionStorage.setItem(
+      REGULAR_QUIZ_PROGRESS_KEY,
+      JSON.stringify({ garbage: "yes", masterKey: "not-an-object" }),
+    );
+
+    const { result } = await mountHook();
+
+    expect(result.current.currentQuestionIndex).toBe(0);
+    const progress = readProgress();
+    expect(progress?.masterKey.version).toBe(1);
+  });
+
   it("全問終了で progress atom が null にクリアされる", async () => {
     const { result } = await mountHook();
 

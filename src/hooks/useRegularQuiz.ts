@@ -60,10 +60,24 @@ export function useRegularQuiz() {
       resetQuiz();
 
       const stored = loadRegularQuizProgress();
-      const restored = stored && stored.totalQuestions === TOTAL_QUESTIONS ? stored : null;
-      const key = restored ? restored.masterKey : generateMasterKey();
+      let restored = stored && stored.totalQuestions === TOTAL_QUESTIONS ? stored : null;
+      let key = restored ? restored.masterKey : generateMasterKey();
 
-      const generatedQuestions = await createQuestionSet(key, TOTAL_QUESTIONS);
+      // 二段防衛: loadRegularQuizProgress で version/shape を検証済みだが、
+      // createQuestionSet 自体が将来的に再生成不可能になった場合（例: 生徒プールが
+      // baseDate に対応する availableFrom を満たさない等）に備え、失敗時は新規開始。
+      let generatedQuestions: QuizQuestion[];
+      try {
+        generatedQuestions = await createQuestionSet(key, TOTAL_QUESTIONS);
+      } catch (err) {
+        if (cancelled) return;
+        if (!restored) throw err;
+        console.warn("createQuestionSet failed for stored progress, restarting:", err);
+        clearRegularQuizProgress();
+        restored = null;
+        key = generateMasterKey();
+        generatedQuestions = await createQuestionSet(key, TOTAL_QUESTIONS);
+      }
       if (cancelled) return;
 
       generatedQuestions.forEach((q) => preloadPortraitImage(q.student));

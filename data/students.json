@@ -22,7 +22,7 @@
     "images": {
       "portrait": "images/portrait/aru.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "iori": {
     "profile": {
@@ -47,7 +47,7 @@
     "images": {
       "portrait": "images/portrait/iori.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "izumi": {
     "profile": {
@@ -72,7 +72,7 @@
     "images": {
       "portrait": "images/portrait/izumi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "eimi": {
     "profile": {
@@ -97,7 +97,7 @@
     "images": {
       "portrait": "images/portrait/eimi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "karin": {
     "profile": {
@@ -122,7 +122,7 @@
     "images": {
       "portrait": "images/portrait/karin.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "saya": {
     "profile": {
@@ -147,7 +147,7 @@
     "images": {
       "portrait": "images/portrait/saya.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "shun": {
     "profile": {
@@ -172,7 +172,7 @@
     "images": {
       "portrait": "images/portrait/shun.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "shiroko": {
     "profile": {
@@ -197,7 +197,7 @@
     "images": {
       "portrait": "images/portrait/shiroko.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "sumire": {
     "profile": {
@@ -222,7 +222,7 @@
     "images": {
       "portrait": "images/portrait/sumire.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "tsurugi": {
     "profile": {
@@ -247,7 +247,7 @@
     "images": {
       "portrait": "images/portrait/tsurugi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "neru": {
     "profile": {
@@ -272,7 +272,7 @@
     "images": {
       "portrait": "images/portrait/neru.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "haruna": {
     "profile": {
@@ -297,7 +297,7 @@
     "images": {
       "portrait": "images/portrait/haruna.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hina": {
     "profile": {
@@ -322,7 +322,7 @@
     "images": {
       "portrait": "images/portrait/hina.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hibiki": {
     "profile": {
@@ -347,7 +347,7 @@
     "images": {
       "portrait": "images/portrait/hibiki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hifumi": {
     "profile": {
@@ -372,7 +372,7 @@
     "images": {
       "portrait": "images/portrait/hifumi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hoshino": {
     "profile": {
@@ -397,7 +397,7 @@
     "images": {
       "portrait": "images/portrait/hoshino.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "maki": {
     "profile": {
@@ -422,7 +422,7 @@
     "images": {
       "portrait": "images/portrait/maki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "airi": {
     "profile": {
@@ -447,7 +447,7 @@
     "images": {
       "portrait": "images/portrait/airi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "akane": {
     "profile": {
@@ -472,7 +472,7 @@
     "images": {
       "portrait": "images/portrait/akane.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "akari": {
     "profile": {
@@ -497,7 +497,7 @@
     "images": {
       "portrait": "images/portrait/akari.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "ayane": {
     "profile": {
@@ -522,7 +522,7 @@
     "images": {
       "portrait": "images/portrait/ayane.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "utaha": {
     "profile": {
@@ -547,7 +547,7 @@
     "images": {
       "portrait": "images/portrait/utaha.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kayoko": {
     "profile": {
@@ -572,7 +572,7 @@
     "images": {
       "portrait": "images/portrait/kayoko.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "junko": {
     "profile": {
@@ -597,7 +597,7 @@
     "images": {
       "portrait": "images/portrait/junko.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "serika": {
     "profile": {
@@ -622,7 +622,7 @@
     "images": {
       "portrait": "images/portrait/serika.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "chise": {
     "profile": {
@@ -647,7 +647,7 @@
     "images": {
       "portrait": "images/portrait/chise.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "tsubaki": {
     "profile": {
@@ -672,7 +672,7 @@
     "images": {
       "portrait": "images/portrait/tsubaki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "nonomi": {
     "profile": {
@@ -697,7 +697,7 @@
     "images": {
       "portrait": "images/portrait/nonomi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hasumi": {
     "profile": {
@@ -722,7 +722,7 @@
     "images": {
       "portrait": "images/portrait/hasumi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hanae": {
     "profile": {
@@ -747,7 +747,7 @@
     "images": {
       "portrait": "images/portrait/hanae.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hare": {
     "profile": {
@@ -772,7 +772,7 @@
     "images": {
       "portrait": "images/portrait/hare.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "fuuka": {
     "profile": {
@@ -797,7 +797,7 @@
     "images": {
       "portrait": "images/portrait/fuuka.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "mutsuki": {
     "profile": {
@@ -822,7 +822,7 @@
     "images": {
       "portrait": "images/portrait/mutsuki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "yuuka": {
     "profile": {
@@ -847,7 +847,7 @@
     "images": {
       "portrait": "images/portrait/yuuka.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "asuna": {
     "profile": {
@@ -872,7 +872,7 @@
     "images": {
       "portrait": "images/portrait/asuna.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kotama": {
     "profile": {
@@ -897,7 +897,7 @@
     "images": {
       "portrait": "images/portrait/kotama.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kotori": {
     "profile": {
@@ -922,7 +922,7 @@
     "images": {
       "portrait": "images/portrait/kotori.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "shimiko": {
     "profile": {
@@ -947,7 +947,7 @@
     "images": {
       "portrait": "images/portrait/shimiko.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "juri": {
     "profile": {
@@ -972,7 +972,7 @@
     "images": {
       "portrait": "images/portrait/juri.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "suzumi": {
     "profile": {
@@ -997,7 +997,7 @@
     "images": {
       "portrait": "images/portrait/suzumi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "serina": {
     "profile": {
@@ -1022,7 +1022,7 @@
     "images": {
       "portrait": "images/portrait/serina.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "chinatsu": {
     "profile": {
@@ -1047,7 +1047,7 @@
     "images": {
       "portrait": "images/portrait/chinatsu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "haruka": {
     "profile": {
@@ -1072,7 +1072,7 @@
     "images": {
       "portrait": "images/portrait/haruka.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "pina": {
     "profile": {
@@ -1097,7 +1097,7 @@
     "images": {
       "portrait": "images/portrait/pina.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "yoshimi": {
     "profile": {
@@ -1122,7 +1122,7 @@
     "images": {
       "portrait": "images/portrait/yoshimi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "mashiro": {
     "profile": {
@@ -1147,7 +1147,7 @@
     "images": {
       "portrait": "images/portrait/mashiro.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "izuna": {
     "profile": {
@@ -1172,7 +1172,7 @@
     "images": {
       "portrait": "images/portrait/izuna.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "shizuko": {
     "profile": {
@@ -1197,7 +1197,7 @@
     "images": {
       "portrait": "images/portrait/shizuko.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "arisu": {
     "profile": {
@@ -1222,7 +1222,7 @@
     "images": {
       "portrait": "images/portrait/arisu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "midori": {
     "profile": {
@@ -1247,7 +1247,7 @@
     "images": {
       "portrait": "images/portrait/midori.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "momoi": {
     "profile": {
@@ -1272,7 +1272,7 @@
     "images": {
       "portrait": "images/portrait/momoi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "cherino": {
     "profile": {
@@ -1297,7 +1297,7 @@
     "images": {
       "portrait": "images/portrait/cherino.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "nodoka": {
     "profile": {
@@ -1322,7 +1322,7 @@
     "images": {
       "portrait": "images/portrait/nodoka.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "yuzu": {
     "profile": {
@@ -1347,7 +1347,7 @@
     "images": {
       "portrait": "images/portrait/yuzu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "azusa": {
     "profile": {
@@ -1372,7 +1372,7 @@
     "images": {
       "portrait": "images/portrait/azusa.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hanako": {
     "profile": {
@@ -1397,7 +1397,7 @@
     "images": {
       "portrait": "images/portrait/hanako.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "koharu": {
     "profile": {
@@ -1422,7 +1422,7 @@
     "images": {
       "portrait": "images/portrait/koharu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kirino": {
     "profile": {
@@ -1447,7 +1447,7 @@
     "images": {
       "portrait": "images/portrait/kirino.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "natsu": {
     "profile": {
@@ -1472,7 +1472,7 @@
     "images": {
       "portrait": "images/portrait/natsu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "mari": {
     "profile": {
@@ -1497,7 +1497,7 @@
     "images": {
       "portrait": "images/portrait/mari.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "ako": {
     "profile": {
@@ -1522,7 +1522,7 @@
     "images": {
       "portrait": "images/portrait/ako.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "tomoe": {
     "profile": {
@@ -1547,7 +1547,7 @@
     "images": {
       "portrait": "images/portrait/tomoe.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "wakamo": {
     "profile": {
@@ -1572,7 +1572,7 @@
     "images": {
       "portrait": "images/portrait/wakamo.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "fubuki": {
     "profile": {
@@ -1597,7 +1597,7 @@
     "images": {
       "portrait": "images/portrait/fubuki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "sena": {
     "profile": {
@@ -1622,7 +1622,7 @@
     "images": {
       "portrait": "images/portrait/sena.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "chihiro": {
     "profile": {
@@ -1647,7 +1647,7 @@
     "images": {
       "portrait": "images/portrait/chihiro.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "mimori": {
     "profile": {
@@ -1672,7 +1672,7 @@
     "images": {
       "portrait": "images/portrait/mimori.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "ui": {
     "profile": {
@@ -1697,7 +1697,7 @@
     "images": {
       "portrait": "images/portrait/ui.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hinata": {
     "profile": {
@@ -1722,7 +1722,7 @@
     "images": {
       "portrait": "images/portrait/hinata.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "marina": {
     "profile": {
@@ -1747,7 +1747,7 @@
     "images": {
       "portrait": "images/portrait/marina.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "miyako": {
     "profile": {
@@ -1772,7 +1772,7 @@
     "images": {
       "portrait": "images/portrait/miyako.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "saki": {
     "profile": {
@@ -1797,7 +1797,7 @@
     "images": {
       "portrait": "images/portrait/saki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "miyu": {
     "profile": {
@@ -1822,7 +1822,7 @@
     "images": {
       "portrait": "images/portrait/miyu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "michiru": {
     "profile": {
@@ -1847,7 +1847,7 @@
     "images": {
       "portrait": "images/portrait/michiru.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "iroha": {
     "profile": {
@@ -1872,7 +1872,7 @@
     "images": {
       "portrait": "images/portrait/iroha.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kaede": {
     "profile": {
@@ -1897,7 +1897,7 @@
     "images": {
       "portrait": "images/portrait/kaede.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "tsukuyo": {
     "profile": {
@@ -1922,7 +1922,7 @@
     "images": {
       "portrait": "images/portrait/tsukuyo.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "misaki": {
     "profile": {
@@ -1947,7 +1947,7 @@
     "images": {
       "portrait": "images/portrait/misaki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hiyori": {
     "profile": {
@@ -1972,7 +1972,7 @@
     "images": {
       "portrait": "images/portrait/hiyori.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "atsuko": {
     "profile": {
@@ -1997,7 +1997,7 @@
     "images": {
       "portrait": "images/portrait/atsuko.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "saori": {
     "profile": {
@@ -2022,7 +2022,7 @@
     "images": {
       "portrait": "images/portrait/saori.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kazusa": {
     "profile": {
@@ -2047,7 +2047,7 @@
     "images": {
       "portrait": "images/portrait/kazusa.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "moe": {
     "profile": {
@@ -2072,7 +2072,7 @@
     "images": {
       "portrait": "images/portrait/moe.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kokona": {
     "profile": {
@@ -2097,7 +2097,7 @@
     "images": {
       "portrait": "images/portrait/kokona.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "noa": {
     "profile": {
@@ -2122,7 +2122,7 @@
     "images": {
       "portrait": "images/portrait/noa.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "himari": {
     "profile": {
@@ -2147,7 +2147,7 @@
     "images": {
       "portrait": "images/portrait/himari.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "shigure": {
     "profile": {
@@ -2172,7 +2172,7 @@
     "images": {
       "portrait": "images/portrait/shigure.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "mine": {
     "profile": {
@@ -2197,7 +2197,7 @@
     "images": {
       "portrait": "images/portrait/mine.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "mika": {
     "profile": {
@@ -2222,7 +2222,7 @@
     "images": {
       "portrait": "images/portrait/mika.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "megu": {
     "profile": {
@@ -2247,7 +2247,7 @@
     "images": {
       "portrait": "images/portrait/megu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kanna": {
     "profile": {
@@ -2272,7 +2272,7 @@
     "images": {
       "portrait": "images/portrait/kanna.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "sakurako": {
     "profile": {
@@ -2297,7 +2297,7 @@
     "images": {
       "portrait": "images/portrait/sakurako.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "toki": {
     "profile": {
@@ -2322,7 +2322,7 @@
     "images": {
       "portrait": "images/portrait/toki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "nagisa": {
     "profile": {
@@ -2347,7 +2347,7 @@
     "images": {
       "portrait": "images/portrait/nagisa.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "koyuki": {
     "profile": {
@@ -2372,7 +2372,7 @@
     "images": {
       "portrait": "images/portrait/koyuki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kaho": {
     "profile": {
@@ -2397,7 +2397,7 @@
     "images": {
       "portrait": "images/portrait/kaho.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "reisa": {
     "profile": {
@@ -2422,7 +2422,7 @@
     "images": {
       "portrait": "images/portrait/reisa.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "rumi": {
     "profile": {
@@ -2447,7 +2447,7 @@
     "images": {
       "portrait": "images/portrait/rumi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "mina": {
     "profile": {
@@ -2472,7 +2472,7 @@
     "images": {
       "portrait": "images/portrait/mina.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "minori": {
     "profile": {
@@ -2497,7 +2497,7 @@
     "images": {
       "portrait": "images/portrait/minori.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "meru": {
     "profile": {
@@ -2522,7 +2522,7 @@
     "images": {
       "portrait": "images/portrait/meru.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "momiji": {
     "profile": {
@@ -2547,7 +2547,7 @@
     "images": {
       "portrait": "images/portrait/momiji.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "ichika": {
     "profile": {
@@ -2572,7 +2572,7 @@
     "images": {
       "portrait": "images/portrait/ichika.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kasumi": {
     "profile": {
@@ -2597,7 +2597,7 @@
     "images": {
       "portrait": "images/portrait/kasumi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "yukari": {
     "profile": {
@@ -2622,7 +2622,7 @@
     "images": {
       "portrait": "images/portrait/yukari.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "renge": {
     "profile": {
@@ -2647,7 +2647,7 @@
     "images": {
       "portrait": "images/portrait/renge.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kikyou": {
     "profile": {
@@ -2672,7 +2672,7 @@
     "images": {
       "portrait": "images/portrait/kikyou.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "makoto": {
     "profile": {
@@ -2697,7 +2697,7 @@
     "images": {
       "portrait": "images/portrait/makoto.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "ibuki": {
     "profile": {
@@ -2722,7 +2722,7 @@
     "images": {
       "portrait": "images/portrait/ibuki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "umika": {
     "profile": {
@@ -2747,7 +2747,7 @@
     "images": {
       "portrait": "images/portrait/umika.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kirara": {
     "profile": {
@@ -2772,7 +2772,7 @@
     "images": {
       "portrait": "images/portrait/kirara.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "shiroko_terror": {
     "profile": {
@@ -2797,7 +2797,7 @@
     "images": {
       "portrait": "images/portrait/shiroko_terror.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": null
   },
   "kisaki": {
     "profile": {
@@ -2822,7 +2822,7 @@
     "images": {
       "portrait": "images/portrait/kisaki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "reijo": {
     "profile": {
@@ -2847,7 +2847,7 @@
     "images": {
       "portrait": "images/portrait/reijo.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "satsuki": {
     "profile": {
@@ -2872,7 +2872,7 @@
     "images": {
       "portrait": "images/portrait/satsuki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "chiaki": {
     "profile": {
@@ -2897,7 +2897,7 @@
     "images": {
       "portrait": "images/portrait/chiaki.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "seia": {
     "profile": {
@@ -2922,7 +2922,7 @@
     "images": {
       "portrait": "images/portrait/seia.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "rio": {
     "profile": {
@@ -2947,7 +2947,7 @@
     "images": {
       "portrait": "images/portrait/rio.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "rei": {
     "profile": {
@@ -2972,7 +2972,7 @@
     "images": {
       "portrait": "images/portrait/rei.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "hikari": {
     "profile": {
@@ -2997,7 +2997,7 @@
     "images": {
       "portrait": "images/portrait/hikari.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "nozomi": {
     "profile": {
@@ -3022,7 +3022,7 @@
     "images": {
       "portrait": "images/portrait/nozomi.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "aoba": {
     "profile": {
@@ -3047,7 +3047,7 @@
     "images": {
       "portrait": "images/portrait/aoba.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "nagusa": {
     "profile": {
@@ -3072,7 +3072,7 @@
     "images": {
       "portrait": "images/portrait/nagusa.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "niya": {
     "profile": {
@@ -3097,7 +3097,7 @@
     "images": {
       "portrait": "images/portrait/niya.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "eri": {
     "profile": {
@@ -3122,7 +3122,7 @@
     "images": {
       "portrait": "images/portrait/eri.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kanoe": {
     "profile": {
@@ -3147,7 +3147,7 @@
     "images": {
       "portrait": "images/portrait/kanoe.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "miyo": {
     "profile": {
@@ -3172,7 +3172,7 @@
     "images": {
       "portrait": "images/portrait/miyo.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "fuyu": {
     "profile": {
@@ -3197,7 +3197,7 @@
     "images": {
       "portrait": "images/portrait/fuyu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "ritsu": {
     "profile": {
@@ -3222,7 +3222,7 @@
     "images": {
       "portrait": "images/portrait/ritsu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "rabu": {
     "profile": {
@@ -3247,7 +3247,7 @@
     "images": {
       "portrait": "images/portrait/rabu.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "subaru": {
     "profile": {
@@ -3272,7 +3272,7 @@
     "images": {
       "portrait": "images/portrait/subaru.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "takane": {
     "profile": {
@@ -3297,7 +3297,7 @@
     "images": {
       "portrait": "images/portrait/takane.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "yakumo": {
     "profile": {
@@ -3322,7 +3322,7 @@
     "images": {
       "portrait": "images/portrait/yakumo.png"
     },
-    "availableFrom": "2026-04-21"
+    "availableFrom": "2026-02-04"
   },
   "kei": {
     "profile": {

@@ -20,7 +20,7 @@ export interface Student {
     passive: string;
     sub: string;
   };
-  availableFrom: string; // ISO YYYY-MM-DD: クイズで出題対象になった日
+  availableFrom: string | null; // ISO YYYY-MM-DD: クイズで出題対象になった日。null の場合は出題対象外
 }
 
 export type HintType =

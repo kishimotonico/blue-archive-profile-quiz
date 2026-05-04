@@ -6,7 +6,7 @@ let studentsCache: Student[] | null = null;
 type StudentEntry = {
   profile: Omit<Student, "id" | "portraitImage" | "availableFrom">;
   images: { portrait: string };
-  availableFrom: string;
+  availableFrom: string | null;
 };
 
 export async function loadStudents(): Promise<Student[]> {
@@ -42,6 +42,7 @@ export async function getStudentById(id: string): Promise<Student | undefined> {
 export async function getStudentPool(baseDate: string): Promise<Student[]> {
   const all = await loadStudents();
   return all
+    .filter((s): s is Student & { availableFrom: string } => s.availableFrom !== null)
     .filter((s) => s.availableFrom <= baseDate)
     .sort((a, b) =>
       a.availableFrom !== b.availableFrom

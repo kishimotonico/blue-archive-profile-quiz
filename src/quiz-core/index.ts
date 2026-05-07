@@ -1,5 +1,9 @@
 // 型定義
-export type { Student, HintType, Hint, QuizQuestion, QuizState, PortraitState } from "./types";
+export type { Student, HintType, Hint, QuizQuestion, QuizState, PortraitState, QuestionResult } from "./types";
+
+// 結果処理
+export { getQuestionOutcome } from "./result";
+export type { QuestionOutcome } from "./result";
 export type { QuizKey } from "./key";
 
 // クイズキー

@@ -7,6 +7,7 @@ import {
   getDailyDate,
   CURRENT_ALGORITHM_VERSION,
 } from "../quiz-core";
+import type { QuestionResult } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import {
   loadRegularQuizProgress,
@@ -35,8 +36,10 @@ export function useRegularQuiz() {
     answered,
     correct,
     score,
+    lastConfirmedAnswer,
     setCurrentQuestion,
     setRevealedHintCount,
+    setLastConfirmedAnswer,
     resetQuiz,
   } = quiz;
 
@@ -49,10 +52,10 @@ export function useRegularQuiz() {
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [scores, setScores] = useState<number[]>([]);
+  const [results, setResults] = useState<QuestionResult[]>([]);
   const [masterKey, setMasterKey] = useState<QuizKey | null>(null);
 
-  const totalScore = scores.reduce((sum, s) => sum + s, 0);
+  const totalScore = results.reduce((sum, r) => sum + r.score, 0);
 
   useEffect(() => {
     let cancelled = false;
@@ -73,18 +76,20 @@ export function useRegularQuiz() {
       if (restored) {
         const safeIndex = Math.min(restored.currentQuestionIndex, generatedQuestions.length - 1);
         setCurrentQuestionIndex(safeIndex);
-        setScores(restored.scores);
+        setResults(restored.results);
         setCurrentQuestion(generatedQuestions[safeIndex]);
         setRevealedHintCount(restored.currentQuestionState.revealedHintCount);
         setAnswered(restored.currentQuestionState.answered);
         setCorrect(restored.currentQuestionState.correct);
         setScore(restored.currentQuestionState.score);
+        setLastConfirmedAnswer(restored.currentQuestionState.lastConfirmedAnswer);
       } else {
         const freshProgress: RegularQuizProgress = {
+          schemaVersion: 2,
           masterKey: key,
           totalQuestions: TOTAL_QUESTIONS,
           currentQuestionIndex: 0,
-          scores: [],
+          results: [],
           currentQuestionState: DEFAULT_CURRENT_QUESTION_STATE,
         };
         saveRegularQuizProgress(freshProgress);
@@ -108,30 +113,41 @@ export function useRegularQuiz() {
   useEffect(() => {
     if (loading || !masterKey) return;
     saveRegularQuizProgress({
+      schemaVersion: 2,
       masterKey,
       totalQuestions: TOTAL_QUESTIONS,
       currentQuestionIndex,
-      scores,
-      currentQuestionState: { revealedHintCount, answered, correct, score },
+      results,
+      currentQuestionState: { revealedHintCount, answered, correct, score, lastConfirmedAnswer },
     });
   }, [
     loading,
     masterKey,
     currentQuestionIndex,
-    scores,
+    results,
     revealedHintCount,
     answered,
     correct,
     score,
+    lastConfirmedAnswer,
   ]);
 
   const goNext = useCallback(() => {
     if (!answered) return;
-    const newScores = [...scores, score];
+    if (!quiz.currentQuestion) return;
+
+    const qr: QuestionResult = {
+      studentId: quiz.currentQuestion.student.id,
+      revealedHintCount,
+      correct,
+      userAnswer: lastConfirmedAnswer,
+      score,
+    };
+    const newResults = [...results, qr];
     const nextIndex = currentQuestionIndex + 1;
 
     if (nextIndex < questions.length) {
-      setScores(newScores);
+      setResults(newResults);
       setCurrentQuestionIndex(nextIndex);
       resetQuiz();
       setCurrentQuestion(questions[nextIndex]);
@@ -140,16 +156,18 @@ export function useRegularQuiz() {
       clearRegularQuizProgress();
       navigate("/result", {
         state: {
-          totalScore: newScores.reduce((sum, s) => sum + s, 0),
-          scores: newScores,
-          totalQuestions: TOTAL_QUESTIONS,
+          results: newResults,
         },
       });
     }
   }, [
     answered,
-    scores,
+    quiz.currentQuestion,
+    results,
     score,
+    correct,
+    revealedHintCount,
+    lastConfirmedAnswer,
     currentQuestionIndex,
     questions,
     resetQuiz,

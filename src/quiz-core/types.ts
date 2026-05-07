@@ -55,3 +55,11 @@ export interface QuizState {
   correct: boolean;
   score: number;
 }
+
+export interface QuestionResult {
+  studentId: string;
+  revealedHintCount: number; // 1〜10。10は立ち絵まで開示
+  correct: boolean;
+  userAnswer: string | null; // 確定提出時の回答テキスト。ギブアップ/未提出はnull
+  score: number;
+}

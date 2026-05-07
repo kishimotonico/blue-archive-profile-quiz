@@ -175,6 +175,7 @@ describe("useQuiz - submitAnswer", () => {
     expect(result.current.correct).toBe(true);
     expect(result.current.answered).toBe(true);
     expect(result.current.score).toBeGreaterThan(0);
+    expect(result.current.lastConfirmedAnswer).toBe(s1.fullName);
   });
 
   it("誤答（別の生徒名）: correct=false, answered=true, score=0", async () => {
@@ -185,6 +186,7 @@ describe("useQuiz - submitAnswer", () => {
     expect(result.current.correct).toBe(false);
     expect(result.current.answered).toBe(true);
     expect(result.current.score).toBe(0);
+    expect(result.current.lastConfirmedAnswer).toBe(s2.fullName);
   });
 
   it("存在しない入力: 「該当する生徒が見つかりません」がセットされ、answered=false のまま", async () => {
@@ -194,6 +196,18 @@ describe("useQuiz - submitAnswer", () => {
 
     expect(result.current.answerFeedback).toBe("該当する生徒が見つかりません");
     expect(result.current.answered).toBe(false);
+    expect(result.current.lastConfirmedAnswer).toBeNull();
+  });
+
+  it("unknown の後にギブアップしても確定回答は null のまま", async () => {
+    const { result } = await setupHook(store);
+
+    act(() => result.current.submitAnswer("存在しない生徒名"));
+    act(() => result.current.giveUp());
+
+    expect(result.current.answered).toBe(true);
+    expect(result.current.correct).toBe(false);
+    expect(result.current.lastConfirmedAnswer).toBeNull();
   });
 
   it("存在しない入力を連続送信すると errorKey がインクリメントされる", async () => {
@@ -311,6 +325,7 @@ describe("useQuiz - resetQuiz", () => {
     expect(result.current.score).toBe(10);
     expect(result.current.revealedHintCount).toBe(1);
     expect(result.current.currentQuestion).toBeNull();
+    expect(result.current.lastConfirmedAnswer).toBeNull();
   });
 
   it("answered=true 後のリセットでも正しく初期化される", async () => {

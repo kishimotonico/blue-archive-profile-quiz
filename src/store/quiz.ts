@@ -32,3 +32,10 @@ export const correctAtom = atom(false);
  * 現在のスコア（1ヒントで正解時の点数）
  */
 export const scoreAtom = atom(10);
+
+/**
+ * 確定した最終回答テキスト。
+ * correct / wrong_student 判定時のみセットし、unknown（継続）やギブアップでは触らない。
+ * resetQuiz() でnullにリセットされる。
+ */
+export const lastConfirmedAnswerAtom = atom<string | null>(null);

@@ -4,8 +4,15 @@ import { Provider, createStore } from "jotai";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Suspense, type ReactNode } from "react";
 import { useRegularQuiz } from "./useRegularQuiz";
-import { answeredAtom, scoreAtom } from "../store/quiz";
+import {
+  answeredAtom,
+  correctAtom,
+  lastConfirmedAnswerAtom,
+  revealedHintCountAtom,
+  scoreAtom,
+} from "../store/quiz";
 import { REGULAR_QUIZ_PROGRESS_KEY, type RegularQuizProgress } from "../store/regular";
+import type { QuestionResult } from "../quiz-core";
 
 function readProgress(): RegularQuizProgress | null {
   const raw = sessionStorage.getItem(REGULAR_QUIZ_PROGRESS_KEY);
@@ -160,6 +167,9 @@ describe("useRegularQuiz - goNext() の二重計上防止", () => {
     for (let i = 0; i < 10; i++) {
       act(() => {
         store.set(answeredAtom, true);
+        store.set(correctAtom, true);
+        store.set(revealedHintCountAtom, 6);
+        store.set(lastConfirmedAnswerAtom, `テストs${i + 1}`);
         store.set(scoreAtom, 5);
       });
       await waitFor(() => expect(result.current.answered).toBe(true));
@@ -167,13 +177,28 @@ describe("useRegularQuiz - goNext() の二重計上防止", () => {
     }
 
     expect(mockNavigate).toHaveBeenCalledOnce();
-    expect(mockNavigate).toHaveBeenCalledWith("/result", {
-      state: {
-        totalScore: 50,
-        scores: Array(10).fill(5),
-        totalQuestions: 10,
-      },
+    const [, navOptions] = mockNavigate.mock.calls[0] as [
+      string,
+      { state: { results: QuestionResult[] } },
+    ];
+    const navigatedResults = navOptions.state.results;
+    expect(navigatedResults).toHaveLength(10);
+    expect(navigatedResults[0]).toEqual({
+      studentId: "s1",
+      revealedHintCount: 6,
+      correct: true,
+      userAnswer: "テストs1",
+      score: 5,
     });
+    expect(navigatedResults[9]).toEqual({
+      studentId: "s10",
+      revealedHintCount: 6,
+      correct: true,
+      userAnswer: "テストs10",
+      score: 5,
+    });
+    const total = navigatedResults.reduce((s, r) => s + r.score, 0);
+    expect(total).toBe(50);
   });
 });
 
@@ -213,22 +238,28 @@ describe("useRegularQuiz - 進捗永続化", () => {
     expect(progress).not.toBeNull();
     expect(progress?.totalQuestions).toBe(10);
     expect(progress?.currentQuestionIndex).toBe(0);
-    expect(progress?.scores).toEqual([]);
+    expect(progress?.results).toEqual([]);
     expect(progress?.masterKey.version).toBe(1);
     expect(progress?.masterKey.baseDate).toBe("2026-04-21");
   });
 
   it("進捗が存在する状態で起動すると復元される", async () => {
     const seededProgress: RegularQuizProgress = {
+      schemaVersion: 2,
       masterKey: { version: 1, baseDate: "2026-04-21", seed: 12345 },
       totalQuestions: 10,
       currentQuestionIndex: 3,
-      scores: [10, 9, 8],
+      results: [
+        { studentId: "s1", revealedHintCount: 1, correct: true, userAnswer: "テストs1", score: 10 },
+        { studentId: "s2", revealedHintCount: 2, correct: true, userAnswer: "テストs2", score: 9 },
+        { studentId: "s3", revealedHintCount: 3, correct: true, userAnswer: "テストs3", score: 8 },
+      ],
       currentQuestionState: {
         revealedHintCount: 4,
         answered: false,
         correct: false,
         score: 7,
+        lastConfirmedAnswer: null,
       },
     };
     sessionStorage.setItem(REGULAR_QUIZ_PROGRESS_KEY, JSON.stringify(seededProgress));
@@ -271,8 +302,42 @@ describe("useRegularQuiz - 進捗永続化", () => {
     await waitFor(() => {
       const progress = readProgress();
       expect(progress?.currentQuestionIndex).toBe(1);
-      expect(progress?.scores).toEqual([8]);
+      expect(progress?.results).toHaveLength(1);
+      expect(progress?.results[0]).toEqual({
+        studentId: "s1",
+        revealedHintCount: 1,
+        correct: false,
+        userAnswer: null,
+        score: 8,
+      });
     });
+  });
+
+  it("results.length と currentQuestionIndex が一致しない進捗は破棄される", async () => {
+    const inconsistent: RegularQuizProgress = {
+      schemaVersion: 2,
+      masterKey: { version: 1, baseDate: "2026-04-21", seed: 12345 },
+      totalQuestions: 10,
+      currentQuestionIndex: 3,
+      results: [
+        { studentId: "s1", revealedHintCount: 1, correct: true, userAnswer: "テストs1", score: 10 },
+      ],
+      currentQuestionState: {
+        revealedHintCount: 4,
+        answered: false,
+        correct: false,
+        score: 7,
+        lastConfirmedAnswer: null,
+      },
+    };
+    sessionStorage.setItem(REGULAR_QUIZ_PROGRESS_KEY, JSON.stringify(inconsistent));
+
+    const { result } = await mountHook();
+
+    expect(result.current.currentQuestionIndex).toBe(0);
+    expect(result.current.totalScore).toBe(0);
+    const progress = readProgress();
+    expect(progress?.results).toEqual([]);
   });
 
   it("version が CURRENT_ALGORITHM_VERSION と異なる進捗は破棄して新規生成される", async () => {

@@ -1,37 +1,53 @@
 import { CURRENT_ALGORITHM_VERSION } from "../quiz-core";
-import type { QuizKey } from "../quiz-core";
+import type { QuizKey, QuestionResult } from "../quiz-core";
 
 export interface RegularQuizCurrentQuestionState {
   revealedHintCount: number;
   answered: boolean;
   correct: boolean;
   score: number;
+  lastConfirmedAnswer: string | null;
 }
 
 export interface RegularQuizProgress {
+  schemaVersion: 2;
   masterKey: QuizKey;
   totalQuestions: number;
   currentQuestionIndex: number;
-  scores: number[];
+  results: QuestionResult[];
   currentQuestionState: RegularQuizCurrentQuestionState;
 }
 
-export const REGULAR_QUIZ_PROGRESS_KEY = "blue-archive-quiz-regular-progress-v1";
+export const REGULAR_QUIZ_PROGRESS_KEY = "blue-archive-quiz-regular-progress-v2";
 
 export const DEFAULT_CURRENT_QUESTION_STATE: RegularQuizCurrentQuestionState = {
   revealedHintCount: 1,
   answered: false,
   correct: false,
   score: 10,
+  lastConfirmedAnswer: null,
 };
 
 // sessionStorage を直接扱うことでタブごと独立した進捗管理にする。
 // 再読み込み時は継続されるが、別タブでは干渉しない。
 // jotai の atom にしないのは、useRegularQuiz 内でしか参照されず派生 atom も不要なため。
 
+function isValidQuestionResult(v: unknown): v is QuestionResult {
+  if (typeof v !== "object" || v === null) return false;
+  const r = v as Record<string, unknown>;
+  return (
+    typeof r.studentId === "string" &&
+    typeof r.revealedHintCount === "number" &&
+    typeof r.correct === "boolean" &&
+    (r.userAnswer === null || typeof r.userAnswer === "string") &&
+    typeof r.score === "number"
+  );
+}
+
 function isValidProgress(value: unknown): value is RegularQuizProgress {
   if (typeof value !== "object" || value === null) return false;
   const v = value as Record<string, unknown>;
+  if (v.schemaVersion !== 2) return false;
   const masterKey = v.masterKey as Record<string, unknown> | undefined;
   if (
     !masterKey ||
@@ -44,7 +60,8 @@ function isValidProgress(value: unknown): value is RegularQuizProgress {
   }
   if (typeof v.totalQuestions !== "number") return false;
   if (typeof v.currentQuestionIndex !== "number") return false;
-  if (!Array.isArray(v.scores)) return false;
+  if (!Array.isArray(v.results) || !v.results.every(isValidQuestionResult)) return false;
+  if (v.results.length !== v.currentQuestionIndex) return false;
   const cqs = v.currentQuestionState as Record<string, unknown> | undefined;
   if (
     !cqs ||
@@ -52,7 +69,8 @@ function isValidProgress(value: unknown): value is RegularQuizProgress {
     typeof cqs.revealedHintCount !== "number" ||
     typeof cqs.answered !== "boolean" ||
     typeof cqs.correct !== "boolean" ||
-    typeof cqs.score !== "number"
+    typeof cqs.score !== "number" ||
+    (cqs.lastConfirmedAnswer !== null && typeof cqs.lastConfirmedAnswer !== "string")
   ) {
     return false;
   }

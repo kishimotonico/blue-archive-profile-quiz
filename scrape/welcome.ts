@@ -5,7 +5,7 @@ import { parse, stringify } from 'yaml';
 
 const MASTER_PATH = '../data/students-master.yaml';
 const ID_PATTERN = /^[a-z0-9_]+$/;
-const ENV_FILES = ['.env.local', '.env', '../.env.local', '../.env'];
+const ENV_FILES = ['.env.local', '.env'];
 
 function run(command: string, args: string[]): void {
   const result = spawnSync(command, args, { stdio: 'inherit' });
@@ -52,9 +52,12 @@ function printUploadCommand(id: string): void {
   const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, '');
   const objectPath = `${bucket}/${normalizedPrefix}/${id}.png`;
   const filePath = `../data/images/portrait/${id}.png`;
+  const command = `pnpm exec dotenvx run -f .env -- pnpm exec wrangler r2 object put "${objectPath}" --file "${filePath}" --remote`;
 
-  console.log('\nUpload command:');
-  console.log(`pnpm exec wrangler r2 object put "${objectPath}" --file "${filePath}"`);
+  console.log('\nRemote upload command (run from scrape/):');
+  console.log('');
+  console.log(command);
+  console.log('');
 }
 
 function main() {
@@ -77,7 +80,7 @@ function main() {
 
   appendStudentIfMissing(id, wikiName);
   run('pnpm', ['run', 'scrape', id]);
-  run('pnpm', ['run', 'sync-images', '--', id]);
+  run('pnpm', ['run', 'sync-images', id]);
   run('pnpm', ['run', 'merge']);
   printUploadCommand(id);
 }

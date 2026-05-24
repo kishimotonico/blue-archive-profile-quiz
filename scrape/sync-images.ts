@@ -2,7 +2,6 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from '
 import { basename } from 'node:path';
 
 const SOURCE_DIR = './output/images/portrait';
-const LEGACY_SOURCE_DIR = './output/images/portraits';
 const TARGET_DIR = '../data/images/portrait';
 
 function parseArgs(): { targetId: string | null; force: boolean } {
@@ -23,30 +22,11 @@ function filesAreEqual(sourcePath: string, targetPath: string): boolean {
 }
 
 function listSourceFiles(): string[] {
-  const files = new Set<string>();
-
-  for (const dir of [SOURCE_DIR, LEGACY_SOURCE_DIR]) {
-    if (!existsSync(dir)) {
-      continue;
-    }
-
-    readdirSync(dir)
-      .filter((file) => file.endsWith('.png'))
-      .forEach((file) => files.add(file));
+  if (!existsSync(SOURCE_DIR)) {
+    return [];
   }
 
-  return [...files].sort();
-}
-
-function getSourcePath(file: string): string | null {
-  for (const dir of [SOURCE_DIR, LEGACY_SOURCE_DIR]) {
-    const path = `${dir}/${file}`;
-    if (existsSync(path)) {
-      return path;
-    }
-  }
-
-  return null;
+  return readdirSync(SOURCE_DIR).filter((file) => file.endsWith('.png')).sort();
 }
 
 function main() {
@@ -67,10 +47,10 @@ function main() {
   let missing = 0;
 
   for (const file of targetFiles) {
-    const sourcePath = getSourcePath(file);
+    const sourcePath = `${SOURCE_DIR}/${file}`;
     const targetPath = `${TARGET_DIR}/${basename(file)}`;
 
-    if (!sourcePath) {
+    if (!existsSync(sourcePath)) {
       console.error(`Missing source image: ${file}`);
       missing++;
       continue;

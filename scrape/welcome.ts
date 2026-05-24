@@ -61,7 +61,7 @@ function main() {
   const [id, wikiName] = process.argv.slice(2);
 
   if (!id || !wikiName) {
-    console.error('Usage: pnpm run add-student <student_id> <wiki_name>');
+    console.error('Usage: pnpm run welcome <student_id> <wiki_name>');
     process.exit(1);
   }
 

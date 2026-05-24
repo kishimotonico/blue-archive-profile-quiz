@@ -24,18 +24,18 @@ pnpm exec playwright install chromium
 通常はこのコマンドだけを実行します。生徒IDは英語名、Wikiのページ名は日本語表記を指定します。
 
 ```bash
-pnpm run add-student miyako ミヤコ
+pnpm run welcome miyako ミヤコ
 ```
 
 このコマンドで、マスターへの追記、対象生徒のスクレイピング、画像同期、`data/students.json` の再生成まで行います。最後にR2へ画像をアップロードするコマンドが表示されるので、コピーして実行してください。
 
-Wiki由来データに手修正が必要だった場合は、`data/student-overrides.yaml` を編集してから再マージします。
+Wiki由来データに手修正が必要な場合は、`data/students.json` を直接編集してから `update-overrides` を実行します。
 
 ```bash
-pnpm run merge
+pnpm run update-overrides
 ```
 
-その後、`add-student` の最後に表示された画像アップロードコマンドを実行します。
+これでスクレイピング結果との差分が `data/student-overrides.yaml` に保存され、以降の `merge` でも反映されます。
 
 ### 全件スクレイピング
 
@@ -60,7 +60,7 @@ pnpm run scrape aru
 
 個別JSONを `data/students.json` にまとめます。マスターとJSONの件数が一致しない場合はエラーになります。
 
-`data/student-overrides.yaml` が存在する場合は、Wiki由来データに手修正を重ねてから出力します。`availableFrom` は既存の `data/students.json` から継承するため、override では指定できません。
+`data/student-overrides.yaml` が存在する場合は、Wiki由来データに手修正を重ねてから出力します。
 
 ```bash
 pnpm run merge
@@ -80,9 +80,10 @@ pnpm run sync-images miyako --force
 
 ```
 scrape/
-├── add-student.ts         # 新規追加用の一括実行コマンド
-├── merge.ts               # 個別JSONをまとめてdata/students.jsonに出力
+├── welcome.ts             # 新規生徒追加の一括実行
 ├── scrape.ts              # Wikiから生徒データと画像を取得
+├── merge.ts               # 個別JSONをまとめてdata/students.jsonに出力
+├── update-overrides.ts    # students.jsonの手修正をoverrides.yamlに保存
 ├── sync-images.ts         # 立ち絵画像をdata/images/portraitへ同期
 ├── cache/                 # 取得済みHTMLのキャッシュ（全件実行時に利用）
 └── output/

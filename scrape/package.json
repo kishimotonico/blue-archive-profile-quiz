@@ -5,10 +5,11 @@
   "type": "module",
   "packageManager": "pnpm@10.32.1",
   "scripts": {
-    "add-student": "pnpm exec tsx add-student.ts",
+    "welcome": "pnpm exec tsx welcome.ts",
     "scrape": "pnpm exec tsx scrape.ts",
     "merge": "pnpm exec tsx merge.ts",
-    "sync-images": "pnpm exec tsx sync-images.ts"
+    "sync-images": "pnpm exec tsx sync-images.ts",
+    "update-overrides": "pnpm exec tsx update-overrides.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

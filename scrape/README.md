@@ -86,8 +86,8 @@ R2_IMAGE_PREFIX=images/portrait
 ```
 scrape/
 ├── add-student.ts         # 新規追加用の一括実行コマンド
-├── index.ts               # スクレイピング本体
 ├── merge.ts               # 個別JSONをまとめてdata/students.jsonに出力
+├── scrape.ts              # Wikiから生徒データと画像を取得
 ├── sync-images.ts         # 立ち絵画像をdata/images/portraitへ同期
 ├── cache/                 # 取得済みHTMLのキャッシュ（全件実行時に利用）
 └── output/

@@ -1286,7 +1286,7 @@
       "height": "128cm",
       "hobby": "粛清、雪合戦",
       "weaponName": "チーストカ",
-      "cv": "矢野妃菜喜*1",
+      "cv": "矢野妃菜喜",
       "skills": {
         "ex": "親衛隊、集合！",
         "normal": "あいつを粛清しろ！",
@@ -3473,5 +3473,30 @@
       "portrait": "images/portrait/otogi.png"
     },
     "availableFrom": "2026-04-21"
+  },
+  "erika": {
+    "profile": {
+      "fullName": "旗見エリカ",
+      "name": "エリカ",
+      "school": "ゲヘナ学園",
+      "grade": "2年生",
+      "club": "帰宅部（ゲヘナ）→キラキラ部",
+      "age": "16歳",
+      "birthday": "2月1日",
+      "height": "166cm",
+      "hobby": "ウィンドウショッピング、ショッピングカタログを集めること",
+      "weaponName": "ユング・レオパルト",
+      "cv": "中野さいま",
+      "skills": {
+        "ex": "この子に決めた！",
+        "normal": "はい、あげる",
+        "passive": "絆創膏どーぞ",
+        "sub": "キラキラ☆って感じ？"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/erika.png"
+    },
+    "availableFrom": "2026-05-24"
   }
 }

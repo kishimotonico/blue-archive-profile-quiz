@@ -1,9 +1,11 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { parse } from 'yaml';
+import { loadEnvFile } from 'node:process';
+import { parse, stringify } from 'yaml';
 
 const MASTER_PATH = '../data/students-master.yaml';
 const ID_PATTERN = /^[a-z0-9_]+$/;
+const ENV_FILES = ['.env.local', '.env', '../.env.local', '../.env'];
 
 function run(command: string, args: string[]): void {
   const result = spawnSync(command, args, { stdio: 'inherit' });
@@ -30,8 +32,29 @@ function appendStudentIfMissing(id: string, wikiName: string): void {
   }
 
   const suffix = yamlContent.endsWith('\n') ? '' : '\n';
-  writeFileSync(MASTER_PATH, `${yamlContent}${suffix}${id}: ${wikiName}\n`, 'utf-8');
+  writeFileSync(MASTER_PATH, `${yamlContent}${suffix}${stringify({ [id]: wikiName })}`, 'utf-8');
   console.log(`Added to master: ${id}: ${wikiName}`);
+}
+
+function loadLocalEnvFiles(): void {
+  for (const path of ENV_FILES) {
+    if (existsSync(path)) {
+      loadEnvFile(path);
+    }
+  }
+}
+
+function printUploadCommand(id: string): void {
+  loadLocalEnvFiles();
+
+  const bucket = process.env.R2_BUCKET ?? 'R2_BUCKET';
+  const prefix = process.env.R2_IMAGE_PREFIX ?? 'images/portrait';
+  const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, '');
+  const objectPath = `${bucket}/${normalizedPrefix}/${id}.png`;
+  const filePath = `../data/images/portrait/${id}.png`;
+
+  console.log('\nUpload command:');
+  console.log(`pnpm exec wrangler r2 object put "${objectPath}" --file "${filePath}"`);
 }
 
 function main() {
@@ -56,6 +79,7 @@ function main() {
   run('pnpm', ['run', 'scrape', id]);
   run('pnpm', ['run', 'sync-images', '--', id]);
   run('pnpm', ['run', 'merge']);
+  printUploadCommand(id);
 }
 
 main();

@@ -73,4 +73,12 @@ src/
 ## データ
 
 生徒データは `data/students.json` に格納されています。
-立ち絵画像は `data/images/portrait/` に配置されています。
+立ち絵画像は `data/images/portrait/` に配置されています。画像ファイルはリポジトリには含めません
+
+生徒データの更新は `scrape/` 配下のスクリプトで行います。新規生徒の追加は `scrape/` で次を実行します。たとえば `data/students-master.yaml` に `miyako: ミヤコ` と追加したい場合は、左側の `miyako` が生徒ID、右側の `ミヤコ` がWiki上のページ名です。
+
+```bash
+pnpm run add-student miyako ミヤコ
+```
+
+Wiki由来データの手修正は `data/student-overrides.yaml` に記載し、`pnpm run merge` で `data/students.json` に反映します。詳細は `scrape/README.md` を参照してください。

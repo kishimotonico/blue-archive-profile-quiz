@@ -74,12 +74,14 @@ function mergeProfile(profile: Profile, override: StudentOverride | undefined): 
     return profile;
   }
 
+  const { skills: overrideSkills, ...overrideProfile } = override.profile;
+
   return {
     ...profile,
-    ...override.profile,
+    ...overrideProfile,
     skills: {
       ...(profile.skills ?? {}),
-      ...(override.profile.skills ?? {}),
+      ...(overrideSkills ?? {}),
     },
   };
 }

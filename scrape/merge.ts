@@ -2,8 +2,25 @@ import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { parse } from 'yaml';
 
 const MASTER_PATH = '../data/students-master.yaml';
+const OVERRIDES_PATH = '../data/student-overrides.yaml';
 const INPUT_DIR = './output/students';
 const OUTPUT_PATH = '../data/students.json';
+
+type Profile = Record<string, unknown> & {
+  skills?: Record<string, unknown>;
+};
+
+type StudentOverride = {
+  profile?: Profile;
+  images?: {
+    portrait?: string;
+  };
+  availableFrom?: never;
+};
+
+type ExistingStudent = {
+  availableFrom?: string | null;
+};
 
 // JST 4:00 = UTC+5 0:00 (src/quiz-core からは import しない)
 const QUIZ_DAY_OFFSET_MS = 5 * 60 * 60 * 1000;
@@ -17,10 +34,69 @@ function getNextQuizDate(): string {
   return `${next.getUTCFullYear()}-${String(next.getUTCMonth() + 1).padStart(2, '0')}-${String(next.getUTCDate()).padStart(2, '0')}`;
 }
 
+function readOverrides(masterIds: Set<string>): Record<string, StudentOverride> {
+  if (!existsSync(OVERRIDES_PATH)) {
+    return {};
+  }
+
+  const overrides = parse(readFileSync(OVERRIDES_PATH, 'utf-8')) as Record<string, StudentOverride> | null;
+  if (!overrides) {
+    return {};
+  }
+
+  const errors: string[] = [];
+  for (const [id, override] of Object.entries(overrides)) {
+    if (!override || typeof override !== 'object' || Array.isArray(override)) {
+      errors.push(`${id}: override はオブジェクトで指定してください`);
+      continue;
+    }
+
+    if (!masterIds.has(id)) {
+      errors.push(`${id}: students-master.yaml に存在しない生徒です`);
+    }
+
+    if ('availableFrom' in override) {
+      errors.push(`${id}: availableFrom は override できません`);
+    }
+  }
+
+  if (errors.length > 0) {
+    console.error('Error: Invalid student overrides:');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    process.exit(1);
+  }
+
+  return overrides;
+}
+
+function mergeProfile(profile: Profile, override: StudentOverride | undefined): Profile {
+  if (!override?.profile) {
+    return profile;
+  }
+
+  return {
+    ...profile,
+    ...override.profile,
+    skills: {
+      ...(profile.skills ?? {}),
+      ...(override.profile.skills ?? {}),
+    },
+  };
+}
+
+function getAvailableFrom(existing: Record<string, ExistingStudent>, id: string, defaultAvailableFrom: string): string | null {
+  if (Object.prototype.hasOwnProperty.call(existing, id)) {
+    return existing[id].availableFrom ?? null;
+  }
+
+  return defaultAvailableFrom;
+}
+
 function main() {
   const yamlContent = readFileSync(MASTER_PATH, 'utf-8');
   const masterStudents: Record<string, string> = parse(yamlContent);
   const masterIds = new Set(Object.keys(masterStudents));
+  const overrides = readOverrides(masterIds);
 
   const jsonFiles = readdirSync(INPUT_DIR).filter((f) => f.endsWith('.json'));
   const jsonIds = new Set(jsonFiles.map((f) => f.replace('.json', '')));
@@ -43,7 +119,7 @@ function main() {
   }
 
   // 既存の students.json から availableFrom を継承する
-  const existing: Record<string, { availableFrom?: string }> = existsSync(OUTPUT_PATH)
+  const existing: Record<string, ExistingStudent> = existsSync(OUTPUT_PATH)
     ? JSON.parse(readFileSync(OUTPUT_PATH, 'utf-8'))
     : {};
 
@@ -57,11 +133,14 @@ function main() {
     // 現行の個別 JSON は id / portraitImage を含むので profile に入れる前に除去する
     // これで StudentEntry.profile の型と実体が一致する
     const { id: _id, portraitImage: _portrait, ...profile } = raw;
+    const override = overrides[id];
 
     students[id] = {
-      profile,
-      images: { portrait: `images/portrait/${id}.png` },
-      availableFrom: existing[id]?.availableFrom ?? defaultAvailableFrom,
+      profile: mergeProfile(profile, override),
+      images: {
+        portrait: override?.images?.portrait ?? `images/portrait/${id}.png`,
+      },
+      availableFrom: getAvailableFrom(existing, id, defaultAvailableFrom),
     };
   }
 

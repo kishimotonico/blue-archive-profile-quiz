@@ -27,7 +27,7 @@ type StudentData = {
 
 const BASE_URL = 'https://bluearchive.wikiru.jp/';
 const OUTPUT_DIR = './output/students';
-const IMAGE_DIR = './output/images/portraits';
+const IMAGE_DIR = './output/images/portrait';
 const CACHE_DIR = './cache';
 
 const SCHOOL_NAME_PATTERN = /^(.*?(?:学園|学校|学院|スクール|分校))(.*)$/;

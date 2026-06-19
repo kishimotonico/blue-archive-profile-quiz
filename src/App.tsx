@@ -1,9 +1,29 @@
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Provider, createStore } from "jotai";
 import DailyQuiz from "./pages/DailyQuiz";
 import RegularQuiz from "./pages/RegularQuiz";
 import Result from "./pages/Result";
 import QuizLoadingState from "./components/quiz/QuizLoadingState";
+import QuizErrorState from "./components/quiz/QuizErrorState";
+import ErrorBoundary from "./components/common/ErrorBoundary";
+
+/**
+ * 各ルートを独立した jotai Provider でラップするコンポーネント。
+ * useMemo で store をルートのライフサイクルに束縛し、ページ間でプレイ中 atom が共有されない。
+ */
+function ScopedRoute({ children }: { children: React.ReactNode }) {
+  const store = useMemo(() => createStore(), []);
+  return (
+    <Provider store={store}>
+      <ErrorBoundary fallback={<QuizErrorState />}>
+        <Suspense fallback={<QuizLoadingState />}>
+          {children}
+        </Suspense>
+      </ErrorBoundary>
+    </Provider>
+  );
+}
 
 function App() {
   return (
@@ -12,25 +32,25 @@ function App() {
         <Route
           path="/"
           element={
-            <Suspense fallback={<QuizLoadingState />}>
+            <ScopedRoute>
               <DailyQuiz />
-            </Suspense>
+            </ScopedRoute>
           }
         />
         <Route
           path="/regular"
           element={
-            <Suspense fallback={<QuizLoadingState />}>
+            <ScopedRoute>
               <RegularQuiz />
-            </Suspense>
+            </ScopedRoute>
           }
         />
         <Route
           path="/result"
           element={
-            <Suspense fallback={<QuizLoadingState />}>
+            <ScopedRoute>
               <Result />
-            </Suspense>
+            </ScopedRoute>
           }
         />
       </Routes>

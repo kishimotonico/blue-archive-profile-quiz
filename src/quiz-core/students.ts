@@ -15,6 +15,9 @@ export async function loadStudents(): Promise<Student[]> {
   }
 
   const response = await fetch(`${import.meta.env.BASE_URL}data/students.json`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch students.json: ${response.status} ${response.statusText}`);
+  }
   const data = (await response.json()) as Record<string, StudentEntry>;
 
   studentsCache = Object.entries(data).map(([id, entry]) => ({

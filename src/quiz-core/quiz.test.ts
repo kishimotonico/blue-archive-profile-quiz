@@ -15,6 +15,7 @@ const studentsJsonText = readFileSync(studentsJsonPath, "utf-8");
 beforeAll(() => {
   vi.stubGlobal("fetch", vi.fn(() =>
     Promise.resolve({
+      ok: true,
       json: () => Promise.resolve(JSON.parse(studentsJsonText)),
     })
   ));

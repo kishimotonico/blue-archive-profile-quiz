@@ -239,14 +239,14 @@ describe("useRegularQuiz - 進捗永続化", () => {
     expect(progress?.totalQuestions).toBe(10);
     expect(progress?.currentQuestionIndex).toBe(0);
     expect(progress?.results).toEqual([]);
-    expect(progress?.masterKey.version).toBe(1);
+    expect(progress?.masterKey.version).toBe(2);
     expect(progress?.masterKey.baseDate).toBe("2026-04-21");
   });
 
   it("進捗が存在する状態で起動すると復元される", async () => {
     const seededProgress: RegularQuizProgress = {
       schemaVersion: 2,
-      masterKey: { version: 1, baseDate: "2026-04-21", seed: 12345 },
+      masterKey: { version: 2, baseDate: "2026-04-21", seed: 12345 },
       totalQuestions: 10,
       currentQuestionIndex: 3,
       results: [
@@ -316,7 +316,7 @@ describe("useRegularQuiz - 進捗永続化", () => {
   it("results.length と currentQuestionIndex が一致しない進捗は破棄される", async () => {
     const inconsistent: RegularQuizProgress = {
       schemaVersion: 2,
-      masterKey: { version: 1, baseDate: "2026-04-21", seed: 12345 },
+      masterKey: { version: 2, baseDate: "2026-04-21", seed: 12345 },
       totalQuestions: 10,
       currentQuestionIndex: 3,
       results: [
@@ -355,7 +355,7 @@ describe("useRegularQuiz - 進捗永続化", () => {
     expect(result.current.currentQuestionIndex).toBe(0);
     expect(result.current.totalScore).toBe(0);
     const progress = readProgress();
-    expect(progress?.masterKey.version).toBe(1);
+    expect(progress?.masterKey.version).toBe(2);
     expect(progress?.masterKey.seed).not.toBe(12345);
   });
 
@@ -369,7 +369,7 @@ describe("useRegularQuiz - 進捗永続化", () => {
 
     expect(result.current.currentQuestionIndex).toBe(0);
     const progress = readProgress();
-    expect(progress?.masterKey.version).toBe(1);
+    expect(progress?.masterKey.version).toBe(2);
   });
 
   it("全問終了で progress atom が null にクリアされる", async () => {

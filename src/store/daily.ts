@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { z } from "zod";
+import * as v from "valibot";
 import type { QuizKey } from "../quiz-core/key";
 
 export interface DailyResult {
@@ -41,12 +41,11 @@ const initialDailyResultsStorage: DailyResultsStorage = {
   aggregated: {},
 };
 
-const migratableDailyResultSchema = z
-  .object({
-    timestamp: z.number(),
-    score: z.number(),
-  })
-  .passthrough();
+// 緩めの検証：最低限 timestamp/score を持つものだけ拾い、未知キーは保持する。
+const migratableDailyResultSchema = v.looseObject({
+  timestamp: v.number(),
+  score: v.number(),
+});
 
 /**
  * v2 (DailyResult[]) → v3 (DailyResultsStorage) のマイグレーションを実行する。
@@ -80,8 +79,8 @@ export function migrateDailyResultsV2ToV3(): void {
 
   // 型チェックは緩めに：DailyResult っぽい構造のものだけ拾う
   const results = v2Data.flatMap((r): DailyResult[] => {
-    const result = migratableDailyResultSchema.safeParse(r);
-    return result.success ? [result.data as unknown as DailyResult] : [];
+    const result = v.safeParse(migratableDailyResultSchema, r);
+    return result.success ? [result.output as unknown as DailyResult] : [];
   });
 
   // timestamp 降順

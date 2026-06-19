@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as v from "valibot";
 import { CURRENT_ALGORITHM_VERSION } from "../quiz-core";
 import type { QuizKey, QuestionResult } from "../quiz-core";
 
@@ -29,43 +29,40 @@ export const DEFAULT_CURRENT_QUESTION_STATE: RegularQuizCurrentQuestionState = {
   lastConfirmedAnswer: null,
 };
 
-const questionResultSchema: z.ZodType<QuestionResult> = z
-  .object({
-    studentId: z.string(),
-    revealedHintCount: z.number(),
-    correct: z.boolean(),
-    userAnswer: z.string().nullable(),
-    score: z.number(),
-  })
-  .passthrough();
+// looseObject は未知キーを保持する（旧 isValidProgress が余剰プロパティを無視していた挙動と等価）。
+const questionResultSchema: v.GenericSchema<QuestionResult> = v.looseObject({
+  studentId: v.string(),
+  revealedHintCount: v.number(),
+  correct: v.boolean(),
+  userAnswer: v.nullable(v.string()),
+  score: v.number(),
+});
 
-const regularQuizCurrentQuestionStateSchema: z.ZodType<RegularQuizCurrentQuestionState> = z
-  .object({
-    revealedHintCount: z.number(),
-    answered: z.boolean(),
-    correct: z.boolean(),
-    score: z.number(),
-    lastConfirmedAnswer: z.string().nullable(),
-  })
-  .passthrough();
+const regularQuizCurrentQuestionStateSchema: v.GenericSchema<RegularQuizCurrentQuestionState> =
+  v.looseObject({
+    revealedHintCount: v.number(),
+    answered: v.boolean(),
+    correct: v.boolean(),
+    score: v.number(),
+    lastConfirmedAnswer: v.nullable(v.string()),
+  });
 
-const regularQuizProgressSchema: z.ZodType<RegularQuizProgress> = z
-  .object({
-    schemaVersion: z.literal(2),
-    masterKey: z
-      .object({
-        version: z.literal(CURRENT_ALGORITHM_VERSION),
-        baseDate: z.string(),
-        seed: z.number(),
-      })
-      .passthrough(),
-    totalQuestions: z.number(),
-    currentQuestionIndex: z.number(),
-    results: z.array(questionResultSchema),
+const regularQuizProgressSchema: v.GenericSchema<RegularQuizProgress> = v.pipe(
+  v.looseObject({
+    schemaVersion: v.literal(2),
+    masterKey: v.looseObject({
+      version: v.literal(CURRENT_ALGORITHM_VERSION),
+      baseDate: v.string(),
+      seed: v.number(),
+    }),
+    totalQuestions: v.number(),
+    currentQuestionIndex: v.number(),
+    results: v.array(questionResultSchema),
     currentQuestionState: regularQuizCurrentQuestionStateSchema,
-  })
-  .passthrough()
-  .refine((progress) => progress.results.length === progress.currentQuestionIndex);
+  }),
+  // results.length === currentQuestionIndex の不変条件を維持
+  v.check((progress) => progress.results.length === progress.currentQuestionIndex),
+);
 
 // sessionStorage を直接扱うことでタブごと独立した進捗管理にする。
 // 再読み込み時は継続されるが、別タブでは干渉しない。
@@ -77,12 +74,12 @@ export function loadRegularQuizProgress(): RegularQuizProgress | null {
   if (!raw) return null;
   try {
     const parsed: unknown = JSON.parse(raw);
-    const result = regularQuizProgressSchema.safeParse(parsed);
+    const result = v.safeParse(regularQuizProgressSchema, parsed);
     if (!result.success) {
       sessionStorage.removeItem(REGULAR_QUIZ_PROGRESS_KEY);
       return null;
     }
-    return result.data;
+    return result.output;
   } catch {
     sessionStorage.removeItem(REGULAR_QUIZ_PROGRESS_KEY);
     return null;

@@ -27,8 +27,8 @@
     │   └── index.ts
     ├── store/           # jotai atoms / 永続化
     │   ├── quiz.ts      # プレイ中の共有状態（ルート単位にProviderでスコープ）
-    │   ├── regular.ts   # フリープレイ進捗（sessionStorage、Zodで検証）
-    │   └── daily.ts     # 日替わりクイズ結果（localStorage、Zodで検証）
+    │   ├── regular.ts   # フリープレイ進捗（sessionStorage、Valibotで検証）
+    │   └── daily.ts     # 日替わりクイズ結果（localStorage、Valibotで検証）
     ├── hooks/           # カスタムフック
     │   ├── useQuiz.ts        # 共通のクイズ操作ロジック
     │   ├── useRegularQuiz.ts # フリープレイ（10問・進捗永続化）

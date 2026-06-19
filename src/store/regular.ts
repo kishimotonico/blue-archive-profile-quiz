@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { CURRENT_ALGORITHM_VERSION } from "../quiz-core";
 import type { QuizKey, QuestionResult } from "../quiz-core";
 
@@ -28,54 +29,47 @@ export const DEFAULT_CURRENT_QUESTION_STATE: RegularQuizCurrentQuestionState = {
   lastConfirmedAnswer: null,
 };
 
+const questionResultSchema: z.ZodType<QuestionResult> = z
+  .object({
+    studentId: z.string(),
+    revealedHintCount: z.number(),
+    correct: z.boolean(),
+    userAnswer: z.string().nullable(),
+    score: z.number(),
+  })
+  .passthrough();
+
+const regularQuizCurrentQuestionStateSchema: z.ZodType<RegularQuizCurrentQuestionState> = z
+  .object({
+    revealedHintCount: z.number(),
+    answered: z.boolean(),
+    correct: z.boolean(),
+    score: z.number(),
+    lastConfirmedAnswer: z.string().nullable(),
+  })
+  .passthrough();
+
+const regularQuizProgressSchema: z.ZodType<RegularQuizProgress> = z
+  .object({
+    schemaVersion: z.literal(2),
+    masterKey: z
+      .object({
+        version: z.literal(CURRENT_ALGORITHM_VERSION),
+        baseDate: z.string(),
+        seed: z.number(),
+      })
+      .passthrough(),
+    totalQuestions: z.number(),
+    currentQuestionIndex: z.number(),
+    results: z.array(questionResultSchema),
+    currentQuestionState: regularQuizCurrentQuestionStateSchema,
+  })
+  .passthrough()
+  .refine((progress) => progress.results.length === progress.currentQuestionIndex);
+
 // sessionStorage を直接扱うことでタブごと独立した進捗管理にする。
 // 再読み込み時は継続されるが、別タブでは干渉しない。
 // jotai の atom にしないのは、useRegularQuiz 内でしか参照されず派生 atom も不要なため。
-
-function isValidQuestionResult(v: unknown): v is QuestionResult {
-  if (typeof v !== "object" || v === null) return false;
-  const r = v as Record<string, unknown>;
-  return (
-    typeof r.studentId === "string" &&
-    typeof r.revealedHintCount === "number" &&
-    typeof r.correct === "boolean" &&
-    (r.userAnswer === null || typeof r.userAnswer === "string") &&
-    typeof r.score === "number"
-  );
-}
-
-function isValidProgress(value: unknown): value is RegularQuizProgress {
-  if (typeof value !== "object" || value === null) return false;
-  const v = value as Record<string, unknown>;
-  if (v.schemaVersion !== 2) return false;
-  const masterKey = v.masterKey as Record<string, unknown> | undefined;
-  if (
-    !masterKey ||
-    typeof masterKey !== "object" ||
-    masterKey.version !== CURRENT_ALGORITHM_VERSION ||
-    typeof masterKey.baseDate !== "string" ||
-    typeof masterKey.seed !== "number"
-  ) {
-    return false;
-  }
-  if (typeof v.totalQuestions !== "number") return false;
-  if (typeof v.currentQuestionIndex !== "number") return false;
-  if (!Array.isArray(v.results) || !v.results.every(isValidQuestionResult)) return false;
-  if (v.results.length !== v.currentQuestionIndex) return false;
-  const cqs = v.currentQuestionState as Record<string, unknown> | undefined;
-  if (
-    !cqs ||
-    typeof cqs !== "object" ||
-    typeof cqs.revealedHintCount !== "number" ||
-    typeof cqs.answered !== "boolean" ||
-    typeof cqs.correct !== "boolean" ||
-    typeof cqs.score !== "number" ||
-    (cqs.lastConfirmedAnswer !== null && typeof cqs.lastConfirmedAnswer !== "string")
-  ) {
-    return false;
-  }
-  return true;
-}
 
 export function loadRegularQuizProgress(): RegularQuizProgress | null {
   if (typeof sessionStorage === "undefined") return null;
@@ -83,11 +77,12 @@ export function loadRegularQuizProgress(): RegularQuizProgress | null {
   if (!raw) return null;
   try {
     const parsed: unknown = JSON.parse(raw);
-    if (!isValidProgress(parsed)) {
+    const result = regularQuizProgressSchema.safeParse(parsed);
+    if (!result.success) {
       sessionStorage.removeItem(REGULAR_QUIZ_PROGRESS_KEY);
       return null;
     }
-    return parsed;
+    return result.data;
   } catch {
     sessionStorage.removeItem(REGULAR_QUIZ_PROGRESS_KEY);
     return null;

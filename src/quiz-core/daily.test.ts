@@ -1,5 +1,12 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { dateToSeed, getDailyDate, getDailyQuizKey, getNextDailyResetTime, getNextQuizDate } from "./daily";
+import {
+  dateToSeed,
+  getDailyDate,
+  getDailyQuizKey,
+  getNextDailyResetTime,
+  getNextQuizDate,
+  getTimeUntilNextReset,
+} from "./daily";
 import { CURRENT_ALGORITHM_VERSION } from "./key";
 
 afterEach(() => {
@@ -86,5 +93,19 @@ describe("getNextDailyResetTime", () => {
     const nextReset = getNextDailyResetTime();
     // 次のリセット: 2026-03-14 04:00 JST = 2026-03-13 19:00 UTC
     expect(nextReset.getUTCHours()).toBe(19);
+  });
+});
+
+describe("getTimeUntilNextReset", () => {
+  it("次回リセットまでの時間と分を数値で返す", () => {
+    vi.setSystemTime(new Date("2026-03-14T01:30:00Z"));
+
+    expect(getTimeUntilNextReset()).toEqual({ hours: 17, minutes: 30 });
+  });
+
+  it("1時間未満の場合は hours=0 と残り分を返す", () => {
+    vi.setSystemTime(new Date("2026-03-14T18:45:00Z"));
+
+    expect(getTimeUntilNextReset()).toEqual({ hours: 0, minutes: 15 });
   });
 });

@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { z } from "zod";
 import type { QuizKey } from "../quiz-core/key";
 
 export interface DailyResult {
@@ -40,6 +41,13 @@ const initialDailyResultsStorage: DailyResultsStorage = {
   aggregated: {},
 };
 
+const migratableDailyResultSchema = z
+  .object({
+    timestamp: z.number(),
+    score: z.number(),
+  })
+  .passthrough();
+
 /**
  * v2 (DailyResult[]) → v3 (DailyResultsStorage) のマイグレーションを実行する。
  *
@@ -71,13 +79,10 @@ export function migrateDailyResultsV2ToV3(): void {
   if (!Array.isArray(v2Data)) return;
 
   // 型チェックは緩めに：DailyResult っぽい構造のものだけ拾う
-  const results = v2Data.filter(
-    (r): r is DailyResult =>
-      r !== null &&
-      typeof r === "object" &&
-      typeof (r as DailyResult).timestamp === "number" &&
-      typeof (r as DailyResult).score === "number",
-  );
+  const results = v2Data.flatMap((r): DailyResult[] => {
+    const result = migratableDailyResultSchema.safeParse(r);
+    return result.success ? [result.data as unknown as DailyResult] : [];
+  });
 
   // timestamp 降順
   const sorted = [...results].sort((a, b) => b.timestamp - a.timestamp);

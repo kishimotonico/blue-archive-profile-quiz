@@ -100,11 +100,6 @@ export function migrateDailyResultsV2ToV3(): void {
 migrateDailyResultsV2ToV3();
 
 // getOnInit: true により atom 初期化時に同期的に localStorage から値を読み込む。
-// これがないと初回 render で初期値（空 / null）が返り、useEffect 内の closure に
-// 古い値がキャプチャされて再読み込み時の状態復元が壊れる（DailyQuiz.tsx の初期化
-// useEffect は loading ガードで 1 回しか走らないため、後からの hydration が反映
-// されない）。
-// getOnInit: true により atom 初期化時に同期的に localStorage から値を読み込む。
 // DailyQuiz.tsx の初期化 useEffect は store.get() で永続化値を読むため、
 // onMount による hydration を待たず確実に値を取得できるようにしている。
 export const dailyResultsStorageAtom = atomWithStorage<DailyResultsStorage>(

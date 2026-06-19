@@ -27,7 +27,7 @@ export async function loadStudents(): Promise<Student[]> {
 }
 
 export function extractFamilyName(fullName: string): string {
-  const match = fullName.match(/^(.*[^\ァ-ヴー])([ァ-ヴー]+)$/);
+  const match = fullName.match(/^(.*[^ァ-ヴー])([ァ-ヴー]+)$/);
   if (match) {
     return match[1];
   }

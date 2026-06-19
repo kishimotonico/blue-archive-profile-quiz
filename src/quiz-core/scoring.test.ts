@@ -2,6 +2,10 @@ import { describe, it, expect } from "vitest";
 import { calculateScore, getMaxScore, getScoreRank } from "./scoring";
 
 describe("calculateScore", () => {
+  it("ヒント0でも正解: 10点", () => {
+    expect(calculateScore(0, true)).toBe(10);
+  });
+
   it("ヒント1つで正解: 10点", () => {
     expect(calculateScore(1, true)).toBe(10);
   });

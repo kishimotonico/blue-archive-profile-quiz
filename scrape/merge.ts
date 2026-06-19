@@ -22,7 +22,9 @@ type ExistingStudent = {
   availableFrom?: string | null;
 };
 
-// JST 4:00 = UTC+5 0:00 (src/quiz-core からは import しない)
+// JST 4:00 = UTC+5 0:00。scrape/ は src/ とは別パッケージのため src/quiz-core からは
+// import せず、QUIZ_DAY_OFFSET_MS と getNextQuizDate を意図的に複製している。
+// リセット時刻のロジックを変える場合は src/quiz-core/daily.ts と両方を更新すること。
 const QUIZ_DAY_OFFSET_MS = 5 * 60 * 60 * 1000;
 
 function getNextQuizDate(): string {

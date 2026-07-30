@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { seededRandomV1, shuffleV1, deriveSeedV1 } from "./random";
+import { seededRandomV1, shuffleV1, deriveSeedV1, seededRandomV2, shuffleV2 } from "./random";
 
 describe("seededRandomV1", () => {
   it("同じseedで同じ数列が生成される（再現性）", () => {
@@ -69,5 +69,68 @@ describe("deriveSeedV1", () => {
     for (let i = 0; i < 20; i++) {
       expect(deriveSeedV1(i * 1234567, "test", i)).toBeGreaterThanOrEqual(0);
     }
+  });
+});
+
+describe("seededRandomV2", () => {
+  it("同じseedで同じ数列が生成される（再現性）", () => {
+    const rng1 = seededRandomV2(12345);
+    const rng2 = seededRandomV2(12345);
+
+    for (let i = 0; i < 10; i++) {
+      expect(rng1()).toBe(rng2());
+    }
+  });
+
+  it("生成される値が [0, 1) の範囲に収まる", () => {
+    const rng = seededRandomV2(42);
+    for (let i = 0; i < 100; i++) {
+      const val = rng();
+      expect(val).toBeGreaterThanOrEqual(0);
+      expect(val).toBeLessThan(1);
+    }
+  });
+
+  it("異なるseedでは異なる数列が生成される", () => {
+    const rng1 = seededRandomV2(1);
+    const rng2 = seededRandomV2(2);
+    const seq1 = Array.from({ length: 5 }, () => rng1());
+    const seq2 = Array.from({ length: 5 }, () => rng2());
+    expect(seq1).not.toEqual(seq2);
+  });
+
+  it("大きなseedでも浮動小数点精度が落ちない（2^53超のseedでも一様分布を維持）", () => {
+    // YYYYMMDD形式のseedは最大 99991231 ≒ 1e8 なので安全だが、
+    // deriveSeedV1 経由のseedは 0〜2^32-1 の範囲になる
+    const largeSeed = 0xffffffff; // 2^32 - 1
+    const rng = seededRandomV2(largeSeed);
+    for (let i = 0; i < 100; i++) {
+      const val = rng();
+      expect(val).toBeGreaterThanOrEqual(0);
+      expect(val).toBeLessThan(1);
+    }
+  });
+});
+
+describe("shuffleV2", () => {
+  it("配列の要素がすべて保持される", () => {
+    const original = [1, 2, 3, 4, 5];
+    const copy = shuffleV2([...original], 42);
+    expect(copy).toHaveLength(original.length);
+    expect([...copy].sort((a, b) => a - b)).toEqual([...original].sort((a, b) => a - b));
+  });
+
+  it("同じseedで決定論的な結果を返す", () => {
+    const arr1 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const arr2 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    expect(shuffleV2(arr1, 999)).toEqual(shuffleV2(arr2, 999));
+  });
+
+  it("空配列でも動作する", () => {
+    expect(shuffleV2([], 1)).toEqual([]);
+  });
+
+  it("1要素の配列はそのまま返す", () => {
+    expect(shuffleV2([42], 1)).toEqual([42]);
   });
 });

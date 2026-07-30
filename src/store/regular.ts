@@ -1,3 +1,4 @@
+import * as v from "valibot";
 import { CURRENT_ALGORITHM_VERSION } from "../quiz-core";
 import type { QuizKey, QuestionResult } from "../quiz-core";
 
@@ -28,54 +29,44 @@ export const DEFAULT_CURRENT_QUESTION_STATE: RegularQuizCurrentQuestionState = {
   lastConfirmedAnswer: null,
 };
 
+// looseObject は未知キーを保持する（旧 isValidProgress が余剰プロパティを無視していた挙動と等価）。
+const questionResultSchema: v.GenericSchema<QuestionResult> = v.looseObject({
+  studentId: v.string(),
+  revealedHintCount: v.number(),
+  correct: v.boolean(),
+  userAnswer: v.nullable(v.string()),
+  score: v.number(),
+});
+
+const regularQuizCurrentQuestionStateSchema: v.GenericSchema<RegularQuizCurrentQuestionState> =
+  v.looseObject({
+    revealedHintCount: v.number(),
+    answered: v.boolean(),
+    correct: v.boolean(),
+    score: v.number(),
+    lastConfirmedAnswer: v.nullable(v.string()),
+  });
+
+const regularQuizProgressSchema: v.GenericSchema<RegularQuizProgress> = v.pipe(
+  v.looseObject({
+    schemaVersion: v.literal(2),
+    masterKey: v.looseObject({
+      version: v.literal(CURRENT_ALGORITHM_VERSION),
+      baseDate: v.string(),
+      seed: v.number(),
+    }),
+    totalQuestions: v.number(),
+    currentQuestionIndex: v.number(),
+    results: v.array(questionResultSchema),
+    currentQuestionState: regularQuizCurrentQuestionStateSchema,
+  }),
+  // results.length === currentQuestionIndex の不変条件を維持
+  v.check((progress) => progress.results.length === progress.currentQuestionIndex),
+);
+
 // sessionStorage を直接扱うことでタブごと独立した進捗管理にする。
 // 再読み込み時は継続されるが、別タブでは干渉しない。
 // jotai の atom にしないのは、useRegularQuiz 内でしか参照されず派生 atom も不要なため。
-
-function isValidQuestionResult(v: unknown): v is QuestionResult {
-  if (typeof v !== "object" || v === null) return false;
-  const r = v as Record<string, unknown>;
-  return (
-    typeof r.studentId === "string" &&
-    typeof r.revealedHintCount === "number" &&
-    typeof r.correct === "boolean" &&
-    (r.userAnswer === null || typeof r.userAnswer === "string") &&
-    typeof r.score === "number"
-  );
-}
-
-function isValidProgress(value: unknown): value is RegularQuizProgress {
-  if (typeof value !== "object" || value === null) return false;
-  const v = value as Record<string, unknown>;
-  if (v.schemaVersion !== 2) return false;
-  const masterKey = v.masterKey as Record<string, unknown> | undefined;
-  if (
-    !masterKey ||
-    typeof masterKey !== "object" ||
-    masterKey.version !== CURRENT_ALGORITHM_VERSION ||
-    typeof masterKey.baseDate !== "string" ||
-    typeof masterKey.seed !== "number"
-  ) {
-    return false;
-  }
-  if (typeof v.totalQuestions !== "number") return false;
-  if (typeof v.currentQuestionIndex !== "number") return false;
-  if (!Array.isArray(v.results) || !v.results.every(isValidQuestionResult)) return false;
-  if (v.results.length !== v.currentQuestionIndex) return false;
-  const cqs = v.currentQuestionState as Record<string, unknown> | undefined;
-  if (
-    !cqs ||
-    typeof cqs !== "object" ||
-    typeof cqs.revealedHintCount !== "number" ||
-    typeof cqs.answered !== "boolean" ||
-    typeof cqs.correct !== "boolean" ||
-    typeof cqs.score !== "number" ||
-    (cqs.lastConfirmedAnswer !== null && typeof cqs.lastConfirmedAnswer !== "string")
-  ) {
-    return false;
-  }
-  return true;
-}
 
 export function loadRegularQuizProgress(): RegularQuizProgress | null {
   if (typeof sessionStorage === "undefined") return null;
@@ -83,11 +74,12 @@ export function loadRegularQuizProgress(): RegularQuizProgress | null {
   if (!raw) return null;
   try {
     const parsed: unknown = JSON.parse(raw);
-    if (!isValidProgress(parsed)) {
+    const result = v.safeParse(regularQuizProgressSchema, parsed);
+    if (!result.success) {
       sessionStorage.removeItem(REGULAR_QUIZ_PROGRESS_KEY);
       return null;
     }
-    return parsed;
+    return result.output;
   } catch {
     sessionStorage.removeItem(REGULAR_QUIZ_PROGRESS_KEY);
     return null;

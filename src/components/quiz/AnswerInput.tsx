@@ -20,6 +20,7 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
     setShowError(true);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     controls.start({ x: [0, -8, 8, -6, 6, -4, 4, 0], transition: { duration: 0.4 } });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorKey]); // controls は安定した参照だが依存配列から除外してeffectの誤再実行を防ぐ
 
   const handleSubmit = (e: FormEvent) => {

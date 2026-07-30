@@ -60,7 +60,7 @@ export function getNextDailyResetTime(): Date {
   return new Date(nextReset.getTime() - QUIZ_DAY_OFFSET_MS);
 }
 
-export function getTimeUntilNextReset(): string {
+export function getTimeUntilNextReset(): { hours: number; minutes: number } {
   const now = new Date();
   const nextReset = getNextDailyResetTime();
   const diff = nextReset.getTime() - now.getTime();
@@ -68,9 +68,5 @@ export function getTimeUntilNextReset(): string {
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-  if (hours > 0) {
-    return `${hours}時間${minutes}分後`;
-  } else {
-    return `${minutes}分後`;
-  }
+  return { hours, minutes };
 }

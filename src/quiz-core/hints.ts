@@ -1,6 +1,6 @@
 import type { Student, Hint, HintType } from "./types";
 import { extractFamilyName } from "./students";
-import { shuffleV1 } from "./random";
+import { shuffleV1, shuffleV2 } from "./random";
 
 const HINT_LABELS: Record<HintType, string> = {
   school: "学園",
@@ -35,4 +35,23 @@ export function generateHintsV1(student: Student, seed: number): Hint[] {
     },
   ];
   return shuffleV1([...hints], seed);
+}
+
+export function generateHintsV2(student: Student, seed: number): Hint[] {
+  const hints: Hint[] = [
+    { type: "school", label: HINT_LABELS.school, value: formatSchoolHintValue(student) },
+    { type: "club", label: HINT_LABELS.club, value: student.club },
+    { type: "age", label: HINT_LABELS.age, value: student.age },
+    { type: "birthday", label: HINT_LABELS.birthday, value: student.birthday },
+    { type: "height", label: HINT_LABELS.height, value: student.height },
+    { type: "hobby", label: HINT_LABELS.hobby, value: student.hobby },
+    { type: "weaponName", label: HINT_LABELS.weaponName, value: student.weaponName },
+    { type: "cv", label: HINT_LABELS.cv, value: student.cv },
+    {
+      type: "familyName",
+      label: HINT_LABELS.familyName,
+      value: extractFamilyName(student.fullName),
+    },
+  ];
+  return shuffleV2([...hints], seed);
 }

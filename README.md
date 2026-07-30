@@ -31,7 +31,7 @@
 - Tailwind CSS
 - jotai (状態管理)
 - React Router (ルーティング)
-- Zod (バリデーション)
+- Valibot (バリデーション)
 
 ## セットアップ
 

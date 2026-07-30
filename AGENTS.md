@@ -11,33 +11,41 @@
 │   └── 001_app-concept.md
 ├── data/                # クイズに必要なデータ
 │   ├── students.json    # 全生徒のプロフィール
-│   └── images/portraits/ # 生徒の立ち絵画像
+│   └── images/portrait/ # 生徒の立ち絵画像（リポジトリには含めない）
 └── src/                 # アプリ本体
     ├── quiz-core/       # 純粋なゲームロジック
     │   ├── types.ts     # 型定義
-    │   ├── students.ts  # 生徒データ読み込み
+    │   ├── key.ts       # QuizKey（version/baseDate/seed）の定義とエンコード
+    │   ├── random.ts    # 決定論的な乱数・シャッフル・seed派生（v1/v2）
+    │   ├── students.ts  # 生徒データ読み込み・出題プール・生徒選定
     │   ├── hints.ts     # ヒント生成ロジック
+    │   ├── quiz.ts      # QuizKey から問題/問題セットを生成（version分岐）
     │   ├── answer.ts    # 回答判定ロジック
     │   ├── scoring.ts   # スコア計算ロジック
     │   ├── daily.ts     # 日替わりクイズロジック
+    │   ├── result.ts    # 結果（正解/誤答/パス）判定
     │   └── index.ts
-    ├── store/           # jotai atoms（グローバル状態管理）
-    │   ├── quiz.ts      # フリープレイ用の状態
-    │   └── daily.ts     # 日替わりクイズ用の状態
+    ├── store/           # jotai atoms / 永続化
+    │   ├── quiz.ts      # プレイ中の共有状態（ルート単位にProviderでスコープ）
+    │   ├── regular.ts   # フリープレイ進捗（sessionStorage、Valibotで検証）
+    │   └── daily.ts     # 日替わりクイズ結果（localStorage、Valibotで検証）
     ├── hooks/           # カスタムフック
-    │   ├── useQuiz.ts   # フリープレイロジック
-    │   └── useDailyQuiz.ts # 日替わりクイズロジック
+    │   ├── useQuiz.ts        # 共通のクイズ操作ロジック
+    │   ├── useRegularQuiz.ts # フリープレイ（10問・進捗永続化）
+    │   └── useDailyQuiz.ts   # 日替わりクイズ
     ├── components/      # Reactコンポーネント
-    │   ├── common/      # 共通コンポーネント（Button, Modalなど）
+    │   ├── common/      # 共通コンポーネント（Button, Modal, ErrorBoundaryなど）
     │   ├── quiz/        # クイズ関連（HintList, AnswerInputなど）
     │   └── layout/      # レイアウト（Header）
     ├── pages/           # ページコンポーネント
     │   ├── DailyQuiz.tsx    # 日替わりクイズページ（/ ルート）
     │   ├── RegularQuiz.tsx  # フリープレイページ（/regular）
     │   └── Result.tsx       # 結果表示ページ（/result）
-    ├── App.tsx          # ルーティング設定
+    ├── App.tsx          # ルーティング設定（各ルートをProvider/ErrorBoundary/Suspenseで包む）
     └── main.tsx         # エントリーポイント
 ```
+
+出題アルゴリズムは `QuizKey.version` でバージョン管理しており、`*V1`/`*V2` のように関数を世代別に凍結する。過去に保存したキーを復元できるよう、既存バージョンの関数は変更しないこと（新しい挙動は version を上げて追加する）。
 
 ## 開発規約
 

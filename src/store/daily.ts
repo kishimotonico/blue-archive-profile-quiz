@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import * as v from "valibot";
 import type { QuizKey } from "../quiz-core/key";
 
 export interface DailyResult {
@@ -40,6 +41,12 @@ const initialDailyResultsStorage: DailyResultsStorage = {
   aggregated: {},
 };
 
+// 緩めの検証：最低限 timestamp/score を持つものだけ拾い、未知キーは保持する。
+const migratableDailyResultSchema = v.looseObject({
+  timestamp: v.number(),
+  score: v.number(),
+});
+
 /**
  * v2 (DailyResult[]) → v3 (DailyResultsStorage) のマイグレーションを実行する。
  *
@@ -71,13 +78,10 @@ export function migrateDailyResultsV2ToV3(): void {
   if (!Array.isArray(v2Data)) return;
 
   // 型チェックは緩めに：DailyResult っぽい構造のものだけ拾う
-  const results = v2Data.filter(
-    (r): r is DailyResult =>
-      r !== null &&
-      typeof r === "object" &&
-      typeof (r as DailyResult).timestamp === "number" &&
-      typeof (r as DailyResult).score === "number",
-  );
+  const results = v2Data.flatMap((r): DailyResult[] => {
+    const result = v.safeParse(migratableDailyResultSchema, r);
+    return result.success ? [result.output as unknown as DailyResult] : [];
+  });
 
   // timestamp 降順
   const sorted = [...results].sort((a, b) => b.timestamp - a.timestamp);
@@ -99,11 +103,6 @@ export function migrateDailyResultsV2ToV3(): void {
 // モジュール読み込み時に同期的にマイグレーション実行
 migrateDailyResultsV2ToV3();
 
-// getOnInit: true により atom 初期化時に同期的に localStorage から値を読み込む。
-// これがないと初回 render で初期値（空 / null）が返り、useEffect 内の closure に
-// 古い値がキャプチャされて再読み込み時の状態復元が壊れる（DailyQuiz.tsx の初期化
-// useEffect は loading ガードで 1 回しか走らないため、後からの hydration が反映
-// されない）。
 // getOnInit: true により atom 初期化時に同期的に localStorage から値を読み込む。
 // DailyQuiz.tsx の初期化 useEffect は store.get() で永続化値を読むため、
 // onMount による hydration を待たず確実に値を取得できるようにしている。

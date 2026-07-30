@@ -23,7 +23,8 @@
     "motion": "^12.36.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.12.0"
+    "react-router-dom": "^7.12.0",
+    "valibot": "^1.4.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",

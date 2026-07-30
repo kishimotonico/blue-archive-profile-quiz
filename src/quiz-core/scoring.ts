@@ -18,7 +18,7 @@ export function calculateScore(revealedHintCount: number, correct: boolean): num
   }
 
   // ヒント数が1〜10の範囲（10は立ち絵表示時）
-  const score = Math.max(1, 11 - revealedHintCount);
+  const score = Math.min(getMaxScore(), Math.max(1, 11 - revealedHintCount));
   return score;
 }
 

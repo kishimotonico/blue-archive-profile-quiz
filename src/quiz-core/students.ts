@@ -1,5 +1,5 @@
 import type { Student } from "./types";
-import { seededRandomV1 } from "./random";
+import { seededRandomV1, seededRandomV2 } from "./random";
 
 let studentsCache: Student[] | null = null;
 
@@ -15,6 +15,9 @@ export async function loadStudents(): Promise<Student[]> {
   }
 
   const response = await fetch(`${import.meta.env.BASE_URL}data/students.json`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch students.json: ${response.status} ${response.statusText}`);
+  }
   const data = (await response.json()) as Record<string, StudentEntry>;
 
   studentsCache = Object.entries(data).map(([id, entry]) => ({
@@ -27,7 +30,7 @@ export async function loadStudents(): Promise<Student[]> {
 }
 
 export function extractFamilyName(fullName: string): string {
-  const match = fullName.match(/^(.*[^\ァ-ヴー])([ァ-ヴー]+)$/);
+  const match = fullName.match(/^(.*[^ァ-ヴー])([ァ-ヴー]+)$/);
   if (match) {
     return match[1];
   }
@@ -58,5 +61,11 @@ export async function getStudentPool(baseDate: string): Promise<Student[]> {
 export function pickStudentV1(pool: Student[], seed: number): Student {
   if (pool.length === 0) throw new Error("Student pool is empty");
   const rng = seededRandomV1(seed);
+  return pool[Math.floor(rng() * pool.length)];
+}
+
+export function pickStudentV2(pool: Student[], seed: number): Student {
+  if (pool.length === 0) throw new Error("Student pool is empty");
+  const rng = seededRandomV2(seed);
   return pool[Math.floor(rng() * pool.length)];
 }

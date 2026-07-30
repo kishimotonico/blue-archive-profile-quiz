@@ -30,6 +30,10 @@ import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizPlayArea from "../components/quiz/QuizPlayArea";
 import { getPortraitState } from "../components/quiz/portraitUtils";
 
+function formatTimeUntilNextReset({ hours, minutes }: { hours: number; minutes: number }): string {
+  return hours > 0 ? `${hours}時間${minutes}分後` : `${minutes}分後`;
+}
+
 function DailyQuiz() {
   const {
     currentQuestion,
@@ -231,7 +235,7 @@ function DailyQuiz() {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3 text-center">
                 <p className="text-blue-800 font-semibold mb-2">今日のクイズは完了済みです</p>
                 <p className="text-blue-600 text-sm mb-2">
-                  次の問題まで: {getTimeUntilNextReset()}
+                  次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
                 </p>
                 <Button variant="primary" size="sm" onClick={() => navigate("/regular")}>
                   もっと遊ぶ
@@ -269,7 +273,9 @@ function DailyQuiz() {
           <div className="text-2xl font-bold text-gray-700 mb-4">{score}点</div>
           <p className="text-gray-600 mb-4">{correct ? "正解です！" : "不正解でした..."}</p>
           <p className="text-sm text-gray-500 mb-2">使用ヒント数: {revealedHintCount}</p>
-          <p className="text-sm text-gray-500 mb-6">次の問題まで: {getTimeUntilNextReset()}</p>
+          <p className="text-sm text-gray-500 mb-6">
+            次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
+          </p>
 
           {/* 統計情報 */}
           <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">

@@ -3498,5 +3498,55 @@
       "portrait": "images/portrait/erika.png"
     },
     "availableFrom": "2026-05-24"
+  },
+  "kokoro": {
+    "profile": {
+      "fullName": "渡海ココロ",
+      "name": "ココロ",
+      "school": "オデュッセイア海洋高等学校",
+      "grade": "2年生",
+      "club": "ダイビング部",
+      "age": "16歳",
+      "birthday": "6月11日",
+      "height": "165cm",
+      "hobby": "潜水、料理、（一人で）歌うこと",
+      "weaponName": "91式水陸両用小銃",
+      "cv": "百瀬紗菜",
+      "skills": {
+        "ex": "ダイビング、開始！",
+        "normal": "水中ブリーチング",
+        "passive": "ダイバーの本能",
+        "sub": "呼吸制御"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kokoro.png"
+    },
+    "availableFrom": "2026-08-27"
+  },
+  "kotone": {
+    "profile": {
+      "fullName": "淵上コトネ",
+      "name": "コトネ",
+      "school": "オデュッセイア海洋高等学校",
+      "grade": "2年生",
+      "club": "ダイビング部",
+      "age": "16歳",
+      "birthday": "10月16日",
+      "height": "171cm",
+      "hobby": "潜水、読書、無線通信",
+      "weaponName": "75式特殊水中自動小銃",
+      "cv": "天音ゆかり",
+      "skills": {
+        "ex": "水中用フレシュット弾装填",
+        "normal": "深海の道しるべ",
+        "passive": "頑強なシャチ",
+        "sub": "リヴァイアサン"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/kotone.png"
+    },
+    "availableFrom": "2026-08-27"
   }
 }

@@ -1,0 +1,862 @@
+<title>ブルアカ風プロフクイズ - ゲームUIモック v2（標準UI寄せ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#F3F7FB;
+    --sky-1:#DFF1FF;
+    --sky-2:#B9E3FF;
+    --main-1:#128AFA;
+    --main-2:#47C5FB;
+    --ink:#2B3A55;
+    --ink-soft:#5C6E8C;
+    --accent:#FFEE00;
+    --white:#FFFFFF;
+    --border:#DCE6F4;
+    --shadow-sm:0 2px 8px rgba(43,58,85,0.08);
+    --shadow:0 8px 20px rgba(43,58,85,0.10);
+    --shadow-lg:0 20px 48px rgba(20,32,54,0.28);
+    --radius:16px;
+    --radius-sm:10px;
+    --radius-lg:22px;
+    --tag-skew:-10deg;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background:
+      radial-gradient(120% 60% at 50% -10%, var(--sky-2) 0%, var(--sky-1) 35%, var(--bg-base) 70%);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:"Noto Sans JP", sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  .visually-hidden{
+    position:absolute;
+    width:1px;height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+  }
+
+  a, button, input{ font-family:inherit; }
+
+  :focus-visible{
+    outline:3px solid var(--main-1);
+    outline-offset:2px;
+    border-radius:6px;
+  }
+
+  h1, h2{ margin:0; }
+
+  .heading-font{
+    font-family:"M PLUS Rounded 1c", sans-serif;
+    font-weight:900;
+  }
+
+  /* ---------- 上部ストライプ帯（装飾のみ） ---------- */
+  .stripe-band{
+    position:relative;
+    height:8px;
+    width:100%;
+    background:repeating-linear-gradient(
+      -35deg,
+      var(--main-1) 0 22px,
+      var(--main-2) 22px 40px,
+      transparent 40px 46px,
+      transparent 46px 60px
+    );
+    opacity:0.9;
+  }
+
+  /* ---------- ヘッダー ---------- */
+  .app-header{
+    position:relative;
+    padding:18px 16px 20px;
+    max-width:920px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .title-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    background:linear-gradient(135deg, var(--main-2) 0%, var(--main-1) 100%);
+    color:var(--white);
+    padding:10px 20px;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+
+  .title-badge .kicker-tag{
+    display:inline-block;
+    background:rgba(255,255,255,0.22);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    padding:3px 10px 3px 12px;
+    border-radius:2px;
+    transform:skewX(var(--tag-skew));
+  }
+  .title-badge .kicker-tag span{ display:inline-block; transform:skewX(calc(var(--tag-skew) * -1)); }
+
+  .title-badge .main-title{
+    font-size:19px;
+    line-height:1.15;
+  }
+
+  .halo-gauge{
+    position:relative;
+    width:64px;
+    height:64px;
+    flex:none;
+  }
+  .halo-gauge svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  .halo-gauge .track{ fill:none; stroke:rgba(43,58,85,0.12); stroke-width:6; }
+  .halo-gauge .fill{
+    fill:none;
+    stroke:url(#haloGradient);
+    stroke-width:6;
+    stroke-linecap:round;
+    transition:stroke-dashoffset 0.5s cubic-bezier(.2,.8,.2,1);
+    filter:drop-shadow(0 0 2px rgba(18,138,250,0.4));
+  }
+  .halo-gauge .label{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
+  }
+  .halo-gauge .label .num{
+    font-family:"M PLUS Rounded 1c", sans-serif;
+    font-weight:900;
+    font-size:18px;
+    color:var(--main-1);
+  }
+  .halo-gauge .label .unit{
+    font-size:8px;
+    color:var(--ink-soft);
+    margin-top:2px;
+    letter-spacing:0.03em;
+  }
+
+  /* ---------- レイアウト ---------- */
+  .stage{
+    max-width:920px;
+    margin:0 auto;
+    padding:8px 16px 64px;
+  }
+
+  .section-label{
+    display:inline-block;
+    background:var(--main-1);
+    color:var(--white);
+    font-family:"M PLUS Rounded 1c", sans-serif;
+    font-weight:900;
+    font-size:12px;
+    padding:5px 16px;
+    border-radius:2px;
+    transform:skewX(var(--tag-skew));
+    margin:0 0 12px 2px;
+  }
+  .section-label span{ display:inline-block; transform:skewX(calc(var(--tag-skew) * -1)); letter-spacing:0.06em; }
+
+  /* ---------- ヒントグリッド ---------- */
+  .hint-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px;
+    margin-bottom:20px;
+  }
+  @media (min-width:640px){
+    .hint-grid{ grid-template-columns:repeat(3, 1fr); gap:14px; }
+  }
+
+  .hint-card{
+    position:relative;
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    padding:14px 14px 12px;
+    min-height:96px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+    opacity:0;
+    animation:cardIn 0.4s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+
+  .hint-card:nth-child(1){ animation-delay:.02s; }
+  .hint-card:nth-child(2){ animation-delay:.07s; }
+  .hint-card:nth-child(3){ animation-delay:.12s; }
+  .hint-card:nth-child(4){ animation-delay:.17s; }
+  .hint-card:nth-child(5){ animation-delay:.22s; }
+  .hint-card:nth-child(6){ animation-delay:.27s; }
+  .hint-card:nth-child(7){ animation-delay:.32s; }
+  .hint-card:nth-child(8){ animation-delay:.37s; }
+  .hint-card:nth-child(9){ animation-delay:.42s; }
+
+  @keyframes cardIn{
+    from{ opacity:0; transform:translateY(8px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .hint-card .hint-name{
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:700;
+    letter-spacing:0.03em;
+    margin-bottom:6px;
+  }
+  .hint-card .hint-value{
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.35;
+  }
+
+  .hint-card.locked{
+    background:#EDF4FC;
+    border-style:dashed;
+    border-color:#C6D9EE;
+    justify-content:center;
+    align-items:center;
+  }
+  .hint-card.locked .hint-name{ margin-bottom:2px; text-align:center; }
+  .hint-card.locked .lock-icon{
+    font-size:18px;
+    color:var(--main-1);
+    opacity:0.5;
+    text-align:center;
+  }
+
+  .hint-card.revealed{
+    border-color:rgba(18,138,250,0.4);
+  }
+
+  /* 開示エフェクト：斜めシャインが一度だけ走る（装飾のみ、形状は変えない） */
+  .hint-card.just-revealed{
+    animation:cardPop 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+  .hint-card.just-revealed::after{
+    content:"";
+    position:absolute;
+    top:0; left:-60%;
+    width:40%; height:100%;
+    background:linear-gradient(75deg, transparent 0%, rgba(255,255,255,0.75) 50%, transparent 100%);
+    animation:shineSweep 0.7s ease-out;
+    pointer-events:none;
+  }
+  @keyframes cardPop{
+    0%{ transform:scale(0.97); }
+    55%{ transform:scale(1.02); }
+    100%{ transform:scale(1); }
+  }
+  @keyframes shineSweep{
+    from{ left:-60%; }
+    to{ left:120%; }
+  }
+
+  .hint-card .point-chip{
+    position:absolute;
+    top:-8px;
+    right:-6px;
+    background:var(--accent);
+    color:var(--ink);
+    font-family:"M PLUS Rounded 1c", sans-serif;
+    font-weight:900;
+    font-size:10px;
+    padding:2px 9px;
+    border-radius:999px;
+    transform:rotate(6deg);
+    box-shadow:0 2px 6px rgba(43,58,85,0.22);
+    border:1.5px solid var(--white);
+  }
+
+  /* ---------- 立ち絵 / シルエットエリア ---------- */
+  .portrait-panel{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    padding:20px;
+    margin-bottom:20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .portrait-panel::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(160deg, var(--sky-1) 0%, transparent 55%);
+    pointer-events:none;
+  }
+  .portrait-stage{
+    position:relative;
+    height:210px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .silhouette{
+    width:120px;
+    height:200px;
+    opacity:0;
+    transform:translateY(16px) scale(0.96);
+    transition:opacity 0.6s ease, transform 0.6s cubic-bezier(.2,.8,.2,1);
+  }
+  .silhouette.show{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+  .silhouette .head{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:linear-gradient(180deg, #35507A 0%, #23324D 100%);
+    margin:0 auto;
+  }
+  .silhouette .body{
+    width:110px;
+    height:150px;
+    margin:-8px auto 0;
+    background:linear-gradient(180deg, #35507A 0%, #23324D 100%);
+    clip-path:polygon(30% 0%, 70% 0%, 100% 18%, 88% 100%, 12% 100%, 0% 18%);
+  }
+  .portrait-placeholder-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:8px;
+  }
+  .portrait-locked-note{
+    text-align:center;
+    font-size:13px;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+
+  /* ---------- 回答フォーム ---------- */
+  .answer-panel{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    padding:20px;
+    margin-bottom:20px;
+  }
+
+  .answer-form{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .answer-input-wrap{
+    flex:1 1 220px;
+    position:relative;
+  }
+  .answer-input{
+    width:100%;
+    padding:13px 16px;
+    border:2px solid #C9DCF2;
+    border-radius:var(--radius-sm);
+    background:#F6FAFF;
+    color:var(--ink);
+    font-size:16px;
+    font-weight:700;
+  }
+  .answer-input::placeholder{ color:#9FB2CC; font-weight:500; }
+  .answer-input:focus{
+    border-color:var(--main-1);
+    background:var(--white);
+  }
+
+  .btn{
+    border:none;
+    cursor:pointer;
+    border-radius:var(--radius-sm);
+    padding:13px 24px;
+    font-family:"M PLUS Rounded 1c", sans-serif;
+    font-weight:900;
+    font-size:15px;
+    position:relative;
+    box-shadow:var(--shadow-sm);
+    transition:transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  }
+  .btn:active{
+    transform:translateY(2px);
+    box-shadow:0 1px 4px rgba(43,58,85,0.12);
+  }
+  .btn:hover{ filter:brightness(1.03); }
+
+  .btn-primary{
+    color:var(--white);
+    background:linear-gradient(180deg, var(--main-2) 0%, var(--main-1) 100%);
+  }
+  .btn-accent{
+    color:var(--ink);
+    background:linear-gradient(180deg, #FFF8CC 0%, var(--accent) 100%);
+  }
+  .btn-ghost{
+    color:var(--ink-soft);
+    background:var(--white);
+    border:1.5px solid var(--border);
+    box-shadow:none;
+  }
+
+  .action-row{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .action-row .btn{ flex:1 1 140px; text-align:center; }
+
+  .feedback-msg{
+    margin-top:12px;
+    font-weight:700;
+    font-size:14px;
+    min-height:20px;
+  }
+  .feedback-msg.wrong{ color:#E0455B; }
+  .feedback-msg.correct{ color:var(--main-1); }
+
+  /* ---------- 結果モーダル ---------- */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(20,32,54,0.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .modal-overlay.open{ display:flex; }
+
+  .modal-panel{
+    background:var(--white);
+    max-width:380px;
+    width:100%;
+    padding:30px 24px 26px;
+    border-radius:var(--radius-lg);
+    position:relative;
+    overflow:hidden;
+    box-shadow:var(--shadow-lg);
+    transform:translateY(24px);
+    animation:modalIn 0.4s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  @keyframes modalIn{
+    from{ opacity:0; transform:translateY(24px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .modal-panel::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:6px;
+    background:repeating-linear-gradient(-35deg, var(--main-1) 0 14px, var(--main-2) 14px 26px);
+  }
+
+  .modal-close{
+    position:absolute;
+    top:14px;
+    right:14px;
+    background:none;
+    border:none;
+    border-radius:8px;
+    font-size:18px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    padding:6px;
+    line-height:1;
+  }
+
+  .rank-ring{
+    width:132px;
+    height:132px;
+    margin:6px auto 10px;
+    position:relative;
+  }
+  .rank-ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  .rank-ring .track{ fill:none; stroke:#E7EFF9; stroke-width:8; }
+  .rank-ring .fill{
+    fill:none;
+    stroke:url(#rankGradient);
+    stroke-width:8;
+    stroke-linecap:round;
+    stroke-dasharray:402;
+    stroke-dashoffset:402;
+  }
+  .modal-overlay.open .rank-ring .fill{
+    animation:ringFill 1.0s cubic-bezier(.2,.8,.2,1) 0.25s forwards, ringGlow 2s ease-in-out 1.3s infinite;
+  }
+  @keyframes ringFill{ to{ stroke-dashoffset:40; } }
+  @keyframes ringGlow{
+    0%,100%{ filter:drop-shadow(0 0 2px rgba(255,238,0,0.3)); }
+    50%{ filter:drop-shadow(0 0 7px rgba(255,238,0,0.6)); }
+  }
+  .rank-ring .center{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  .rank-ring .rank-letter{
+    font-family:"M PLUS Rounded 1c", sans-serif;
+    font-weight:900;
+    font-size:40px;
+    color:var(--main-1);
+    line-height:1;
+  }
+  .rank-ring .rank-caption{
+    font-size:10px;
+    color:var(--ink-soft);
+    letter-spacing:0.1em;
+    margin-top:2px;
+  }
+
+  .modal-panel h2{
+    text-align:center;
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0 0 4px;
+    font-weight:700;
+  }
+  .modal-panel .answer-name{
+    text-align:center;
+    font-family:"M PLUS Rounded 1c", sans-serif;
+    font-weight:900;
+    font-size:23px;
+    color:var(--ink);
+    margin:0 0 16px;
+  }
+
+  .score-strip{
+    display:flex;
+    justify-content:center;
+    align-items:baseline;
+    gap:6px;
+    background:linear-gradient(180deg, #FFFCE0 0%, #FFF3A0 100%);
+    border:1.5px solid #F3E27A;
+    border-radius:var(--radius-sm);
+    padding:10px;
+    margin-bottom:18px;
+  }
+  .score-strip .score-num{
+    font-family:"M PLUS Rounded 1c", sans-serif;
+    font-weight:900;
+    font-size:26px;
+    color:var(--ink);
+  }
+  .score-strip .score-suffix{ font-size:13px; color:var(--ink-soft); font-weight:700; }
+
+  .modal-panel .btn{ width:100%; text-align:center; }
+
+  /* ---------- reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce){
+    .hint-card, .hint-card.just-revealed::after, .silhouette, .modal-panel, .rank-ring .fill{
+      animation:none !important;
+      transition:none !important;
+    }
+    .hint-card{ opacity:1; }
+    .silhouette.show{ opacity:1; transform:none; }
+    .modal-overlay.open .rank-ring .fill{ stroke-dashoffset:40; }
+  }
+
+  /* ---------- footer note ---------- */
+  .mock-note{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 16px 40px;
+    color:var(--ink-soft);
+    font-size:11px;
+    text-align:center;
+  }
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="haloGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#47C5FB"/>
+      <stop offset="100%" stop-color="#128AFA"/>
+    </linearGradient>
+    <linearGradient id="rankGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFEE00"/>
+      <stop offset="100%" stop-color="#128AFA"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="stripe-band" aria-hidden="true"></div>
+
+<header class="app-header">
+  <div class="title-badge">
+    <div>
+      <span class="kicker-tag"><span>DAILY QUIZ</span></span>
+      <h1 class="main-title heading-font">日替わり プロフクイズ</h1>
+    </div>
+  </div>
+  <div class="halo-gauge" role="img" aria-label="残りヒント数の表示">
+    <svg viewBox="0 0 80 80">
+      <circle class="track" cx="40" cy="40" r="33"/>
+      <circle id="gaugeFill" class="fill" cx="40" cy="40" r="33" stroke-dasharray="207" stroke-dashoffset="69"/>
+    </svg>
+    <div class="label">
+      <span class="num" id="gaugeNum">8</span>
+      <span class="unit">HINT 残</span>
+    </div>
+  </div>
+</header>
+
+<main class="stage">
+  <div class="section-label"><span>HINT LIST</span></div>
+
+  <div class="hint-grid" id="hintGrid">
+    <div class="hint-card revealed" data-hint="school">
+      <span class="point-chip">10pt</span>
+      <span class="hint-name">学園</span>
+      <span class="hint-value">アビドス高等学校<br>(3年生)</span>
+    </div>
+    <div class="hint-card revealed" data-hint="club">
+      <span class="point-chip">9pt</span>
+      <span class="hint-name">部活</span>
+      <span class="hint-value">対策委員会</span>
+    </div>
+    <div class="hint-card revealed" data-hint="age">
+      <span class="point-chip">8pt</span>
+      <span class="hint-name">年齢</span>
+      <span class="hint-value">17歳</span>
+    </div>
+    <div class="hint-card locked" data-hint="birthday" data-name="誕生日" data-value="1月2日">
+      <span class="hint-name">誕生日</span>
+      <span class="lock-icon">?</span>
+    </div>
+    <div class="hint-card locked" data-hint="height" data-name="身長" data-value="145cm">
+      <span class="hint-name">身長</span>
+      <span class="lock-icon">?</span>
+    </div>
+    <div class="hint-card locked" data-hint="hobby" data-name="趣味" data-value="昼寝、ゴロゴロすること">
+      <span class="hint-name">趣味</span>
+      <span class="lock-icon">?</span>
+    </div>
+    <div class="hint-card locked" data-hint="weapon" data-name="武器" data-value="Eye of Horus">
+      <span class="hint-name">武器</span>
+      <span class="lock-icon">?</span>
+    </div>
+    <div class="hint-card locked" data-hint="cv" data-name="CV" data-value="花守ゆみり">
+      <span class="hint-name">CV</span>
+      <span class="lock-icon">?</span>
+    </div>
+    <div class="hint-card locked" data-hint="surname" data-name="姓" data-value="小鳥遊">
+      <span class="hint-name">姓</span>
+      <span class="lock-icon">?</span>
+    </div>
+  </div>
+
+  <div class="portrait-panel">
+    <div class="portrait-stage">
+      <div class="silhouette" id="silhouette" aria-hidden="true">
+        <div class="head"></div>
+        <div class="body"></div>
+      </div>
+      <p class="portrait-locked-note" id="portraitLockedNote">全ヒント開示で立ち絵シルエットが出現</p>
+    </div>
+    <p class="portrait-placeholder-note">※ モックのため実際の立ち絵ではなくシルエット図形で代用しています</p>
+  </div>
+
+  <div class="answer-panel">
+    <div class="section-label" style="margin-bottom:14px;"><span>ANSWER</span></div>
+    <form class="answer-form" id="answerForm">
+      <div class="answer-input-wrap">
+        <label for="answerInput" class="visually-hidden">生徒の名前を入力</label>
+        <input type="text" id="answerInput" class="answer-input" placeholder="生徒の名前を入力…" autocomplete="off">
+      </div>
+      <button type="submit" class="btn btn-accent"><span>回答する</span></button>
+    </form>
+    <p class="feedback-msg" id="feedbackMsg" role="status" aria-live="polite"></p>
+    <div class="action-row">
+      <button type="button" class="btn btn-primary" id="nextHintBtn"><span>次のヒント</span></button>
+      <button type="button" class="btn btn-ghost" id="giveUpBtn"><span>ギブアップ</span></button>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="resultModal">
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <button type="button" class="modal-close" id="modalCloseBtn" aria-label="閉じる">✕</button>
+    <div class="rank-ring">
+      <svg viewBox="0 0 150 150">
+        <circle class="track" cx="75" cy="75" r="64"/>
+        <circle class="fill" cx="75" cy="75" r="64"/>
+      </svg>
+      <div class="center">
+        <span class="rank-letter" id="rankLetter">SS</span>
+        <span class="rank-caption">RANK</span>
+      </div>
+    </div>
+    <h2 id="resultTitle">正解は…</h2>
+    <p class="answer-name">小鳥遊 ホシノ</p>
+    <div class="score-strip">
+      <span class="score-num" id="finalScore">8</span>
+      <span class="score-suffix">/ 10 点</span>
+    </div>
+    <button type="button" class="btn btn-primary" id="modalOkBtn"><span>結果画面へ</span></button>
+  </div>
+</div>
+
+<p class="mock-note">このページはデザイン検証用モックです（v2: 標準UI寄せ改訂版）。版権画像は使用していません。</p>
+
+<script>
+(function(){
+  var CORRECT_ANSWERS = ["ホシノ", "小鳥遊ホシノ", "小鳥遊 ホシノ"];
+  var TOTAL_STAGES = 10; // 9 hints + silhouette
+  var revealedCount = 3; // 学園/部活/年齢が最初から開示済み
+  var silhouetteShown = false;
+  var finished = false;
+
+  var hintGrid = document.getElementById("hintGrid");
+  var lockedCards = Array.prototype.slice.call(hintGrid.querySelectorAll(".hint-card.locked"));
+  var gaugeFill = document.getElementById("gaugeFill");
+  var gaugeNum = document.getElementById("gaugeNum");
+  var nextHintBtn = document.getElementById("nextHintBtn");
+  var giveUpBtn = document.getElementById("giveUpBtn");
+  var answerForm = document.getElementById("answerForm");
+  var answerInput = document.getElementById("answerInput");
+  var feedbackMsg = document.getElementById("feedbackMsg");
+  var silhouette = document.getElementById("silhouette");
+  var portraitLockedNote = document.getElementById("portraitLockedNote");
+  var resultModal = document.getElementById("resultModal");
+  var finalScore = document.getElementById("finalScore");
+  var rankLetter = document.getElementById("rankLetter");
+  var modalCloseBtn = document.getElementById("modalCloseBtn");
+  var modalOkBtn = document.getElementById("modalOkBtn");
+
+  var CIRCUMFERENCE = 2 * Math.PI * 33;
+
+  function currentScore(){
+    // 開示済みヒント数(+シルエット)ぶんだけ減点。最初のヒントのみ=10点、以降1つごとに-1、シルエットで1点。
+    var stages = revealedCount + (silhouetteShown ? 1 : 0);
+    return Math.max(1, 11 - stages);
+  }
+
+  function updateGauge(){
+    var remainingStages = TOTAL_STAGES - (revealedCount + (silhouetteShown ? 1 : 0));
+    var ratio = remainingStages / TOTAL_STAGES;
+    gaugeFill.style.strokeDasharray = CIRCUMFERENCE;
+    gaugeFill.style.strokeDashoffset = CIRCUMFERENCE * (1 - ratio);
+    gaugeNum.textContent = Math.max(remainingStages, 0);
+  }
+
+  function revealNextHint(){
+    if (finished) return;
+    if (lockedCards.length > 0){
+      var card = lockedCards.shift();
+      var name = card.getAttribute("data-name");
+      var value = card.getAttribute("data-value");
+      revealedCount += 1;
+      var chipPoint = Math.max(1, 11 - revealedCount);
+      card.classList.remove("locked");
+      card.classList.add("revealed", "just-revealed");
+      card.innerHTML =
+        '<span class="point-chip">' + chipPoint + 'pt</span>' +
+        '<span class="hint-name">' + name + '</span>' +
+        '<span class="hint-value">' + value + '</span>';
+      updateGauge();
+      if (lockedCards.length === 0){
+        nextHintBtn.querySelector("span").textContent = "シルエットを見る";
+      }
+    } else if (!silhouetteShown){
+      silhouetteShown = true;
+      silhouette.classList.add("show");
+      portraitLockedNote.style.display = "none";
+      updateGauge();
+      nextHintBtn.disabled = true;
+      nextHintBtn.style.opacity = "0.5";
+      nextHintBtn.style.cursor = "default";
+      nextHintBtn.querySelector("span").textContent = "ヒントを全て開示済み";
+    }
+  }
+
+  function normalize(str){
+    return str.replace(/\s+/g, "").trim();
+  }
+
+  function showResult(isCorrect){
+    finished = true;
+    var score = isCorrect ? currentScore() : 0;
+    finalScore.textContent = score;
+    rankLetter.textContent = score >= 8 ? "SS" : score >= 6 ? "S" : score >= 4 ? "A" : score >= 2 ? "B" : "C";
+    document.getElementById("resultTitle").textContent = isCorrect ? "正解！" : "正解は…";
+    resultModal.classList.add("open");
+  }
+
+  nextHintBtn.addEventListener("click", revealNextHint);
+
+  giveUpBtn.addEventListener("click", function(){
+    if (finished) return;
+    // ギブアップ時は残り全ヒント+シルエットを開示してから結果へ
+    while (lockedCards.length > 0){ revealNextHint(); }
+    if (!silhouetteShown){ revealNextHint(); }
+    showResult(false);
+  });
+
+  answerForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (finished) return;
+    var val = normalize(answerInput.value);
+    if (!val){
+      feedbackMsg.textContent = "生徒の名前を入力してね";
+      feedbackMsg.className = "feedback-msg wrong";
+      return;
+    }
+    var isCorrect = CORRECT_ANSWERS.some(function(ans){ return normalize(ans) === val; });
+    if (isCorrect){
+      feedbackMsg.textContent = "正解！";
+      feedbackMsg.className = "feedback-msg correct";
+      showResult(true);
+    } else {
+      feedbackMsg.textContent = "不正解…もう一度ヒントを確認してみよう";
+      feedbackMsg.className = "feedback-msg wrong";
+    }
+  });
+
+  modalCloseBtn.addEventListener("click", function(){
+    resultModal.classList.remove("open");
+  });
+  modalOkBtn.addEventListener("click", function(){
+    resultModal.classList.remove("open");
+  });
+  resultModal.addEventListener("click", function(e){
+    if (e.target === resultModal){ resultModal.classList.remove("open"); }
+  });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && resultModal.classList.contains("open")){
+      resultModal.classList.remove("open");
+    }
+  });
+
+  updateGauge();
+})();
+</script>

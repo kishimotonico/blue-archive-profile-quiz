@@ -3548,5 +3548,55 @@
       "portrait": "images/portrait/kotone.png"
     },
     "availableFrom": "2026-08-27"
+  },
+  "anna": {
+    "profile": {
+      "fullName": "仁木アンナ",
+      "name": "アンナ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "2年生",
+      "club": "183号特別クラス",
+      "age": "16歳",
+      "birthday": "3月10日",
+      "height": "165cm",
+      "hobby": "リサイクル、賞状用の額縁作り",
+      "weaponName": "△△△",
+      "cv": "高森奈津美",
+      "skills": {
+        "ex": "見てください！",
+        "normal": "これは勲章ものですね！",
+        "passive": "熱処理開始！",
+        "sub": "いい感じです！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/anna.png"
+    },
+    "availableFrom": "2026-09-24"
+  },
+  "erina": {
+    "profile": {
+      "fullName": "二木エリナ",
+      "name": "エリナ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "2年生",
+      "club": "183号特別クラス",
+      "age": "15歳",
+      "birthday": "2月8日",
+      "height": "165cm",
+      "hobby": "料理、ファッション雑誌を拾うこと",
+      "weaponName": "僻地用護身銃73号",
+      "cv": "菱川花菜",
+      "skills": {
+        "ex": "食べてからにしましょ～よ",
+        "normal": "てきとーでいいですってば～",
+        "passive": "休憩しましょ～",
+        "sub": "ガンガン行きますよ～！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/erina.png"
+    },
+    "availableFrom": "2026-09-24"
   }
 }

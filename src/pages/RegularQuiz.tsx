@@ -5,6 +5,7 @@ import HintList from "../components/quiz/HintList";
 import StudentReveal from "../components/quiz/StudentReveal";
 import StudentPortrait from "../components/quiz/StudentPortrait";
 import Button from "../components/common/Button";
+import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizPlayArea from "../components/quiz/QuizPlayArea";
@@ -62,17 +63,34 @@ function RegularQuiz() {
   if (!currentQuestion) return <QuizErrorState />;
 
   const portraitState = getPortraitState(answered, revealedHintCount, currentQuestion.hints.length);
+  const totalStages = currentQuestion.hints.length + 1; // 全ヒント + シルエット
+  const remainingStages = Math.max(totalStages - revealedHintCount, 0);
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-slate-50">
+    <div className="h-[100dvh] flex flex-col">
       <Header />
 
-      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 sm:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
+      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 md:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
         {/* 左ペイン: ヒント + 入力エリア */}
         <div className="flex-1 flex flex-col min-h-0">
-          {/* 進捗表示 */}
-          <div className="shrink-0 text-center text-sm text-gray-600 py-3 sm:py-2">
-            クイズ {currentQuestionIndex + 1} / {TOTAL_QUESTIONS} | 合計: {totalScore}点
+          {/* タイトル + 残りヒント数 */}
+          <div className="shrink-0 flex items-center justify-between gap-3 py-3 md:py-2">
+            <div className="inline-flex items-center gap-2 rounded-2xl bg-linear-to-br from-ba-cyan to-ba-blue px-4 py-2 text-white shadow-sm">
+              <div className="ba-tag bg-white/25">
+                <span>FREE PLAY</span>
+              </div>
+              <h1 className="font-display text-sm font-black leading-tight sm:text-base">
+                {currentQuestionIndex + 1} / {TOTAL_QUESTIONS} 問目・合計 {totalScore}点
+              </h1>
+            </div>
+            {!answered && (
+              <HaloRingGauge value={remainingStages / totalStages} size={52} label="残りヒント数の表示">
+                <span className="font-display text-base font-black text-ba-blue">
+                  {remainingStages}
+                </span>
+                <span className="text-[8px] text-ba-ink-soft">HINT残</span>
+              </HaloRingGauge>
+            )}
           </div>
 
           {/* スクロール可能なヒントエリア */}
@@ -106,7 +124,7 @@ function RegularQuiz() {
           )}
 
           {/* 固定フッター: 入力欄・ボタン類 */}
-          <div className="shrink-0 pt-3 border-t border-gray-200 bg-slate-50">
+          <div className="shrink-0 pt-3 border-t border-ba-border bg-ba-bg">
             <QuizPlayArea
               hintButtonRef={hintButtonRef}
               revealedHintCount={revealedHintCount}

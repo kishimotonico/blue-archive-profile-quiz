@@ -25,6 +25,7 @@ import StudentReveal from "../components/quiz/StudentReveal";
 import StudentPortrait from "../components/quiz/StudentPortrait";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
+import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizPlayArea from "../components/quiz/QuizPlayArea";
@@ -186,20 +187,37 @@ function DailyQuiz() {
   if (!currentQuestion) return <QuizErrorState />;
 
   const portraitState = getPortraitState(answered, revealedHintCount, currentQuestion.hints.length);
+  const totalStages = currentQuestion.hints.length + 1; // 全ヒント + シルエット
+  const remainingStages = Math.max(totalStages - revealedHintCount, 0);
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-slate-50">
+    <div className="h-[100dvh] flex flex-col">
       <Header />
 
-      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 sm:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
+      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 md:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
         {/* 左ペイン: ヒント + 入力エリア */}
         <div className="flex-1 flex flex-col min-h-0">
-          {/* 日付表示 */}
-          <div className="shrink-0 text-center text-sm text-gray-600 py-3 sm:py-2">
-            {(() => {
-              const [, month, day] = getDailyDate().split("-");
-              return `${Number(month)}月${Number(day)}日のクイズ`;
-            })()}
+          {/* タイトル + 残りヒント数 */}
+          <div className="shrink-0 flex items-center justify-between gap-3 py-3 md:py-2">
+            <div className="inline-flex items-center gap-2 rounded-2xl bg-linear-to-br from-ba-cyan to-ba-blue px-4 py-2 text-white shadow-sm">
+              <div className="ba-tag bg-white/25">
+                <span>DAILY QUIZ</span>
+              </div>
+              <h1 className="font-display text-sm font-black leading-tight sm:text-base">
+                {(() => {
+                  const [, month, day] = getDailyDate().split("-");
+                  return `${Number(month)}月${Number(day)}日のクイズ`;
+                })()}
+              </h1>
+            </div>
+            {!answered && (
+              <HaloRingGauge value={remainingStages / totalStages} size={52} label="残りヒント数の表示">
+                <span className="font-display text-base font-black text-ba-blue">
+                  {remainingStages}
+                </span>
+                <span className="text-[8px] text-ba-ink-soft">HINT残</span>
+              </HaloRingGauge>
+            )}
           </div>
 
           {/* スクロール可能なヒントエリア */}
@@ -230,11 +248,11 @@ function DailyQuiz() {
           )}
 
           {/* 固定フッター: 入力欄・ボタン類 */}
-          <div className="shrink-0 pt-3 border-t border-gray-200 bg-slate-50">
+          <div className="shrink-0 pt-3 border-t border-ba-border bg-ba-bg">
             {isAlreadyCompleted && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3 text-center">
-                <p className="text-blue-800 font-semibold mb-2">今日のクイズは完了済みです</p>
-                <p className="text-blue-600 text-sm mb-2">
+              <div className="bg-ba-sky-1 border border-ba-border rounded-2xl p-4 mb-3 text-center">
+                <p className="font-display font-black text-ba-navy mb-2">今日のクイズは完了済みです</p>
+                <p className="text-ba-ink-soft text-sm mb-2">
                   次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
                 </p>
                 <Button variant="primary" size="sm" onClick={() => navigate("/regular")}>
@@ -267,34 +285,58 @@ function DailyQuiz() {
       </main>
 
       {/* 結果モーダル */}
-      <Modal isOpen={showResultModal} onClose={() => setShowResultModal(false)} title="クイズ完了">
+      <Modal isOpen={showResultModal} onClose={() => setShowResultModal(false)}>
         <div className="text-center">
-          <div className="text-5xl font-bold text-blue-600 mb-2">{getScoreRank(score)}</div>
-          <div className="text-2xl font-bold text-gray-700 mb-4">{score}点</div>
-          <p className="text-gray-600 mb-4">{correct ? "正解です！" : "不正解でした..."}</p>
-          <p className="text-sm text-gray-500 mb-2">使用ヒント数: {revealedHintCount}</p>
-          <p className="text-sm text-gray-500 mb-6">
+          <HaloRingGauge
+            value={score / 10}
+            size={124}
+            strokeWidth={8}
+            trackColor="#E7EFF9"
+            fillFrom="var(--color-ba-yellow)"
+            fillTo="var(--color-ba-blue)"
+            className="mx-auto mb-2"
+          >
+            <span className="font-display text-4xl font-black text-ba-blue">
+              {getScoreRank(score)}
+            </span>
+            <span className="text-[10px] tracking-widest text-ba-ink-soft">RANK</span>
+          </HaloRingGauge>
+
+          <h2 className="text-sm font-bold text-ba-ink-soft mb-1">
+            {correct ? "正解！" : "正解は…"}
+          </h2>
+          <p className="font-display text-xl font-black text-ba-navy mb-4">
+            {currentQuestion.student.fullName}
+          </p>
+
+          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-[#F3E27A] bg-linear-to-b from-yellow-50 to-yellow-100 py-2 mb-4">
+            <span className="font-display text-2xl font-black text-ba-navy">{score}</span>
+            <span className="text-sm font-bold text-ba-ink-soft">/ 10 点</span>
+          </div>
+
+          <p className="text-sm text-ba-ink-soft mb-2">使用ヒント数: {revealedHintCount}</p>
+          <p className="text-sm text-ba-ink-soft mb-6">
             次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
           </p>
 
           {/* 統計情報 */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">統計情報</h3>
+          <div className="bg-white border border-ba-border rounded-2xl p-4 mb-6 text-left">
+            <h3 className="font-display text-base font-black text-ba-navy mb-3">統計情報</h3>
 
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">累積挑戦回数:</span>
-                <span className="font-semibold">{totalAttempts}回</span>
+                <span className="text-ba-ink-soft">累積挑戦回数:</span>
+                <span className="font-semibold text-ba-navy">{totalAttempts}回</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">ベストスコア:</span>
-                <span className="font-semibold">{bestScore}点</span>
+                <span className="text-ba-ink-soft">ベストスコア:</span>
+                <span className="font-semibold text-ba-navy">{bestScore}点</span>
               </div>
             </div>
 
             <div className="mt-4">
-              <p className="text-sm text-gray-600 mb-2">ランク分布:</p>
-              <div className="space-y-1 text-xs">
+              <p className="text-sm text-ba-ink-soft mb-2">ランク分布:</p>
+              <div className="space-y-1 text-xs text-ba-navy">
                 <div className="flex justify-between">
                   <span>SS (10点):</span>
                   <span>{scoreDistribution.perfect}回</span>
@@ -323,7 +365,7 @@ function DailyQuiz() {
             </div>
           </div>
 
-          <div className="mt-6 space-y-2">
+          <div className="space-y-2">
             <Button variant="primary" className="w-full" onClick={() => navigate("/regular")}>
               もっと遊ぶ
             </Button>

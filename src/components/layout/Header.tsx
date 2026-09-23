@@ -5,17 +5,17 @@ function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
   return (
     <div className="w-6 h-6 flex flex-col justify-center items-center gap-1.5">
       <span
-        className={`block w-5 h-0.5 bg-blue-600 transition-all duration-300 ${
+        className={`block w-5 h-0.5 bg-ba-blue transition-all duration-300 ${
           isOpen ? "rotate-45 translate-y-2" : ""
         }`}
       />
       <span
-        className={`block w-5 h-0.5 bg-blue-600 transition-all duration-300 ${
+        className={`block w-5 h-0.5 bg-ba-blue transition-all duration-300 ${
           isOpen ? "opacity-0" : ""
         }`}
       />
       <span
-        className={`block w-5 h-0.5 bg-blue-600 transition-all duration-300 ${
+        className={`block w-5 h-0.5 bg-ba-blue transition-all duration-300 ${
           isOpen ? "-rotate-45 -translate-y-2" : ""
         }`}
       />
@@ -52,9 +52,15 @@ function Header() {
 
   return (
     <>
-      {/* デスクトップヘッダー（640px以上） */}
-      <header className="hidden sm:flex bg-linear-to-r from-blue-600 to-blue-500 text-white h-12 items-center px-4 shadow-xs relative z-50">
-        <Link to="/" className="text-lg font-bold hover:opacity-90 transition-opacity">
+      {/* 上部ストライプ帯（装飾のみ、全ページ共通） */}
+      <div className="ba-stripe-band" aria-hidden="true" />
+
+      {/* デスクトップヘッダー（md以上） */}
+      <header className="hidden md:flex bg-linear-to-r from-ba-cyan to-ba-blue text-white h-12 items-center px-4 shadow-xs relative z-50">
+        <Link
+          to="/"
+          className="font-display text-lg font-black hover:opacity-90 transition-opacity"
+        >
           ブルアカプロフクイズ
         </Link>
 
@@ -62,14 +68,14 @@ function Header() {
         <nav className="ml-auto flex gap-2">
           <Link
             to="/"
-            className="text-sm px-3 py-1 rounded-sm hover:bg-white/20 transition-colors"
+            className="text-sm font-bold px-3 py-1 rounded-sm hover:bg-white/20 transition-colors"
             aria-current={location.pathname === "/" ? "page" : undefined}
           >
             日替わり
           </Link>
           <Link
             to="/regular"
-            className="text-sm px-3 py-1 rounded-sm hover:bg-white/20 transition-colors"
+            className="text-sm font-bold px-3 py-1 rounded-sm hover:bg-white/20 transition-colors"
             aria-current={location.pathname === "/regular" ? "page" : undefined}
           >
             フリープレイ
@@ -77,9 +83,9 @@ function Header() {
         </nav>
       </header>
 
-      {/* モバイルハンバーガーボタン（640px未満、固定配置） */}
+      {/* モバイルハンバーガーボタン（md未満、固定配置） */}
       <button
-        className="sm:hidden fixed top-3 right-3 z-50 w-11 h-11 flex items-center justify-center bg-white/90 backdrop-blur-xs rounded-lg shadow-lg hover:bg-white transition-colors"
+        className="md:hidden fixed top-3 right-3 z-50 w-11 h-11 flex items-center justify-center bg-white/90 backdrop-blur-xs rounded-lg shadow-lg hover:bg-white transition-colors"
         onClick={toggleMenu}
         aria-label="メニュー"
         aria-expanded={isMenuOpen}
@@ -91,7 +97,7 @@ function Header() {
       {/* 背景オーバーレイ */}
       {isMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 sm:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-300"
           onClick={() => setIsMenuOpen(false)}
           aria-hidden="true"
         />
@@ -101,7 +107,7 @@ function Header() {
       <div
         ref={menuRef}
         id="mobile-menu"
-        className={`sm:hidden fixed top-0 right-0 h-full w-64 bg-linear-to-b from-blue-600 to-blue-500 text-white shadow-2xl z-50 transition-transform duration-300 ${
+        className={`md:hidden fixed top-0 right-0 h-full w-64 bg-linear-to-b from-ba-cyan to-ba-blue text-white shadow-2xl z-50 transition-transform duration-300 ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -123,21 +129,21 @@ function Header() {
 
         {/* タイトル */}
         <div className="pt-16 px-6 pb-6">
-          <h2 className="text-xl font-bold">ブルアカプロフクイズ</h2>
+          <h2 className="font-display text-xl font-black">ブルアカプロフクイズ</h2>
         </div>
 
         {/* ナビゲーションリンク */}
         <nav className="flex flex-col">
           <Link
             to="/"
-            className="px-6 py-4 hover:bg-white/20 transition-colors border-t border-white/10 text-base"
+            className="px-6 py-4 hover:bg-white/20 transition-colors border-t border-white/10 text-base font-bold"
             aria-current={location.pathname === "/" ? "page" : undefined}
           >
             日替わりクイズ
           </Link>
           <Link
             to="/regular"
-            className="px-6 py-4 hover:bg-white/20 transition-colors border-t border-white/10 text-base"
+            className="px-6 py-4 hover:bg-white/20 transition-colors border-t border-white/10 text-base font-bold"
             aria-current={location.pathname === "/regular" ? "page" : undefined}
           >
             フリープレイ

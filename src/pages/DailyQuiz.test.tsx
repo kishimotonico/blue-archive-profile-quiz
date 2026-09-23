@@ -6,9 +6,7 @@ import { Suspense } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import DailyQuiz from "./DailyQuiz";
 import type { DailyResultsStorage, DailyProgress } from "../store/daily";
-import {
-  STORAGE_KEY_DAILY_RESULTS_V3,
-} from "../store/daily";
+import { STORAGE_KEY_DAILY_RESULTS_V3 } from "../store/daily";
 
 const DAILY_PROGRESS_KEY = "blue-archive-quiz-daily-progress-v2";
 

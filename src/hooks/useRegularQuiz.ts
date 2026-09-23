@@ -2,11 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetAtom } from "jotai";
 import { useQuiz } from "./useQuiz";
-import {
-  createQuestionSet,
-  getDailyDate,
-  CURRENT_ALGORITHM_VERSION,
-} from "../quiz-core";
+import { createQuestionSet, getDailyDate, CURRENT_ALGORITHM_VERSION } from "../quiz-core";
 import type { QuestionResult } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import {

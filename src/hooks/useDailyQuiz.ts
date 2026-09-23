@@ -14,9 +14,7 @@ import { getDailyDate } from "../quiz-core";
  * 直近の結果配列に新しい結果を追加し、上限を超えた最古の結果を aggregated に移す。
  * 「最古」は timestamp の最小値で判定する。
  */
-function applyOverflowToAggregated(
-  storage: DailyResultsStorage,
-): DailyResultsStorage {
+function applyOverflowToAggregated(storage: DailyResultsStorage): DailyResultsStorage {
   if (storage.recent.length <= RECENT_DAILY_RESULTS_LIMIT) {
     return storage;
   }

@@ -4,11 +4,7 @@ import { Provider, createStore } from "jotai";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Suspense, type ReactNode } from "react";
 import { useQuiz } from "./useQuiz";
-import {
-  currentQuestionAtom,
-  revealedHintCountAtom,
-  answeredAtom,
-} from "../store/quiz";
+import { currentQuestionAtom, revealedHintCountAtom, answeredAtom } from "../store/quiz";
 import type { Student, QuizQuestion } from "../quiz-core";
 
 // --- フィクスチャ ---

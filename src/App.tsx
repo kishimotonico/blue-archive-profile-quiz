@@ -17,9 +17,7 @@ function ScopedRoute({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
       <ErrorBoundary fallback={<QuizErrorState />}>
-        <Suspense fallback={<QuizLoadingState />}>
-          {children}
-        </Suspense>
+        <Suspense fallback={<QuizLoadingState />}>{children}</Suspense>
       </ErrorBoundary>
     </Provider>
   );

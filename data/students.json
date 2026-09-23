@@ -3572,7 +3572,7 @@
     "images": {
       "portrait": "images/portrait/anna.png"
     },
-    "availableFrom": "2026-09-24"
+    "availableFrom": "2026-09-25"
   },
   "erina": {
     "profile": {
@@ -3597,6 +3597,6 @@
     "images": {
       "portrait": "images/portrait/erina.png"
     },
-    "availableFrom": "2026-09-24"
+    "availableFrom": "2026-09-25"
   }
 }

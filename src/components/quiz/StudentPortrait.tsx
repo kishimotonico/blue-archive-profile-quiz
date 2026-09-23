@@ -18,11 +18,11 @@ function StudentPortrait({ student, state, variant = "default" }: StudentPortrai
     >
       {/* ?マーク（hidden時に表示） */}
       <div
-        className={`absolute inset-0 bg-linear-to-b from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-300 transition-opacity duration-500 ${
+        className={`absolute inset-0 flex items-center justify-center rounded-2xl border border-dashed border-ba-sky-2 bg-linear-to-b from-ba-sky-1 to-white transition-opacity duration-500 ${
           state === "hidden" ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <span className={`${isSidebar ? "text-6xl" : "text-7xl"} text-gray-400 font-light`}>?</span>
+        <span className={`${isSidebar ? "text-6xl" : "text-7xl"} font-light text-ba-blue/40`}>?</span>
       </div>
 
       {/* 立ち絵（silhouette/revealed時に表示） */}
@@ -31,7 +31,7 @@ function StudentPortrait({ student, state, variant = "default" }: StudentPortrai
           src={getPortraitImageUrl(student)}
           alt={state === "revealed" ? student.fullName : "シルエット"}
           draggable={false}
-          className={`absolute inset-0 h-full w-auto mx-auto object-contain rounded-2xl shadow-lg transition-all duration-500 select-none ${
+          className={`absolute inset-0 h-full w-auto mx-auto select-none object-contain rounded-2xl shadow-lg transition-all duration-500 ${
             state === "silhouette" ? "opacity-50 brightness-0 pointer-events-none" : "opacity-100"
           }`}
           onError={(e) => {

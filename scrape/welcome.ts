@@ -44,20 +44,22 @@ function loadLocalEnvFiles(): void {
   }
 }
 
-function printUploadCommand(id: string): void {
+function uploadImage(id: string): void {
   loadLocalEnvFiles();
 
-  const bucket = process.env.R2_BUCKET ?? 'R2_BUCKET';
-  const prefix = process.env.R2_IMAGE_PREFIX ?? 'images/portrait';
+  const bucket = process.env.R2_BUCKET;
+  if (!bucket) {
+    console.error('Error: R2_BUCKET is not set. Set it in scrape/.env and run `pnpm run welcome` again.');
+    process.exit(1);
+  }
+
+  const prefix = process.env.R2_IMAGE_PREFIX ?? 'portrait';
   const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, '');
   const objectPath = `${bucket}/${normalizedPrefix}/${id}.png`;
   const filePath = `../data/images/portrait/${id}.png`;
-  const command = `pnpm exec dotenvx run -f .env -- pnpm exec wrangler r2 object put "${objectPath}" --file "${filePath}" --remote`;
 
-  console.log('\nRemote upload command (run from scrape/):');
-  console.log('');
-  console.log(command);
-  console.log('');
+  console.log(`\nUploading to R2: ${objectPath}`);
+  run('pnpm', ['exec', 'wrangler', 'r2', 'object', 'put', objectPath, '--file', filePath, '--remote']);
 }
 
 function main() {
@@ -82,7 +84,7 @@ function main() {
   run('pnpm', ['run', 'scrape', id]);
   run('pnpm', ['run', 'sync-images', id]);
   run('pnpm', ['run', 'merge']);
-  printUploadCommand(id);
+  uploadImage(id);
 }
 
 main();

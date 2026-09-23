@@ -27,27 +27,45 @@ function QuizPlayArea({
 }: QuizPlayAreaProps) {
   if (answered) return null;
 
+  // 開示ボタンを先に置き、Tab順が「開示 → 生徒名入力 → 回答する」になるようにしている
+  const hintButton =
+    revealedHintCount < hintsLength ? (
+      <Button
+        ref={hintButtonRef}
+        onClick={revealNextHint}
+        variant="primary"
+        className="w-full md:w-auto md:shrink-0"
+      >
+        次のヒントを開示
+      </Button>
+    ) : revealedHintCount === hintsLength ? (
+      <Button
+        ref={hintButtonRef}
+        onClick={revealNextHint}
+        variant="primary"
+        className="w-full md:w-auto md:shrink-0"
+      >
+        シルエットを表示
+      </Button>
+    ) : (
+      <Button
+        ref={hintButtonRef}
+        onClick={giveUp}
+        variant="secondary"
+        className="w-full md:w-auto md:shrink-0"
+      >
+        諦めて正解を表示
+      </Button>
+    );
+
   return (
-    <div className="rounded-2xl border border-ba-border bg-white p-3.5 shadow-xs sm:p-4">
-      <div className="ba-tag mb-3">
+    <div className="rounded-2xl border border-ba-border bg-white p-3.5 shadow-xs sm:p-4 md:p-3">
+      <div className="ba-tag mb-3 md:hidden">
         <span>ANSWER</span>
       </div>
-      <div className="flex flex-col items-stretch gap-3">
+      <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center md:gap-3">
+        {hintButton}
         <AnswerInput onSubmit={submitAnswer} error={answerFeedback} errorKey={errorKey} />
-
-        {revealedHintCount < hintsLength ? (
-          <Button ref={hintButtonRef} onClick={revealNextHint} variant="primary" className="w-full">
-            次のヒントを開示
-          </Button>
-        ) : revealedHintCount === hintsLength ? (
-          <Button ref={hintButtonRef} onClick={revealNextHint} variant="primary" className="w-full">
-            シルエットを表示
-          </Button>
-        ) : (
-          <Button ref={hintButtonRef} onClick={giveUp} variant="secondary" className="w-full">
-            諦めて正解を表示
-          </Button>
-        )}
       </div>
     </div>
   );

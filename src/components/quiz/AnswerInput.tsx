@@ -20,6 +20,10 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
     setShowError(true);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     controls.start({ x: [0, -8, 8, -6, 6, -4, 4, 0], transition: { duration: 0.4 } });
+    // 吹き出しは入力欄の真上（モバイルでは開示ボタンの上）に重なるため、
+    // 操作を塞ぎ続けないよう一定時間で自動的に閉じる
+    const timer = setTimeout(() => setShowError(false), 3500);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorKey]); // controls は安定した参照だが依存配列から除外してeffectの誤再実行を防ぐ
 
@@ -32,14 +36,14 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
   };
 
   const inputClass = [
-    "flex-1 min-w-0 rounded-lg border-2 bg-ba-bg px-4 py-3 text-center font-semibold text-ba-navy transition-colors duration-200 placeholder:font-medium placeholder:text-ba-ink-soft/60 focus:bg-white focus:outline-hidden disabled:bg-gray-100",
+    "flex-1 min-w-0 rounded-lg border-2 bg-ba-bg px-4 py-3 text-center font-semibold text-ba-navy transition-colors duration-200 placeholder:font-medium placeholder:text-ba-ink-soft/60 focus:bg-white focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ba-blue focus-visible:ring-offset-1 focus-visible:ring-offset-white disabled:bg-gray-100 md:py-2.5",
     showError
       ? "border-red-500 bg-red-50 focus:border-red-600"
       : "border-ba-border focus:border-ba-blue",
   ].join(" ");
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full md:min-w-0 md:flex-1">
       <motion.div animate={controls} className="flex gap-2 w-full">
         <form onSubmit={handleSubmit} className="flex gap-2 w-full">
           <input
@@ -57,7 +61,12 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
             data-form-type="other"
             className={inputClass}
           />
-          <Button type="submit" variant="accent" disabled={disabled || !answer.trim()}>
+          <Button
+            type="submit"
+            variant="accent"
+            className="shrink-0"
+            disabled={disabled || !answer.trim()}
+          >
             回答する
           </Button>
         </form>
@@ -65,10 +74,10 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
 
       {showError && error && (
         <div
-          className="absolute left-0 bottom-full mb-2 z-10 max-w-xs cursor-pointer"
+          className="absolute left-0 bottom-full mb-2 z-10 w-full max-w-xs cursor-pointer"
           onClick={() => setShowError(false)}
         >
-          <div className="bg-red-50 border border-red-300 text-red-600 text-xs font-semibold rounded-lg px-3 py-1.5 shadow-xs whitespace-nowrap">
+          <div className="bg-red-50 border border-red-300 text-red-600 text-xs font-semibold rounded-lg px-3 py-1.5 shadow-xs">
             {error}
           </div>
           {/* 吹き出し三角形（下向き） */}

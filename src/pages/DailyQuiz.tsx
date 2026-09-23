@@ -64,6 +64,7 @@ function DailyQuiz() {
   const [showResultModal, setShowResultModal] = useState(false);
   const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -183,6 +184,33 @@ function DailyQuiz() {
     }
   }, [loading, answered]);
 
+  // 回答確定時、モバイルではヒントグリッド内の立ち絵が見える位置までスクロールする
+  useEffect(() => {
+    if (!answered) return;
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // QuizPlayArea のアンマウントと結果表示のマウントでレイアウト高さが変わるため、
+    // 再レイアウトが終わった次フレームでスクロール位置を決める
+    let innerFrame = 0;
+    const outerFrame = requestAnimationFrame(() => {
+      innerFrame = requestAnimationFrame(() => {
+        const portrait = container.querySelector<HTMLElement>("[data-portrait]");
+        // offsetParent が null のときは非表示（md以上のレイアウト）なのでスクロールしない
+        if (!portrait || !portrait.offsetParent) return;
+        const top =
+          portrait.getBoundingClientRect().top -
+          container.getBoundingClientRect().top +
+          container.scrollTop;
+        container.scrollTo({ top, behavior: "smooth" });
+      });
+    });
+    return () => {
+      cancelAnimationFrame(outerFrame);
+      cancelAnimationFrame(innerFrame);
+    };
+  }, [answered]);
+
   if (loading) return <QuizLoadingState />;
   if (!currentQuestion) return <QuizErrorState />;
 
@@ -196,12 +224,12 @@ function DailyQuiz() {
 
       <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 md:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
         {/* 左ペイン: ヒント + 入力エリア */}
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 flex flex-col min-h-0 min-w-0 md:justify-center">
           {/* タイトル + 残りヒント数 */}
           {/* pr-16: モバイル右上固定のハンバーガーボタン（top-3 right-3, w-11 h-11）とゲージが
               重ならないよう避けるための余白。md以上ではハンバーガーが無いので不要 */}
-          <div className="shrink-0 flex items-center justify-between gap-3 py-3 pr-16 md:py-2 md:pr-0">
-            <div className="inline-flex min-w-0 items-center gap-2 rounded-2xl bg-linear-to-br from-ba-cyan to-ba-blue px-4 py-2 text-white shadow-sm">
+          <div className="shrink-0 flex items-center justify-between gap-3 py-3 pr-16 md:py-1.5 md:pr-0">
+            <div className="inline-flex min-w-0 items-center gap-2 rounded-2xl bg-linear-to-br from-ba-cyan to-ba-blue px-4 py-2 text-white shadow-sm md:px-3 md:py-1.5">
               <div className="ba-tag shrink-0 bg-white/25">
                 <span>DAILY QUIZ</span>
               </div>
@@ -222,13 +250,16 @@ function DailyQuiz() {
                 <span className="font-display text-base font-black text-ba-blue">
                   {remainingStages}
                 </span>
-                <span className="hidden text-[8px] text-ba-ink-soft md:block">HINT残</span>
+                <span className="hidden text-[10px] text-ba-ink-soft md:block">HINT残</span>
               </HaloRingGauge>
             )}
           </div>
 
           {/* スクロール可能なヒントエリア */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div
+            ref={scrollContainerRef}
+            className="flex-1 overflow-y-auto min-h-0 md:flex-[0_1_auto]"
+          >
             {/* モバイル: ヒント+画像（グリッド内） */}
             <div className="md:hidden">
               <HintList
@@ -241,7 +272,7 @@ function DailyQuiz() {
               />
             </div>
 
-            {/* PC: ヒントのみ（2列グリッド） */}
+            {/* PC: ヒントのみ（md:2列 / lg以上:3列グリッド） */}
             <div className="hidden md:block">
               <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
             </div>
@@ -254,31 +285,35 @@ function DailyQuiz() {
             </div>
           )}
 
-          {/* 固定フッター: 入力欄・ボタン類 */}
-          <div className="shrink-0 pt-3 border-t border-ba-border bg-ba-bg">
-            {isAlreadyCompleted && (
-              <div className="bg-ba-sky-1 border border-ba-border rounded-2xl p-4 mb-3 text-center">
-                <p className="font-display font-black text-ba-navy mb-2">今日のクイズは完了済みです</p>
-                <p className="text-ba-ink-soft text-sm mb-2">
-                  次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
-                </p>
-                <Button variant="primary" size="sm" onClick={() => navigate("/regular")}>
-                  もっと遊ぶ
-                </Button>
-              </div>
-            )}
-            <QuizPlayArea
-              hintButtonRef={hintButtonRef}
-              revealedHintCount={revealedHintCount}
-              hintsLength={currentQuestion.hints.length}
-              revealNextHint={revealNextHint}
-              submitAnswer={submitAnswer}
-              giveUp={giveUp}
-              answerFeedback={answerFeedback}
-              errorKey={errorKey}
-              answered={answered}
-            />
-          </div>
+          {/* 固定フッター: 入力欄・ボタン類（回答後は中身が無いので枠ごと消す） */}
+          {(!answered || isAlreadyCompleted) && (
+            <div className="shrink-0 pt-3 border-t border-ba-border bg-ba-bg">
+              {isAlreadyCompleted && (
+                <div className="bg-ba-sky-1 border border-ba-border rounded-2xl p-4 mb-3 text-center">
+                  <p className="font-display font-black text-ba-navy mb-2">
+                    今日のクイズは完了済みです
+                  </p>
+                  <p className="text-ba-ink-soft text-sm mb-2">
+                    次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
+                  </p>
+                  <Button variant="primary" size="sm" onClick={() => navigate("/regular")}>
+                    もっと遊ぶ
+                  </Button>
+                </div>
+              )}
+              <QuizPlayArea
+                hintButtonRef={hintButtonRef}
+                revealedHintCount={revealedHintCount}
+                hintsLength={currentQuestion.hints.length}
+                revealNextHint={revealNextHint}
+                submitAnswer={submitAnswer}
+                giveUp={giveUp}
+                answerFeedback={answerFeedback}
+                errorKey={errorKey}
+                answered={answered}
+              />
+            </div>
+          )}
         </div>
 
         {/* 右ペイン: キャラ画像（PC のみ） */}
@@ -298,7 +333,7 @@ function DailyQuiz() {
             value={score / 10}
             size={124}
             strokeWidth={8}
-            trackColor="#E7EFF9"
+            trackColor="var(--color-ba-border)"
             fillFrom="var(--color-ba-yellow)"
             fillTo="var(--color-ba-blue)"
             className="mx-auto mb-2"
@@ -316,7 +351,7 @@ function DailyQuiz() {
             {currentQuestion.student.fullName}
           </p>
 
-          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-[#F3E27A] bg-linear-to-b from-yellow-50 to-yellow-100 py-2 mb-4">
+          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-linear-to-b from-yellow-50 to-yellow-100 py-2 mb-4">
             <span className="font-display text-2xl font-black text-ba-navy">{score}</span>
             <span className="text-sm font-bold text-ba-ink-soft">/ 10 点</span>
           </div>

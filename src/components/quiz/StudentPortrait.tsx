@@ -22,7 +22,9 @@ function StudentPortrait({ student, state, variant = "default" }: StudentPortrai
           state === "hidden" ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <span className={`${isSidebar ? "text-6xl" : "text-7xl"} font-light text-ba-blue/40`}>?</span>
+        <span className={`${isSidebar ? "text-6xl" : "text-7xl"} font-light text-ba-blue/40`}>
+          ?
+        </span>
       </div>
 
       {/* 立ち絵（silhouette/revealed時に表示） */}
@@ -31,7 +33,7 @@ function StudentPortrait({ student, state, variant = "default" }: StudentPortrai
           src={getPortraitImageUrl(student)}
           alt={state === "revealed" ? student.fullName : "シルエット"}
           draggable={false}
-          className={`absolute inset-0 h-full w-auto mx-auto select-none object-contain rounded-2xl shadow-lg transition-all duration-500 ${
+          className={`absolute inset-0 h-full w-full select-none object-contain rounded-2xl transition-all duration-500 ${
             state === "silhouette" ? "opacity-50 brightness-0 pointer-events-none" : "opacity-100"
           }`}
           onError={(e) => {

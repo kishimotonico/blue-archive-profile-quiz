@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from "react";
 import type { Hint, Student, PortraitState } from "../../quiz-core";
-import { calculateScore } from "../../quiz-core";
 import HintCard from "./HintCard";
 import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
@@ -80,7 +79,7 @@ function HintList({
       <div className="ba-tag mb-2">
         <span>HINT LIST</span>
       </div>
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
         {visibleHints.map((hint, index) => (
           <div
             key={index}
@@ -91,7 +90,6 @@ function HintList({
             <HintCard
               hint={hint}
               revealed={index < revealedCount}
-              points={index < revealedCount ? calculateScore(index + 1, true) : undefined}
               justRevealed={index === justRevealedIndex}
             />
           </div>
@@ -118,7 +116,8 @@ function HintList({
         {showPortraitInGrid && (
           <div
             ref={portraitRef}
-            className="relative col-span-full h-[60vh] w-full overflow-hidden rounded-2xl border border-ba-border bg-white shadow-xs"
+            data-portrait
+            className="relative col-span-full h-[60dvh] w-full overflow-hidden rounded-2xl border border-ba-border bg-white shadow-xs"
           >
             {/* ?プレースホルダー（hidden時に表示。デスクトップ右ペインと同じba-sky系の見た目） */}
             <div
@@ -133,7 +132,7 @@ function HintList({
                 src={getPortraitImageUrl(student)}
                 alt={portraitState === "revealed" ? student.fullName : "シルエット"}
                 draggable={false}
-                className={`absolute inset-0 h-full w-auto mx-auto object-contain transition-all duration-500 select-none ${
+                className={`absolute inset-0 h-full w-full object-contain transition-all duration-500 select-none ${
                   portraitState === "silhouette"
                     ? showSilhouette
                       ? "opacity-50 brightness-0 pointer-events-none"

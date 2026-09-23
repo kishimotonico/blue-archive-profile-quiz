@@ -112,16 +112,16 @@ function HintList({
         {showPortraitInGrid && (
           <div
             ref={portraitRef}
-            className="relative col-span-full flex h-[60vh] w-full items-center justify-center overflow-hidden rounded-2xl border border-ba-border bg-white shadow-xs"
+            className="relative col-span-full h-[60vh] w-full overflow-hidden rounded-2xl border border-ba-border bg-white shadow-xs"
           >
-            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-ba-sky-1 to-transparent" />
-            <span
-              className={`absolute inset-0 flex items-center justify-center text-5xl font-light text-ba-blue/40 transition-opacity duration-500 ${
-                portraitState === "hidden" ? "opacity-100" : "opacity-0"
+            {/* ?プレースホルダー（hidden時に表示。デスクトップ右ペインと同じba-sky系の見た目） */}
+            <div
+              className={`absolute inset-0 flex items-center justify-center rounded-2xl border border-dashed border-ba-sky-2 bg-linear-to-b from-ba-sky-1 to-white transition-opacity duration-500 ${
+                portraitState === "hidden" ? "opacity-100" : "opacity-0 pointer-events-none"
               }`}
             >
-              ?
-            </span>
+              <span className="text-5xl font-light text-ba-blue/40">?</span>
+            </div>
             {student && portraitState !== "hidden" && (
               <img
                 src={getPortraitImageUrl(student)}

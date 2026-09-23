@@ -74,21 +74,28 @@ function RegularQuiz() {
         {/* 左ペイン: ヒント + 入力エリア */}
         <div className="flex-1 flex flex-col min-h-0">
           {/* タイトル + 残りヒント数 */}
-          <div className="shrink-0 flex items-center justify-between gap-3 py-3 md:py-2">
-            <div className="inline-flex items-center gap-2 rounded-2xl bg-linear-to-br from-ba-cyan to-ba-blue px-4 py-2 text-white shadow-sm">
-              <div className="ba-tag bg-white/25">
+          {/* pr-16: モバイル右上固定のハンバーガーボタン（top-3 right-3, w-11 h-11）とゲージが
+              重ならないよう避けるための余白。md以上ではハンバーガーが無いので不要 */}
+          <div className="shrink-0 flex items-center justify-between gap-3 py-3 pr-16 md:py-2 md:pr-0">
+            <div className="inline-flex min-w-0 items-center gap-2 rounded-2xl bg-linear-to-br from-ba-cyan to-ba-blue px-4 py-2 text-white shadow-sm">
+              <div className="ba-tag shrink-0 bg-white/25">
                 <span>FREE PLAY</span>
               </div>
-              <h1 className="font-display text-sm font-black leading-tight sm:text-base">
+              <h1 className="font-display text-sm font-black leading-tight truncate sm:text-base">
                 {currentQuestionIndex + 1} / {TOTAL_QUESTIONS} 問目・合計 {totalScore}点
               </h1>
             </div>
             {!answered && (
-              <HaloRingGauge value={remainingStages / totalStages} size={52} label="残りヒント数の表示">
+              <HaloRingGauge
+                value={remainingStages / totalStages}
+                size={52}
+                label="残りヒント数の表示"
+                className="shrink-0"
+              >
                 <span className="font-display text-base font-black text-ba-blue">
                   {remainingStages}
                 </span>
-                <span className="text-[8px] text-ba-ink-soft">HINT残</span>
+                <span className="hidden text-[8px] text-ba-ink-soft md:block">HINT残</span>
               </HaloRingGauge>
             )}
           </div>

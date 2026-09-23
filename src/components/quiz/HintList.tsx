@@ -43,9 +43,10 @@ function HintList({
     prevRevealedCount.current = revealedCount;
   }, [revealedCount, hints.length]);
 
-  // シルエット表示時のスクロール＋フェードイン処理
+  // シルエット表示時／立ち絵確定表示時のスクロール＋フェードイン処理
   useEffect(() => {
-    if (portraitState === "silhouette" && prevPortraitState.current === "hidden") {
+    const prevState = prevPortraitState.current;
+    if (portraitState === "silhouette" && prevState === "hidden") {
       if (portraitRef.current) {
         portraitRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
       }
@@ -54,6 +55,11 @@ function HintList({
         setShowSilhouette(true);
       });
     } else if (portraitState === "revealed") {
+      // silhouette を経由せず hidden から直接 revealed になるケース（シルエット前に正解した場合）も含め、
+      // revealed へ遷移した瞬間は必ず立ち絵までスクロールする
+      if (prevState !== "revealed" && portraitRef.current) {
+        portraitRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
       setShowSilhouette(true);
     } else if (portraitState === "hidden") {
       setShowSilhouette(false);

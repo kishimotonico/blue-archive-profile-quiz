@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useRegularQuiz } from "../hooks/useRegularQuiz";
+import { useIsDesktop } from "../hooks/useIsDesktop";
 import Header from "../components/layout/Header";
 import HintList from "../components/quiz/HintList";
 import StudentReveal from "../components/quiz/StudentReveal";
@@ -30,6 +31,7 @@ function RegularQuiz() {
     TOTAL_QUESTIONS,
   } = useRegularQuiz();
 
+  const isDesktop = useIsDesktop();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -61,7 +63,7 @@ function RegularQuiz() {
 
   // 回答確定時、モバイルではヒントグリッド内の立ち絵が見える位置までスクロールする
   useEffect(() => {
-    if (!answered) return;
+    if (!answered || isDesktop) return;
     const container = scrollContainerRef.current;
     if (!container) return;
 
@@ -84,7 +86,7 @@ function RegularQuiz() {
       cancelAnimationFrame(outerFrame);
       cancelAnimationFrame(innerFrame);
     };
-  }, [answered]);
+  }, [answered, isDesktop]);
 
   if (loading) return <QuizLoadingState />;
   if (!currentQuestion) return <QuizErrorState />;
@@ -97,9 +99,9 @@ function RegularQuiz() {
     <div className="h-[100dvh] flex flex-col">
       <Header />
 
-      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 md:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
-        {/* 左ペイン: ヒント + 入力エリア */}
-        <div className="flex-1 flex flex-col min-h-0 min-w-0 md:justify-center">
+      <main className="flex-1 flex flex-col lg:flex-row gap-4 p-4 pt-2 md:pt-4 max-w-6xl xl:max-w-7xl mx-auto w-full overflow-hidden">
+        {/* 左ペイン: タイトル + ヒント一覧 */}
+        <div className="flex-1 flex flex-col min-h-0 min-w-0">
           {/* タイトル + 残りヒント数 */}
           {/* pr-16: モバイル右上固定のハンバーガーボタン（top-3 right-3, w-11 h-11）とゲージが
               重ならないよう避けるための余白。md以上ではハンバーガーが無いので不要 */}
@@ -127,13 +129,11 @@ function RegularQuiz() {
             )}
           </div>
 
-          {/* スクロール可能なヒントエリア */}
-          <div
-            ref={scrollContainerRef}
-            className="flex-1 overflow-y-auto min-h-0 md:flex-[0_1_auto]"
-          >
-            {/* モバイル: ヒント+画像（グリッド内） */}
-            <div className="md:hidden">
+          {/* スクロール可能なヒントエリア（デスクトップは2列・上寄せ） */}
+          <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0">
+            {isDesktop ? (
+              <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
+            ) : (
               <HintList
                 hints={currentQuestion.hints}
                 revealedCount={revealedHintCount}
@@ -142,16 +142,11 @@ function RegularQuiz() {
                 showPortraitInGrid={true}
                 compactMode={true}
               />
-            </div>
-
-            {/* PC: ヒントのみ（md:2列 / lg以上:3列グリッド） */}
-            <div className="hidden md:block">
-              <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
-            </div>
+            )}
           </div>
 
-          {/* 回答結果表示 */}
-          {answered && (
+          {/* モバイル: 回答結果表示（デスクトップは右カラムに出す） */}
+          {!isDesktop && answered && (
             <div className="py-3 flex flex-col items-center gap-3">
               <StudentReveal student={currentQuestion.student} correct={correct} score={score} />
               <Button onClick={handleNext} variant="primary">
@@ -160,8 +155,8 @@ function RegularQuiz() {
             </div>
           )}
 
-          {/* 固定フッター: 入力欄・ボタン類（回答後は中身が無いので枠ごと消す） */}
-          {!answered && (
+          {/* モバイル: 固定フッターの入力欄・ボタン類 */}
+          {!isDesktop && !answered && (
             <div className="shrink-0 pt-3 border-t border-ba-border bg-ba-bg">
               <QuizPlayArea
                 hintButtonRef={hintButtonRef}
@@ -178,14 +173,36 @@ function RegularQuiz() {
           )}
         </div>
 
-        {/* 右ペイン: キャラ画像（PC のみ） */}
-        <div className="hidden md:flex w-40 lg:w-48 xl:w-56 2xl:w-64 shrink-0 self-stretch items-center">
-          <StudentPortrait
-            student={currentQuestion.student}
-            state={portraitState}
-            variant="sidebar"
-          />
-        </div>
+        {/* 右カラム（デスクトップのみ）: 立ち絵 → 操作/結果 */}
+        {isDesktop && (
+          <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
+            <StudentPortrait
+              student={currentQuestion.student}
+              state={portraitState}
+              correct={correct}
+            />
+            {answered ? (
+              <div className="shrink-0 rounded-2xl border border-ba-border bg-white p-3.5 shadow-xs">
+                <StudentReveal student={currentQuestion.student} correct={correct} score={score} />
+                <Button onClick={handleNext} variant="primary" className="mt-2 w-full">
+                  {currentQuestionIndex + 1 < TOTAL_QUESTIONS ? "次の問題へ" : "結果を見る"}
+                </Button>
+              </div>
+            ) : (
+              <QuizPlayArea
+                hintButtonRef={hintButtonRef}
+                revealedHintCount={revealedHintCount}
+                hintsLength={currentQuestion.hints.length}
+                revealNextHint={revealNextHint}
+                submitAnswer={submitAnswer}
+                giveUp={giveUp}
+                answerFeedback={answerFeedback}
+                errorKey={errorKey}
+                answered={answered}
+              />
+            )}
+          </aside>
+        )}
       </main>
     </div>
   );

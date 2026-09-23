@@ -8,7 +8,8 @@
 /
 ├── scrape/              # スクレイピング関連のコード
 ├── specs/               # 仕様や開発に関するドキュメント
-│   └── 001_app-concept.md
+│   ├── 001_app-concept.md
+│   └── design-mocks/    # デザイン検討時の静的HTMLモック（採用案はREADME参照）
 ├── data/                # クイズに必要なデータ
 │   ├── students.json    # 全生徒のプロフィール
 │   └── images/portrait/ # 生徒の立ち絵画像（リポジトリには含めない）

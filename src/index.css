@@ -4,7 +4,7 @@ layer(base);
 @import "tailwindcss";
 
 /*
-  ブルアカ風デザイントークン（design-mocks/game-ui-v2.html の CSS 変数に対応）
+  ブルアカ風デザイントークン（specs/design-mocks/game-ui-v2.html の CSS 変数に対応）
 */
 @theme {
   --color-ba-blue: #128afa;
@@ -59,7 +59,7 @@ body {
 }
 
 /*
-  共通装飾ユーティリティ（design-mocks/game-ui-v2.html 由来）
+  共通装飾ユーティリティ（specs/design-mocks/game-ui-v2.html 由来）
   他コンポーネントからは `ba-` プレフィックスのクラス名で利用する
 */
 @layer components {

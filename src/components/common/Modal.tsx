@@ -38,10 +38,13 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
-        className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
+        className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6 pt-8 overflow-hidden"
       >
+        {/* 上端の斜めストライプ */}
+        <div className="ba-stripe-band absolute top-0 left-0 right-0" aria-hidden="true" />
+
         {title && (
-          <h2 id={titleId} className="text-2xl font-bold mb-4 text-gray-800">
+          <h2 id={titleId} className="font-display text-2xl font-black mb-4 text-ba-navy">
             {title}
           </h2>
         )}
@@ -53,7 +56,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
           type="button"
           aria-label="閉じる"
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          className="absolute top-4 right-4 text-ba-ink-soft hover:text-ba-navy"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path

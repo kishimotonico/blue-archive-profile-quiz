@@ -1,7 +1,25 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap")
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap")
 layer(base);
 
 @import "tailwindcss";
+
+/*
+  ブルアカ風デザイントークン（design-mocks/game-ui-v2.html の CSS 変数に対応）
+*/
+@theme {
+  --color-ba-blue: #128afa;
+  --color-ba-cyan: #47c5fb;
+  --color-ba-navy: #2b3a55;
+  --color-ba-yellow: #ffee00;
+  --color-ba-bg: #f3f7fb;
+  --color-ba-sky-1: #dff1ff;
+  --color-ba-sky-2: #b9e3ff;
+  --color-ba-ink-soft: #5c6e8c;
+  --color-ba-border: #dce6f4;
+
+  --font-display: "M PLUS Rounded 1c", sans-serif;
+  --font-sans: "Noto Sans JP", sans-serif;
+}
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -23,4 +41,98 @@ layer(base);
 
 body {
   font-family: "Noto Sans JP", sans-serif;
+  color: var(--color-ba-navy);
+  background: radial-gradient(
+      120% 60% at 50% -10%,
+      var(--color-ba-sky-2) 0%,
+      var(--color-ba-sky-1) 35%,
+      var(--color-ba-bg) 70%
+    )
+    fixed;
+}
+
+/*
+  共通装飾ユーティリティ（design-mocks/game-ui-v2.html 由来）
+  他コンポーネントからは `ba-` プレフィックスのクラス名で利用する
+*/
+@layer components {
+  /* ページ上部の斜めストライプ帯 */
+  .ba-stripe-band {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    opacity: 0.9;
+    background: repeating-linear-gradient(
+      -35deg,
+      var(--color-ba-blue) 0 22px,
+      var(--color-ba-cyan) 22px 40px,
+      transparent 40px 46px,
+      transparent 46px 60px
+    );
+  }
+
+  /* 平行四辺形の見出しタグ（HINT LIST / ANSWER など） */
+  .ba-tag {
+    display: inline-block;
+    border-radius: 2px;
+    background: var(--color-ba-blue);
+    padding: 0.3rem 1rem;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: white;
+    transform: skewX(-10deg);
+  }
+  .ba-tag > * {
+    display: inline-block;
+    letter-spacing: 0.06em;
+    transform: skewX(10deg);
+  }
+
+  /* HaloRingGauge の進捗リング用トランジション */
+  .ba-ring-fill {
+    transition: stroke-dashoffset 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* カード開示時に一度だけ走る斜めシャインエフェクト */
+  .ba-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .ba-shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(
+      75deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.75) 50%,
+      transparent 100%
+    );
+    animation: ba-shine-sweep 0.7s ease-out;
+    pointer-events: none;
+  }
+}
+
+@keyframes ba-shine-sweep {
+  from {
+    left: -60%;
+  }
+  to {
+    left: 120%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ba-shine::after {
+    display: none;
+    animation: none;
+  }
+
+  .ba-ring-fill {
+    transition: none;
+  }
 }

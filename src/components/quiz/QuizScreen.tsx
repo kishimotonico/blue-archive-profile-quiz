@@ -79,6 +79,7 @@ function QuizScreen({
 
   const playArea = (
     <QuizPlayArea
+      variant={isDesktop ? "panel" : "footer"}
       hintButtonRef={hintButtonRef}
       revealedHintCount={revealedHintCount}
       hintsLength={hints.length}
@@ -102,11 +103,9 @@ function QuizScreen({
           {/* pr-16: モバイル右上固定のハンバーガーボタン（top-3 right-3, w-11 h-11）とゲージが
               重ならないよう避けるための余白。md以上ではハンバーガーが無いので不要 */}
           <div className="shrink-0 flex items-center justify-between gap-3 py-3 pr-16 md:py-1.5 md:pr-0">
-            <div className="inline-flex min-w-0 items-center gap-2 rounded-2xl bg-linear-to-br from-ba-cyan to-ba-blue px-4 py-2 text-white shadow-sm md:px-3 md:py-1.5">
-              <div className="ba-tag shrink-0 bg-white/25">
-                <span>{modeLabel}</span>
-              </div>
-              <h1 className="font-display text-sm font-black leading-tight truncate sm:text-base">
+            <div className="min-w-0 flex flex-col gap-0.5">
+              <span className="text-xs font-bold text-ba-ink-soft truncate">{modeLabel}</span>
+              <h1 className="font-display text-xl font-black leading-tight text-ba-navy truncate">
                 {heading}
               </h1>
             </div>
@@ -114,13 +113,12 @@ function QuizScreen({
               <HaloRingGauge
                 value={remainingStages / totalStages}
                 size={52}
-                label="残りヒント数の表示"
+                label={`残りヒント ${remainingStages}`}
                 className="shrink-0"
               >
                 <span className="font-display text-base font-black text-ba-blue">
                   {remainingStages}
                 </span>
-                <span className="hidden text-[10px] text-ba-ink-soft md:block">HINT残</span>
               </HaloRingGauge>
             )}
           </div>
@@ -148,9 +146,10 @@ function QuizScreen({
             </div>
           )}
 
-          {/* モバイル: 固定フッターの入力欄・ボタン類（回答後は中身が無いので枠ごと消す） */}
+          {/* モバイル: 固定フッターの入力欄・ボタン類（回答後は中身が無いので枠ごと消す）。
+              main の余白を打ち消して画面端まで白い面にする */}
           {!isDesktop && showMobileFooter && (
-            <div className="shrink-0 pt-3 border-t border-ba-border bg-ba-bg">
+            <div className="-mx-4 -mb-4 shrink-0 border-t border-ba-border bg-white px-4 py-3">
               {beforeAnswerNotice}
               {playArea}
             </div>
@@ -162,8 +161,8 @@ function QuizScreen({
           <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
             <StudentPortrait student={student} state={portraitState} correct={correct} />
             {answered ? (
-              <div className="shrink-0 rounded-2xl border border-ba-border bg-white p-3.5 shadow-xs">
-                <StudentReveal student={student} correct={correct} score={score} />
+              <div className="shrink-0 rounded-2xl border border-ba-border bg-white p-3.5">
+                <StudentReveal student={student} correct={correct} score={score} showName={false} />
                 {renderAfterAnswerActions?.(true)}
               </div>
             ) : (

@@ -58,8 +58,8 @@ function RegularQuiz() {
 
   return (
     <QuizScreen
-      modeLabel="FREE PLAY"
-      heading={`${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS} 問目・合計 ${totalScore}点`}
+      modeLabel={`フリープレイ・合計 ${totalScore}点`}
+      heading={`${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS} 問目`}
       student={currentQuestion.student}
       hints={currentQuestion.hints}
       revealedHintCount={revealedHintCount}

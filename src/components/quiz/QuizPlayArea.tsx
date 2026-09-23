@@ -12,6 +12,12 @@ interface QuizPlayAreaProps {
   answerFeedback: string | null;
   errorKey: number;
   answered: boolean;
+  /**
+   * "footer": モバイル固定フッター用。フッター自体（QuizScreen側）が面になっているため
+   * カードで包まない。
+   * "panel": デスクトップ右カラム用。単体のパネル（白背景・ボーダー）として表示する。
+   */
+  variant?: "footer" | "panel";
 }
 
 function QuizPlayArea({
@@ -24,6 +30,7 @@ function QuizPlayArea({
   answerFeedback,
   errorKey,
   answered,
+  variant = "panel",
 }: QuizPlayAreaProps) {
   if (answered) return null;
 
@@ -43,15 +50,20 @@ function QuizPlayArea({
       </Button>
     );
 
+  const content = (
+    <div className="flex flex-col items-stretch gap-3">
+      {hintButton}
+      <AnswerInput onSubmit={submitAnswer} error={answerFeedback} errorKey={errorKey} />
+    </div>
+  );
+
+  if (variant === "footer") {
+    return content;
+  }
+
   return (
-    <div className="shrink-0 rounded-2xl border border-ba-border bg-white p-3.5 shadow-xs sm:p-4">
-      <div className="ba-tag mb-3">
-        <span>ANSWER</span>
-      </div>
-      <div className="flex flex-col items-stretch gap-3">
-        {hintButton}
-        <AnswerInput onSubmit={submitAnswer} error={answerFeedback} errorKey={errorKey} />
-      </div>
+    <div className="shrink-0 rounded-2xl border border-ba-border bg-white p-3.5 sm:p-4">
+      {content}
     </div>
   );
 }

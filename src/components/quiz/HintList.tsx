@@ -1,7 +1,10 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, type CSSProperties } from "react";
 import type { Hint, Student, PortraitState } from "../../quiz-core";
 import HintCard from "./HintCard";
 import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
+
+/** デスクトップでヒントグリッドを伸ばすときの1行の最大高さ(px) */
+const HINT_ROW_MAX_HEIGHT = 128;
 
 interface HintListProps {
   hints: Hint[];
@@ -79,12 +82,26 @@ function HintList({
       ? hints.slice(revealedCount, revealedCount + Math.min(remaining, 3))
       : [];
 
+  // desktop レイアウト（lg以上）: 縦長画面で下に空白が残らないよう、グリッドを左カラムの高さまで伸ばす。
+  // 行は均等に伸ばすが、1行あたり最大 HINT_ROW_MAX_HEIGHT までとし、それを超える分は下に余白として残す
+  const desktopRows = Math.ceil(hints.length / 2);
+  const desktopGridStyle = !isMobileLayout
+    ? ({
+        "--hint-grid-rows": `repeat(${desktopRows}, minmax(84px, 1fr))`,
+        "--hint-grid-max-h": `calc(${desktopRows} * ${HINT_ROW_MAX_HEIGHT}px + ${desktopRows - 1} * 0.5rem)`,
+      } as CSSProperties)
+    : undefined;
+
   return (
-    <div>
-      <div className="ba-tag mb-2">
-        <span>HINT LIST</span>
-      </div>
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+    <div className={!isMobileLayout ? "lg:h-full" : undefined}>
+      <div
+        className={`grid grid-cols-1 gap-2 md:grid-cols-2 ${
+          !isMobileLayout
+            ? "lg:h-full lg:max-h-(--hint-grid-max-h) lg:grid-rows-(--hint-grid-rows)"
+            : ""
+        }`}
+        style={desktopGridStyle}
+      >
         {visibleHints.map((hint, index) => (
           <div
             key={index}
@@ -96,6 +113,7 @@ function HintList({
               hint={hint}
               revealed={index < revealedCount}
               justRevealed={index === justRevealedIndex}
+              className={!isMobileLayout ? "lg:h-full" : undefined}
             />
           </div>
         ))}
@@ -118,21 +136,13 @@ function HintList({
             )}
           </div>
         )}
-        {isMobileLayout && (
+        {isMobileLayout && portraitState !== "hidden" && (
           <div
             ref={portraitRef}
             data-portrait
-            className="relative col-span-full h-[60dvh] w-full overflow-hidden rounded-2xl border border-ba-border bg-white shadow-xs"
+            className="relative col-span-full h-[60dvh] w-full overflow-hidden rounded-2xl border border-ba-border bg-white"
           >
-            {/* ?プレースホルダー（hidden時に表示。デスクトップ右ペインと同じba-sky系の見た目） */}
-            <div
-              className={`absolute inset-0 flex items-center justify-center rounded-2xl border border-dashed border-ba-sky-2 bg-linear-to-b from-ba-sky-1 to-white transition-opacity duration-500 ${
-                portraitState === "hidden" ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
-            >
-              <span className="text-5xl font-light text-ba-blue/40">?</span>
-            </div>
-            {student && portraitState !== "hidden" && (
+            {student && (
               <img
                 src={getPortraitImageUrl(student)}
                 alt={portraitState === "revealed" ? student.fullName : "シルエット"}

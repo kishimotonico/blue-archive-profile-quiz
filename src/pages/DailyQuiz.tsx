@@ -194,15 +194,24 @@ function DailyQuiz() {
     </div>
   );
 
+  const rankDistribution = [
+    { label: "SS (10点)", count: scoreDistribution.perfect },
+    { label: "S (8-9点)", count: scoreDistribution.veryHigh },
+    { label: "A (6-7点)", count: scoreDistribution.high },
+    { label: "B (4-5点)", count: scoreDistribution.medium },
+    { label: "C (1-3点)", count: scoreDistribution.low },
+    { label: "D (0点)", count: scoreDistribution.zero },
+  ];
+
   const heading = (() => {
     const [, month, day] = getDailyDate().split("-");
-    return `${Number(month)}月${Number(day)}日のクイズ`;
+    return `${Number(month)}月${Number(day)}日`;
   })();
 
   return (
     <>
       <QuizScreen
-        modeLabel="DAILY QUIZ"
+        modeLabel="日替わりクイズ"
         heading={heading}
         student={currentQuestion.student}
         hints={currentQuestion.hints}
@@ -260,7 +269,7 @@ function DailyQuiz() {
             {currentQuestion.student.fullName}
           </p>
 
-          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-linear-to-b from-yellow-50 to-yellow-100 py-2 mb-4">
+          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-ba-yellow-soft/40 py-2 mb-4">
             <span className="font-display text-2xl font-black text-ba-navy">{score}</span>
             <span className="text-sm font-bold text-ba-ink-soft">/ 10 点</span>
           </div>
@@ -271,7 +280,7 @@ function DailyQuiz() {
           </p>
 
           {/* 統計情報 */}
-          <div className="bg-white border border-ba-border rounded-2xl p-4 mb-6 text-left">
+          <div className="border-t border-ba-border pt-4 mb-6 text-left">
             <h3 className="font-display text-base font-black text-ba-navy mb-3">統計情報</h3>
 
             <div className="space-y-2 text-sm">
@@ -287,31 +296,13 @@ function DailyQuiz() {
 
             <div className="mt-4">
               <p className="text-sm text-ba-ink-soft mb-2">ランク分布:</p>
-              <div className="space-y-1 text-xs text-ba-navy">
-                <div className="flex justify-between">
-                  <span>SS (10点):</span>
-                  <span>{scoreDistribution.perfect}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>S (8-9点):</span>
-                  <span>{scoreDistribution.veryHigh}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>A (6-7点):</span>
-                  <span>{scoreDistribution.high}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>B (4-5点):</span>
-                  <span>{scoreDistribution.medium}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>C (1-3点):</span>
-                  <span>{scoreDistribution.low}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>D (0点):</span>
-                  <span>{scoreDistribution.zero}回</span>
-                </div>
+              <div className="grid grid-cols-3 gap-2 text-xs text-ba-navy">
+                {rankDistribution.map(({ label, count }) => (
+                  <div key={label} className="rounded-lg bg-ba-bg px-2 py-2 text-center">
+                    <div className="font-bold">{label}</div>
+                    <div>{count}回</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -325,7 +316,7 @@ function DailyQuiz() {
               className="w-full"
               onClick={() => setShowResultModal(false)}
             >
-              結果を見る
+              閉じる
             </Button>
           </div>
         </div>

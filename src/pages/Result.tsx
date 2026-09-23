@@ -45,16 +45,12 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
       <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <div className="ba-tag mb-3">
-            <span>RESULT</span>
-          </div>
           <h1 className="font-display text-2xl font-black text-ba-navy mb-6 pr-16 md:pr-0">
             クイズ結果
           </h1>
 
           {/* 合計スコア */}
-          <div className="bg-white border border-ba-border rounded-2xl shadow-sm p-8 mb-6 relative overflow-hidden">
-            <div className="ba-stripe-band absolute top-0 left-0 right-0" aria-hidden="true" />
+          <div className="bg-white border border-ba-border rounded-2xl p-8 mb-6">
             <div className="text-center">
               <div className="font-display text-6xl font-black text-ba-blue mb-4">{totalScore}</div>
               <div className="text-xl text-ba-ink-soft mb-2">/ {maxPossibleScore} 点</div>
@@ -65,7 +61,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
           </div>
 
           {/* 問題ごとのスコア（グリッド） */}
-          <div className="bg-white border border-ba-border rounded-2xl shadow-sm p-6 mb-6">
+          <div className="bg-white border border-ba-border rounded-2xl p-6 mb-6">
             <h2 className="font-display text-lg font-black text-ba-navy mb-4">問題ごとのスコア</h2>
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {results.map((r, index) => {
@@ -85,7 +81,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
           </div>
 
           {/* 詳細テーブル */}
-          <div className="bg-white border border-ba-border rounded-2xl shadow-sm p-6 mb-6">
+          <div className="bg-white border border-ba-border rounded-2xl p-6 mb-6">
             <h2 className="font-display text-lg font-black text-ba-navy mb-4">詳細</h2>
 
             {/* デスクトップ: テーブル */}

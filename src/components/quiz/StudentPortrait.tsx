@@ -25,12 +25,7 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
     : "opacity-50 brightness-0 pointer-events-none select-none";
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-ba-border bg-white shadow-sm">
-      <div
-        className="absolute inset-x-0 top-0 z-10 h-1.5 bg-linear-to-r from-ba-cyan to-ba-blue"
-        aria-hidden="true"
-      />
-
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-ba-border bg-white">
       {/* バストアップ表示枠 */}
       <div className="relative min-h-0 flex-1 overflow-hidden bg-linear-to-b from-ba-sky-1 to-white">
         {student && !hidden ? (
@@ -44,8 +39,8 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
             }}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-7xl font-light text-ba-blue/40">?</span>
+          <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+            <span className="text-sm text-ba-ink-soft">シルエットは最後のヒントで表示されます</span>
           </div>
         )}
 
@@ -55,35 +50,33 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
           aria-hidden="true"
         />
 
-        {!hidden && (
-          <span
-            className={`absolute bottom-2 left-3 rounded-full px-3 py-1 text-xs font-bold text-white ${
-              revealed ? "bg-ba-blue" : "bg-ba-navy/80"
-            }`}
-          >
-            {revealed ? (correct ? "CORRECT!" : "ANSWER") : "SILHOUETTE"}
+        {revealed && (
+          <span className="absolute bottom-2 left-3 rounded-full bg-ba-blue px-3 py-1 text-xs font-bold text-white">
+            {correct ? "CORRECT!" : "ANSWER"}
           </span>
         )}
       </div>
 
-      {/* 生徒名 + 全身表示 */}
-      <div className="flex shrink-0 items-center justify-between gap-2 border-t border-ba-border px-3 py-2">
-        <span
-          className={`min-w-0 truncate font-display font-black ${
-            revealed ? "text-ba-navy" : "tracking-[0.24em] text-ba-ink-soft/70"
-          }`}
-        >
-          {revealed && student ? student.fullName : "？？？"}
-        </span>
-        <button
-          type="button"
-          onClick={() => setShowFullBody(true)}
-          disabled={!student || hidden}
-          className="shrink-0 rounded-full border border-ba-sky-2 bg-ba-sky-1 px-3 py-1 text-xs font-bold text-ba-blue transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue disabled:opacity-40"
-        >
-          全身を見る
-        </button>
-      </div>
+      {/* 生徒名 + 全身表示（hiddenの間は出さない） */}
+      {!hidden && (
+        <div className="flex shrink-0 items-center justify-between gap-2 border-t border-ba-border px-3 py-2">
+          <span
+            className={`min-w-0 truncate font-display font-black ${
+              revealed ? "text-ba-navy" : "tracking-[0.24em] text-ba-ink-soft/70"
+            }`}
+          >
+            {revealed && student ? student.fullName : "？？？"}
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowFullBody(true)}
+            disabled={!student}
+            className="shrink-0 rounded-full border border-ba-sky-2 bg-ba-sky-1 px-3 py-1 text-xs font-bold text-ba-blue transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue disabled:opacity-40"
+          >
+            全身を見る
+          </button>
+        </div>
+      )}
 
       {student && (
         <Modal

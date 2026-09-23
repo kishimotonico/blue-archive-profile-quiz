@@ -73,15 +73,12 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
         aria-labelledby={title ? titleId : undefined}
         className="relative flex flex-col bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[calc(100dvh-2rem)] overflow-hidden"
       >
-        {/* 上端の斜めストライプ（装飾。スクロールしても固定表示） */}
-        <div className="ba-stripe-band absolute top-0 left-0 right-0" aria-hidden="true" />
-
         <button
           ref={closeButtonRef}
           type="button"
           aria-label="閉じる"
           onClick={onClose}
-          className="absolute top-1.5 right-1.5 z-10 p-2.5 rounded-lg text-ba-ink-soft hover:text-ba-navy"
+          className="absolute top-1.5 right-1.5 z-10 p-2.5 rounded-lg text-ba-ink-soft hover:text-ba-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -94,7 +91,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
         </button>
 
         {/* 中身のみスクロール（装飾・閉じるボタンは固定） */}
-        <div className="overflow-y-auto p-6 pt-8">
+        <div className="overflow-y-auto p-6">
           {title && (
             <h2 id={titleId} className="font-display text-2xl font-black mb-4 text-ba-navy">
               {title}

@@ -11,11 +11,18 @@ layer(base);
   --color-ba-cyan: #47c5fb;
   --color-ba-navy: #2b3a55;
   --color-ba-yellow: #ffee00;
+  --color-ba-yellow-soft: #f3e27a;
   --color-ba-bg: #f3f7fb;
   --color-ba-sky-1: #dff1ff;
   --color-ba-sky-2: #b9e3ff;
   --color-ba-ink-soft: #5c6e8c;
   --color-ba-border: #dce6f4;
+
+  /* 正誤セマンティックトークン（白背景・淡色背景どちらでもAAコントラストを満たす値） */
+  --color-ba-correct: #1d4ed8;
+  --color-ba-correct-soft: #dbeafe;
+  --color-ba-wrong: #b91c1c;
+  --color-ba-wrong-soft: #fee2e2;
 
   --font-display: "M PLUS Rounded 1c", sans-serif;
   --font-sans: "Noto Sans JP", sans-serif;

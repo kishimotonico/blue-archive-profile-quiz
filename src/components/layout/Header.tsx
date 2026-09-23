@@ -107,13 +107,14 @@ function Header() {
       <div
         ref={menuRef}
         id="mobile-menu"
+        inert={!isMenuOpen}
         className={`md:hidden fixed top-0 right-0 h-full w-64 bg-linear-to-b from-ba-cyan to-ba-blue text-white shadow-2xl z-50 transition-transform duration-300 ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* 閉じるボタン */}
         <button
-          className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors"
+          className="absolute top-3 right-3 w-11 h-11 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors"
           onClick={() => setIsMenuOpen(false)}
           aria-label="メニューを閉じる"
         >

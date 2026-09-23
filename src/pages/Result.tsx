@@ -18,8 +18,8 @@ function outcomeLabel(outcome: QuestionOutcome): string {
 }
 
 function outcomeClass(outcome: QuestionOutcome): string {
-  if (outcome === "correct") return "bg-green-100 text-green-800";
-  if (outcome === "wrong") return "bg-red-100 text-red-800";
+  if (outcome === "correct") return "bg-ba-correct-soft text-ba-correct";
+  if (outcome === "wrong") return "bg-ba-wrong-soft text-ba-wrong";
   return "bg-ba-bg text-ba-ink-soft";
 }
 
@@ -48,7 +48,9 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
           <div className="ba-tag mb-3">
             <span>RESULT</span>
           </div>
-          <h1 className="font-display text-2xl font-black text-ba-navy mb-6">クイズ結果</h1>
+          <h1 className="font-display text-2xl font-black text-ba-navy mb-6 pr-16 md:pr-0">
+            クイズ結果
+          </h1>
 
           {/* 合計スコア */}
           <div className="bg-white border border-ba-border rounded-2xl shadow-sm p-8 mb-6 relative overflow-hidden">
@@ -65,7 +67,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
           {/* 問題ごとのスコア（グリッド） */}
           <div className="bg-white border border-ba-border rounded-2xl shadow-sm p-6 mb-6">
             <h2 className="font-display text-lg font-black text-ba-navy mb-4">問題ごとのスコア</h2>
-            <div className="grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {results.map((r, index) => {
                 const outcome = getQuestionOutcome(r);
                 return (
@@ -105,7 +107,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                     const student = studentMap.get(r.studentId);
                     return (
                       <tr key={index} className="border-b border-ba-border/60 last:border-0">
-                        <td className="py-3 pr-4 text-ba-ink-soft/70">{index + 1}</td>
+                        <td className="py-3 pr-4 text-ba-ink-soft">{index + 1}</td>
                         <td className="py-3 pr-4">
                           <div className="font-medium text-ba-navy">
                             {student?.fullName ?? r.studentId}
@@ -119,11 +121,15 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                             {outcomeLabel(outcome)}
                           </span>
                         </td>
-                        <td className="py-3 pr-4 text-ba-ink-soft">{hintCountLabel(r.revealedHintCount)}</td>
+                        <td className="py-3 pr-4 text-ba-ink-soft">
+                          {hintCountLabel(r.revealedHintCount)}
+                        </td>
                         <td className="py-3 pr-4 text-ba-ink-soft">{r.userAnswer ?? "—"}</td>
                         <td className="py-3">
                           <span className="font-medium text-ba-navy">{r.score}点</span>
-                          <span className="ml-1 text-xs text-ba-ink-soft/70">{getScoreRank(r.score)}</span>
+                          <span className="ml-1 text-xs text-ba-ink-soft">
+                            {getScoreRank(r.score)}
+                          </span>
                         </td>
                       </tr>
                     );
@@ -140,7 +146,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                 return (
                   <div key={index} className="border border-ba-border rounded-lg p-3">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-ba-ink-soft/70">Q{index + 1}</span>
+                      <span className="text-xs text-ba-ink-soft">Q{index + 1}</span>
                       <span
                         className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${outcomeClass(outcome)}`}
                       >
@@ -158,7 +164,8 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                       <dd className="text-ba-navy">{r.userAnswer ?? "—"}</dd>
                       <dt className="text-ba-ink-soft">得点</dt>
                       <dd className="text-ba-navy">
-                        {r.score}点 <span className="text-ba-ink-soft/70">{getScoreRank(r.score)}</span>
+                        {r.score}点{" "}
+                        <span className="text-ba-ink-soft">{getScoreRank(r.score)}</span>
                       </dd>
                     </dl>
                   </div>

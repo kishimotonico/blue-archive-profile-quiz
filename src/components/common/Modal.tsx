@@ -9,6 +9,7 @@ interface ModalProps {
 
 function Modal({ isOpen, onClose, title, children }: ModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
 
   useEffect(() => {
@@ -19,6 +20,31 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const dialogEl = dialogRef.current;
+      if (!dialogEl) return;
+
+      // モーダル内のフォーカス可能要素の先頭/末尾でTab/Shift+Tabをラップする簡易フォーカストラップ
+      const focusable = dialogEl.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey) {
+        if (document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
 
@@ -35,6 +61,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
       {/* モーダルコンテンツ */}
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}

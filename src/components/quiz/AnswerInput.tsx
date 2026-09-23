@@ -35,8 +35,9 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
     }
   };
 
+  // フォーカスは枠線の色だけで示す（リングを重ねると、エラー時の赤枠と二重になって見づらいため）
   const inputClass = [
-    "flex-1 min-w-0 rounded-lg border-2 bg-ba-bg px-4 py-3 text-center font-semibold text-ba-navy transition-colors duration-200 placeholder:font-medium placeholder:text-ba-ink-soft/60 focus:bg-white focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ba-blue focus-visible:ring-offset-1 focus-visible:ring-offset-white disabled:bg-gray-100",
+    "flex-1 min-w-0 rounded-lg border-2 bg-ba-bg px-4 py-3 text-center font-semibold text-ba-navy transition-colors duration-200 placeholder:font-medium placeholder:text-ba-ink-soft/60 focus:bg-white focus:outline-hidden disabled:bg-gray-100",
     showError
       ? "border-red-500 bg-red-50 focus:border-red-600"
       : "border-ba-border focus:border-ba-blue",

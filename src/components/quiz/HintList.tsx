@@ -8,8 +8,13 @@ interface HintListProps {
   revealedCount: number;
   student?: Student | null;
   portraitState?: PortraitState;
-  showPortraitInGrid?: boolean;
-  compactMode?: boolean;
+  /**
+   * "mobile" のとき、開示済みヒントのみをグラデーションで見切れ表示しつつ、
+   * グリッド内に立ち絵（シルエット/確定表示）を含める。
+   * "desktop"（既定）は全ヒントを表示し、立ち絵はグリッドに含めない
+   * （デスクトップでは右カラムに別途 StudentPortrait を表示するため）。
+   */
+  layout?: "desktop" | "mobile";
 }
 
 function HintList({
@@ -17,9 +22,9 @@ function HintList({
   revealedCount,
   student,
   portraitState = "hidden",
-  showPortraitInGrid = false,
-  compactMode = false,
+  layout = "desktop",
 }: HintListProps) {
+  const isMobileLayout = layout === "mobile";
   const hintRefs = useRef<(HTMLDivElement | null)[]>([]);
   const portraitRef = useRef<HTMLDivElement>(null);
   const prevRevealedCount = useRef(revealedCount);
@@ -66,11 +71,11 @@ function HintList({
     prevPortraitState.current = portraitState;
   }, [portraitState]);
 
-  // compactMode: 開示済みヒントのみ表示し、未開示ヒントはグラデーションで見切れ表示
-  const visibleHints = compactMode ? hints.slice(0, revealedCount) : hints;
+  // mobile レイアウト: 開示済みヒントのみ表示し、未開示ヒントはグラデーションで見切れ表示
+  const visibleHints = isMobileLayout ? hints.slice(0, revealedCount) : hints;
   const remaining = hints.length - revealedCount;
   const peekHints =
-    compactMode && remaining > 0
+    isMobileLayout && remaining > 0
       ? hints.slice(revealedCount, revealedCount + Math.min(remaining, 3))
       : [];
 
@@ -113,7 +118,7 @@ function HintList({
             )}
           </div>
         )}
-        {showPortraitInGrid && (
+        {isMobileLayout && (
           <div
             ref={portraitRef}
             data-portrait

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAtom, useSetAtom, useStore } from "jotai";
 import { useQuiz } from "../hooks/useQuiz";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
-import { useIsDesktop } from "../hooks/useIsDesktop";
 import {
   createDailyQuestion,
   createQuestion,
@@ -19,18 +18,13 @@ import {
   dailyProgressAtom,
   dailyResultsStorageAtom,
 } from "../store/daily";
-import Header from "../components/layout/Header";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
-import HintList from "../components/quiz/HintList";
-import StudentReveal from "../components/quiz/StudentReveal";
-import StudentPortrait from "../components/quiz/StudentPortrait";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
 import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
-import QuizPlayArea from "../components/quiz/QuizPlayArea";
-import { getPortraitState } from "../components/quiz/portraitUtils";
+import QuizScreen from "../components/quiz/QuizScreen";
 
 function formatTimeUntilNextReset({ hours, minutes }: { hours: number; minutes: number }): string {
   return hours > 0 ? `${hours}時間${minutes}分後` : `${minutes}分後`;
@@ -64,7 +58,6 @@ function DailyQuiz() {
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
   const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
-  const isDesktop = useIsDesktop();
   const hintButtonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -186,39 +179,8 @@ function DailyQuiz() {
     }
   }, [loading, answered]);
 
-  // 回答確定時、モバイルではヒントグリッド内の立ち絵が見える位置までスクロールする
-  useEffect(() => {
-    if (!answered || isDesktop) return;
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    // QuizPlayArea のアンマウントと結果表示のマウントでレイアウト高さが変わるため、
-    // 再レイアウトが終わった次フレームでスクロール位置を決める
-    let innerFrame = 0;
-    const outerFrame = requestAnimationFrame(() => {
-      innerFrame = requestAnimationFrame(() => {
-        const portrait = container.querySelector<HTMLElement>("[data-portrait]");
-        // offsetParent が null のときは非表示（md以上のレイアウト）なのでスクロールしない
-        if (!portrait || !portrait.offsetParent) return;
-        const top =
-          portrait.getBoundingClientRect().top -
-          container.getBoundingClientRect().top +
-          container.scrollTop;
-        container.scrollTo({ top, behavior: "smooth" });
-      });
-    });
-    return () => {
-      cancelAnimationFrame(outerFrame);
-      cancelAnimationFrame(innerFrame);
-    };
-  }, [answered, isDesktop]);
-
   if (loading) return <QuizLoadingState />;
   if (!currentQuestion) return <QuizErrorState />;
-
-  const portraitState = getPortraitState(answered, revealedHintCount, currentQuestion.hints.length);
-  const totalStages = currentQuestion.hints.length + 1; // 全ヒント + シルエット
-  const remainingStages = Math.max(totalStages - revealedHintCount, 0);
 
   const completedNotice = isAlreadyCompleted && (
     <div className="bg-ba-sky-1 border border-ba-border rounded-2xl p-4 mb-3 text-center">
@@ -232,124 +194,46 @@ function DailyQuiz() {
     </div>
   );
 
+  const heading = (() => {
+    const [, month, day] = getDailyDate().split("-");
+    return `${Number(month)}月${Number(day)}日のクイズ`;
+  })();
+
   return (
-    <div className="h-[100dvh] flex flex-col">
-      <Header />
-
-      <main className="flex-1 flex flex-col lg:flex-row gap-4 p-4 pt-2 md:pt-4 max-w-6xl xl:max-w-7xl mx-auto w-full overflow-hidden">
-        {/* 左ペイン: タイトル + ヒント一覧 */}
-        <div className="flex-1 flex flex-col min-h-0 min-w-0">
-          {/* タイトル + 残りヒント数 */}
-          {/* pr-16: モバイル右上固定のハンバーガーボタン（top-3 right-3, w-11 h-11）とゲージが
-              重ならないよう避けるための余白。md以上ではハンバーガーが無いので不要 */}
-          <div className="shrink-0 flex items-center justify-between gap-3 py-3 pr-16 md:py-1.5 md:pr-0">
-            <div className="inline-flex min-w-0 items-center gap-2 rounded-2xl bg-linear-to-br from-ba-cyan to-ba-blue px-4 py-2 text-white shadow-sm md:px-3 md:py-1.5">
-              <div className="ba-tag shrink-0 bg-white/25">
-                <span>DAILY QUIZ</span>
-              </div>
-              <h1 className="font-display text-sm font-black leading-tight truncate sm:text-base">
-                {(() => {
-                  const [, month, day] = getDailyDate().split("-");
-                  return `${Number(month)}月${Number(day)}日のクイズ`;
-                })()}
-              </h1>
-            </div>
-            {!answered && (
-              <HaloRingGauge
-                value={remainingStages / totalStages}
-                size={52}
-                label="残りヒント数の表示"
-                className="shrink-0"
-              >
-                <span className="font-display text-base font-black text-ba-blue">
-                  {remainingStages}
-                </span>
-                <span className="hidden text-[10px] text-ba-ink-soft md:block">HINT残</span>
-              </HaloRingGauge>
-            )}
-          </div>
-
-          {/* スクロール可能なヒントエリア（デスクトップは2列・上寄せ） */}
-          <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0">
-            {isDesktop ? (
-              <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
-            ) : (
-              <HintList
-                hints={currentQuestion.hints}
-                revealedCount={revealedHintCount}
-                student={currentQuestion.student}
-                portraitState={portraitState}
-                showPortraitInGrid={true}
-                compactMode={true}
-              />
-            )}
-          </div>
-
-          {/* モバイル: 回答結果表示（デスクトップは右カラムに出す） */}
-          {!isDesktop && answered && (
-            <div className="py-3 flex justify-center">
-              <StudentReveal student={currentQuestion.student} correct={correct} score={score} />
-            </div>
-          )}
-
-          {/* モバイル: 固定フッターの入力欄・ボタン類（回答後は中身が無いので枠ごと消す） */}
-          {!isDesktop && (!answered || isAlreadyCompleted) && (
-            <div className="shrink-0 pt-3 border-t border-ba-border bg-ba-bg">
+    <>
+      <QuizScreen
+        modeLabel="DAILY QUIZ"
+        heading={heading}
+        student={currentQuestion.student}
+        hints={currentQuestion.hints}
+        revealedHintCount={revealedHintCount}
+        answered={answered}
+        correct={correct}
+        score={score}
+        scrollContainerRef={scrollContainerRef}
+        hintButtonRef={hintButtonRef}
+        revealNextHint={revealNextHint}
+        submitAnswer={submitAnswer}
+        giveUp={giveUp}
+        answerFeedback={answerFeedback}
+        errorKey={errorKey}
+        showMobileFooter={!answered || isAlreadyCompleted}
+        beforeAnswerNotice={completedNotice}
+        renderAfterAnswerActions={(isDesktop) =>
+          isDesktop && (
+            <>
               {completedNotice}
-              <QuizPlayArea
-                hintButtonRef={hintButtonRef}
-                revealedHintCount={revealedHintCount}
-                hintsLength={currentQuestion.hints.length}
-                revealNextHint={revealNextHint}
-                submitAnswer={submitAnswer}
-                giveUp={giveUp}
-                answerFeedback={answerFeedback}
-                errorKey={errorKey}
-                answered={answered}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* 右カラム（デスクトップのみ）: 立ち絵 → 操作/結果 */}
-        {isDesktop && (
-          <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
-            <StudentPortrait
-              student={currentQuestion.student}
-              state={portraitState}
-              correct={correct}
-            />
-            {answered ? (
-              <div className="shrink-0 rounded-2xl border border-ba-border bg-white p-3.5 shadow-xs">
-                <StudentReveal student={currentQuestion.student} correct={correct} score={score} />
-                {completedNotice}
-                <Button
-                  variant="primary"
-                  className="mt-2 w-full"
-                  onClick={() => setShowResultModal(true)}
-                >
-                  結果を見る
-                </Button>
-              </div>
-            ) : (
-              <>
-                {completedNotice}
-                <QuizPlayArea
-                  hintButtonRef={hintButtonRef}
-                  revealedHintCount={revealedHintCount}
-                  hintsLength={currentQuestion.hints.length}
-                  revealNextHint={revealNextHint}
-                  submitAnswer={submitAnswer}
-                  giveUp={giveUp}
-                  answerFeedback={answerFeedback}
-                  errorKey={errorKey}
-                  answered={answered}
-                />
-              </>
-            )}
-          </aside>
-        )}
-      </main>
+              <Button
+                variant="primary"
+                className="mt-2 w-full"
+                onClick={() => setShowResultModal(true)}
+              >
+                結果を見る
+              </Button>
+            </>
+          )
+        }
+      />
 
       {/* 結果モーダル */}
       <Modal isOpen={showResultModal} onClose={() => setShowResultModal(false)}>
@@ -446,7 +330,7 @@ function DailyQuiz() {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }
 

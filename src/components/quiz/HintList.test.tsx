@@ -39,8 +39,7 @@ function renderHintList(portraitState: PortraitState) {
       revealedCount={mockHints.length}
       student={mockStudent}
       portraitState={portraitState}
-      showPortraitInGrid={true}
-      compactMode={true}
+      layout="mobile"
     />,
   );
 }
@@ -60,8 +59,7 @@ describe("HintList - 立ち絵表示時の自動スクロール", () => {
         revealedCount={mockHints.length}
         student={mockStudent}
         portraitState="silhouette"
-        showPortraitInGrid={true}
-        compactMode={true}
+        layout="mobile"
       />,
     );
 
@@ -78,8 +76,7 @@ describe("HintList - 立ち絵表示時の自動スクロール", () => {
         revealedCount={mockHints.length}
         student={mockStudent}
         portraitState="revealed"
-        showPortraitInGrid={true}
-        compactMode={true}
+        layout="mobile"
       />,
     );
 
@@ -96,8 +93,7 @@ describe("HintList - 立ち絵表示時の自動スクロール", () => {
         revealedCount={mockHints.length}
         student={mockStudent}
         portraitState="revealed"
-        showPortraitInGrid={true}
-        compactMode={true}
+        layout="mobile"
       />,
     );
 
@@ -113,8 +109,7 @@ describe("HintList - 立ち絵表示時の自動スクロール", () => {
         revealedCount={mockHints.length}
         student={mockStudent}
         portraitState="revealed"
-        showPortraitInGrid={true}
-        compactMode={true}
+        layout="mobile"
       />,
     );
 

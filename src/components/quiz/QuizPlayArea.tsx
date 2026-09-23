@@ -18,6 +18,11 @@ interface QuizPlayAreaProps {
    * "panel": デスクトップ右カラム用。単体のパネル（白背景・ボーダー）として表示する。
    */
   variant?: "footer" | "panel";
+  /**
+   * variant="panel" 用の追加クラス。回答後の結果パネルと高さを揃えるための
+   * min-height 指定に使う（QuizScreen側で管理）。
+   */
+  panelClassName?: string;
 }
 
 function QuizPlayArea({
@@ -31,6 +36,7 @@ function QuizPlayArea({
   errorKey,
   answered,
   variant = "panel",
+  panelClassName = "",
 }: QuizPlayAreaProps) {
   if (answered) return null;
 
@@ -62,7 +68,9 @@ function QuizPlayArea({
   }
 
   return (
-    <div className="shrink-0 rounded-2xl border border-ba-border bg-white p-3.5 sm:p-4">
+    <div
+      className={`shrink-0 flex flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 sm:p-4 ${panelClassName}`}
+    >
       {content}
     </div>
   );

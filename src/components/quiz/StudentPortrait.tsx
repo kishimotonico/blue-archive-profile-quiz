@@ -39,8 +39,8 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
             }}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
-            <span className="text-sm text-ba-ink-soft">シルエットは最後のヒントで表示されます</span>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-7xl font-light text-ba-blue/40">?</span>
           </div>
         )}
 
@@ -57,26 +57,31 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
         )}
       </div>
 
-      {/* 生徒名 + 全身表示（hiddenの間は出さない） */}
-      {!hidden && (
-        <div className="flex shrink-0 items-center justify-between gap-2 border-t border-ba-border px-3 py-2">
-          <span
-            className={`min-w-0 truncate font-display font-black ${
-              revealed ? "text-ba-navy" : "tracking-[0.24em] text-ba-ink-soft/70"
-            }`}
-          >
-            {revealed && student ? student.fullName : "？？？"}
-          </span>
-          <button
-            type="button"
-            onClick={() => setShowFullBody(true)}
-            disabled={!student}
-            className="shrink-0 rounded-full border border-ba-sky-2 bg-ba-sky-1 px-3 py-1 text-xs font-bold text-ba-blue transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue disabled:opacity-40"
-          >
-            全身を見る
-          </button>
-        </div>
-      )}
+      {/* 生徒名 + 全身表示。hiddenの間も高さを確保するため常に描画し、invisible で隠す
+          （行ごと消すと立ち絵の表示枠の高さが変わってしまうため） */}
+      <div
+        className={`flex shrink-0 items-center justify-between gap-2 border-t border-ba-border px-3 py-2 ${
+          hidden ? "invisible" : ""
+        }`}
+        aria-hidden={hidden || undefined}
+      >
+        <span
+          className={`min-w-0 truncate font-display font-black ${
+            revealed ? "text-ba-navy" : "tracking-[0.24em] text-ba-ink-soft/70"
+          }`}
+        >
+          {revealed && student ? student.fullName : "？？？"}
+        </span>
+        <button
+          type="button"
+          onClick={() => setShowFullBody(true)}
+          disabled={!student || hidden}
+          tabIndex={hidden ? -1 : undefined}
+          className="shrink-0 rounded-full border border-ba-sky-2 bg-ba-sky-1 px-3 py-1 text-xs font-bold text-ba-blue transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue disabled:opacity-40"
+        >
+          全身を見る
+        </button>
+      </div>
 
       {student && (
         <Modal

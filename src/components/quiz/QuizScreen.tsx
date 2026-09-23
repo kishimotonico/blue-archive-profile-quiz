@@ -64,9 +64,15 @@ function QuizScreen({
   const totalStages = hints.length + 1; // 全ヒント + シルエット
   const remainingStages = Math.max(totalStages - revealedHintCount, 0);
 
+  // デスクトップ右カラム下段パネルの高さを回答前後で揃えるための min-height。
+  // 回答前パネル（QuizPlayArea variant="panel"）の実測高さに合わせている。
+  // 変更する場合は下の結果パネルの min-height と揃えること。
+  const answerPanelMinHeightClass = "min-h-[152px]";
+
   const playArea = (
     <QuizPlayArea
       variant={isDesktop ? "panel" : "footer"}
+      panelClassName={isDesktop ? answerPanelMinHeightClass : ""}
       hintButtonRef={hintButtonRef}
       revealedHintCount={revealedHintCount}
       hintsLength={hints.length}
@@ -96,18 +102,18 @@ function QuizScreen({
                 {heading}
               </h1>
             </div>
-            {!answered && (
-              <HaloRingGauge
-                value={remainingStages / totalStages}
-                size={52}
-                label={`残りヒント ${remainingStages}`}
-                className="shrink-0"
-              >
-                <span className="font-display text-base font-black text-ba-blue">
-                  {remainingStages}
-                </span>
-              </HaloRingGauge>
-            )}
+            {/* 回答後もリングと同じ大きさの領域を確保し、タイトル行の高さが変わらないようにする。
+                中身は invisible で隠し、スクリーンリーダーにも読ませない（label を渡さない） */}
+            <HaloRingGauge
+              value={remainingStages / totalStages}
+              size={52}
+              label={answered ? undefined : `残りヒント ${remainingStages}`}
+              className={`shrink-0 ${answered ? "invisible" : ""}`}
+            >
+              <span className="font-display text-base font-black text-ba-blue">
+                {remainingStages}
+              </span>
+            </HaloRingGauge>
           </div>
 
           {/* スクロール可能なヒントエリア（デスクトップは2列・上寄せ） */}
@@ -147,7 +153,9 @@ function QuizScreen({
           <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
             <StudentPortrait student={student} state={portraitState} correct={correct} />
             {answered ? (
-              <div className="shrink-0 rounded-2xl border border-ba-border bg-white p-3.5">
+              <div
+                className={`flex shrink-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 ${answerPanelMinHeightClass}`}
+              >
                 <StudentReveal student={student} correct={correct} score={score} showName={false} />
                 {renderAfterAnswerActions?.(true)}
               </div>

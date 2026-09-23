@@ -226,22 +226,18 @@ function DailyQuiz() {
         giveUp={giveUp}
         answerFeedback={answerFeedback}
         errorKey={errorKey}
-        showMobileFooter={!answered || isAlreadyCompleted}
-        beforeAnswerNotice={completedNotice}
-        renderAfterAnswerActions={(isDesktop) =>
-          isDesktop && (
-            <>
-              {completedNotice}
-              <Button
-                variant="primary"
-                className="mt-2 w-full"
-                onClick={() => setShowResultModal(true)}
-              >
-                結果を見る
-              </Button>
-            </>
-          )
-        }
+        renderAfterAnswerActions={(isDesktop) => (
+          <>
+            {completedNotice}
+            <Button
+              variant="primary"
+              className={isDesktop ? "mt-2 w-full" : "mt-1 w-full max-w-xs"}
+              onClick={() => setShowResultModal(true)}
+            >
+              結果を見る
+            </Button>
+          </>
+        )}
       />
 
       {/* 結果モーダル */}

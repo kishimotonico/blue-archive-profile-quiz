@@ -73,7 +73,6 @@ function RegularQuiz() {
       giveUp={giveUp}
       answerFeedback={answerFeedback}
       errorKey={errorKey}
-      showMobileFooter={!answered}
       renderAfterAnswerActions={(isDesktop) => (
         <Button
           onClick={handleNext}

@@ -29,17 +29,6 @@ interface QuizScreenProps {
   answerFeedback: string | null;
   errorKey: number;
   /**
-   * モバイルの固定フッター（入力欄・ボタン類）を表示するかどうか。
-   * ページによって条件が異なる（例: 日替わりは完了済み表示中も出す）ため、
-   * 呼び出し側の判定をそのまま渡す。
-   */
-  showMobileFooter: boolean;
-  /**
-   * 回答前、QuizPlayArea の上に出すページ固有の要素（例: 日替わりの完了済み通知）。
-   * モバイル固定フッター・デスクトップ右カラムの両方に出る。
-   */
-  beforeAnswerNotice?: ReactNode;
-  /**
    * 回答後、結果表示の下に出すページ固有のアクション
    * （モバイルは結果表示の下、デスクトップは右カラムの結果カード内）。
    * モバイルとデスクトップでスタイルや有無が異なるため isDesktop を渡す。
@@ -68,8 +57,6 @@ function QuizScreen({
   giveUp,
   answerFeedback,
   errorKey,
-  showMobileFooter,
-  beforeAnswerNotice,
   renderAfterAnswerActions,
 }: QuizScreenProps) {
   const isDesktop = useIsDesktop();
@@ -148,9 +135,8 @@ function QuizScreen({
 
           {/* モバイル: 固定フッターの入力欄・ボタン類（回答後は中身が無いので枠ごと消す）。
               main の余白を打ち消して画面端まで白い面にする */}
-          {!isDesktop && showMobileFooter && (
+          {!isDesktop && !answered && (
             <div className="-mx-4 -mb-4 shrink-0 border-t border-ba-border bg-white px-4 py-3">
-              {beforeAnswerNotice}
               {playArea}
             </div>
           )}
@@ -166,10 +152,7 @@ function QuizScreen({
                 {renderAfterAnswerActions?.(true)}
               </div>
             ) : (
-              <>
-                {beforeAnswerNotice}
-                {playArea}
-              </>
+              playArea
             )}
           </aside>
         )}

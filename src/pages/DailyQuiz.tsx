@@ -59,7 +59,6 @@ function DailyQuiz() {
   const [showResultModal, setShowResultModal] = useState(false);
   const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const showResultButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -220,26 +219,25 @@ function DailyQuiz() {
         answered={answered}
         correct={correct}
         score={score}
-        scrollContainerRef={scrollContainerRef}
         hintButtonRef={hintButtonRef}
         revealNextHint={revealNextHint}
         submitAnswer={submitAnswer}
         giveUp={giveUp}
         answerFeedback={answerFeedback}
         errorKey={errorKey}
-        renderAfterAnswerActions={(isDesktop) => (
+        afterAnswerActions={
           <>
             {completedNotice}
             <Button
               ref={showResultButtonRef}
               variant="primary"
-              className={isDesktop ? "mt-2 w-full" : "mt-1 w-full max-w-xs"}
+              className="w-full"
               onClick={() => setShowResultModal(true)}
             >
               結果を見る
             </Button>
           </>
-        )}
+        }
       />
 
       <Modal

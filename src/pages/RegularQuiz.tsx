@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { useRegularQuiz } from "../hooks/useRegularQuiz";
 import Button from "../components/common/Button";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
@@ -24,7 +24,6 @@ function RegularQuiz() {
     TOTAL_QUESTIONS,
   } = useRegularQuiz();
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
 
   // 問題切替時にヒントボタンにフォーカス
@@ -33,11 +32,6 @@ function RegularQuiz() {
       hintButtonRef.current.focus();
     }
   }, [loading, answered, currentQuestionIndex]);
-
-  const handleNext = useCallback(() => {
-    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" });
-    goNext();
-  }, [goNext]);
 
   // 回答後、Enterキーで次の問題へ
   useEffect(() => {
@@ -48,11 +42,11 @@ function RegularQuiz() {
       if (document.querySelector('[role="dialog"]')) return;
       e.preventDefault();
       e.stopPropagation();
-      handleNext();
+      goNext();
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [answered, handleNext]);
+  }, [answered, goNext]);
 
   if (loading) return <QuizLoadingState />;
   if (!currentQuestion) return <QuizErrorState />;
@@ -67,22 +61,18 @@ function RegularQuiz() {
       answered={answered}
       correct={correct}
       score={score}
-      scrollContainerRef={scrollContainerRef}
       hintButtonRef={hintButtonRef}
       revealNextHint={revealNextHint}
       submitAnswer={submitAnswer}
       giveUp={giveUp}
       answerFeedback={answerFeedback}
       errorKey={errorKey}
-      renderAfterAnswerActions={(isDesktop) => (
-        <Button
-          onClick={handleNext}
-          variant="primary"
-          className={isDesktop ? "mt-2 w-full" : undefined}
-        >
+      scrollResetKey={currentQuestionIndex}
+      afterAnswerActions={
+        <Button onClick={goNext} variant="primary" className="w-full">
           {currentQuestionIndex + 1 < TOTAL_QUESTIONS ? "次の問題へ" : "結果を見る"}
         </Button>
-      )}
+      }
     />
   );
 }

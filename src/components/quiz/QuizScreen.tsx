@@ -1,4 +1,4 @@
-import { type ReactNode, type RefObject } from "react";
+import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 import { useIsDesktop } from "../../hooks/useIsDesktop";
 import type { Hint, Student } from "../../quiz-core";
 import HaloRingGauge from "../common/HaloRingGauge";
@@ -18,15 +18,16 @@ interface QuizScreenProps {
   answered: boolean;
   correct: boolean;
   score: number;
-  scrollContainerRef: RefObject<HTMLDivElement | null>;
   hintButtonRef: RefObject<HTMLButtonElement | null>;
   revealNextHint: () => void;
   submitAnswer: (answer: string) => void;
   giveUp: () => void;
   answerFeedback: string | null;
   errorKey: number;
-  /** モバイルとデスクトップで表示位置・スタイルが異なるため isDesktop を渡す */
-  renderAfterAnswerActions?: (isDesktop: boolean) => ReactNode;
+  /** 変化するとヒント一覧の先頭へスクロールする（フリープレイの「次の問題へ」用） */
+  scrollResetKey?: string | number;
+  /** 回答後にボタンなどを表示する領域。モバイル/デスクトップ共通の幅・余白はQuizScreen側が持つ */
+  afterAnswerActions?: ReactNode;
 }
 
 // 日替わりクイズ・フリープレイで共通のレイアウトのみを持つ。
@@ -40,19 +41,30 @@ function QuizScreen({
   answered,
   correct,
   score,
-  scrollContainerRef,
   hintButtonRef,
   revealNextHint,
   submitAnswer,
   giveUp,
   answerFeedback,
   errorKey,
-  renderAfterAnswerActions,
+  scrollResetKey,
+  afterAnswerActions,
 }: QuizScreenProps) {
   const isDesktop = useIsDesktop();
   const portraitState = getPortraitState(answered, revealedHintCount, hints.length);
   const totalStages = hints.length + 1; // シルエット表示も1ステージとして数える
   const remainingStages = Math.max(totalStages - revealedHintCount, 0);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const prevScrollResetKey = useRef(scrollResetKey);
+
+  useEffect(() => {
+    if (scrollResetKey === undefined || scrollResetKey === prevScrollResetKey.current) return;
+    prevScrollResetKey.current = scrollResetKey;
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" });
+  }, [scrollResetKey]);
+
+  const afterAnswerActionsWrapperClass = isDesktop ? "mt-2 w-full" : "mt-1 w-full max-w-xs";
 
   // 回答前後でこのパネルの高さが変わると立ち絵パネルの高さも変わってしまうため、
   // 回答前パネルの実測高さに合わせた min-height を結果パネル側にも同じ値で使う
@@ -119,7 +131,9 @@ function QuizScreen({
           {!isDesktop && answered && (
             <div className="py-3 flex flex-col items-center gap-3">
               <StudentReveal student={student} correct={correct} score={score} />
-              {renderAfterAnswerActions?.(false)}
+              {afterAnswerActions && (
+                <div className={afterAnswerActionsWrapperClass}>{afterAnswerActions}</div>
+              )}
             </div>
           )}
 
@@ -140,7 +154,9 @@ function QuizScreen({
                 className={`flex shrink-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 ${answerPanelMinHeightClass}`}
               >
                 <StudentReveal student={student} correct={correct} score={score} showName={false} />
-                {renderAfterAnswerActions?.(true)}
+                {afterAnswerActions && (
+                  <div className={afterAnswerActionsWrapperClass}>{afterAnswerActions}</div>
+                )}
               </div>
             ) : (
               playArea

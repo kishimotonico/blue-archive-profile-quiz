@@ -67,9 +67,7 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
           <Button
             type="submit"
             variant={isAnswerEmpty ? "secondary" : "accent"}
-            // secondaryのdisabled:opacity-50は白地+枠線をほぼ消してしまい読めなくなるため、
-            // 未入力（=secondaryかつdisabled）のときだけopacityを上げて視認性を保つ。
-            // baseのdisabled:opacity-50と同じ疑似クラスで優先順位が不定になるため`!`で明示的に上書きする
+            // 白地の secondary に disabled:opacity-50 が掛かると、ボタンの輪郭がほぼ消えて読めなくなるため
             className={`shrink-0 ${isAnswerEmpty ? "disabled:opacity-80!" : ""}`}
             disabled={disabled || isAnswerEmpty}
           >

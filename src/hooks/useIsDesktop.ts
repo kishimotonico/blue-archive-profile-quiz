@@ -3,9 +3,15 @@ import { useSyncExternalStore } from "react";
 // md（768px）幅では2カラムにするとヒントも立ち絵も窮屈になるため、lg以上をデスクトップ扱いにする
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
+// MediaQueryListの生成コストを避けるため、初回アクセス時に一度だけ作って使い回す。
 // jsdom など matchMedia を持たない環境ではモバイル扱いにフォールバックする
+let cachedMql: MediaQueryList | null | undefined;
+
 function matchDesktop(): MediaQueryList | null {
-  return typeof window.matchMedia === "function" ? window.matchMedia(DESKTOP_QUERY) : null;
+  if (cachedMql === undefined) {
+    cachedMql = typeof window.matchMedia === "function" ? window.matchMedia(DESKTOP_QUERY) : null;
+  }
+  return cachedMql;
 }
 
 function subscribe(onStoreChange: () => void) {

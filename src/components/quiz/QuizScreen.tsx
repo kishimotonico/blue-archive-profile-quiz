@@ -94,7 +94,7 @@ function QuizScreen({
               value={remainingStages / totalStages}
               size={52}
               label={answered ? undefined : `残りヒント ${remainingStages}`}
-              className={`shrink-0 ${answered ? "invisible" : ""}`}
+              className={answered ? "invisible" : ""}
             >
               <span className="font-display text-base font-black text-ba-blue">
                 {remainingStages}

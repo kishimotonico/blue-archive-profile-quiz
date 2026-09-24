@@ -21,6 +21,7 @@ import {
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
+import { useIsAnyDialogOpen } from "../components/common/dialogRegistry";
 import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
@@ -57,9 +58,14 @@ function DailyQuiz() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
+  // 立ち絵の「全身を見る」モーダルなど他のダイアログが開いている間は、結果モーダルの
+  // 自動表示を保留する。保留中フラグを分けているのは、保留を取り消すだけで
+  // （setShowResultModalを呼ばずに）自動表示をキャンセルできるようにするため
+  const [autoShowResultPending, setAutoShowResultPending] = useState(false);
   const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
   const showResultButtonRef = useRef<HTMLButtonElement>(null);
+  const isAnyDialogOpen = useIsAnyDialogOpen();
 
   useEffect(() => {
     let cancelled = false;
@@ -154,9 +160,11 @@ function DailyQuiz() {
       });
       clearProgress(); // 進行状態をクリア
 
-      // 立ち絵のフェードイン演出を見せるため、1.5秒遅延してモーダルを表示
+      // 立ち絵のフェードイン演出を見せるため、1.5秒遅延してモーダルを表示。
+      // その時点で他のモーダル（全身を見るなど）が開いていることがあるため、
+      // 即座には開かず「保留」にし、開いていない状態になってから開く
       const timer = setTimeout(() => {
-        setShowResultModal(true);
+        setAutoShowResultPending(true);
       }, 1500);
 
       return () => clearTimeout(timer);
@@ -171,6 +179,12 @@ function DailyQuiz() {
     saveTodayResult,
     clearProgress,
   ]);
+
+  useEffect(() => {
+    if (!autoShowResultPending || isAnyDialogOpen) return;
+    setShowResultModal(true);
+    setAutoShowResultPending(false);
+  }, [autoShowResultPending, isAnyDialogOpen]);
 
   // クイズ開始時にヒントボタンにフォーカス
   useEffect(() => {
@@ -232,7 +246,11 @@ function DailyQuiz() {
               ref={showResultButtonRef}
               variant="primary"
               className="w-full"
-              onClick={() => setShowResultModal(true)}
+              onClick={() => {
+                // 手動で先に開いた場合、保留中の自動表示が閉じた直後に再度開き直すのを防ぐ
+                setAutoShowResultPending(false);
+                setShowResultModal(true);
+              }}
             >
               結果を見る
             </Button>

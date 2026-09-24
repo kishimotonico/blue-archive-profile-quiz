@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useRegularQuiz } from "../hooks/useRegularQuiz";
 import Button from "../components/common/Button";
+import { useIsAnyDialogOpen } from "../components/common/dialogRegistry";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizScreen from "../components/quiz/QuizScreen";
@@ -25,6 +26,7 @@ function RegularQuiz() {
   } = useRegularQuiz();
 
   const hintButtonRef = useRef<HTMLButtonElement>(null);
+  const isAnyDialogOpen = useIsAnyDialogOpen();
 
   // 問題切替時にヒントボタンにフォーカス
   useEffect(() => {
@@ -39,14 +41,14 @@ function RegularQuiz() {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "Enter") return;
       // モーダル表示中は、モーダル内操作としてのEnterを次の問題への遷移と誤認しないようにする
-      if (document.querySelector('[role="dialog"]')) return;
+      if (isAnyDialogOpen) return;
       e.preventDefault();
       e.stopPropagation();
       goNext();
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [answered, goNext]);
+  }, [answered, goNext, isAnyDialogOpen]);
 
   if (loading) return <QuizLoadingState />;
   if (!currentQuestion) return <QuizErrorState />;

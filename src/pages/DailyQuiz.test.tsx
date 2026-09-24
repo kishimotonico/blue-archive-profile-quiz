@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { render, screen, waitFor, act } from "@testing-library/react";
+import { render, screen, waitFor, act, fireEvent } from "@testing-library/react";
 import { Provider, createStore } from "jotai";
 import { BrowserRouter } from "react-router-dom";
 import { Suspense } from "react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import DailyQuiz from "./DailyQuiz";
 import type { DailyResultsStorage, DailyProgress } from "../store/daily";
 import { STORAGE_KEY_DAILY_RESULTS_V3 } from "../store/daily";
@@ -61,6 +61,12 @@ vi.mock("../components/quiz/portraitImageUrl", () => ({
   preloadPortraitImage: vi.fn(),
   getPortraitImageUrl: vi.fn().mockReturnValue("about:blank"),
   NO_IMAGE_URL: "about:blank",
+}));
+
+// 「全身を見る」モーダルはデスクトップレイアウトのみに存在するため、
+// matchMediaのキャッシュ挙動（useIsDesktop）に依存せず常にデスクトップ扱いにする
+vi.mock("../hooks/useIsDesktop", () => ({
+  useIsDesktop: () => true,
 }));
 
 const renderDailyQuiz = async () => {
@@ -148,5 +154,56 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     const { createDailyQuestion, createQuestion } = await import("../quiz-core");
     expect(vi.mocked(createDailyQuestion)).toHaveBeenCalledTimes(1);
     expect(vi.mocked(createQuestion)).not.toHaveBeenCalled();
+  });
+});
+
+describe("DailyQuiz - 結果モーダルの自動表示", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("全身を見るモーダルが開いている間は自動表示されず、閉じると開く", async () => {
+    // jsdomにはscrollIntoViewが無いため、HintListのシルエット表示時スクロールをスタブする
+    Element.prototype.scrollIntoView = vi.fn();
+
+    // 全ヒント開示済みにして「諦めて正解を表示」ボタンをすぐ押せる状態にする
+    const progress: DailyProgress = {
+      key: PROGRESS_KEY,
+      revealedHintCount: mockQuestion.hints.length + 1,
+    };
+    localStorage.setItem(DAILY_PROGRESS_KEY, JSON.stringify(progress));
+
+    await renderDailyQuiz();
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "諦めて正解を表示" })).toBeTruthy();
+    });
+
+    // 結果表示の1.5秒遅延タイマーがfakeTimersの管理下で作られるよう、
+    // ギブアップより前にfakeTimersへ切り替える
+    vi.useFakeTimers();
+
+    fireEvent.click(screen.getByRole("button", { name: "諦めて正解を表示" }));
+
+    // 全身を見るモーダルを先に開く
+    const openPortraitButton = screen.getByRole("button", { name: "全身を見る" });
+    fireEvent.click(openPortraitButton);
+    expect(screen.getAllByRole("dialog").length).toBe(1);
+
+    act(() => {
+      vi.advanceTimersByTime(1500);
+    });
+
+    // 全身モーダルが開いたままなので、結果モーダルは自動では開かない
+    expect(screen.getAllByRole("dialog").length).toBe(1);
+    expect(screen.queryByRole("dialog", { name: "今日のクイズの結果" })).toBeNull();
+
+    // 全身モーダルを閉じると、保留していた結果モーダルが開く
+    fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
+
+    expect(screen.getByRole("dialog", { name: "今日のクイズの結果" })).toBeTruthy();
   });
 });

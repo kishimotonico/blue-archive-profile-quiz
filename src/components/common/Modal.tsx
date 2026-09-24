@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode, type RefObject } from "react";
+import { registerDialogOpen } from "./dialogRegistry";
 
 interface ModalProps {
   isOpen: boolean;
@@ -43,6 +44,12 @@ function Modal({ isOpen, onClose, title, ariaLabel, children, focusFallbackRef }
       restoreTarget?.focus();
     };
   }, [isOpen, focusFallbackRef]);
+
+  // 他のModalが同時に開いているかを外部から購読できるよう登録する。
+  useEffect(() => {
+    if (!isOpen) return;
+    return registerDialogOpen();
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;

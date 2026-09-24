@@ -45,7 +45,6 @@ function Modal({ isOpen, onClose, title, ariaLabel, children, focusFallbackRef }
     };
   }, [isOpen, focusFallbackRef]);
 
-  // 他のModalが同時に開いているかを外部から購読できるよう登録する。
   useEffect(() => {
     if (!isOpen) return;
     return registerDialogOpen();

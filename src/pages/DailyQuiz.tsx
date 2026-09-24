@@ -60,6 +60,7 @@ function DailyQuiz() {
   const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const showResultButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -230,6 +231,7 @@ function DailyQuiz() {
           <>
             {completedNotice}
             <Button
+              ref={showResultButtonRef}
               variant="primary"
               className={isDesktop ? "mt-2 w-full" : "mt-1 w-full max-w-xs"}
               onClick={() => setShowResultModal(true)}
@@ -240,7 +242,12 @@ function DailyQuiz() {
         )}
       />
 
-      <Modal isOpen={showResultModal} onClose={() => setShowResultModal(false)}>
+      <Modal
+        isOpen={showResultModal}
+        onClose={() => setShowResultModal(false)}
+        ariaLabel="今日のクイズの結果"
+        focusFallbackRef={showResultButtonRef}
+      >
         <div className="text-center">
           <HaloRingGauge
             value={score / 10}

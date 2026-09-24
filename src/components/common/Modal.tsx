@@ -1,27 +1,55 @@
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode, type RefObject } from "react";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
+  /** titleが無いときにアクセシブルネームとして使う */
+  ariaLabel?: string;
   children: ReactNode;
+  /**
+   * 開いた時点でフォーカスの退避先が無かった（activeElementがbodyなど）場合に、
+   * 閉じた際のフォーカス復帰先として使う
+   */
+  focusFallbackRef?: RefObject<HTMLElement | null>;
 }
 
-function Modal({ isOpen, onClose, title, children }: ModalProps) {
+function Modal({ isOpen, onClose, title, ariaLabel, children, focusFallbackRef }: ModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
+  const onCloseRef = useRef(onClose);
 
+  // レンダリング中の代入を避け、コミット後にonCloseの最新値を反映する
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  // フォーカスの退避・復帰。呼び出し側がonCloseにインライン関数を渡すことが多く、
+  // 依存にonCloseを含めると親の再レンダリングのたびに退避・復帰が往復してしまうため、
+  // isOpenの変化だけに反応させる
   useEffect(() => {
     if (!isOpen) return;
 
     const previouslyFocused =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      document.activeElement instanceof HTMLElement && document.activeElement !== document.body
+        ? document.activeElement
+        : null;
     closeButtonRef.current?.focus();
+    const fallback = focusFallbackRef?.current ?? null;
+
+    return () => {
+      const restoreTarget = previouslyFocused ?? fallback;
+      restoreTarget?.focus();
+    };
+  }, [isOpen, focusFallbackRef]);
+
+  useEffect(() => {
+    if (!isOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        onCloseRef.current();
         return;
       }
 
@@ -53,9 +81,8 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      previouslyFocused?.focus();
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -68,6 +95,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
+        aria-label={title ? undefined : ariaLabel}
         className="relative flex flex-col bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[calc(100dvh-2rem)] overflow-hidden"
       >
         <button

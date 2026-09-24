@@ -2,10 +2,12 @@ import Header from "../layout/Header";
 
 function QuizErrorState() {
   return (
-    <div className="h-[100dvh] flex flex-col bg-slate-50">
+    <div className="flex h-[100dvh] flex-col">
       <Header />
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-xl text-gray-600">問題の読み込みに失敗しました</div>
+      <div className="flex flex-1 items-center justify-center">
+        <div className="font-display text-xl font-black text-ba-ink-soft">
+          問題の読み込みに失敗しました
+        </div>
       </div>
     </div>
   );

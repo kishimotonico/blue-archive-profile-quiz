@@ -121,14 +121,10 @@ export const dailyProgressAtom = atomWithStorage<DailyProgress | null>(
 );
 
 /** recent（直近100件）を取り出す派生 atom。テスト等での参照用。 */
-export const recentDailyResultsAtom = atom(
-  (get) => get(dailyResultsStorageAtom).recent,
-);
+export const recentDailyResultsAtom = atom((get) => get(dailyResultsStorageAtom).recent);
 
 /** aggregated（古い結果のスコア帯別件数）を取り出す派生 atom。 */
-export const aggregatedScoreCountsAtom = atom(
-  (get) => get(dailyResultsStorageAtom).aggregated,
-);
+export const aggregatedScoreCountsAtom = atom((get) => get(dailyResultsStorageAtom).aggregated);
 
 export const totalAttemptsAtom = atom((get) => {
   const { recent, aggregated } = get(dailyResultsStorageAtom);
@@ -146,8 +142,7 @@ export const scoreDistributionAtom = atom((get) => {
     }, 0);
 
   return {
-    zero:
-      recent.filter((r) => r.score === 0).length + countAggregated((s) => s === 0),
+    zero: recent.filter((r) => r.score === 0).length + countAggregated((s) => s === 0),
     low:
       recent.filter((r) => r.score >= 1 && r.score <= 3).length +
       countAggregated((s) => s >= 1 && s <= 3),
@@ -160,8 +155,7 @@ export const scoreDistributionAtom = atom((get) => {
     veryHigh:
       recent.filter((r) => r.score >= 8 && r.score <= 9).length +
       countAggregated((s) => s >= 8 && s <= 9),
-    perfect:
-      recent.filter((r) => r.score === 10).length + countAggregated((s) => s === 10),
+    perfect: recent.filter((r) => r.score === 10).length + countAggregated((s) => s === 10),
   };
 });
 

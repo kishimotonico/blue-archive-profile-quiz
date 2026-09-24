@@ -4,11 +4,7 @@ import { Provider, createStore } from "jotai";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Suspense, type ReactNode } from "react";
 import { useQuiz } from "./useQuiz";
-import {
-  currentQuestionAtom,
-  revealedHintCountAtom,
-  answeredAtom,
-} from "../store/quiz";
+import { currentQuestionAtom, revealedHintCountAtom, answeredAtom } from "../store/quiz";
 import type { Student, QuizQuestion } from "../quiz-core";
 
 // --- フィクスチャ ---
@@ -197,6 +193,28 @@ describe("useQuiz - submitAnswer", () => {
     expect(result.current.answerFeedback).toBe("該当する生徒が見つかりません");
     expect(result.current.answered).toBe(false);
     expect(result.current.lastConfirmedAnswer).toBeNull();
+  });
+
+  it("該当する生徒が見つからないときはfalseを返し、入力欄を空にしない指示になる", async () => {
+    const { result } = await setupHook(store);
+
+    let returned!: boolean;
+    act(() => {
+      returned = result.current.submitAnswer("存在しない生徒名");
+    });
+
+    expect(returned).toBe(false);
+  });
+
+  it("正解・誤答のときはtrueを返し、入力欄を空にしてよい指示になる", async () => {
+    const { result } = await setupHook(store);
+
+    let returned!: boolean;
+    act(() => {
+      returned = result.current.submitAnswer(s2.fullName);
+    });
+
+    expect(returned).toBe(true);
   });
 
   it("unknown の後にギブアップしても確定回答は null のまま", async () => {

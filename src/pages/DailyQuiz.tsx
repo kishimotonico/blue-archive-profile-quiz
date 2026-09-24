@@ -18,17 +18,14 @@ import {
   dailyProgressAtom,
   dailyResultsStorageAtom,
 } from "../store/daily";
-import Header from "../components/layout/Header";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
-import HintList from "../components/quiz/HintList";
-import StudentReveal from "../components/quiz/StudentReveal";
-import StudentPortrait from "../components/quiz/StudentPortrait";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
+import { useIsAnyDialogOpen } from "../components/common/dialogRegistry";
+import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
-import QuizPlayArea from "../components/quiz/QuizPlayArea";
-import { getPortraitState } from "../components/quiz/portraitUtils";
+import QuizScreen from "../components/quiz/QuizScreen";
 
 function formatTimeUntilNextReset({ hours, minutes }: { hours: number; minutes: number }): string {
   return hours > 0 ? `${hours}時間${minutes}分後` : `${minutes}分後`;
@@ -61,8 +58,14 @@ function DailyQuiz() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
+  // 立ち絵の「全身を見る」モーダルなど他のダイアログが開いている間は、結果モーダルの
+  // 自動表示を保留する。保留中フラグを分けているのは、保留を取り消すだけで
+  // （setShowResultModalを呼ばずに）自動表示をキャンセルできるようにするため
+  const [autoShowResultPending, setAutoShowResultPending] = useState(false);
   const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
+  const showResultButtonRef = useRef<HTMLButtonElement>(null);
+  const isAnyDialogOpen = useIsAnyDialogOpen();
 
   useEffect(() => {
     let cancelled = false;
@@ -157,9 +160,10 @@ function DailyQuiz() {
       });
       clearProgress(); // 進行状態をクリア
 
-      // 立ち絵のフェードイン演出を見せるため、1.5秒遅延してモーダルを表示
+      // 立ち絵のフェードイン演出を見せるため、1.5秒遅延してモーダルを表示する。
+      // その間に「全身を見る」が開かれていると重なるため、直接は開かずに保留する
       const timer = setTimeout(() => {
-        setShowResultModal(true);
+        setAutoShowResultPending(true);
       }, 1500);
 
       return () => clearTimeout(timer);
@@ -175,6 +179,12 @@ function DailyQuiz() {
     clearProgress,
   ]);
 
+  useEffect(() => {
+    if (!autoShowResultPending || isAnyDialogOpen) return;
+    setShowResultModal(true);
+    setAutoShowResultPending(false);
+  }, [autoShowResultPending, isAnyDialogOpen]);
+
   // クイズ開始時にヒントボタンにフォーカス
   useEffect(() => {
     if (!loading && !answered && hintButtonRef.current) {
@@ -185,145 +195,136 @@ function DailyQuiz() {
   if (loading) return <QuizLoadingState />;
   if (!currentQuestion) return <QuizErrorState />;
 
-  const portraitState = getPortraitState(answered, revealedHintCount, currentQuestion.hints.length);
+  const completedNotice = isAlreadyCompleted && (
+    <div className="bg-ba-sky-1 border border-ba-border rounded-2xl p-4 mb-3 text-center">
+      <p className="font-display font-black text-ba-navy mb-2">今日のクイズは完了済みです</p>
+      <p className="text-ba-ink-soft text-sm mb-2">
+        次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
+      </p>
+      <Button variant="primary" size="sm" onClick={() => navigate("/regular")}>
+        もっと遊ぶ
+      </Button>
+    </div>
+  );
+
+  const rankDistribution = [
+    { label: "SS (10点)", count: scoreDistribution.perfect },
+    { label: "S (8-9点)", count: scoreDistribution.veryHigh },
+    { label: "A (6-7点)", count: scoreDistribution.high },
+    { label: "B (4-5点)", count: scoreDistribution.medium },
+    { label: "C (1-3点)", count: scoreDistribution.low },
+    { label: "D (0点)", count: scoreDistribution.zero },
+  ];
+
+  const heading = (() => {
+    const [, month, day] = getDailyDate().split("-");
+    return `${Number(month)}月${Number(day)}日`;
+  })();
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-slate-50">
-      <Header />
+    <>
+      <QuizScreen
+        modeLabel="日替わりクイズ"
+        heading={heading}
+        student={currentQuestion.student}
+        hints={currentQuestion.hints}
+        revealedHintCount={revealedHintCount}
+        answered={answered}
+        correct={correct}
+        score={score}
+        hintButtonRef={hintButtonRef}
+        revealNextHint={revealNextHint}
+        submitAnswer={submitAnswer}
+        giveUp={giveUp}
+        answerFeedback={answerFeedback}
+        errorKey={errorKey}
+        afterAnswerActions={
+          <>
+            {completedNotice}
+            <Button
+              ref={showResultButtonRef}
+              variant="primary"
+              className="w-full"
+              onClick={() => {
+                // 手動で先に開いた場合、保留中の自動表示が閉じた直後に再度開き直すのを防ぐ
+                setAutoShowResultPending(false);
+                setShowResultModal(true);
+              }}
+            >
+              結果を見る
+            </Button>
+          </>
+        }
+      />
 
-      <main className="flex-1 flex flex-col md:flex-row gap-4 p-4 pt-2 sm:pt-4 max-w-6xl mx-auto w-full overflow-hidden">
-        {/* 左ペイン: ヒント + 入力エリア */}
-        <div className="flex-1 flex flex-col min-h-0">
-          {/* 日付表示 */}
-          <div className="shrink-0 text-center text-sm text-gray-600 py-3 sm:py-2">
-            {(() => {
-              const [, month, day] = getDailyDate().split("-");
-              return `${Number(month)}月${Number(day)}日のクイズ`;
-            })()}
-          </div>
-
-          {/* スクロール可能なヒントエリア */}
-          <div className="flex-1 overflow-y-auto min-h-0">
-            {/* モバイル: ヒント+画像（グリッド内） */}
-            <div className="md:hidden">
-              <HintList
-                hints={currentQuestion.hints}
-                revealedCount={revealedHintCount}
-                student={currentQuestion.student}
-                portraitState={portraitState}
-                showPortraitInGrid={true}
-                compactMode={true}
-              />
-            </div>
-
-            {/* PC: ヒントのみ（2列グリッド） */}
-            <div className="hidden md:block">
-              <HintList hints={currentQuestion.hints} revealedCount={revealedHintCount} />
-            </div>
-          </div>
-
-          {/* 回答結果表示 */}
-          {answered && (
-            <div className="py-3 flex justify-center">
-              <StudentReveal student={currentQuestion.student} correct={correct} score={score} />
-            </div>
-          )}
-
-          {/* 固定フッター: 入力欄・ボタン類 */}
-          <div className="shrink-0 pt-3 border-t border-gray-200 bg-slate-50">
-            {isAlreadyCompleted && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3 text-center">
-                <p className="text-blue-800 font-semibold mb-2">今日のクイズは完了済みです</p>
-                <p className="text-blue-600 text-sm mb-2">
-                  次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
-                </p>
-                <Button variant="primary" size="sm" onClick={() => navigate("/regular")}>
-                  もっと遊ぶ
-                </Button>
-              </div>
-            )}
-            <QuizPlayArea
-              hintButtonRef={hintButtonRef}
-              revealedHintCount={revealedHintCount}
-              hintsLength={currentQuestion.hints.length}
-              revealNextHint={revealNextHint}
-              submitAnswer={submitAnswer}
-              giveUp={giveUp}
-              answerFeedback={answerFeedback}
-              errorKey={errorKey}
-              answered={answered}
-            />
-          </div>
-        </div>
-
-        {/* 右ペイン: キャラ画像（PC のみ） */}
-        <div className="hidden md:flex w-40 lg:w-48 xl:w-56 2xl:w-64 shrink-0 self-stretch items-center">
-          <StudentPortrait
-            student={currentQuestion.student}
-            state={portraitState}
-            variant="sidebar"
-          />
-        </div>
-      </main>
-
-      {/* 結果モーダル */}
-      <Modal isOpen={showResultModal} onClose={() => setShowResultModal(false)} title="クイズ完了">
+      <Modal
+        isOpen={showResultModal}
+        onClose={() => setShowResultModal(false)}
+        ariaLabel="今日のクイズの結果"
+        focusFallbackRef={showResultButtonRef}
+      >
         <div className="text-center">
-          <div className="text-5xl font-bold text-blue-600 mb-2">{getScoreRank(score)}</div>
-          <div className="text-2xl font-bold text-gray-700 mb-4">{score}点</div>
-          <p className="text-gray-600 mb-4">{correct ? "正解です！" : "不正解でした..."}</p>
-          <p className="text-sm text-gray-500 mb-2">使用ヒント数: {revealedHintCount}</p>
-          <p className="text-sm text-gray-500 mb-6">
+          <HaloRingGauge
+            value={score / 10}
+            size={100}
+            strokeWidth={7}
+            trackColor="var(--color-ba-border)"
+            fillFrom="var(--color-ba-yellow)"
+            fillTo="var(--color-ba-blue)"
+            className="mx-auto mb-1"
+          >
+            <span className="font-display text-3xl font-black text-ba-blue">
+              {getScoreRank(score)}
+            </span>
+            <span className="text-[10px] tracking-widest text-ba-ink-soft">RANK</span>
+          </HaloRingGauge>
+
+          <h2 className="text-sm font-bold text-ba-ink-soft mb-1">
+            {correct ? "正解！" : "正解は…"}
+          </h2>
+          <p className="font-display text-xl font-black text-ba-navy mb-2">
+            {currentQuestion.student.fullName}
+          </p>
+
+          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-ba-yellow-soft/40 py-1.5 mb-3">
+            <span className="font-display text-2xl font-black text-ba-navy">{score}</span>
+            <span className="text-sm font-bold text-ba-ink-soft">/ 10 点</span>
+          </div>
+
+          <p className="text-sm text-ba-ink-soft mb-1">使用ヒント数: {revealedHintCount}</p>
+          <p className="text-sm text-ba-ink-soft mb-4">
             次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
           </p>
 
           {/* 統計情報 */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">統計情報</h3>
+          <div className="border-t border-ba-border pt-3 mb-4 text-left">
+            <h3 className="font-display text-base font-black text-ba-navy mb-2">統計情報</h3>
 
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">累積挑戦回数:</span>
-                <span className="font-semibold">{totalAttempts}回</span>
+                <span className="text-ba-ink-soft">累積挑戦回数:</span>
+                <span className="font-semibold text-ba-navy">{totalAttempts}回</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">ベストスコア:</span>
-                <span className="font-semibold">{bestScore}点</span>
+                <span className="text-ba-ink-soft">ベストスコア:</span>
+                <span className="font-semibold text-ba-navy">{bestScore}点</span>
               </div>
             </div>
 
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 mb-2">ランク分布:</p>
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span>SS (10点):</span>
-                  <span>{scoreDistribution.perfect}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>S (8-9点):</span>
-                  <span>{scoreDistribution.veryHigh}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>A (6-7点):</span>
-                  <span>{scoreDistribution.high}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>B (4-5点):</span>
-                  <span>{scoreDistribution.medium}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>C (1-3点):</span>
-                  <span>{scoreDistribution.low}回</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>D (0点):</span>
-                  <span>{scoreDistribution.zero}回</span>
-                </div>
+            <div className="mt-3">
+              <p className="text-sm text-ba-ink-soft mb-1.5">ランク分布:</p>
+              <div className="grid grid-cols-3 gap-1.5 text-xs text-ba-navy">
+                {rankDistribution.map(({ label, count }) => (
+                  <div key={label} className="rounded-lg bg-ba-bg px-2 py-1.5 text-center">
+                    <div className="font-bold">{label}</div>
+                    <div>{count}回</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="mt-6 space-y-2">
+          <div className="space-y-1.5">
             <Button variant="primary" className="w-full" onClick={() => navigate("/regular")}>
               もっと遊ぶ
             </Button>
@@ -332,12 +333,12 @@ function DailyQuiz() {
               className="w-full"
               onClick={() => setShowResultModal(false)}
             >
-              結果を見る
+              閉じる
             </Button>
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }
 

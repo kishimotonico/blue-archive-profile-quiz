@@ -4,16 +4,25 @@ interface StudentRevealProps {
   student: Student;
   correct: boolean;
   score: number;
+  /** デスクトップでは立ち絵パネル側に名前行があるため、重複しないよう false にする */
+  showName?: boolean;
 }
 
-function StudentReveal({ student, correct, score }: StudentRevealProps) {
+function StudentReveal({ student, correct, score, showName = true }: StudentRevealProps) {
   return (
-    <div className="text-center py-2">
-      <div className={`text-lg font-bold ${correct ? "text-green-600" : "text-red-500"}`}>
+    <div className="py-2 text-center">
+      <div
+        className={`font-display text-lg font-black ${correct ? "text-ba-correct" : "text-ba-wrong"}`}
+      >
         {correct ? "正解！" : "不正解..."}
-        <span className="ml-2 text-blue-600">{score}点</span>
+        <span className="ml-2 inline-flex items-baseline gap-1 rounded-full border border-ba-yellow-soft bg-linear-to-b from-ba-yellow-soft/40 to-ba-yellow/60 px-3 py-0.5 align-middle text-ba-navy">
+          <span className="text-base">{score}</span>
+          <span className="text-xs font-bold">点</span>
+        </span>
       </div>
-      <div className="text-xl font-bold text-gray-800 mt-1">{student.fullName}</div>
+      {showName && (
+        <div className="mt-1 font-display text-xl font-black text-ba-navy">{student.fullName}</div>
+      )}
     </div>
   );
 }

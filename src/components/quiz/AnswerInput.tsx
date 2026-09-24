@@ -3,7 +3,8 @@ import { motion, useAnimationControls } from "motion/react";
 import Button from "../common/Button";
 
 interface AnswerInputProps {
-  onSubmit: (answer: string) => void;
+  /** 入力欄を空にしてよければtrueを返す（「見つかりません」の打ち間違いを直せるようfalseの場合は残す） */
+  onSubmit: (answer: string) => boolean;
   disabled?: boolean;
   error?: string | null;
   errorKey?: number;
@@ -20,23 +21,29 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
     setShowError(true);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     controls.start({ x: [0, -8, 8, -6, 6, -4, 4, 0], transition: { duration: 0.4 } });
+    // 吹き出しは入力欄の上に重なって操作を塞ぐため、一定時間で自動的に閉じる
+    const timer = setTimeout(() => setShowError(false), 3500);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorKey]); // controls は安定した参照だが依存配列から除外してeffectの誤再実行を防ぐ
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (answer.trim()) {
-      onSubmit(answer.trim());
-      setAnswer("");
+      const shouldClear = onSubmit(answer.trim());
+      if (shouldClear) setAnswer("");
     }
   };
 
+  // focus-visible のリングは付けない。エラー時の赤枠と重なって二重枠になる
   const inputClass = [
-    "flex-1 min-w-0 px-4 py-3 border-2 rounded-lg focus:outline-hidden disabled:bg-gray-100 text-center transition-colors duration-200",
+    "flex-1 min-w-0 rounded-lg border-2 bg-ba-bg px-4 py-3 text-center font-semibold text-ba-navy transition-colors duration-200 placeholder:font-medium placeholder:text-ba-ink-soft focus:bg-white focus:outline-hidden disabled:bg-gray-100",
     showError
-      ? "border-red-500 bg-red-50 focus:border-red-600"
-      : "border-gray-300 focus:border-blue-500",
+      ? "border-ba-wrong bg-ba-wrong-soft focus:border-ba-wrong"
+      : "border-ba-border focus:border-ba-blue",
   ].join(" ");
+
+  const isAnswerEmpty = !answer.trim();
 
   return (
     <div className="relative w-full">
@@ -57,22 +64,28 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
             data-form-type="other"
             className={inputClass}
           />
-          <Button type="submit" disabled={disabled || !answer.trim()}>
-            回答
+          <Button
+            type="submit"
+            variant={isAnswerEmpty ? "secondary" : "accent"}
+            // 白地の secondary に disabled:opacity-50 が掛かると、ボタンの輪郭がほぼ消えて読めなくなるため
+            className={`shrink-0 ${isAnswerEmpty ? "disabled:opacity-80!" : ""}`}
+            disabled={disabled || isAnswerEmpty}
+          >
+            回答する
           </Button>
         </form>
       </motion.div>
 
       {showError && error && (
         <div
-          className="absolute left-0 bottom-full mb-2 z-10 max-w-xs cursor-pointer"
+          className="absolute left-0 bottom-full mb-2 z-10 w-full max-w-xs cursor-pointer"
           onClick={() => setShowError(false)}
         >
-          <div className="bg-red-50 border border-red-300 text-red-600 text-xs font-semibold rounded-lg px-3 py-1.5 shadow-xs whitespace-nowrap">
+          <div className="bg-ba-wrong-soft border border-ba-wrong/40 text-ba-wrong text-xs font-semibold rounded-lg px-3 py-1.5 shadow-xs">
             {error}
           </div>
           {/* 吹き出し三角形（下向き） */}
-          <div className="ml-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-red-300" />
+          <div className="ml-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-ba-wrong/40" />
         </div>
       )}
     </div>

@@ -75,10 +75,7 @@ describe("migrateDailyResultsV2ToV3", () => {
 
     // 最も新しい timestamp=200 から 101 までが recent (100件)
     // timestamp 1〜100 までが aggregated に集約 (100件)
-    const aggregatedTotal = Object.values(v3.aggregated).reduce(
-      (sum, c) => sum + c,
-      0,
-    );
+    const aggregatedTotal = Object.values(v3.aggregated).reduce((sum, c) => sum + c, 0);
     expect(aggregatedTotal).toBe(100);
 
     // recent の最も古い timestamp は 101
@@ -93,9 +90,7 @@ describe("migrateDailyResultsV2ToV3", () => {
     }
     // JSON.parse で整数キーが文字列化されるので、片方を文字列キーに合わせて比較
     const normalize = (obj: Record<string | number, number>) =>
-      Object.fromEntries(
-        Object.entries(obj).map(([k, v]) => [String(k), v]),
-      );
+      Object.fromEntries(Object.entries(obj).map(([k, v]) => [String(k), v]));
     expect(normalize(v3.aggregated)).toEqual(normalize(expectedAggregated));
 
     // v2 は削除されている
@@ -107,14 +102,9 @@ describe("migrateDailyResultsV2ToV3", () => {
       recent: [makeResult({ studentId: "existing", score: 7, timestamp: 9999 })],
       aggregated: { 3: 5 },
     };
-    localStorage.setItem(
-      STORAGE_KEY_DAILY_RESULTS_V3,
-      JSON.stringify(existingV3),
-    );
+    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V3, JSON.stringify(existingV3));
 
-    const v2: DailyResult[] = [
-      makeResult({ studentId: "v2only", score: 0, timestamp: 1 }),
-    ];
+    const v2: DailyResult[] = [makeResult({ studentId: "v2only", score: 0, timestamp: 1 })];
     localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V2, JSON.stringify(v2));
 
     migrateDailyResultsV2ToV3();

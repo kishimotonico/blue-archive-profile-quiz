@@ -7,11 +7,12 @@ interface QuizPlayAreaProps {
   revealedHintCount: number;
   hintsLength: number;
   revealNextHint: () => void;
-  submitAnswer: (answer: string) => void;
+  submitAnswer: (answer: string) => boolean;
   giveUp: () => void;
   answerFeedback: string | null;
   errorKey: number;
-  answered: boolean;
+  /** "footer": 呼び出し側の面（QuizScreenの固定フッター）に載せるため、ここではカードで包まない */
+  variant?: "footer" | "panel";
 }
 
 function QuizPlayArea({
@@ -23,27 +24,38 @@ function QuizPlayArea({
   giveUp,
   answerFeedback,
   errorKey,
-  answered,
+  variant = "panel",
 }: QuizPlayAreaProps) {
-  if (answered) return null;
+  // 開示ボタンを先に置き、Tab順が「開示 → 生徒名入力 → 回答する」になるようにしている
+  const hintButton =
+    revealedHintCount < hintsLength ? (
+      <Button ref={hintButtonRef} onClick={revealNextHint} variant="primary" className="w-full">
+        次のヒントを開示
+      </Button>
+    ) : revealedHintCount === hintsLength ? (
+      <Button ref={hintButtonRef} onClick={revealNextHint} variant="primary" className="w-full">
+        シルエットを表示
+      </Button>
+    ) : (
+      <Button ref={hintButtonRef} onClick={giveUp} variant="secondary" className="w-full">
+        諦めて正解を表示
+      </Button>
+    );
+
+  const content = (
+    <div className="flex flex-col items-stretch gap-3">
+      {hintButton}
+      <AnswerInput onSubmit={submitAnswer} error={answerFeedback} errorKey={errorKey} />
+    </div>
+  );
+
+  if (variant === "footer") {
+    return content;
+  }
 
   return (
-    <div className="flex flex-col items-stretch gap-3 max-w-xs mx-auto">
-      {revealedHintCount < hintsLength ? (
-        <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" className="w-full">
-          次のヒントを開示
-        </Button>
-      ) : revealedHintCount === hintsLength ? (
-        <Button ref={hintButtonRef} onClick={revealNextHint} variant="secondary" className="w-full">
-          シルエットを表示
-        </Button>
-      ) : (
-        <Button ref={hintButtonRef} onClick={giveUp} variant="danger" className="w-full">
-          諦めて正解を表示
-        </Button>
-      )}
-
-      <AnswerInput onSubmit={submitAnswer} error={answerFeedback} errorKey={errorKey} />
+    <div className="shrink-0 flex flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 sm:p-4">
+      {content}
     </div>
   );
 }

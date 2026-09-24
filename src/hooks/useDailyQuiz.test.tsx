@@ -290,9 +290,7 @@ describe("useDailyQuiz - 100件超過時の集約", () => {
     // 最古(score=2)が aggregated に集約されているはず
     expect(stats.result.current.aggregated).toEqual({ 2: 1 });
     // recent に最古(s0)は残らない
-    expect(
-      result.current.recentDailyResults.find((r) => r.studentId === "s0"),
-    ).toBeUndefined();
+    expect(result.current.recentDailyResults.find((r) => r.studentId === "s0")).toBeUndefined();
   });
 
   it("100件超えても recent.length は 100 を保つ", () => {

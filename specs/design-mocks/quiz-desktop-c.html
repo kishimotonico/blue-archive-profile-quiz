@@ -1,0 +1,242 @@
+<title>ブルアカ風プロフクイズ - デスクトップ案C（センターヒーロー / ヒント左右回り込み）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#F3F7FB; --sky-1:#DFF1FF; --sky-2:#B9E3FF;
+    --main-1:#128AFA; --main-2:#47C5FB;
+    --ink:#2B3A55; --ink-soft:#5C6E8C;
+    --accent:#FFEE00; --white:#FFFFFF; --border:#DCE6F4;
+    --shadow-sm:0 2px 8px rgba(43,58,85,0.08);
+    --shadow:0 8px 20px rgba(43,58,85,0.10);
+    --shadow-lg:0 20px 48px rgba(20,32,54,0.22);
+    --radius:16px; --radius-sm:10px; --radius-lg:24px;
+    --tag-skew:-10deg;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;min-height:100%;
+    background:radial-gradient(120% 60% at 50% -10%, var(--sky-2) 0%, var(--sky-1) 35%, var(--bg-base) 70%);
+    background-attachment:fixed;color:var(--ink);
+    font-family:"Noto Sans JP",sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  a,button,input{font-family:inherit;}
+  h1,h2,h3,p{margin:0;}
+  .heading-font{font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  :focus-visible{outline:3px solid var(--main-1);outline-offset:2px;border-radius:6px;}
+
+  .stripe-band{height:8px;width:100%;opacity:.9;
+    background:repeating-linear-gradient(-35deg,var(--main-1) 0 22px,var(--main-2) 22px 40px,transparent 40px 46px,transparent 46px 60px);}
+
+  .app-header{max-width:1380px;margin:0 auto;padding:12px 24px 8px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .title-badge{display:inline-flex;align-items:center;gap:12px;
+    background:linear-gradient(135deg,var(--main-2) 0%,var(--main-1) 100%);
+    color:var(--white);padding:8px 20px;border-radius:var(--radius);box-shadow:var(--shadow);}
+  .kicker-tag{display:inline-block;background:rgba(255,255,255,.22);font-size:10px;font-weight:700;
+    letter-spacing:.14em;padding:2px 10px 2px 12px;border-radius:2px;transform:skewX(var(--tag-skew));}
+  .kicker-tag span{display:inline-block;transform:skewX(calc(var(--tag-skew)*-1));}
+  .main-title{font-size:18px;line-height:1.2;margin-top:2px;}
+  .header-right{display:flex;align-items:center;gap:18px;}
+  .halo-gauge{position:relative;width:56px;height:56px;flex:none;}
+  .halo-gauge svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .halo-gauge .track{fill:none;stroke:rgba(43,58,85,.12);stroke-width:6;}
+  .halo-gauge .fill{fill:none;stroke:url(#haloGradient);stroke-width:6;stroke-linecap:round;
+    filter:drop-shadow(0 0 2px rgba(18,138,250,.4));}
+  .halo-gauge .label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;}
+  .halo-gauge .num{font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;font-size:17px;color:var(--main-1);}
+  .halo-gauge .unit{font-size:8px;color:var(--ink-soft);margin-top:2px;letter-spacing:.03em;}
+  .score-now{text-align:right;}
+  .score-now .cap{font-size:10px;color:var(--ink-soft);letter-spacing:.1em;font-weight:700;}
+  .score-now .val{font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;font-size:26px;color:var(--ink);line-height:1;}
+  .score-now .val small{font-size:12px;color:var(--ink-soft);}
+
+  .section-label{display:inline-block;background:var(--main-1);color:var(--white);
+    font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;font-size:12px;
+    padding:5px 16px;border-radius:2px;transform:skewX(var(--tag-skew));margin:0 0 8px 2px;}
+  .section-label span{display:inline-block;transform:skewX(calc(var(--tag-skew)*-1));letter-spacing:.06em;}
+  .col-label{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--ink-soft);margin:0 4px 8px;}
+
+  /* ---------- 案C: 中央ヒーロー / ヒントが左右に回り込む ---------- */
+  .stage{max-width:1380px;margin:0 auto;padding:0 24px 24px;
+    display:grid;grid-template-columns:minmax(0,1fr) 584px minmax(0,1fr);gap:22px;align-items:start;}
+  @media (max-width:1360px){ .stage{grid-template-columns:minmax(0,1fr) 512px minmax(0,1fr);gap:16px;} }
+
+  .hint-col{display:flex;flex-direction:column;gap:11px;}
+  .hint-col .section-label,.hint-col .col-label{align-self:flex-start;}
+  .hint-card{position:relative;background:var(--white);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:13px 16px;min-height:100px;
+    display:flex;flex-direction:column;justify-content:center;overflow:hidden;}
+  .hint-card .hint-name{font-size:11px;color:var(--ink-soft);font-weight:700;letter-spacing:.03em;margin-bottom:5px;}
+  .hint-card .hint-value{font-size:16px;font-weight:700;color:var(--ink);line-height:1.3;}
+  .hint-card.revealed{border-color:rgba(18,138,250,.4);}
+  .hint-card.locked{background:#EDF4FC;border-style:dashed;border-color:#C6D9EE;
+    flex-direction:row;align-items:center;justify-content:space-between;min-height:118px;}
+  .hint-card.locked .hint-name{margin-bottom:0;}
+  .hint-card.locked .lock-icon{font-size:18px;color:var(--main-1);opacity:.5;
+    font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;}
+  .point-chip{position:absolute;top:-7px;right:-5px;background:var(--accent);color:var(--ink);
+    font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;font-size:10px;padding:2px 9px;
+    border-radius:999px;transform:rotate(6deg);box-shadow:0 2px 6px rgba(43,58,85,.22);border:1.5px solid var(--white);}
+  /* 左列は右端に、右列は左端に寄せてヒーローを囲む印象にする */
+  .hint-col.left .hint-card{margin-right:0;}
+  .hint-col.right .hint-card{margin-left:0;}
+
+  /* センターヒーロー */
+  .hero{position:relative;background:var(--white);border:1px solid var(--border);
+    border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;}
+  .hero::before{content:"";position:absolute;top:0;left:0;right:0;height:7px;z-index:4;
+    background:repeating-linear-gradient(-35deg,var(--main-1) 0 16px,var(--main-2) 16px 30px);}
+  .hero-frame{position:relative;width:100%;height:452px;overflow:hidden;
+    background:
+      radial-gradient(60% 55% at 50% 20%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 72%),
+      repeating-linear-gradient(-35deg, rgba(18,138,250,.05) 0 20px, rgba(71,197,251,.05) 20px 40px),
+      linear-gradient(180deg, var(--sky-2) 0%, var(--sky-1) 45%, #E6F2FD 100%);}
+  @media (max-width:1360px){ .hero-frame{height:404px;} }
+  .hero-frame img{position:absolute;left:50%;top:-3%;transform:translateX(-50%);width:78%;height:auto;display:block;}
+  body:not(.answered) .hero-frame img{filter:brightness(0) saturate(0);opacity:.85;}
+  .hero-frame .glow{position:absolute;left:50%;top:6%;transform:translateX(-50%);
+    width:64%;height:74%;border-radius:50%;pointer-events:none;
+    background:radial-gradient(closest-side, rgba(255,255,255,.55), rgba(255,255,255,0));}
+  .hero-frame .fade{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,transparent 62%,rgba(255,255,255,.9) 86%,#fff 100%);}
+  .hero-name{position:absolute;left:0;right:0;bottom:0;padding-bottom:10px;z-index:3;text-align:center;padding-top:26px;
+    background:linear-gradient(180deg, rgba(255,255,255,0) 0%, #fff 45%, #fff 100%);}
+  .hero-name .who{font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;font-size:28px;letter-spacing:.04em;}
+  body:not(.answered) .hero-name .who{color:#8CA3C0;letter-spacing:.3em;}
+  .hero-name .pill{display:inline-block;margin-top:2px;background:rgba(43,58,85,.82);color:#fff;
+    font-size:10px;font-weight:700;padding:3px 12px;border-radius:999px;letter-spacing:.1em;}
+  body.answered .hero-name .pill{background:var(--main-1);}
+  .zoom-link{position:absolute;right:14px;top:18px;z-index:3;
+    font-size:11px;font-weight:700;color:var(--main-1);background:#fff;
+    border:1px solid #CBE3FF;border-radius:999px;padding:5px 12px;cursor:pointer;box-shadow:var(--shadow-sm);}
+
+  /* ヒーロー直下の操作コンソール */
+  .console{border-top:1px solid var(--border);background:linear-gradient(180deg,#FBFDFF,#F4F9FF);
+    padding:12px 16px 14px;display:flex;flex-direction:column;gap:9px;}
+  .btn{border:none;cursor:pointer;border-radius:var(--radius-sm);padding:12px 20px;
+    font-family:"M PLUS Rounded 1c",sans-serif;font-weight:900;font-size:15px;white-space:nowrap;
+    box-shadow:var(--shadow-sm);transition:transform .15s ease, filter .15s ease;}
+  .btn:hover{filter:brightness(1.03);}
+  .btn:active{transform:translateY(2px);}
+  .btn-primary{color:var(--white);background:linear-gradient(180deg,var(--main-2) 0%,var(--main-1) 100%);}
+  .btn-accent{color:var(--ink);background:linear-gradient(180deg,#FFF8CC 0%,var(--accent) 100%);}
+  .console-row{display:flex;gap:10px;align-items:center;}
+  .reveal-btn{display:inline-flex;align-items:center;gap:8px;flex:none;}
+  .reveal-btn .pt{font-size:11px;background:rgba(255,255,255,.28);border-radius:999px;padding:2px 8px;}
+  .answer-input{flex:1 1 auto;min-width:0;padding:12px 16px;border:2px solid #C9DCF2;
+    border-radius:var(--radius-sm);background:#fff;color:var(--ink);font-size:16px;font-weight:700;}
+  .answer-input::placeholder{color:#9FB2CC;font-weight:500;}
+  .console-foot{display:flex;justify-content:space-between;align-items:center;}
+  .console-foot .note{font-size:11px;color:var(--ink-soft);}
+  .giveup{background:none;border:none;color:var(--ink-soft);font-size:12px;font-weight:700;
+    text-decoration:underline;cursor:pointer;padding:2px 4px;}
+
+  .mock-note{max-width:1380px;margin:0 auto;padding:0 24px 24px;color:var(--ink-soft);font-size:11px;text-align:center;}
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="haloGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#47C5FB"/><stop offset="100%" stop-color="#128AFA"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="stripe-band" aria-hidden="true"></div>
+
+<header class="app-header">
+  <div class="title-badge">
+    <div>
+      <span class="kicker-tag"><span>DAILY QUIZ</span></span>
+      <h1 class="main-title heading-font">日替わり プロフクイズ</h1>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="score-now">
+      <div class="cap">SCORE</div>
+      <div class="val">6<small> / 10</small></div>
+    </div>
+    <div class="halo-gauge" role="img" aria-label="残りヒント数">
+      <svg viewBox="0 0 80 80">
+        <circle class="track" cx="40" cy="40" r="33"/>
+        <circle class="fill" cx="40" cy="40" r="33" stroke-dasharray="207" stroke-dashoffset="104"/>
+      </svg>
+      <div class="label"><span class="num">5</span><span class="unit">HINT 残</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="stage">
+  <!-- 左のヒント列 -->
+  <section class="hint-col left">
+    <div class="section-label"><span>HINT LIST</span></div>
+    <div class="hint-card revealed">
+      <span class="point-chip">10pt</span>
+      <span class="hint-name">学園・学年</span>
+      <span class="hint-value">アビドス高等学校 3年</span>
+    </div>
+    <div class="hint-card revealed">
+      <span class="point-chip">9pt</span>
+      <span class="hint-name">部活</span>
+      <span class="hint-value">対策委員会</span>
+    </div>
+    <div class="hint-card revealed">
+      <span class="point-chip">8pt</span>
+      <span class="hint-name">年齢</span>
+      <span class="hint-value">17歳</span>
+    </div>
+    <div class="hint-card revealed">
+      <span class="point-chip">7pt</span>
+      <span class="hint-name">誕生日</span>
+      <span class="hint-value">1月2日</span>
+    </div>
+    <div class="hint-card revealed">
+      <span class="point-chip">6pt</span>
+      <span class="hint-name">身長</span>
+      <span class="hint-value">145cm</span>
+    </div>
+  </section>
+
+  <!-- 中央ヒーロー -->
+  <div class="hero">
+    <div class="hero-frame">
+      <img src="../data/images/portrait/hoshino.png" alt="">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="fade" aria-hidden="true"></div>
+      <button type="button" class="zoom-link">全身を見る</button>
+      <div class="hero-name">
+        <div class="who">？ ？ ？</div>
+        <span class="pill">SILHOUETTE</span>
+      </div>
+    </div>
+    <div class="console">
+      <!-- Tab順: 開示 → 入力 → 回答する -->
+      <div class="console-row">
+        <button type="button" class="btn btn-primary reveal-btn">次のヒントを開示 <span class="pt">-1pt</span></button>
+        <form class="console-row" style="flex:1 1 auto;min-width:0;" onsubmit="return false;">
+          <label for="answerInput" class="visually-hidden">生徒の名前を入力</label>
+          <input id="answerInput" class="answer-input" type="text" placeholder="生徒の名前を入力…" autocomplete="off">
+          <button type="submit" class="btn btn-accent">回答</button>
+        </form>
+      </div>
+      <div class="console-foot">
+        <span class="note">残り4ヒント → シルエット公開</span>
+        <button type="button" class="giveup">諦めて正解を見る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右のヒント列 -->
+  <section class="hint-col right">
+    <span class="section-label" style="background:#7E93B4;"><span>LOCKED</span></span>
+    <div class="hint-card locked"><span class="hint-name">趣味</span><span class="lock-icon">?</span></div>
+    <div class="hint-card locked"><span class="hint-name">武器</span><span class="lock-icon">?</span></div>
+    <div class="hint-card locked"><span class="hint-name">CV</span><span class="lock-icon">?</span></div>
+    <div class="hint-card locked"><span class="hint-name">姓</span><span class="lock-icon">?</span></div>
+  </section>
+</main>
+
+<p class="mock-note">案C: 生徒を画面中央のヒーローに据え、ヒント9枚を左右2列に振り分けて回り込ませる構成。操作系はヒーロー直下のコンソールに集約。</p>

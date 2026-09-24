@@ -1,5 +1,13 @@
 // 型定義
-export type { Student, HintType, Hint, QuizQuestion, QuizState, PortraitState, QuestionResult } from "./types";
+export type {
+  Student,
+  HintType,
+  Hint,
+  QuizQuestion,
+  QuizState,
+  PortraitState,
+  QuestionResult,
+} from "./types";
 
 // 結果処理
 export { getQuestionOutcome } from "./result";
@@ -10,7 +18,14 @@ export type { QuizKey } from "./key";
 export { CURRENT_ALGORITHM_VERSION, encodeQuizKey, decodeQuizKey } from "./key";
 
 // 生徒データ
-export { loadStudents, getStudentById, getStudentPool, pickStudentV1, pickStudentV2, extractFamilyName } from "./students";
+export {
+  loadStudents,
+  getStudentById,
+  getStudentPool,
+  pickStudentV1,
+  pickStudentV2,
+  extractFamilyName,
+} from "./students";
 
 // ヒント生成
 export { generateHintsV1, generateHintsV2 } from "./hints";

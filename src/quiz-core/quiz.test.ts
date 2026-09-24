@@ -13,12 +13,15 @@ const studentsJsonPath = path.resolve(process.cwd(), "data/students.json");
 const studentsJsonText = readFileSync(studentsJsonPath, "utf-8");
 
 beforeAll(() => {
-  vi.stubGlobal("fetch", vi.fn(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve(JSON.parse(studentsJsonText)),
-    })
-  ));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(JSON.parse(studentsJsonText)),
+      }),
+    ),
+  );
   // import.meta.env.BASE_URL はテスト環境では undefined になりうるが、
   // モック fetch では引数を使わないため問題なし
 });
@@ -62,19 +65,48 @@ describe("createQuestion（version:2）", () => {
     const q = await createQuestion(key);
 
     // students.json を直接読んで pool を再構築して期待値を計算
-    const data = JSON.parse(studentsJsonText) as Record<string, { profile: { fullName: string; name: string; school: string; grade: string | null; club: string; age: string; birthday: string; height: string; hobby: string; weaponName: string; cv: string; skills: { ex: string; normal: string; passive: string; sub: string } }; images: { portrait: string }; availableFrom: string | null }>;
+    const data = JSON.parse(studentsJsonText) as Record<
+      string,
+      {
+        profile: {
+          fullName: string;
+          name: string;
+          school: string;
+          grade: string | null;
+          club: string;
+          age: string;
+          birthday: string;
+          height: string;
+          hobby: string;
+          weaponName: string;
+          cv: string;
+          skills: { ex: string; normal: string; passive: string; sub: string };
+        };
+        images: { portrait: string };
+        availableFrom: string | null;
+      }
+    >;
     const pool = Object.entries(data)
       .filter(([, e]) => e.availableFrom !== null && e.availableFrom <= BASE_DATE)
       .sort((a, b) =>
         a[1].availableFrom! !== b[1].availableFrom!
-          ? a[1].availableFrom! < b[1].availableFrom! ? -1 : 1
-          : a[0] < b[0] ? -1 : 1
+          ? a[1].availableFrom! < b[1].availableFrom!
+            ? -1
+            : 1
+          : a[0] < b[0]
+            ? -1
+            : 1,
       )
-      .map(([id, e]) => ({ id, ...e.profile, portraitImage: e.images.portrait, availableFrom: e.availableFrom }));
+      .map(([id, e]) => ({
+        id,
+        ...e.profile,
+        portraitImage: e.images.portrait,
+        availableFrom: e.availableFrom,
+      }));
 
     const expectedStudent = pickStudentV2(
       pool as Parameters<typeof pickStudentV2>[0],
-      deriveSeedV1(seed, "pick")
+      deriveSeedV1(seed, "pick"),
     );
     expect(q.student.id).toBe(expectedStudent.id);
   });
@@ -111,16 +143,45 @@ describe("連続する日替わりキーで選ばれる生徒の分散（v2 相�
     }
 
     // 各日で選ばれる生徒の pool インデックスを求める
-    const data = JSON.parse(studentsJsonText) as Record<string, { profile: { fullName: string; name: string; school: string; grade: string | null; club: string; age: string; birthday: string; height: string; hobby: string; weaponName: string; cv: string; skills: { ex: string; normal: string; passive: string; sub: string } }; images: { portrait: string }; availableFrom: string | null }>;
+    const data = JSON.parse(studentsJsonText) as Record<
+      string,
+      {
+        profile: {
+          fullName: string;
+          name: string;
+          school: string;
+          grade: string | null;
+          club: string;
+          age: string;
+          birthday: string;
+          height: string;
+          hobby: string;
+          weaponName: string;
+          cv: string;
+          skills: { ex: string; normal: string; passive: string; sub: string };
+        };
+        images: { portrait: string };
+        availableFrom: string | null;
+      }
+    >;
     const buildPool = (baseDate: string) =>
       Object.entries(data)
         .filter(([, e]) => e.availableFrom !== null && e.availableFrom <= baseDate)
         .sort((a, b) =>
           a[1].availableFrom! !== b[1].availableFrom!
-            ? a[1].availableFrom! < b[1].availableFrom! ? -1 : 1
-            : a[0] < b[0] ? -1 : 1
+            ? a[1].availableFrom! < b[1].availableFrom!
+              ? -1
+              : 1
+            : a[0] < b[0]
+              ? -1
+              : 1,
         )
-        .map(([id, e]) => ({ id, ...e.profile, portraitImage: e.images.portrait, availableFrom: e.availableFrom }));
+        .map(([id, e]) => ({
+          id,
+          ...e.profile,
+          portraitImage: e.images.portrait,
+          availableFrom: e.availableFrom,
+        }));
 
     const indicesV2: number[] = [];
     const indicesV1: number[] = [];

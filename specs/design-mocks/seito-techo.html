@@ -1,0 +1,717 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700&family=Yuji+Syuku&family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<title>生徒手帳クイズ | デザインモック</title>
+
+<style>
+  :root {
+    --paper-desk: #EFE9DD;
+    --card-paper: #FBF8F1;
+    --ink-navy: #27364B;
+    --ink-navy-soft: #4a5b74;
+    --seal-red: #C8402F;
+    --gold-foil: #B9975B;
+    --wakakusa: #7FA96B;
+    --rule-line: rgba(39, 54, 75, 0.16);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--paper-desk);
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(185, 151, 91, 0.10), transparent 40%),
+      radial-gradient(circle at 88% 82%, rgba(39, 54, 75, 0.06), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(39,54,75,0.025) 0px, rgba(39,54,75,0.025) 1px, transparent 1px, transparent 3px);
+    color: var(--ink-navy);
+    font-family: "Noto Sans JP", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px 64px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ---- 背景の文房具モチーフ（うっすら） ---- */
+  .desk-deco {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+  .desk-deco svg {
+    position: absolute;
+  }
+  .deco-ruler { top: 4%; left: -4%; width: 320px; transform: rotate(-14deg); }
+  .deco-clip { bottom: 6%; right: 4%; width: 90px; transform: rotate(9deg); }
+  .deco-clip2 { top: 8%; right: 8%; width: 60px; transform: rotate(-18deg); }
+
+  .stage {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .stage-heading {
+    text-align: center;
+  }
+  .stage-heading .eyebrow {
+    font-family: "Zen Old Mincho", serif;
+    letter-spacing: 0.4em;
+    font-size: 12px;
+    color: var(--gold-foil);
+    margin: 0 0 4px;
+  }
+  .stage-heading h1 {
+    font-family: "Zen Old Mincho", serif;
+    font-weight: 700;
+    font-size: clamp(20px, 4vw, 28px);
+    margin: 0;
+    letter-spacing: 0.06em;
+  }
+
+  /* ================= カード本体 ================= */
+  .techo-card {
+    position: relative;
+    width: 100%;
+    background: var(--card-paper);
+    background-image:
+      repeating-linear-gradient(0deg, rgba(39,54,75,0.05) 0px, rgba(39,54,75,0.05) 1px, transparent 1px, transparent 27px);
+    border-radius: 14px;
+    padding: 22px 22px 26px;
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.6) inset,
+      0 22px 40px -18px rgba(39, 54, 75, 0.45),
+      0 8px 18px -10px rgba(39, 54, 75, 0.3);
+  }
+  .techo-card::before {
+    /* 二重罫の枠 */
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1.5px solid var(--gold-foil);
+    border-radius: 9px;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+  .techo-card::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid var(--ink-navy);
+    border-radius: 7px;
+    pointer-events: none;
+    opacity: 0.12;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid var(--ink-navy);
+    position: relative;
+    z-index: 1;
+  }
+
+  .emblem-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .emblem-title svg { flex-shrink: 0; }
+  .head-text .school-line {
+    font-family: "Zen Old Mincho", serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-navy-soft);
+    margin: 0 0 2px;
+  }
+  .head-text .doc-title {
+    font-family: "Zen Old Mincho", serif;
+    font-weight: 700;
+    font-size: clamp(18px, 3.4vw, 22px);
+    margin: 0;
+    letter-spacing: 0.14em;
+  }
+
+  .card-no {
+    text-align: right;
+    font-family: "Zen Old Mincho", serif;
+    font-size: 11px;
+    color: var(--ink-navy-soft);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .card-no strong {
+    display: block;
+    font-size: 15px;
+    color: var(--ink-navy);
+    letter-spacing: 0.08em;
+  }
+
+  .card-body {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 128px 1fr;
+    gap: 18px;
+  }
+
+  /* ---- 写真欄 ---- */
+  .photo-slot {
+    width: 128px;
+    height: 168px;
+    background: repeating-linear-gradient(45deg, rgba(39,54,75,0.05) 0 6px, transparent 6px 12px), #f4f1e8;
+    border: 1.5px solid var(--ink-navy);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .photo-slot .no-photo {
+    font-family: "Zen Old Mincho", serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--ink-navy-soft);
+    text-align: center;
+    line-height: 1.7;
+    transition: opacity 0.5s ease;
+  }
+  .photo-slot .no-photo span { display: block; font-size: 9px; opacity: 0.7; }
+  .photo-slot.revealed .no-photo { opacity: 0; }
+
+  /* オリジナルの抽象シルエット */
+  .silhouette {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .photo-slot.revealed .silhouette {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .silhouette svg { width: 84%; }
+
+  .photo-caption {
+    margin-top: 6px;
+    text-align: center;
+    font-size: 10px;
+    color: var(--ink-navy-soft);
+    letter-spacing: 0.08em;
+  }
+
+  .photo-col { display: flex; flex-direction: column; align-items: center; }
+
+  /* ---- 記入項目 ---- */
+  .fields {
+    display: flex;
+    flex-direction: column;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    align-items: baseline;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--rule-line);
+    gap: 10px;
+  }
+  .field-row:first-child { padding-top: 0; }
+
+  .field-label {
+    font-family: "Zen Old Mincho", serif;
+    font-size: 12px;
+    color: var(--ink-navy-soft);
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+  }
+
+  .field-value {
+    min-height: 22px;
+    display: flex;
+    align-items: baseline;
+  }
+  .field-value .ink {
+    font-family: "Yuji Syuku", serif;
+    font-size: 17px;
+    color: var(--ink-navy);
+    letter-spacing: 0.03em;
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transform: rotate(-0.6deg);
+  }
+  .field-value.filled .ink {
+    animation: write-in 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+  @keyframes write-in {
+    0% { opacity: 0; clip-path: inset(0 100% 0 0); transform: rotate(-1.4deg) translateX(-2px); }
+    55% { opacity: 1; }
+    100% { opacity: 1; clip-path: inset(0 0 0 0); transform: rotate(-0.4deg) translateX(0); }
+  }
+  .field-value .blank-dots {
+    color: var(--rule-line);
+    font-size: 13px;
+    letter-spacing: 0.3em;
+  }
+
+  /* 氏名欄（正解時に記入） */
+  .name-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    align-items: baseline;
+    padding: 10px 0 8px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid var(--ink-navy);
+    gap: 10px;
+  }
+  .name-row .field-label { font-size: 13px; }
+  .name-row .ink {
+    font-size: 24px;
+  }
+
+  /* ---- 認定スタンプ ---- */
+  .stamp-zone {
+    position: absolute;
+    top: 46%;
+    right: 6%;
+    width: 118px;
+    height: 118px;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transform: scale(1.5) rotate(-18deg);
+  }
+  .stamp-zone.stamped {
+    animation: stamp-press var(--stamp-dur, 0.5s) cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+  }
+  @keyframes stamp-press {
+    0% { opacity: 0; transform: scale(1.7) rotate(-18deg); }
+    55% { opacity: 0.95; transform: scale(0.94) rotate(-12deg); }
+    75% { transform: scale(1.05) rotate(-13deg); }
+    100% { opacity: 0.88; transform: scale(1) rotate(-12deg); }
+  }
+  .stamp-zone svg { width: 100%; height: 100%; }
+
+  /* ================= 操作パネル ================= */
+  .control-panel {
+    width: 100%;
+    background: var(--card-paper);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 10px 24px -16px rgba(39,54,75,0.35);
+    position: relative;
+    z-index: 1;
+  }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .btn {
+    font-family: "Zen Old Mincho", serif;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-radius: 999px;
+    padding: 10px 22px;
+    border: 1.5px solid var(--ink-navy);
+    background: var(--card-paper);
+    color: var(--ink-navy);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .btn:hover:not(:disabled) { background: var(--ink-navy); color: var(--card-paper); }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:focus-visible, input:focus-visible, .btn-submit:focus-visible {
+    outline: 3px solid var(--seal-red);
+    outline-offset: 2px;
+  }
+
+  .btn-primary {
+    background: var(--ink-navy);
+    color: var(--card-paper);
+  }
+  .btn-primary:hover:not(:disabled) { background: #1c2839; }
+
+  .hint-progress {
+    font-size: 12px;
+    color: var(--ink-navy-soft);
+    letter-spacing: 0.06em;
+    margin-left: auto;
+  }
+
+  .answer-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .answer-row input[type="text"] {
+    flex: 1;
+    min-width: 160px;
+    font-family: "Klee One", sans-serif;
+    font-size: 15px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--ink-navy);
+    border-radius: 8px;
+    background: #fffdf8;
+    color: var(--ink-navy);
+  }
+  .btn-submit {
+    font-family: "Zen Old Mincho", serif;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: var(--seal-red);
+    color: #fff;
+    cursor: pointer;
+    transition: filter 0.2s ease, transform 0.15s ease;
+  }
+  .btn-submit:hover:not(:disabled) { filter: brightness(1.08); }
+  .btn-submit:active:not(:disabled) { transform: translateY(1px); }
+  .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .feedback {
+    margin-top: 8px;
+    font-size: 13px;
+    min-height: 18px;
+    color: var(--seal-red);
+  }
+  .feedback.ok { color: var(--wakakusa); }
+
+  /* ================= 成績通知書 ================= */
+  .report {
+    width: 100%;
+    background: var(--card-paper);
+    border-radius: 12px;
+    border: 1.5px solid var(--gold-foil);
+    padding: 20px 22px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease, opacity 0.6s ease, padding 0.6s ease, margin 0.6s ease;
+  }
+  .report.show {
+    max-height: 320px;
+    opacity: 1;
+    margin-top: 2px;
+  }
+  .report .r-eyebrow {
+    font-family: "Zen Old Mincho", serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--ink-navy-soft);
+    margin: 0 0 6px;
+  }
+  .report .r-rank {
+    font-family: "Zen Old Mincho", serif;
+    font-weight: 700;
+    font-size: 44px;
+    color: var(--wakakusa);
+    margin: 0;
+    line-height: 1.1;
+  }
+  .report .r-score {
+    font-family: "Klee One", sans-serif;
+    font-size: 15px;
+    color: var(--ink-navy);
+    margin: 4px 0 0;
+  }
+  .report .r-score strong { font-size: 20px; }
+  .report .r-note {
+    font-size: 12px;
+    color: var(--ink-navy-soft);
+    margin: 10px 0 0;
+  }
+
+  /* ================= レスポンシブ ================= */
+  @media (max-width: 480px) {
+    body { padding: 20px 12px 48px; }
+    .techo-card { padding: 18px 16px 20px; }
+    .card-body { grid-template-columns: 96px 1fr; gap: 12px; }
+    .photo-slot { width: 96px; height: 128px; }
+    .field-row { grid-template-columns: 62px 1fr; }
+    .field-label { font-size: 11px; }
+    .field-value .ink { font-size: 15px; }
+    .stamp-zone { width: 86px; height: 86px; right: 4%; top: 40%; }
+    .name-row { grid-template-columns: 62px 1fr; }
+    .name-row .ink { font-size: 19px; }
+    .hint-progress { width: 100%; margin-left: 0; order: 3; }
+    .deco-ruler { width: 200px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field-value.filled .ink { animation: none; opacity: 1; clip-path: inset(0 0 0 0); transform: none; }
+    .stamp-zone.stamped { animation: none; opacity: 0.88; transform: scale(1) rotate(-12deg); }
+    .report { transition: none; }
+  }
+</style>
+
+<div class="desk-deco" aria-hidden="true">
+  <svg class="deco-ruler" viewBox="0 0 320 40" fill="none">
+    <rect x="2" y="10" width="316" height="20" rx="2" stroke="#27364B" stroke-width="1.5"/>
+    <g stroke="#27364B" stroke-width="1">
+      <line x1="20" y1="10" x2="20" y2="20"/><line x1="40" y1="10" x2="40" y2="16"/>
+      <line x1="60" y1="10" x2="60" y2="20"/><line x1="80" y1="10" x2="80" y2="16"/>
+      <line x1="100" y1="10" x2="100" y2="20"/><line x1="120" y1="10" x2="120" y2="16"/>
+      <line x1="140" y1="10" x2="140" y2="20"/><line x1="160" y1="10" x2="160" y2="16"/>
+      <line x1="180" y1="10" x2="180" y2="20"/><line x1="200" y1="10" x2="200" y2="16"/>
+      <line x1="220" y1="10" x2="220" y2="20"/><line x1="240" y1="10" x2="240" y2="16"/>
+      <line x1="260" y1="10" x2="260" y2="20"/><line x1="280" y1="10" x2="280" y2="16"/>
+      <line x1="300" y1="10" x2="300" y2="20"/>
+    </g>
+  </svg>
+  <svg class="deco-clip" viewBox="0 0 60 90" fill="none">
+    <path d="M15 10 C15 4 22 0 30 0 C38 0 45 4 45 10 L45 70 C45 78 39 84 30 84 C21 84 15 78 15 70 L15 22" stroke="#27364B" stroke-width="3"/>
+    <path d="M22 10 C22 7 26 5 30 5 C34 5 38 7 38 10 L38 65 C38 70 35 73 30 73 C25 73 22 70 22 65 L22 26" stroke="#27364B" stroke-width="3"/>
+  </svg>
+  <svg class="deco-clip2" viewBox="0 0 60 90" fill="none">
+    <path d="M15 10 C15 4 22 0 30 0 C38 0 45 4 45 10 L45 70 C45 78 39 84 30 84 C21 84 15 78 15 70 L15 22" stroke="#27364B" stroke-width="3"/>
+    <path d="M22 10 C22 7 26 5 30 5 C34 5 38 7 38 10 L38 65 C38 70 35 73 30 73 C25 73 22 70 22 65 L22 26" stroke="#27364B" stroke-width="3"/>
+  </svg>
+</div>
+
+<main class="stage">
+  <div class="stage-heading">
+    <p class="eyebrow">STUDENT IDENTIFICATION QUIZ</p>
+    <h1>生徒手帳クイズ</h1>
+  </div>
+
+  <section class="techo-card" aria-label="生徒手帳カード">
+    <div class="card-head">
+      <div class="emblem-title">
+        <svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true">
+          <circle cx="23" cy="23" r="21" fill="none" stroke="#B9975B" stroke-width="1.5"/>
+          <circle cx="23" cy="23" r="17" fill="none" stroke="#B9975B" stroke-width="1"/>
+          <!-- 本のモチーフ -->
+          <path d="M23 16 C19 13.5 15 13.5 12 15 L12 30 C15 28.5 19 28.5 23 31 C27 28.5 31 28.5 34 30 L34 15 C31 13.5 27 13.5 23 16 Z" fill="none" stroke="#B9975B" stroke-width="1.4"/>
+          <line x1="23" y1="16" x2="23" y2="31" stroke="#B9975B" stroke-width="1.2"/>
+          <!-- 翼のモチーフ -->
+          <path d="M8 20 C6 18 5 15 6 12 C9 13 11 15 11 18 Z" fill="#B9975B" opacity="0.85"/>
+          <path d="M38 20 C40 18 41 15 40 12 C37 13 35 15 35 18 Z" fill="#B9975B" opacity="0.85"/>
+        </svg>
+        <div class="head-text">
+          <p class="school-line">ARIUS FEDERAL STUDENT ORGANIZATION</p>
+          <p class="doc-title">生徒手帳</p>
+        </div>
+      </div>
+      <div class="card-no">整理番号<strong>No. 0726</strong></div>
+    </div>
+
+    <div class="card-body">
+      <div class="photo-col">
+        <div class="photo-slot" id="photoSlot">
+          <div class="no-photo">NO<br>PHOTO<span>写真未提出</span></div>
+          <div class="silhouette" aria-hidden="true">
+            <svg viewBox="0 0 100 130">
+              <ellipse cx="50" cy="34" rx="16" ry="18" fill="#27364B" opacity="0.85"/>
+              <path d="M20 128 C20 92 33 74 50 74 C67 74 80 92 80 128 Z" fill="#27364B" opacity="0.85"/>
+            </svg>
+          </div>
+        </div>
+        <p class="photo-caption">写真欄</p>
+      </div>
+
+      <div class="fields">
+        <div class="name-row">
+          <span class="field-label">氏名</span>
+          <span class="field-value" id="nameValue"><span class="blank-dots">・・・・・・・・</span></span>
+        </div>
+        <div class="field-row"><span class="field-label">学園</span><span class="field-value" data-field="school"><span class="blank-dots">……………</span></span></div>
+        <div class="field-row"><span class="field-label">部活</span><span class="field-value" data-field="club"><span class="blank-dots">……………</span></span></div>
+        <div class="field-row"><span class="field-label">年齢</span><span class="field-value" data-field="age"><span class="blank-dots">……………</span></span></div>
+        <div class="field-row"><span class="field-label">誕生日</span><span class="field-value" data-field="birthday"><span class="blank-dots">……………</span></span></div>
+        <div class="field-row"><span class="field-label">身長</span><span class="field-value" data-field="height"><span class="blank-dots">……………</span></span></div>
+        <div class="field-row"><span class="field-label">趣味</span><span class="field-value" data-field="hobby"><span class="blank-dots">……………</span></span></div>
+        <div class="field-row"><span class="field-label">武器</span><span class="field-value" data-field="weapon"><span class="blank-dots">……………</span></span></div>
+        <div class="field-row"><span class="field-label">CV</span><span class="field-value" data-field="cv"><span class="blank-dots">……………</span></span></div>
+        <div class="field-row"><span class="field-label">姓</span><span class="field-value" data-field="surname"><span class="blank-dots">……………</span></span></div>
+      </div>
+    </div>
+
+    <div class="stamp-zone" id="stampZone" aria-hidden="true">
+      <svg viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#C8402F" stroke-width="3"/>
+        <circle cx="60" cy="60" r="44" fill="none" stroke="#C8402F" stroke-width="1.4"/>
+        <path id="stampArcTop" d="M 20 60 A 40 40 0 0 1 100 60" fill="none"/>
+        <path id="stampArcBottom" d="M 100 62 A 40 40 0 0 1 20 62" fill="none"/>
+        <text font-family="'Zen Old Mincho', serif" font-size="9" fill="#C8402F" letter-spacing="1.5">
+          <textPath href="#stampArcTop" startOffset="50%" text-anchor="middle">キヴォトス連邦学生機構</textPath>
+        </text>
+        <text font-family="'Zen Old Mincho', serif" font-size="8.5" fill="#C8402F" letter-spacing="1.5">
+          <textPath href="#stampArcBottom" startOffset="50%" text-anchor="middle">SCHOLASTIC AFFAIRS DIV.</textPath>
+        </text>
+        <text x="60" y="70" font-family="'Zen Old Mincho', serif" font-weight="700" font-size="30" fill="#C8402F" text-anchor="middle">認定</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="control-panel" aria-label="操作パネル">
+    <div class="control-row">
+      <button class="btn" id="investigateBtn" type="button">調べる</button>
+      <span class="hint-progress" id="hintProgress">手がかり 0 / 10</span>
+    </div>
+    <form class="answer-row" id="answerForm">
+      <label for="answerInput" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">生徒名を入力</label>
+      <input type="text" id="answerInput" placeholder="生徒の名前を入力…（例: ホシノ）" autocomplete="off">
+      <button class="btn-submit" type="submit">回答する</button>
+    </form>
+    <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="report" id="reportPanel" aria-live="polite">
+    <p class="r-eyebrow">成績通知書 — RESULT</p>
+    <p class="r-rank" id="reportRank">S</p>
+    <p class="r-score">スコア <strong id="reportScore">10</strong> / 10 点　（<span id="reportHints">1</span>ヒントで正解）</p>
+    <p class="r-note">小鳥遊ホシノを識別しました。よくできました。</p>
+  </section>
+</main>
+
+<script>
+  (function () {
+    var HINTS = [
+      { key: "school", text: "アビドス高等学校（3年生）" },
+      { key: "club", text: "対策委員会" },
+      { key: "age", text: "17歳" },
+      { key: "birthday", text: "1月2日" },
+      { key: "height", text: "145cm" },
+      { key: "hobby", text: "昼寝、ゴロゴロすること" },
+      { key: "weapon", text: "Eye of Horus" },
+      { key: "cv", text: "花守ゆみり" },
+      { key: "surname", text: "小鳥遊" }
+    ];
+    var ANSWER_VARIANTS = ["ホシノ", "小鳥遊ホシノ"];
+    var TOTAL_STAGES = HINTS.length + 1; // 最後にシルエット
+
+    var stage = 0; // 開示済みステージ数
+    var solved = false;
+
+    var investigateBtn = document.getElementById("investigateBtn");
+    var hintProgress = document.getElementById("hintProgress");
+    var photoSlot = document.getElementById("photoSlot");
+    var answerForm = document.getElementById("answerForm");
+    var answerInput = document.getElementById("answerInput");
+    var feedback = document.getElementById("feedback");
+    var nameValue = document.getElementById("nameValue");
+    var stampZone = document.getElementById("stampZone");
+    var reportPanel = document.getElementById("reportPanel");
+    var reportRank = document.getElementById("reportRank");
+    var reportScore = document.getElementById("reportScore");
+    var reportHints = document.getElementById("reportHints");
+
+    function fillField(key, text) {
+      var el = document.querySelector('[data-field="' + key + '"]');
+      el.innerHTML = '<span class="ink">' + text + '</span>';
+      requestAnimationFrame(function () {
+        el.classList.add("filled");
+      });
+    }
+
+    function revealNext() {
+      if (solved || stage >= TOTAL_STAGES) return;
+      stage += 1;
+      if (stage <= HINTS.length) {
+        var h = HINTS[stage - 1];
+        fillField(h.key, h.text);
+      } else {
+        photoSlot.classList.add("revealed");
+      }
+      hintProgress.textContent = "手がかり " + stage + " / " + TOTAL_STAGES;
+      if (stage >= TOTAL_STAGES) {
+        investigateBtn.disabled = true;
+        investigateBtn.textContent = "手がかりを使い切りました";
+      }
+    }
+
+    function scoreFor(stageUsed) {
+      var s = 11 - Math.max(1, stageUsed);
+      return Math.max(1, Math.min(10, s));
+    }
+
+    function rankFor(score) {
+      if (score >= 9) return "S";
+      if (score >= 7) return "A";
+      if (score >= 5) return "B";
+      if (score >= 3) return "C";
+      return "D";
+    }
+
+    function normalize(str) {
+      return str.trim();
+    }
+
+    answerForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (solved) return;
+      var raw = normalize(answerInput.value);
+      if (!raw) return;
+
+      var isCorrect = ANSWER_VARIANTS.indexOf(raw) !== -1;
+
+      if (!isCorrect) {
+        feedback.textContent = "不正解… もう一度確認してみて。";
+        feedback.classList.remove("ok");
+        return;
+      }
+
+      solved = true;
+      var stageUsed = Math.max(1, stage);
+      var score = scoreFor(stageUsed);
+      var rank = rankFor(score);
+
+      feedback.textContent = "正解！ 認定されました。";
+      feedback.classList.add("ok");
+
+      answerInput.disabled = true;
+      answerForm.querySelector(".btn-submit").disabled = true;
+      investigateBtn.disabled = true;
+
+      nameValue.innerHTML = '<span class="ink">小鳥遊ホシノ</span>';
+      requestAnimationFrame(function () {
+        nameValue.querySelector(".ink").parentElement.classList.add("filled");
+      });
+
+      stampZone.classList.add("stamped");
+
+      reportRank.textContent = rank;
+      reportRank.style.color = (rank === "D") ? "#C8402F" : "#7FA96B";
+      reportScore.textContent = score;
+      reportHints.textContent = stageUsed;
+      requestAnimationFrame(function () {
+        reportPanel.classList.add("show");
+      });
+    });
+
+    investigateBtn.addEventListener("click", revealNext);
+  })();
+</script>

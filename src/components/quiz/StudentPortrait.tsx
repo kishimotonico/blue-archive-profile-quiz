@@ -1,43 +1,100 @@
+import { useState } from "react";
 import type { Student, PortraitState } from "../../quiz-core";
+import Modal from "../common/Modal";
 import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
 interface StudentPortraitProps {
   student: Student | null;
   state: PortraitState;
-  variant?: "default" | "sidebar";
+  correct?: boolean;
 }
 
-function StudentPortrait({ student, state, variant = "default" }: StudentPortraitProps) {
-  const isSidebar = variant === "sidebar";
+// 立ち絵は縦長なので、通常はバストアップに切り取って大きく見せ、
+// 全身は「全身を見る」モーダルで確認できるようにしている
+function StudentPortrait({ student, state, correct = false }: StudentPortraitProps) {
+  // 開いたときの生徒IDを覚えておき、現在の生徒と一致する間だけ開いている扱いにする。
+  // useEffectで生徒切り替えを検知してsetStateするより再レンダリングが少なく済む
+  const [openedForStudentId, setOpenedForStudentId] = useState<string | null>(null);
+  const revealed = state === "revealed";
+  const hidden = state === "hidden";
+  const showFullBody = !hidden && openedForStudentId !== null && openedForStudentId === student?.id;
+
+  const imageStateClass = revealed
+    ? "opacity-100"
+    : "opacity-50 brightness-0 pointer-events-none select-none";
 
   return (
-    <div
-      className={
-        isSidebar ? "relative w-full h-full flex items-center justify-center" : "relative w-56 h-64"
-      }
-    >
-      {/* ?マーク（hidden時に表示） */}
-      <div
-        className={`absolute inset-0 bg-linear-to-b from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-300 transition-opacity duration-500 ${
-          state === "hidden" ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <span className={`${isSidebar ? "text-6xl" : "text-7xl"} text-gray-400 font-light`}>?</span>
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-ba-border bg-white">
+      <div className="relative min-h-0 flex-1 overflow-hidden bg-linear-to-b from-ba-sky-1 to-white">
+        {student && !hidden ? (
+          <img
+            src={getPortraitImageUrl(student)}
+            alt={revealed ? student.fullName : "シルエット"}
+            draggable={false}
+            className={`absolute inset-0 h-full w-full object-cover object-top transition-all duration-500 ${imageStateClass}`}
+            onError={(e) => {
+              e.currentTarget.src = NO_IMAGE_URL;
+            }}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-7xl font-light text-ba-blue/40">?</span>
+          </div>
+        )}
+
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white/90"
+          aria-hidden="true"
+        />
+
+        {revealed && (
+          <span className="absolute bottom-2 left-3 rounded-full bg-ba-blue px-3 py-1 text-xs font-bold text-white">
+            {correct ? "CORRECT!" : "ANSWER"}
+          </span>
+        )}
       </div>
 
-      {/* 立ち絵（silhouette/revealed時に表示） */}
-      {student && state !== "hidden" && (
-        <img
-          src={getPortraitImageUrl(student)}
-          alt={state === "revealed" ? student.fullName : "シルエット"}
-          draggable={false}
-          className={`absolute inset-0 h-full w-auto mx-auto object-contain rounded-2xl shadow-lg transition-all duration-500 select-none ${
-            state === "silhouette" ? "opacity-50 brightness-0 pointer-events-none" : "opacity-100"
+      {/* hiddenの間も条件分岐で消さず invisible で隠す（消すと立ち絵の表示枠の高さが変わるため） */}
+      <div
+        className={`flex shrink-0 items-center justify-between gap-2 border-t border-ba-border px-3 py-2 ${
+          hidden ? "invisible" : ""
+        }`}
+        aria-hidden={hidden || undefined}
+      >
+        <span
+          className={`min-w-0 truncate font-display font-black ${
+            revealed ? "text-ba-navy" : "tracking-[0.24em] text-ba-ink-soft/70"
           }`}
-          onError={(e) => {
-            e.currentTarget.src = NO_IMAGE_URL;
-          }}
-        />
+        >
+          {revealed && student ? student.fullName : "？？？"}
+        </span>
+        <button
+          type="button"
+          onClick={() => student && setOpenedForStudentId(student.id)}
+          disabled={!student || hidden}
+          tabIndex={hidden ? -1 : undefined}
+          className="shrink-0 rounded-full border border-ba-sky-2 bg-ba-sky-1 px-3 py-1 text-xs font-bold text-ba-blue transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue disabled:opacity-40"
+        >
+          全身を見る
+        </button>
+      </div>
+
+      {student && !hidden && (
+        <Modal
+          isOpen={showFullBody}
+          onClose={() => setOpenedForStudentId(null)}
+          title={revealed ? student.fullName : "シルエット"}
+        >
+          <img
+            src={getPortraitImageUrl(student)}
+            alt={revealed ? student.fullName : "シルエット"}
+            draggable={false}
+            className={`mx-auto max-h-[60dvh] w-auto object-contain ${revealed ? "" : "brightness-0 opacity-60"}`}
+            onError={(e) => {
+              e.currentTarget.src = NO_IMAGE_URL;
+            }}
+          />
+        </Modal>
       )}
     </div>
   );

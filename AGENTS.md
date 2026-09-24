@@ -8,7 +8,9 @@
 /
 ├── scrape/              # スクレイピング関連のコード
 ├── specs/               # 仕様や開発に関するドキュメント
-│   └── 001_app-concept.md
+│   ├── 001_app-concept.md
+│   ├── 002_design-renewal-followups.md  # デザイン刷新後の設計改善案
+│   └── design-mocks/    # デザイン検討時の静的HTMLモック（採用案はREADME参照）
 ├── data/                # クイズに必要なデータ
 │   ├── students.json    # 全生徒のプロフィール
 │   └── images/portrait/ # 生徒の立ち絵画像（リポジトリには含めない）
@@ -59,6 +61,7 @@
 - MUST: Reactのベストプラクティスに従うこと
   - useEffectの依存配列を適切に設定し、無限ループを避けること
   - 状態更新がre-renderを引き起こす場合、意図した動作か必ず確認すること
+- SHOULD: コード内のコメントはWHY（理由・制約）とWHY NOT（代替案を採らない理由）だけを書き、WHAT/HOWや変更の経緯は書かない。ただしpropsのJSDocにはWHATを書いてもよい（名前と型から明らかなものは除く）
 
 ### UI/UX開発
 

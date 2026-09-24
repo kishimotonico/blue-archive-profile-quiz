@@ -3,20 +3,26 @@ import type { Hint } from "../../quiz-core";
 interface HintCardProps {
   hint: Hint;
   revealed: boolean;
+  justRevealed?: boolean;
+  className?: string;
 }
 
-function HintCard({ hint, revealed }: HintCardProps) {
+function HintCard({ hint, revealed, justRevealed = false, className = "" }: HintCardProps) {
   return (
     <div
-      className={`flex items-start justify-between py-2 px-3 rounded-lg border transition-all min-h-12 ${
-        revealed ? "bg-white border-blue-400 shadow-xs" : "bg-gray-100 border-gray-200"
-      }`}
+      className={`relative flex min-h-[84px] flex-col justify-center gap-1.5 overflow-hidden rounded-2xl border px-3.5 py-2.5 text-left ${
+        revealed ? "border-ba-blue/40 bg-white" : "border-transparent bg-ba-sky-1/60"
+      } ${justRevealed ? "ba-shine" : ""} ${className}`}
     >
-      <span className="text-xs text-gray-600 w-14 shrink-0 pt-0.5">{hint.label}</span>
+      {/* 未開示との差は背景色（bg-ba-sky-1/60 vs bg-white）で付けており、
+          文字色自体は不透明度を下げるとAAコントラストを割るため両方とも同じ濃さにする */}
+      <span className="text-xs font-bold text-ba-ink-soft">{hint.label}</span>
+      {/* 未開示でも値の行ぶんの高さを確保し、開示前後でラベル位置がずれないようにする */}
       <span
-        className={`text-xs font-semibold text-right flex-1 ml-1 ${revealed ? "text-gray-800" : "text-gray-400"}`}
+        className={`text-sm font-bold leading-snug text-ba-navy lg:text-base ${revealed ? "" : "invisible"}`}
+        aria-hidden={!revealed}
       >
-        {revealed ? hint.value : "???"}
+        {revealed ? hint.value : "\u3000"}
       </span>
     </div>
   );

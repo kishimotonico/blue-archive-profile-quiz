@@ -66,14 +66,16 @@ function QuizScreen({
 
   const afterAnswerActionsWrapperClass = isDesktop ? "mt-2 w-full" : "mt-1 w-full max-w-xs";
 
-  // 回答前後でこのパネルの高さが変わると立ち絵パネルの高さも変わってしまうため、
-  // 回答前パネルの実測高さに合わせた min-height を結果パネル側にも同じ値で使う
-  const answerPanelMinHeightClass = "min-h-[152px]";
+  // 同じ生徒が連続で出題される可能性があるため student.id だけでは一意にならず、
+  // scrollResetKey（フリープレイの問題インデックス）と組み合わせて問題ごとに変える。
+  // これによりQuizPlayAreaが回答後も描画され続けても、次の問題でAnswerInputの入力が
+  // 持ち越されず作り直される。
+  const playAreaKey = scrollResetKey !== undefined ? `${scrollResetKey}-${student.id}` : student.id;
 
   const playArea = (
     <QuizPlayArea
+      key={playAreaKey}
       variant={isDesktop ? "panel" : "footer"}
-      panelClassName={isDesktop ? answerPanelMinHeightClass : ""}
       hintButtonRef={hintButtonRef}
       revealedHintCount={revealedHintCount}
       hintsLength={hints.length}
@@ -82,7 +84,6 @@ function QuizScreen({
       giveUp={giveUp}
       answerFeedback={answerFeedback}
       errorKey={errorKey}
-      answered={answered}
     />
   );
 
@@ -149,18 +150,26 @@ function QuizScreen({
         {isDesktop && (
           <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
             <StudentPortrait student={student} state={portraitState} correct={correct} />
-            {answered ? (
-              <div
-                className={`flex shrink-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 ${answerPanelMinHeightClass}`}
-              >
-                <StudentReveal student={student} correct={correct} score={score} showName={false} />
-                {afterAnswerActions && (
-                  <div className={afterAnswerActionsWrapperClass}>{afterAnswerActions}</div>
-                )}
+            {/* 両方のセルを同じグリッドセルに重ねて、大きい方の高さにセルを揃える。
+                実測値の min-height に頼らず、回答前後で立ち絵パネルの高さが変わらないようにする */}
+            <div className="grid shrink-0">
+              <div className={`[grid-area:1/1] ${answered ? "invisible" : ""}`} inert={answered}>
+                {playArea}
               </div>
-            ) : (
-              playArea
-            )}
+              {answered && (
+                <div className="[grid-area:1/1] flex flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5">
+                  <StudentReveal
+                    student={student}
+                    correct={correct}
+                    score={score}
+                    showName={false}
+                  />
+                  {afterAnswerActions && (
+                    <div className={afterAnswerActionsWrapperClass}>{afterAnswerActions}</div>
+                  )}
+                </div>
+              )}
+            </div>
           </aside>
         )}
       </main>

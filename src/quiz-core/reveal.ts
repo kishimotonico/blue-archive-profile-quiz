@@ -32,3 +32,11 @@ export function getPotentialScore(state: RoundState): number | null {
   if (state.status === "answered") return null;
   return calculateScore(state.revealedHintCount, true);
 }
+
+/** 開示ボタンが次に何をすべきかを示す。answered はボタン自体を出さないため null。 */
+export function getNextStep(state: RoundState): "hint" | "silhouette" | "giveUp" | null {
+  if (state.status === "answered") return null;
+  if (state.revealedHintCount < state.question.hints.length) return "hint";
+  if (state.revealedHintCount === state.question.hints.length) return "silhouette";
+  return "giveUp";
+}

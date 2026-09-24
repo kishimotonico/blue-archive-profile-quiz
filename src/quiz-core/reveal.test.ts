@@ -5,6 +5,7 @@ import {
   getPortraitState,
   getRemainingStages,
   getPotentialScore,
+  getNextStep,
 } from "./reveal";
 import { roundReducer } from "./round";
 import type { Hint, QuizQuestion, Student } from "./types";
@@ -110,5 +111,24 @@ describe("getPotentialScore", () => {
 
   it("answered では null", () => {
     expect(getPotentialScore(answeredState(1))).toBeNull();
+  });
+});
+
+describe("getNextStep", () => {
+  it("ヒントが残っていれば hint", () => {
+    expect(getNextStep(playingState(1))).toBe("hint");
+    expect(getNextStep(playingState(2))).toBe("hint");
+  });
+
+  it("開示数がヒント数と等しければ silhouette", () => {
+    expect(getNextStep(playingState(3))).toBe("silhouette");
+  });
+
+  it("開示数がヒント数を超えていれば giveUp", () => {
+    expect(getNextStep(playingState(4))).toBe("giveUp");
+  });
+
+  it("answered では null", () => {
+    expect(getNextStep(answeredState(1))).toBeNull();
   });
 });

@@ -48,7 +48,13 @@ export { calculateScore, getMaxScore, getScoreRank } from "./scoring";
 
 // 一問の進行状態
 export { startRound, restoreRound, toRoundSnapshot, roundReducer, judgeSubmit } from "./round";
-export type { RoundState, RoundSnapshot, RoundAction, SubmitJudgement } from "./round";
+export type {
+  RoundState,
+  RoundSnapshot,
+  RoundAction,
+  SubmitJudgement,
+  SubmitOutcome,
+} from "./round";
 
 // フリープレイのセッション
 export { regularSessionReducer } from "./regularSession";
@@ -65,4 +71,5 @@ export {
   getPortraitState,
   getRemainingStages,
   getPotentialScore,
+  getNextStep,
 } from "./reveal";

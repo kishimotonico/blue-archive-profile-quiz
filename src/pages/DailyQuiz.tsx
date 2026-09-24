@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
@@ -10,37 +10,26 @@ import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizScreen from "../components/quiz/QuizScreen";
-import { toQuizScreenRoundProps } from "../components/quiz/toQuizScreenProps";
 
 function formatTimeUntilNextReset({ hours, minutes }: { hours: number; minutes: number }): string {
   return hours > 0 ? `${hours}時間${minutes}分後` : `${minutes}分後`;
 }
 
 function DailyQuiz() {
-  const { state, questionId, reveal, submit, giveUp, answerFeedback, errorKey } = useDailyQuiz();
+  const { state, reveal, submit, giveUp, answerFeedback, errorKey } = useDailyQuiz();
 
   const totalAttempts = useAtomValue(totalAttemptsAtom);
   const scoreDistribution = useAtomValue(scoreDistributionAtom);
   const bestScore = useAtomValue(bestScoreAtom);
   const navigate = useNavigate();
   const [showResultModal, setShowResultModal] = useState(false);
-  const hintButtonRef = useRef<HTMLButtonElement>(null);
   const showResultButtonRef = useRef<HTMLButtonElement>(null);
-
-  const answered = state.status === "ready" && state.session.round.status === "answered";
-
-  // クイズ開始時・問題切替時にヒントボタンにフォーカス
-  useEffect(() => {
-    if (questionId === null || answered) return;
-    hintButtonRef.current?.focus();
-  }, [questionId, answered]);
 
   if (state.status === "loading") return <QuizLoadingState />;
   if (state.status === "error") return <QuizErrorState />;
 
   const { session } = state;
   const { round } = session;
-  const roundProps = toQuizScreenRoundProps(round);
   const result = round.status === "answered" ? round.result : null;
 
   const completedNotice = session.completedOnLoad && (
@@ -74,13 +63,10 @@ function DailyQuiz() {
       <QuizScreen
         modeLabel="日替わりクイズ"
         heading={heading}
-        {...roundProps}
-        hintButtonRef={hintButtonRef}
-        revealNextHint={reveal}
-        submitAnswer={(answer) => submit(answer) === "accepted"}
-        giveUp={giveUp}
-        answerFeedback={answerFeedback}
-        errorKey={errorKey}
+        questionId={round.question.key.baseDate}
+        round={round}
+        actions={{ reveal, submit, giveUp }}
+        answerError={{ message: answerFeedback, key: errorKey }}
         afterAnswerActions={
           <>
             {completedNotice}

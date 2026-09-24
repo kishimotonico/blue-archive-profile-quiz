@@ -12,6 +12,7 @@ import {
   CURRENT_ALGORITHM_VERSION,
   type RegularSession,
   type QuizKey,
+  type SubmitOutcome,
 } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import {
@@ -22,8 +23,6 @@ import {
 import { allStudentsAtom } from "../store/students";
 
 const TOTAL_QUESTIONS = 10;
-
-type SubmitOutcome = "accepted" | "unknownStudent";
 
 function generateMasterKey(): QuizKey {
   return {

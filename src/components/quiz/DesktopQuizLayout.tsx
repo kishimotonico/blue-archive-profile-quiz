@@ -1,0 +1,85 @@
+import { useEffect, useRef } from "react";
+import { getPortraitState, getVisibleHintCount } from "../../quiz-core";
+import HintList from "./HintList";
+import QuizPlayArea from "./QuizPlayArea";
+import QuizTitleRow from "./QuizTitleRow";
+import StudentPortrait from "./StudentPortrait";
+import StudentReveal from "./StudentReveal";
+import type { QuizLayoutProps } from "./quizLayoutTypes";
+
+// lg（1024px）以上。立ち絵は右カラムに大きく表示し、ヒント一覧は左カラムに2列で並べる
+function DesktopQuizLayout({
+  modeLabel,
+  heading,
+  round,
+  actions,
+  answer,
+  afterAnswerActions,
+}: QuizLayoutProps) {
+  const hintButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (round.status === "playing") hintButtonRef.current?.focus();
+    // playing でマウントされたとき（新しい問題・再開・レイアウト切り替え）にだけフォーカスしたいため、
+    // 依存配列は空にしてマウント時の1回だけに絞る
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { student } = round.question;
+  const answered = round.status === "answered";
+  const correct = answered && round.result.correct;
+  const score = answered ? round.result.score : 0;
+  const portraitState = getPortraitState(round);
+  const visibleHintCount = getVisibleHintCount(round);
+
+  const playArea = (
+    <QuizPlayArea
+      variant="panel"
+      hintButtonRef={hintButtonRef}
+      round={round}
+      actions={actions}
+      answer={answer}
+    />
+  );
+
+  return (
+    <>
+      <div className="flex-1 flex flex-col min-h-0 min-w-0">
+        <QuizTitleRow modeLabel={modeLabel} heading={heading} round={round} />
+
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <HintList
+            hints={round.question.hints}
+            visibleCount={visibleHintCount}
+            animateReveal={round.status === "playing"}
+            layout="desktop"
+          />
+        </div>
+      </div>
+
+      <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
+        <StudentPortrait student={student} state={portraitState} correct={correct} />
+        {/* 両方のセルを同じグリッドセルに重ねて、大きい方の高さにセルを揃える。
+            実測値の min-height に頼らず、回答前後で立ち絵パネルの高さが変わらないようにする */}
+        {/* grid-cols-1とmin-w-0が無いと、グリッドアイテムのデフォルトmin-width:autoにより
+            内側のw-full要素の幅が親のトラック幅を無視して広がり、右カラムがはみ出す */}
+        <div className="grid grid-cols-1 shrink-0">
+          <div
+            className={`col-start-1 row-start-1 min-w-0 ${answered ? "invisible" : ""}`}
+            inert={answered}
+          >
+            {playArea}
+          </div>
+          {answered && (
+            <div className="col-start-1 row-start-1 flex min-w-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5">
+              <StudentReveal student={student} correct={correct} score={score} showName={false} />
+              {afterAnswerActions && <div className="mt-2 w-full">{afterAnswerActions}</div>}
+            </div>
+          )}
+        </div>
+      </aside>
+    </>
+  );
+}
+
+export default DesktopQuizLayout;

@@ -20,6 +20,9 @@ export type RoundAction =
   | { type: "submit"; answer: string; correct: boolean } // 判定済みの確定回答のみ受け取る
   | { type: "giveUp" };
 
+/** controller の submit 呼び出し結果。unknownStudent は入力欄の文字を残す判断に使う。 */
+export type SubmitOutcome = "accepted" | "unknownStudent";
+
 export function startRound(question: QuizQuestion): RoundState {
   return { status: "playing", question, revealedHintCount: 1 };
 }

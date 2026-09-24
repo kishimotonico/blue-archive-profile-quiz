@@ -9,12 +9,11 @@ import {
   createQuestion,
   getDailyDate,
   type DailySession,
+  type SubmitOutcome,
 } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import { dailyResultsStorageAtom, dailyProgressAtom, recordDailyResultAtom } from "../store/daily";
 import { allStudentsAtom } from "../store/students";
-
-type SubmitOutcome = "accepted" | "unknownStudent";
 
 export function useDailyQuiz() {
   const [state, dispatch] = useReducer(dailySessionReducer, { status: "loading" });

@@ -14,11 +14,9 @@ function HintCard({ hint, revealed, justRevealed = false, className = "" }: Hint
         revealed ? "border-ba-blue/40 bg-white" : "border-transparent bg-ba-sky-1/60"
       } ${justRevealed ? "ba-shine" : ""} ${className}`}
     >
-      <span
-        className={`text-xs font-bold ${revealed ? "text-ba-ink-soft" : "text-ba-ink-soft/70"}`}
-      >
-        {hint.label}
-      </span>
+      {/* 未開示との差は背景色（bg-ba-sky-1/60 vs bg-white）で付けており、
+          文字色自体は不透明度を下げるとAAコントラストを割るため両方とも同じ濃さにする */}
+      <span className="text-xs font-bold text-ba-ink-soft">{hint.label}</span>
       {/* 未開示でも値の行ぶんの高さを確保し、開示前後でラベル位置がずれないようにする */}
       <span
         className={`text-sm font-bold leading-snug text-ba-navy lg:text-base ${revealed ? "" : "invisible"}`}

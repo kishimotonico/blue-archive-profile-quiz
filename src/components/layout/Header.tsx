@@ -54,7 +54,7 @@ function Header() {
     <>
       <div className="ba-stripe-band" aria-hidden="true" />
 
-      <header className="hidden md:flex bg-linear-to-r from-ba-cyan to-ba-blue text-white h-12 items-center px-4 shadow-xs relative z-50">
+      <header className="hidden md:flex bg-linear-to-r from-ba-blue-light to-ba-blue text-white h-12 items-center px-4 shadow-xs relative z-50">
         <Link
           to="/"
           className="font-display text-lg font-black hover:opacity-90 transition-opacity"
@@ -105,7 +105,7 @@ function Header() {
         ref={menuRef}
         id="mobile-menu"
         inert={!isMenuOpen}
-        className={`md:hidden fixed top-0 right-0 h-full w-64 bg-linear-to-b from-ba-cyan to-ba-blue text-white shadow-2xl z-50 transition-transform duration-300 ${
+        className={`md:hidden fixed top-0 right-0 h-full w-64 bg-linear-to-b from-ba-blue-light to-ba-blue text-white shadow-2xl z-50 transition-transform duration-300 ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

@@ -4,7 +4,10 @@ layer(base);
 @import "tailwindcss";
 
 @theme {
-  --color-ba-blue: #128afa;
+  /* 白文字と重ねても4.5:1以上を保てるよう、装飾用のba-cyanより明度を落としてある。
+     文字を載せないストライプ帯やリングの装飾には元の色相のままのba-cyanを使う */
+  --color-ba-blue: #0960b8;
+  --color-ba-blue-light: #0478aa;
   --color-ba-cyan: #47c5fb;
   --color-ba-navy: #2b3a55;
   --color-ba-yellow: #ffee00;

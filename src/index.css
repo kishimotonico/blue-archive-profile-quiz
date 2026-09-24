@@ -70,23 +70,6 @@ body {
     );
   }
 
-  .ba-tag {
-    display: inline-block;
-    border-radius: 2px;
-    background: var(--color-ba-blue);
-    padding: 0.3rem 1rem;
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    font-weight: 900;
-    color: white;
-    transform: skewX(-10deg);
-  }
-  .ba-tag > * {
-    display: inline-block;
-    letter-spacing: 0.06em;
-    transform: skewX(10deg);
-  }
-
   .ba-ring-fill {
     transition: stroke-dashoffset 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }

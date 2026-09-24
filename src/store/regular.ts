@@ -12,7 +12,6 @@ export interface RegularQuizProgress {
 
 export const REGULAR_QUIZ_PROGRESS_KEY = "blue-archive-quiz-regular-progress-v3";
 
-// looseObject は未知キーを保持する（旧 isValidProgress が余剰プロパティを無視していた挙動と等価）。
 const questionResultSchema: v.GenericSchema<QuestionResult> = v.looseObject({
   studentId: v.string(),
   usedHintCount: v.number(),

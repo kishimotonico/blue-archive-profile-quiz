@@ -249,14 +249,14 @@ function DailyQuiz() {
         <div className="text-center">
           <HaloRingGauge
             value={score / 10}
-            size={124}
-            strokeWidth={8}
+            size={100}
+            strokeWidth={7}
             trackColor="var(--color-ba-border)"
             fillFrom="var(--color-ba-yellow)"
             fillTo="var(--color-ba-blue)"
-            className="mx-auto mb-2"
+            className="mx-auto mb-1"
           >
-            <span className="font-display text-4xl font-black text-ba-blue">
+            <span className="font-display text-3xl font-black text-ba-blue">
               {getScoreRank(score)}
             </span>
             <span className="text-[10px] tracking-widest text-ba-ink-soft">RANK</span>
@@ -265,25 +265,25 @@ function DailyQuiz() {
           <h2 className="text-sm font-bold text-ba-ink-soft mb-1">
             {correct ? "正解！" : "正解は…"}
           </h2>
-          <p className="font-display text-xl font-black text-ba-navy mb-4">
+          <p className="font-display text-xl font-black text-ba-navy mb-2">
             {currentQuestion.student.fullName}
           </p>
 
-          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-ba-yellow-soft/40 py-2 mb-4">
+          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-ba-yellow-soft/40 py-1.5 mb-3">
             <span className="font-display text-2xl font-black text-ba-navy">{score}</span>
             <span className="text-sm font-bold text-ba-ink-soft">/ 10 点</span>
           </div>
 
-          <p className="text-sm text-ba-ink-soft mb-2">使用ヒント数: {revealedHintCount}</p>
-          <p className="text-sm text-ba-ink-soft mb-6">
+          <p className="text-sm text-ba-ink-soft mb-1">使用ヒント数: {revealedHintCount}</p>
+          <p className="text-sm text-ba-ink-soft mb-4">
             次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
           </p>
 
           {/* 統計情報 */}
-          <div className="border-t border-ba-border pt-4 mb-6 text-left">
-            <h3 className="font-display text-base font-black text-ba-navy mb-3">統計情報</h3>
+          <div className="border-t border-ba-border pt-3 mb-4 text-left">
+            <h3 className="font-display text-base font-black text-ba-navy mb-2">統計情報</h3>
 
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-ba-ink-soft">累積挑戦回数:</span>
                 <span className="font-semibold text-ba-navy">{totalAttempts}回</span>
@@ -294,11 +294,11 @@ function DailyQuiz() {
               </div>
             </div>
 
-            <div className="mt-4">
-              <p className="text-sm text-ba-ink-soft mb-2">ランク分布:</p>
-              <div className="grid grid-cols-3 gap-2 text-xs text-ba-navy">
+            <div className="mt-3">
+              <p className="text-sm text-ba-ink-soft mb-1.5">ランク分布:</p>
+              <div className="grid grid-cols-3 gap-1.5 text-xs text-ba-navy">
                 {rankDistribution.map(({ label, count }) => (
-                  <div key={label} className="rounded-lg bg-ba-bg px-2 py-2 text-center">
+                  <div key={label} className="rounded-lg bg-ba-bg px-2 py-1.5 text-center">
                     <div className="font-bold">{label}</div>
                     <div>{count}回</div>
                   </div>
@@ -307,7 +307,7 @@ function DailyQuiz() {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Button variant="primary" className="w-full" onClick={() => navigate("/regular")}>
               もっと遊ぶ
             </Button>

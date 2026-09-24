@@ -3,27 +3,17 @@ import { useId, type ReactNode } from "react";
 interface HaloRingGaugeProps {
   /** 進捗率（0〜1）。範囲外の値は自動でクランプされる */
   value: number;
-  /** リングの直径(px) */
   size?: number;
-  /** リングの線幅(px) */
   strokeWidth?: number;
-  /** 未進捗部分（track）の色 */
   trackColor?: string;
-  /** 進捗部分のグラデーション開始色 */
   fillFrom?: string;
-  /** 進捗部分のグラデーション終了色 */
   fillTo?: string;
-  /** スクリーンリーダー向けラベル。指定するとリングが意味のある画像として扱われる */
+  /** 指定するとリングが意味のある画像としてスクリーンリーダーに扱われる */
   label?: string;
   className?: string;
   children?: ReactNode;
 }
 
-/**
- * ブルアカ風のヘイロー型円形リングゲージ。
- * ヒント残数表示（ヘッダー）や結果モーダルのランクリングなど、
- * 進捗率をSVGのstroke-dasharrayで表現する用途で共通利用する。
- */
 function HaloRingGauge({
   value,
   size = 64,

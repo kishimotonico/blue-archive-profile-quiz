@@ -4,10 +4,7 @@ interface StudentRevealProps {
   student: Student;
   correct: boolean;
   score: number;
-  /**
-   * 生徒名を表示するかどうか。デスクトップでは立ち絵パネルの名前行と重複するため false にする。
-   * モバイルは立ち絵に名前行が無いため true のまま使う。
-   */
+  /** デスクトップでは立ち絵パネル側に名前行があるため、重複しないよう false にする */
   showName?: boolean;
 }
 

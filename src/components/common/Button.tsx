@@ -18,11 +18,8 @@ function Button({
     "inline-flex items-center justify-center font-display font-black rounded-lg shadow-sm transition-[filter,transform,box-shadow] duration-150 active:translate-y-0.5 active:shadow-none hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue focus-visible:ring-offset-1";
 
   const variantClasses = {
-    // シアン光沢グラデーション
     primary: "bg-linear-to-b from-ba-cyan to-ba-blue text-white",
-    // 白 + ボーダー
     secondary: "bg-white text-ba-navy border-2 border-ba-border shadow-none hover:bg-ba-bg",
-    // 黄色（回答する等の重要アクション用）
     accent: "bg-linear-to-b from-yellow-100 to-ba-yellow text-ba-navy",
   };
 

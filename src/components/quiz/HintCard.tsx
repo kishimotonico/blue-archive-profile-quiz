@@ -3,15 +3,10 @@ import type { Hint } from "../../quiz-core";
 interface HintCardProps {
   hint: Hint;
   revealed: boolean;
-  /** 直前の操作で開示されたカードかどうか。trueの間だけシャイン演出を再生する */
   justRevealed?: boolean;
   className?: string;
 }
 
-/**
- * 開示済み/未開示で外形（サイズ・角丸・内側の余白・ラベル位置）を揃えたヒントカード。
- * ラベルを常に先頭に置くことで、将来カードを裏返す開示アニメーションを付けやすくしている。
- */
 function HintCard({ hint, revealed, justRevealed = false, className = "" }: HintCardProps) {
   return (
     <div

@@ -240,7 +240,6 @@ function DailyQuiz() {
         )}
       />
 
-      {/* 結果モーダル */}
       <Modal isOpen={showResultModal} onClose={() => setShowResultModal(false)}>
         <div className="text-center">
           <HaloRingGauge

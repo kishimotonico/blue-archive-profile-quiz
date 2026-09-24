@@ -10,9 +10,7 @@ import StudentReveal from "./StudentReveal";
 import { getPortraitState } from "./portraitUtils";
 
 interface QuizScreenProps {
-  /** タイトルチップに表示するモード名（例: "DAILY QUIZ" / "FREE PLAY"） */
   modeLabel: string;
-  /** タイトルチップ右側の見出しテキスト */
   heading: ReactNode;
   student: Student;
   hints: Hint[];
@@ -20,7 +18,6 @@ interface QuizScreenProps {
   answered: boolean;
   correct: boolean;
   score: number;
-  /** ヒントエリアのスクロールコンテナ。呼び出し側で scrollTo 等の制御に使う */
   scrollContainerRef: RefObject<HTMLDivElement | null>;
   hintButtonRef: RefObject<HTMLButtonElement | null>;
   revealNextHint: () => void;
@@ -28,19 +25,12 @@ interface QuizScreenProps {
   giveUp: () => void;
   answerFeedback: string | null;
   errorKey: number;
-  /**
-   * 回答後、結果表示の下に出すページ固有のアクション
-   * （モバイルは結果表示の下、デスクトップは右カラムの結果カード内）。
-   * モバイルとデスクトップでスタイルや有無が異なるため isDesktop を渡す。
-   */
+  /** モバイルとデスクトップで表示位置・スタイルが異なるため isDesktop を渡す */
   renderAfterAnswerActions?: (isDesktop: boolean) => ReactNode;
 }
 
-/**
- * 日替わりクイズ・フリープレイ共通のクイズ画面レイアウト。
- * タイトル行、ヒント一覧、モバイル/デスクトップの出し分けをここに集約する。
- * 結果モーダルや初期化・進捗保存などページ固有のロジックは呼び出し側に残す。
- */
+// 日替わりクイズ・フリープレイで共通のレイアウトのみを持つ。
+// 結果モーダルや初期化・進捗保存などページ固有のロジックは呼び出し側に残す。
 function QuizScreen({
   modeLabel,
   heading,
@@ -61,12 +51,11 @@ function QuizScreen({
 }: QuizScreenProps) {
   const isDesktop = useIsDesktop();
   const portraitState = getPortraitState(answered, revealedHintCount, hints.length);
-  const totalStages = hints.length + 1; // 全ヒント + シルエット
+  const totalStages = hints.length + 1; // シルエット表示も1ステージとして数える
   const remainingStages = Math.max(totalStages - revealedHintCount, 0);
 
-  // デスクトップ右カラム下段パネルの高さを回答前後で揃えるための min-height。
-  // 回答前パネル（QuizPlayArea variant="panel"）の実測高さに合わせている。
-  // 変更する場合は下の結果パネルの min-height と揃えること。
+  // 回答前後でこのパネルの高さが変わると立ち絵パネルの高さも変わってしまうため、
+  // 回答前パネルの実測高さに合わせた min-height を結果パネル側にも同じ値で使う
   const answerPanelMinHeightClass = "min-h-[152px]";
 
   const playArea = (
@@ -90,11 +79,9 @@ function QuizScreen({
       <Header />
 
       <main className="flex-1 flex flex-col lg:flex-row gap-4 p-4 pt-2 md:pt-4 max-w-6xl xl:max-w-7xl mx-auto w-full overflow-hidden">
-        {/* 左ペイン: タイトル + ヒント一覧 */}
         <div className="flex-1 flex flex-col min-h-0 min-w-0">
-          {/* タイトル + 残りヒント数 */}
-          {/* pr-16: モバイル右上固定のハンバーガーボタン（top-3 right-3, w-11 h-11）とゲージが
-              重ならないよう避けるための余白。md以上ではハンバーガーが無いので不要 */}
+          {/* pr-16はモバイル右上固定のハンバーガーボタン（Header側、top-3 right-3, w-11 h-11）と
+              ゲージが重ならないための余白。md以上ではハンバーガーが無いので不要 */}
           <div className="shrink-0 flex items-center justify-between gap-3 py-3 pr-16 md:py-1.5 md:pr-0">
             <div className="min-w-0 flex flex-col gap-0.5">
               <span className="text-xs font-bold text-ba-ink-soft truncate">{modeLabel}</span>
@@ -102,8 +89,7 @@ function QuizScreen({
                 {heading}
               </h1>
             </div>
-            {/* 回答後もリングと同じ大きさの領域を確保し、タイトル行の高さが変わらないようにする。
-                中身は invisible で隠し、スクリーンリーダーにも読ませない（label を渡さない） */}
+            {/* 回答後もタイトル行の高さが変わらないよう、リングは消さず invisible で隠す */}
             <HaloRingGauge
               value={remainingStages / totalStages}
               size={52}
@@ -116,7 +102,6 @@ function QuizScreen({
             </HaloRingGauge>
           </div>
 
-          {/* スクロール可能なヒントエリア（デスクトップは2列・上寄せ） */}
           <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0">
             {isDesktop ? (
               <HintList hints={hints} revealedCount={revealedHintCount} />
@@ -131,7 +116,6 @@ function QuizScreen({
             )}
           </div>
 
-          {/* モバイル: 回答結果表示（デスクトップは右カラムに出す） */}
           {!isDesktop && answered && (
             <div className="py-3 flex flex-col items-center gap-3">
               <StudentReveal student={student} correct={correct} score={score} />
@@ -139,8 +123,8 @@ function QuizScreen({
             </div>
           )}
 
-          {/* モバイル: 固定フッターの入力欄・ボタン類（回答後は中身が無いので枠ごと消す）。
-              main の余白を打ち消して画面端まで白い面にする */}
+          {/* 回答後は playArea が空になるため、枠（背景・ボーダー）ごと消す。
+              -mx-4 -mb-4 は main の余白を打ち消して画面端まで白い面にするため */}
           {!isDesktop && !answered && (
             <div className="-mx-4 -mb-4 shrink-0 border-t border-ba-border bg-white px-4 py-3">
               {playArea}
@@ -148,7 +132,6 @@ function QuizScreen({
           )}
         </div>
 
-        {/* 右カラム（デスクトップのみ）: 立ち絵 → 操作/結果 */}
         {isDesktop && (
           <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
             <StudentPortrait student={student} state={portraitState} correct={correct} />

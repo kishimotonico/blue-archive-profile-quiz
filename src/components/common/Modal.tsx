@@ -15,7 +15,6 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   useEffect(() => {
     if (!isOpen) return;
 
-    // 閉じたときにフォーカスを開いた元の要素へ戻す
     const previouslyFocused =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeButtonRef.current?.focus();
@@ -31,7 +30,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
       const dialogEl = dialogRef.current;
       if (!dialogEl) return;
 
-      // モーダル内のフォーカス可能要素の先頭/末尾でTab/Shift+Tabをラップする簡易フォーカストラップ
+      // モーダル外へフォーカスが漏れないようTab/Shift+Tabを先頭/末尾でラップする
       const focusable = dialogEl.querySelectorAll<HTMLElement>(
         'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
@@ -62,10 +61,8 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* オーバーレイ */}
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
-      {/* モーダルコンテンツ */}
       <div
         ref={dialogRef}
         role="dialog"
@@ -90,7 +87,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
           </svg>
         </button>
 
-        {/* 中身のみスクロール（装飾・閉じるボタンは固定） */}
+        {/* 閉じるボタンが長い内容と一緒にスクロールして見えなくならないよう、中身だけをスクロールさせる */}
         <div className="overflow-y-auto p-6">
           {title && (
             <h2 id={titleId} className="font-display text-2xl font-black mb-4 text-ba-navy">

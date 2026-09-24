@@ -3,9 +3,6 @@ layer(base);
 
 @import "tailwindcss";
 
-/*
-  ブルアカ風デザイントークン（specs/design-mocks/game-ui-v2.html の CSS 変数に対応）
-*/
 @theme {
   --color-ba-blue: #128afa;
   --color-ba-cyan: #47c5fb;
@@ -58,12 +55,7 @@ body {
     fixed;
 }
 
-/*
-  共通装飾ユーティリティ（specs/design-mocks/game-ui-v2.html 由来）
-  他コンポーネントからは `ba-` プレフィックスのクラス名で利用する
-*/
 @layer components {
-  /* ページ上部の斜めストライプ帯 */
   .ba-stripe-band {
     position: relative;
     width: 100%;
@@ -78,7 +70,6 @@ body {
     );
   }
 
-  /* 平行四辺形の見出しタグ（HINT LIST / ANSWER など） */
   .ba-tag {
     display: inline-block;
     border-radius: 2px;
@@ -96,12 +87,10 @@ body {
     transform: skewX(10deg);
   }
 
-  /* HaloRingGauge の進捗リング用トランジション */
   .ba-ring-fill {
     transition: stroke-dashoffset 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* カード開示時に一度だけ走る斜めシャインエフェクト */
   .ba-shine {
     position: relative;
     overflow: hidden;

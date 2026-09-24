@@ -12,16 +12,9 @@ interface QuizPlayAreaProps {
   answerFeedback: string | null;
   errorKey: number;
   answered: boolean;
-  /**
-   * "footer": モバイル固定フッター用。フッター自体（QuizScreen側）が面になっているため
-   * カードで包まない。
-   * "panel": デスクトップ右カラム用。単体のパネル（白背景・ボーダー）として表示する。
-   */
+  /** "footer": 呼び出し側の面（QuizScreenの固定フッター）に載せるため、ここではカードで包まない */
   variant?: "footer" | "panel";
-  /**
-   * variant="panel" 用の追加クラス。回答後の結果パネルと高さを揃えるための
-   * min-height 指定に使う（QuizScreen側で管理）。
-   */
+  /** variant="panel" 用の追加クラス。回答後の結果パネルと高さを揃えるのに使う（QuizScreen側で管理） */
   panelClassName?: string;
 }
 

@@ -3,7 +3,6 @@ import type { Hint, Student, PortraitState } from "../../quiz-core";
 import HintCard from "./HintCard";
 import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
-/** デスクトップでヒントグリッドを伸ばすときの1行の最大高さ(px) */
 const HINT_ROW_MAX_HEIGHT = 128;
 
 interface HintListProps {
@@ -11,12 +10,7 @@ interface HintListProps {
   revealedCount: number;
   student?: Student | null;
   portraitState?: PortraitState;
-  /**
-   * "mobile" のとき、開示済みヒントのみをグラデーションで見切れ表示しつつ、
-   * グリッド内に立ち絵（シルエット/確定表示）を含める。
-   * "desktop"（既定）は全ヒントを表示し、立ち絵はグリッドに含めない
-   * （デスクトップでは右カラムに別途 StudentPortrait を表示するため）。
-   */
+  /** "desktop" ではグリッドに立ち絵を含めない。右カラムに別途 StudentPortrait を表示するため */
   layout?: "desktop" | "mobile";
 }
 
@@ -35,7 +29,6 @@ function HintList({
   const [showSilhouette, setShowSilhouette] = useState(false);
   const [justRevealedIndex, setJustRevealedIndex] = useState<number | null>(null);
 
-  // ヒント開示時のスクロール処理＋シャイン演出の一時フラグ管理
   useEffect(() => {
     if (revealedCount > prevRevealedCount.current && revealedCount <= hints.length) {
       const targetRef = hintRefs.current[revealedCount - 1];
@@ -50,7 +43,6 @@ function HintList({
     prevRevealedCount.current = revealedCount;
   }, [revealedCount, hints.length]);
 
-  // シルエット表示時／立ち絵確定表示時のスクロール＋フェードイン処理
   useEffect(() => {
     const prevState = prevPortraitState.current;
     if (portraitState === "silhouette" && prevState === "hidden") {
@@ -62,8 +54,8 @@ function HintList({
         setShowSilhouette(true);
       });
     } else if (portraitState === "revealed") {
-      // silhouette を経由せず hidden から直接 revealed になるケース（シルエット前に正解した場合）も含め、
-      // revealed へ遷移した瞬間は必ず立ち絵までスクロールする
+      // シルエットを経由せず hidden から直接 revealed になる場合も含め、
+      // revealed への遷移直後は必ず立ち絵までスクロールする
       if (prevState !== "revealed" && portraitRef.current) {
         portraitRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
       }
@@ -74,7 +66,6 @@ function HintList({
     prevPortraitState.current = portraitState;
   }, [portraitState]);
 
-  // mobile レイアウト: 開示済みヒントのみ表示し、未開示ヒントはグラデーションで見切れ表示
   const visibleHints = isMobileLayout ? hints.slice(0, revealedCount) : hints;
   const remaining = hints.length - revealedCount;
   const peekHints =
@@ -82,8 +73,8 @@ function HintList({
       ? hints.slice(revealedCount, revealedCount + Math.min(remaining, 3))
       : [];
 
-  // desktop レイアウト（lg以上）: 縦長画面で下に空白が残らないよう、グリッドを左カラムの高さまで伸ばす。
-  // 行は均等に伸ばすが、1行あたり最大 HINT_ROW_MAX_HEIGHT までとし、それを超える分は下に余白として残す
+  // 縦長画面で下に空白が残らないよう、グリッドを左カラムの高さまで伸ばす。
+  // 1行あたり HINT_ROW_MAX_HEIGHT を超える分は伸ばさず、下の余白として残す
   const desktopRows = Math.ceil(hints.length / 2);
   const desktopGridStyle = !isMobileLayout
     ? ({

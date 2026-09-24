@@ -20,8 +20,7 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
     setShowError(true);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     controls.start({ x: [0, -8, 8, -6, 6, -4, 4, 0], transition: { duration: 0.4 } });
-    // 吹き出しは入力欄の真上（モバイルでは開示ボタンの上）に重なるため、
-    // 操作を塞ぎ続けないよう一定時間で自動的に閉じる
+    // 吹き出しは入力欄の上に重なって操作を塞ぐため、一定時間で自動的に閉じる
     const timer = setTimeout(() => setShowError(false), 3500);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +34,7 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
     }
   };
 
-  // フォーカスは枠線の色だけで示す（リングを重ねると、エラー時の赤枠と二重になって見づらいため）
+  // focus-visible のリングは付けない。エラー時の赤枠と重なって二重枠になる
   const inputClass = [
     "flex-1 min-w-0 rounded-lg border-2 bg-ba-bg px-4 py-3 text-center font-semibold text-ba-navy transition-colors duration-200 placeholder:font-medium placeholder:text-ba-ink-soft/60 focus:bg-white focus:outline-hidden disabled:bg-gray-100",
     showError

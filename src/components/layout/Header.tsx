@@ -52,10 +52,8 @@ function Header() {
 
   return (
     <>
-      {/* 上部ストライプ帯（装飾のみ、全ページ共通） */}
       <div className="ba-stripe-band" aria-hidden="true" />
 
-      {/* デスクトップヘッダー（md以上） */}
       <header className="hidden md:flex bg-linear-to-r from-ba-cyan to-ba-blue text-white h-12 items-center px-4 shadow-xs relative z-50">
         <Link
           to="/"
@@ -83,7 +81,6 @@ function Header() {
         </nav>
       </header>
 
-      {/* モバイルハンバーガーボタン（md未満、固定配置） */}
       <button
         className="md:hidden fixed top-3 right-3 z-50 w-11 h-11 flex items-center justify-center bg-white/90 backdrop-blur-xs rounded-lg shadow-lg hover:bg-white transition-colors"
         onClick={toggleMenu}

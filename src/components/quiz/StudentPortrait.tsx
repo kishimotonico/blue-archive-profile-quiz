@@ -6,15 +6,11 @@ import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 interface StudentPortraitProps {
   student: Student | null;
   state: PortraitState;
-  /** 回答済みのとき、正解だったかどうか。バッジの文言に使う */
   correct?: boolean;
 }
 
-/**
- * デスクトップ右カラムの立ち絵カード。
- * 立ち絵は縦長なので、通常はバストアップに切り取って大きく見せ、
- * 全身は「全身を見る」モーダルで確認できるようにしている。
- */
+// 立ち絵は縦長なので、通常はバストアップに切り取って大きく見せ、
+// 全身は「全身を見る」モーダルで確認できるようにしている
 function StudentPortrait({ student, state, correct = false }: StudentPortraitProps) {
   const [showFullBody, setShowFullBody] = useState(false);
   const revealed = state === "revealed";
@@ -26,7 +22,6 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-ba-border bg-white">
-      {/* バストアップ表示枠 */}
       <div className="relative min-h-0 flex-1 overflow-hidden bg-linear-to-b from-ba-sky-1 to-white">
         {student && !hidden ? (
           <img
@@ -44,7 +39,6 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
           </div>
         )}
 
-        {/* 下端を白へ溶かして名前欄と繋ぐ */}
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white/90"
           aria-hidden="true"
@@ -57,8 +51,7 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
         )}
       </div>
 
-      {/* 生徒名 + 全身表示。hiddenの間も高さを確保するため常に描画し、invisible で隠す
-          （行ごと消すと立ち絵の表示枠の高さが変わってしまうため） */}
+      {/* hiddenの間も条件分岐で消さず invisible で隠す（消すと立ち絵の表示枠の高さが変わるため） */}
       <div
         className={`flex shrink-0 items-center justify-between gap-2 border-t border-ba-border px-3 py-2 ${
           hidden ? "invisible" : ""

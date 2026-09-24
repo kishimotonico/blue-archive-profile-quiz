@@ -25,6 +25,12 @@ export interface AnswerDraft {
   dismissError: () => void;
 }
 
+/** 回答後にレイアウトが描画する主ボタンと、その上に出す補足 */
+export interface AfterAnswer {
+  primaryAction: { label: string; onClick: () => void };
+  notice?: ReactNode;
+}
+
 /** QuizBody → 各レイアウトへ渡す共通 props */
 export interface QuizLayoutProps {
   modeLabel: string;
@@ -32,6 +38,5 @@ export interface QuizLayoutProps {
   round: RoundState;
   actions: { reveal: () => void; giveUp: () => void };
   answer: AnswerDraft;
-  /** 回答後にボタンなどを表示する領域 */
-  afterAnswerActions?: ReactNode;
+  afterAnswer: AfterAnswer;
 }

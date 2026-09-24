@@ -131,18 +131,20 @@ export function useRegularQuiz() {
     setAnswerFeedback(null);
   }, []);
 
-  const questionId =
-    state.status === "ready" || state.status === "finished" ? String(state.session.index) : null;
-  const totalScore =
+  const view =
     state.status === "ready" || state.status === "finished"
-      ? state.session.results.reduce((sum, r) => sum + r.score, 0)
-      : 0;
+      ? {
+          questionId: String(state.session.index),
+          round: state.session.round,
+          index: state.session.index,
+          totalScore: state.session.results.reduce((sum, r) => sum + r.score, 0),
+        }
+      : null;
 
   return {
     state,
-    questionId,
+    view,
     totalQuestions: TOTAL_QUESTIONS,
-    totalScore,
     reveal,
     submit,
     giveUp,

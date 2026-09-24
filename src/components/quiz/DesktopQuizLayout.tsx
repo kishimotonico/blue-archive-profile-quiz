@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { getPortraitState, getVisibleHintCount } from "../../quiz-core";
+import Button from "../common/Button";
 import HintList from "./HintList";
 import QuizPlayArea from "./QuizPlayArea";
 import QuizTitleRow from "./QuizTitleRow";
@@ -14,9 +15,10 @@ function DesktopQuizLayout({
   round,
   actions,
   answer,
-  afterAnswerActions,
+  afterAnswer,
 }: QuizLayoutProps) {
   const hintButtonRef = useRef<HTMLButtonElement>(null);
+  const primaryButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (round.status === "playing") hintButtonRef.current?.focus();
@@ -24,6 +26,11 @@ function DesktopQuizLayout({
     // 依存配列は空にしてマウント時の1回だけに絞る
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // 回答した瞬間と、回答済みの状態でマウントされたとき（日替わりの再訪・レイアウト切り替え）の両方でフォーカスしたい
+    if (round.status === "answered") primaryButtonRef.current?.focus();
+  }, [round.status]);
 
   const { student } = round.question;
   const answered = round.status === "answered";
@@ -73,7 +80,17 @@ function DesktopQuizLayout({
           {answered && (
             <div className="col-start-1 row-start-1 flex min-w-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5">
               <StudentReveal student={student} correct={correct} score={score} showName={false} />
-              {afterAnswerActions && <div className="mt-2 w-full">{afterAnswerActions}</div>}
+              <div className="mt-2 w-full">
+                {afterAnswer.notice}
+                <Button
+                  ref={primaryButtonRef}
+                  variant="primary"
+                  className="w-full"
+                  onClick={afterAnswer.primaryAction.onClick}
+                >
+                  {afterAnswer.primaryAction.label}
+                </Button>
+              </div>
             </div>
           )}
         </div>

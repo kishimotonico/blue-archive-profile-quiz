@@ -119,11 +119,18 @@ export function useDailyQuiz() {
     setAnswerFeedback(null);
   }, []);
 
-  const questionId = state.status === "ready" ? state.session.round.question.key.baseDate : null;
+  const view =
+    state.status === "ready"
+      ? {
+          questionId: state.session.round.question.key.baseDate,
+          round: state.session.round,
+          completedOnLoad: state.session.completedOnLoad,
+        }
+      : null;
 
   return {
     state,
-    questionId,
+    view,
     reveal,
     submit,
     giveUp,

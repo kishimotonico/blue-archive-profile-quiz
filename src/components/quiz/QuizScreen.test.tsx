@@ -3,8 +3,15 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import QuizScreen from "./QuizScreen";
-import type { Hint, QuizQuestion, RoundState, Student, SubmitOutcome } from "../../quiz-core";
-import type { QuizActions } from "./quizLayoutTypes";
+import type {
+  Hint,
+  QuestionResult,
+  QuizQuestion,
+  RoundState,
+  Student,
+  SubmitOutcome,
+} from "../../quiz-core";
+import type { AfterAnswer, QuizActions } from "./quizLayoutTypes";
 
 const isDesktopMock = vi.hoisted(() => vi.fn().mockReturnValue(false));
 
@@ -16,6 +23,9 @@ vi.mock("./portraitImageUrl", () => ({
   getPortraitImageUrl: vi.fn().mockReturnValue("about:blank"),
   NO_IMAGE_URL: "about:blank",
 }));
+
+// jsdomにはscrollIntoViewが無いため、回答済みマウント時の立ち絵スクロールをスタブする
+Element.prototype.scrollIntoView = vi.fn();
 
 const makeStudent = (id: string): Student => ({
   id,
@@ -53,11 +63,28 @@ const playingRound = (studentId: string): RoundState => ({
   revealedHintCount: 1,
 });
 
+const answeredRound = (studentId: string): RoundState => {
+  const question = makeQuestion(studentId);
+  const result: QuestionResult = {
+    studentId: question.student.id,
+    usedHintCount: 1,
+    correct: true,
+    userAnswer: question.student.name,
+    score: 10,
+  };
+  return { status: "answered", question, result };
+};
+
+const defaultAfterAnswer: AfterAnswer = {
+  primaryAction: { label: "次の問題へ", onClick: vi.fn() },
+};
+
 function renderScreen(props: {
   questionId: string;
   round: RoundState;
   actions?: Partial<QuizActions>;
   answerError?: { message: string | null; key: number };
+  afterAnswer?: AfterAnswer;
 }) {
   const actions: QuizActions = {
     reveal: vi.fn(),
@@ -74,6 +101,7 @@ function renderScreen(props: {
         round={props.round}
         actions={actions}
         answerError={props.answerError ?? { message: null, key: 0 }}
+        afterAnswer={props.afterAnswer ?? defaultAfterAnswer}
       />
     </MemoryRouter>,
   );
@@ -105,6 +133,7 @@ describe("QuizScreen - レイアウト切り替えでの下書き保持", () => 
             submit: vi.fn().mockReturnValue("accepted"),
           }}
           answerError={{ message: null, key: 0 }}
+          afterAnswer={defaultAfterAnswer}
         />
       </MemoryRouter>,
     );
@@ -139,6 +168,7 @@ describe("QuizScreen - 問題が変わったときのリセット", () => {
             submit: vi.fn().mockReturnValue("accepted"),
           }}
           answerError={{ message: null, key: 0 }}
+          afterAnswer={defaultAfterAnswer}
         />
       </MemoryRouter>,
     );
@@ -166,6 +196,7 @@ describe("QuizScreen - 問題が変わったときのリセット", () => {
             submit: vi.fn().mockReturnValue("accepted"),
           }}
           answerError={{ message: null, key: 0 }}
+          afterAnswer={defaultAfterAnswer}
         />
       </MemoryRouter>,
     );
@@ -201,5 +232,91 @@ describe("QuizScreen - submitの結果による下書きの扱い", () => {
 
     expect(submit).toHaveBeenCalledWith("陸八魔アル");
     expect(input.value).toBe("");
+  });
+});
+
+describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
+  beforeEach(() => {
+    isDesktopMock.mockReturnValue(false);
+  });
+
+  it("回答済みの状態でマウントされると主ボタンにフォーカスがある", () => {
+    renderScreen({ questionId: "q1", round: answeredRound("s1") });
+
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
+  });
+
+  it("submit で回答が確定すると主ボタンにフォーカスが移る", () => {
+    const submit = vi.fn<(answer: string) => SubmitOutcome>().mockReturnValue("accepted");
+    const { rerender } = renderScreen({
+      questionId: "q1",
+      round: playingRound("s1"),
+      actions: { submit },
+    });
+
+    const input = screen.getByPlaceholderText("生徒名を入力") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "陸八魔アル" } });
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+    expect(submit).toHaveBeenCalledWith("陸八魔アル");
+
+    // controller はここで round を answered に更新し、ページが questionId 据え置きで再レンダーする
+    rerender(
+      <MemoryRouter>
+        <QuizScreen
+          modeLabel="テストモード"
+          heading="見出し"
+          questionId="q1"
+          round={answeredRound("s1")}
+          actions={{ reveal: vi.fn(), giveUp: vi.fn(), submit }}
+          answerError={{ message: null, key: 0 }}
+          afterAnswer={defaultAfterAnswer}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
+  });
+
+  it("giveUp で回答が確定すると主ボタンにフォーカスが移る", () => {
+    const giveUp = vi.fn();
+    const { rerender } = renderScreen({
+      questionId: "q1",
+      round: { status: "playing", question: makeQuestion("s1"), revealedHintCount: 4 },
+      actions: { giveUp },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "諦めて正解を表示" }));
+    expect(giveUp).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <MemoryRouter>
+        <QuizScreen
+          modeLabel="テストモード"
+          heading="見出し"
+          questionId="q1"
+          round={answeredRound("s1")}
+          actions={{ reveal: vi.fn(), giveUp, submit: vi.fn().mockReturnValue("accepted") }}
+          answerError={{ message: null, key: 0 }}
+          afterAnswer={defaultAfterAnswer}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
+  });
+
+  it("フォーカスされた主ボタンの click で primaryAction.onClick が呼ばれる（Enter はブラウザが click に変換する）", () => {
+    const onClick = vi.fn();
+    renderScreen({
+      questionId: "q1",
+      round: answeredRound("s1"),
+      afterAnswer: { primaryAction: { label: "次の問題へ", onClick } },
+    });
+
+    const button = screen.getByRole("button", { name: "次の問題へ" });
+    expect(document.activeElement).toBe(button);
+    button.click();
+
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

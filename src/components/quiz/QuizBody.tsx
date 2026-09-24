@@ -3,7 +3,7 @@ import { useIsDesktop } from "../../hooks/useIsDesktop";
 import type { RoundState } from "../../quiz-core";
 import DesktopQuizLayout from "./DesktopQuizLayout";
 import MobileQuizLayout from "./MobileQuizLayout";
-import type { AnswerDraft, AnswerError, QuizActions } from "./quizLayoutTypes";
+import type { AfterAnswer, AnswerDraft, AnswerError, QuizActions } from "./quizLayoutTypes";
 
 const ERROR_VISIBLE_DURATION_MS = 3500;
 
@@ -13,19 +13,12 @@ interface QuizBodyProps {
   round: RoundState;
   actions: QuizActions;
   answerError: AnswerError;
-  afterAnswerActions?: ReactNode;
+  afterAnswer: AfterAnswer;
 }
 
 // 回答欄の下書きとエラー表示状態をここで持つ。QuizScreen 側で key={questionId} を付けて
 // 問題が変わるたびに作り直しているため、画面幅が変わってレイアウトが切り替わっても下書きは残る
-function QuizBody({
-  modeLabel,
-  heading,
-  round,
-  actions,
-  answerError,
-  afterAnswerActions,
-}: QuizBodyProps) {
+function QuizBody({ modeLabel, heading, round, actions, answerError, afterAnswer }: QuizBodyProps) {
   const isDesktop = useIsDesktop();
   const [draft, setDraft] = useState("");
   const [errorVisible, setErrorVisible] = useState(false);
@@ -67,7 +60,7 @@ function QuizBody({
     round,
     actions: { reveal: actions.reveal, giveUp: actions.giveUp },
     answer,
-    afterAnswerActions,
+    afterAnswer,
   };
 
   return isDesktop ? <DesktopQuizLayout {...layoutProps} /> : <MobileQuizLayout {...layoutProps} />;

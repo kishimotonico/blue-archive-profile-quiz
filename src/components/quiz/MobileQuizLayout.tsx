@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { getPortraitState, getVisibleHintCount } from "../../quiz-core";
+import Button from "../common/Button";
 import HintList from "./HintList";
 import MobilePortraitCard from "./MobilePortraitCard";
 import QuizPlayArea from "./QuizPlayArea";
@@ -14,9 +15,10 @@ function MobileQuizLayout({
   round,
   actions,
   answer,
-  afterAnswerActions,
+  afterAnswer,
 }: QuizLayoutProps) {
   const hintButtonRef = useRef<HTMLButtonElement>(null);
+  const primaryButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (round.status === "playing") hintButtonRef.current?.focus();
@@ -25,14 +27,17 @@ function MobileQuizLayout({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    // 回答した瞬間と、回答済みの状態でマウントされたとき（日替わりの再訪・レイアウト切り替え）の両方でフォーカスしたい
+    if (round.status === "answered") primaryButtonRef.current?.focus();
+  }, [round.status]);
+
   const { student } = round.question;
   const answered = round.status === "answered";
   const correct = answered && round.result.correct;
   const score = answered ? round.result.score : 0;
   const portraitState = getPortraitState(round);
   const visibleHintCount = getVisibleHintCount(round);
-
-  const afterAnswerActionsWrapperClass = "mt-1 w-full max-w-xs";
 
   const playArea = (
     <QuizPlayArea
@@ -65,9 +70,17 @@ function MobileQuizLayout({
       {answered && (
         <div className="py-3 flex flex-col items-center gap-3">
           <StudentReveal student={student} correct={correct} score={score} />
-          {afterAnswerActions && (
-            <div className={afterAnswerActionsWrapperClass}>{afterAnswerActions}</div>
-          )}
+          <div className="mt-1 w-full max-w-xs">
+            {afterAnswer.notice}
+            <Button
+              ref={primaryButtonRef}
+              variant="primary"
+              className="w-full"
+              onClick={afterAnswer.primaryAction.onClick}
+            >
+              {afterAnswer.primaryAction.label}
+            </Button>
+          </div>
         </div>
       )}
 

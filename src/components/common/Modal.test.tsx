@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen, fireEvent } from "@testing-library/react";
-import { useRef, useState } from "react";
-import { describe, it, expect } from "vitest";
+import { useState } from "react";
+import { describe, it, expect, vi } from "vitest";
 import Modal from "./Modal";
 
 describe("Modal - アクセシブルネーム", () => {
@@ -17,88 +17,76 @@ describe("Modal - アクセシブルネーム", () => {
   });
 });
 
-describe("Modal - フォーカスの退避・復帰", () => {
-  it("onCloseの参照が変わる再レンダリングだけではフォーカスの退避・復帰を再実行しない", () => {
-    function Harness() {
-      const [, forceRerender] = useState(0);
-      return (
-        <>
-          <button type="button">外側のボタン</button>
-          {/* 毎回新しい関数を渡すことで、依存配列に onClose を含めた場合の
-              退避・復帰の再実行を検出できるようにする */}
-          <Modal isOpen onClose={() => {}}>
-            <button type="button" onClick={() => forceRerender((n) => n + 1)}>
-              再レンダリングを起こす
-            </button>
-          </Modal>
-        </>
-      );
-    }
+describe("Modal - 開閉", () => {
+  function Harness() {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <>
+        <button type="button" onClick={() => setIsOpen(true)}>
+          開くボタン
+        </button>
+        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="タイトル">
+          <button type="button">中身のボタン</button>
+        </Modal>
+      </>
+    );
+  }
 
-    render(<Harness />);
-    const closeButton = screen.getByRole("button", { name: "閉じる" });
-    expect(document.activeElement).toBe(closeButton);
+  it("isOpenがtrueになるとdialogが開き、falseになると閉じる", () => {
+    const { rerender } = render(
+      <Modal isOpen={false} onClose={() => {}} ariaLabel="ラベル">
+        <p>内容</p>
+      </Modal>,
+    );
 
-    // モーダル内の別要素にフォーカスを移してから、onCloseの参照が変わる再レンダリングを起こす
-    const rerenderButton = screen.getByRole("button", { name: "再レンダリングを起こす" });
-    rerenderButton.focus();
-    fireEvent.click(rerenderButton);
+    expect(screen.queryByRole("dialog")).toBeNull();
 
-    // 退避・復帰effectが再実行されていれば、closeButtonへフォーカスが戻ってしまう
-    expect(document.activeElement).toBe(rerenderButton);
+    rerender(
+      <Modal isOpen onClose={() => {}} ariaLabel="ラベル">
+        <p>内容</p>
+      </Modal>,
+    );
+    expect(screen.getByRole("dialog")).toBeTruthy();
   });
 
-  it("復帰先が無いとき（activeElementがbody）はfocusFallbackRefへフォーカスする", () => {
-    function Harness() {
-      const fallbackRef = useRef<HTMLButtonElement>(null);
-      const [isOpen, setIsOpen] = useState(true);
-      return (
-        <>
-          <button ref={fallbackRef} type="button">
-            結果を見る
-          </button>
-          <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} focusFallbackRef={fallbackRef}>
-            <p>内容</p>
-          </Modal>
-        </>
-      );
-    }
-
+  it("閉じるボタンでonCloseが呼ばれる", () => {
     render(<Harness />);
-    (document.activeElement as HTMLElement | null)?.blur();
-    expect(document.activeElement === document.body || document.activeElement === null).toBe(true);
+
+    fireEvent.click(screen.getByRole("button", { name: "開くボタン" }));
+    expect(screen.getByRole("dialog")).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
-
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "結果を見る" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("ボタン経由で開いたときは、閉じるとそのボタンにフォーカスが戻る", () => {
-    function Harness() {
-      const fallbackRef = useRef<HTMLButtonElement>(null);
-      const [isOpen, setIsOpen] = useState(false);
-      return (
-        <>
-          <button ref={fallbackRef} type="button">
-            結果を見る
-          </button>
-          <button type="button" onClick={() => setIsOpen(true)}>
-            開くボタン
-          </button>
-          <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} focusFallbackRef={fallbackRef}>
-            <p>内容</p>
-          </Modal>
-        </>
-      );
-    }
-
+  it("背景（dialog自身）のクリックでonCloseが呼ばれる", () => {
     render(<Harness />);
-    const openButton = screen.getByRole("button", { name: "開くボタン" });
-    // fireEvent.clickはjsdom上ではフォーカス移動を伴わないため、実際のクリックを模して明示的にfocusする
-    openButton.focus();
-    fireEvent.click(openButton);
-    fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
+    fireEvent.click(screen.getByRole("button", { name: "開くボタン" }));
 
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "開くボタン" }));
+    fireEvent.click(screen.getByRole("dialog"));
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("中身のクリックでは閉じない", () => {
+    render(<Harness />);
+    fireEvent.click(screen.getByRole("button", { name: "開くボタン" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "中身のボタン" }));
+
+    expect(screen.getByRole("dialog")).toBeTruthy();
+  });
+
+  it("closeイベント（Escapeなどネイティブの close 経路）でonCloseが呼ばれる", () => {
+    const onClose = vi.fn();
+    render(
+      <Modal isOpen onClose={onClose} ariaLabel="ラベル">
+        <p>内容</p>
+      </Modal>,
+    );
+
+    fireEvent(screen.getByRole("dialog"), new Event("close"));
+
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

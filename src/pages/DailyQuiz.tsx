@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
@@ -16,23 +16,20 @@ function formatTimeUntilNextReset({ hours, minutes }: { hours: number; minutes: 
 }
 
 function DailyQuiz() {
-  const { state, reveal, submit, giveUp, answerFeedback, errorKey } = useDailyQuiz();
+  const { state, view, reveal, submit, giveUp, answerFeedback, errorKey } = useDailyQuiz();
 
   const totalAttempts = useAtomValue(totalAttemptsAtom);
   const scoreDistribution = useAtomValue(scoreDistributionAtom);
   const bestScore = useAtomValue(bestScoreAtom);
   const navigate = useNavigate();
   const [showResultModal, setShowResultModal] = useState(false);
-  const showResultButtonRef = useRef<HTMLButtonElement>(null);
 
-  if (state.status === "loading") return <QuizLoadingState />;
-  if (state.status === "error") return <QuizErrorState />;
+  if (!view) return state.status === "error" ? <QuizErrorState /> : <QuizLoadingState />;
 
-  const { session } = state;
-  const { round } = session;
+  const { round } = view;
   const result = round.status === "answered" ? round.result : null;
 
-  const completedNotice = session.completedOnLoad && (
+  const completedNotice = view.completedOnLoad && (
     <div className="bg-ba-sky-1 border border-ba-border rounded-2xl p-4 mb-3 text-center">
       <p className="font-display font-black text-ba-navy mb-2">今日のクイズは完了済みです</p>
       <p className="text-ba-ink-soft text-sm mb-2">
@@ -63,30 +60,20 @@ function DailyQuiz() {
       <QuizScreen
         modeLabel="日替わりクイズ"
         heading={heading}
-        questionId={round.question.key.baseDate}
-        round={round}
+        questionId={view.questionId}
+        round={view.round}
         actions={{ reveal, submit, giveUp }}
         answerError={{ message: answerFeedback, key: errorKey }}
-        afterAnswerActions={
-          <>
-            {completedNotice}
-            <Button
-              ref={showResultButtonRef}
-              variant="primary"
-              className="w-full"
-              onClick={() => setShowResultModal(true)}
-            >
-              結果を見る
-            </Button>
-          </>
-        }
+        afterAnswer={{
+          primaryAction: { label: "結果を見る", onClick: () => setShowResultModal(true) },
+          notice: completedNotice,
+        }}
       />
 
       <Modal
         isOpen={showResultModal}
         onClose={() => setShowResultModal(false)}
         ariaLabel="今日のクイズの結果"
-        focusFallbackRef={showResultButtonRef}
       >
         {result && (
           <div className="text-center">

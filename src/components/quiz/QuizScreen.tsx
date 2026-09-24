@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { RoundState } from "../../quiz-core";
 import Header from "../layout/Header";
 import QuizBody from "./QuizBody";
-import type { AnswerError, QuizActions } from "./quizLayoutTypes";
+import type { AfterAnswer, AnswerError, QuizActions } from "./quizLayoutTypes";
 
 interface QuizScreenProps {
   modeLabel: string;
@@ -12,8 +12,7 @@ interface QuizScreenProps {
   round: RoundState;
   actions: QuizActions;
   answerError: AnswerError;
-  /** 回答後にボタンなどを表示する領域。モバイル/デスクトップ共通の幅・余白は各レイアウトが持つ */
-  afterAnswerActions?: ReactNode;
+  afterAnswer: AfterAnswer;
 }
 
 // 日替わりクイズ・フリープレイで共通のレイアウトのみを持つ。
@@ -25,7 +24,7 @@ function QuizScreen({
   round,
   actions,
   answerError,
-  afterAnswerActions,
+  afterAnswer,
 }: QuizScreenProps) {
   return (
     <div className="h-[100dvh] flex flex-col">
@@ -42,7 +41,7 @@ function QuizScreen({
           round={round}
           actions={actions}
           answerError={answerError}
-          afterAnswerActions={afterAnswerActions}
+          afterAnswer={afterAnswer}
         />
       </main>
     </div>

@@ -71,13 +71,17 @@ describe("dailySessionReducer - round", () => {
       status: "ready",
       session: {
         ...session,
-        round: { status: "answered", question: session.round.question, result: {
-          studentId: session.round.question.student.id,
-          usedHintCount: 1,
-          correct: true,
-          userAnswer: "ミヤコ",
-          score: 10,
-        } },
+        round: {
+          status: "answered",
+          question: session.round.question,
+          result: {
+            studentId: session.round.question.student.id,
+            usedHintCount: 1,
+            correct: true,
+            userAnswer: "ミヤコ",
+            score: 10,
+          },
+        },
       },
     };
 

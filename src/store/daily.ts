@@ -90,8 +90,7 @@ export const scoreDistributionAtom = atom((get) => {
     veryHigh:
       recent.filter((r) => r.result.score >= 8 && r.result.score <= 9).length +
       countAggregated((s) => s >= 8 && s <= 9),
-    perfect:
-      recent.filter((r) => r.result.score === 10).length + countAggregated((s) => s === 10),
+    perfect: recent.filter((r) => r.result.score === 10).length + countAggregated((s) => s === 10),
   };
 });
 

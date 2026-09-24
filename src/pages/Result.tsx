@@ -5,7 +5,7 @@ import Header from "../components/layout/Header";
 import Button from "../components/common/Button";
 import { getMaxScore, getScoreRank, getQuestionOutcome } from "../quiz-core";
 import type { QuestionResult, QuestionOutcome } from "../quiz-core";
-import { allStudentsAtom } from "../store/quiz";
+import { allStudentsAtom } from "../store/students";
 
 interface ResultState {
   results: QuestionResult[];

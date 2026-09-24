@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 
-// Modalはクイズ専用ではなく画面全体で使う共通部品のため、jotaiのクイズ用store（store/quiz.ts）
+// Modalはクイズ専用ではなく画面全体で使う共通部品のため、jotaiのクイズ用store（store/regular.ts等）
 // には置かず、Modal自身が開閉に合わせて登録・解除するだけの独立したレジストリにしている。
 let openCount = 0;
 const listeners = new Set<() => void>();

@@ -147,7 +147,10 @@ describe("regularSessionReducer - round", () => {
   it("roundReducer が同一参照を返せば state も同一参照を返す", () => {
     const q0 = makeQuestion(makeStudent(), 1);
     const session = makeSession([q0]);
-    const answered: RegularState = { status: "ready", session: { ...session, round: answer(session.round) } };
+    const answered: RegularState = {
+      status: "ready",
+      session: { ...session, round: answer(session.round) },
+    };
 
     // answered への reveal は roundReducer 側で no-op になる
     const next = regularSessionReducer(answered, { type: "round", action: { type: "reveal" } });

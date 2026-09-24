@@ -1,20 +1,29 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetAtom } from "jotai";
-import { useQuiz } from "./useQuiz";
-import { createQuestionSet, getDailyDate, CURRENT_ALGORITHM_VERSION } from "../quiz-core";
-import type { QuestionResult, RoundSnapshot } from "../quiz-core";
+import { useAtomValue } from "jotai";
+import {
+  regularSessionReducer,
+  startRound,
+  restoreRound,
+  toRoundSnapshot,
+  judgeSubmit,
+  createQuestionSet,
+  getDailyDate,
+  CURRENT_ALGORITHM_VERSION,
+  type RegularSession,
+  type QuizKey,
+} from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import {
   loadRegularQuizProgress,
   saveRegularQuizProgress,
   clearRegularQuizProgress,
-  type RegularQuizProgress,
 } from "../store/regular";
-import { answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
-import type { QuizQuestion, QuizKey } from "../quiz-core";
+import { allStudentsAtom } from "../store/students";
 
 const TOTAL_QUESTIONS = 10;
+
+type SubmitOutcome = "accepted" | "unknownStudent";
 
 function generateMasterKey(): QuizKey {
   return {
@@ -25,179 +34,121 @@ function generateMasterKey(): QuizKey {
 }
 
 export function useRegularQuiz() {
-  const quiz = useQuiz();
-  const {
-    revealedHintCount,
-    answered,
-    correct,
-    score,
-    lastConfirmedAnswer,
-    setCurrentQuestion,
-    setRevealedHintCount,
-    setLastConfirmedAnswer,
-    resetQuiz,
-  } = quiz;
-
-  const setAnswered = useSetAtom(answeredAtom);
-  const setCorrect = useSetAtom(correctAtom);
-  const setScore = useSetAtom(scoreAtom);
-
+  const [state, dispatch] = useReducer(regularSessionReducer, { status: "loading" });
+  const allStudents = useAtomValue(allStudentsAtom);
   const navigate = useNavigate();
-
-  const [loading, setLoading] = useState(true);
-  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [results, setResults] = useState<QuestionResult[]>([]);
-  const [masterKey, setMasterKey] = useState<QuizKey | null>(null);
-
-  const totalScore = results.reduce((sum, r) => sum + r.score, 0);
+  const [answerFeedback, setAnswerFeedback] = useState<string | null>(null);
+  const [errorKey, setErrorKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
 
-    // 保存済みの round snapshot を個別 atom（answered/correct/score等）に反映する。
-    // セッション全体を一つの状態として扱う reducer 化は次のタスクで行う。
-    const applyRoundSnapshot = (round: RoundSnapshot) => {
-      if (round.status === "playing") {
-        setRevealedHintCount(round.revealedHintCount);
-        return;
+    (async () => {
+      try {
+        const stored = loadRegularQuizProgress();
+        const key = stored ? stored.masterKey : generateMasterKey();
+        const questions = await createQuestionSet(key, TOTAL_QUESTIONS);
+        if (cancelled) return;
+
+        questions.forEach((q) => preloadPortraitImage(q.student));
+
+        const session: RegularSession = stored
+          ? {
+              masterKey: key,
+              questions,
+              index: stored.index,
+              results: stored.results,
+              round: restoreRound(questions[stored.index], stored.round),
+            }
+          : {
+              masterKey: key,
+              questions,
+              index: 0,
+              results: [],
+              round: startRound(questions[0]),
+            };
+        dispatch({ type: "loaded", session });
+      } catch {
+        if (!cancelled) dispatch({ type: "failed" });
       }
-      setRevealedHintCount(round.result.usedHintCount);
-      setAnswered(true);
-      setCorrect(round.result.correct);
-      setScore(round.result.score);
-      setLastConfirmedAnswer(round.result.userAnswer);
-    };
+    })();
 
-    const initQuiz = async () => {
-      resetQuiz();
-
-      const stored = loadRegularQuizProgress();
-      const key = stored ? stored.masterKey : generateMasterKey();
-
-      const generatedQuestions = await createQuestionSet(key, TOTAL_QUESTIONS);
-      if (cancelled) return;
-
-      generatedQuestions.forEach((q) => preloadPortraitImage(q.student));
-      setQuestions(generatedQuestions);
-      setMasterKey(key);
-
-      if (stored) {
-        const safeIndex = Math.min(stored.index, generatedQuestions.length - 1);
-        setCurrentQuestionIndex(safeIndex);
-        setResults(stored.results);
-        setCurrentQuestion(generatedQuestions[safeIndex]);
-        applyRoundSnapshot(stored.round);
-      } else {
-        const freshProgress: RegularQuizProgress = {
-          schemaVersion: 3,
-          masterKey: key,
-          index: 0,
-          results: [],
-          round: { status: "playing", revealedHintCount: 1 },
-        };
-        saveRegularQuizProgress(freshProgress);
-        if (generatedQuestions.length > 0) {
-          setCurrentQuestion(generatedQuestions[0]);
-        }
-      }
-
-      setLoading(false);
-    };
-    initQuiz();
     return () => {
       cancelled = true;
-      resetQuiz();
     };
-    // 初期化は1回だけ実行する。setter 群は安定しているが過度な依存を避けるため意図的に空配列。
+    // ロードはマウント時の1回だけ行う。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 進行中の状態を sessionStorage に同期
   useEffect(() => {
-    if (loading || !masterKey) return;
-    const round: RoundSnapshot = answered
-      ? {
-          status: "answered",
-          result: {
-            studentId: questions[currentQuestionIndex]?.student.id ?? "",
-            usedHintCount: revealedHintCount,
-            correct,
-            userAnswer: lastConfirmedAnswer,
-            score,
-          },
-        }
-      : { status: "playing", revealedHintCount };
-
-    saveRegularQuizProgress({
-      schemaVersion: 3,
-      masterKey,
-      index: currentQuestionIndex,
-      results,
-      round,
-    });
-  }, [
-    loading,
-    masterKey,
-    currentQuestionIndex,
-    results,
-    revealedHintCount,
-    answered,
-    correct,
-    score,
-    lastConfirmedAnswer,
-    questions,
-  ]);
-
-  const goNext = useCallback(() => {
-    if (!answered) return;
-    if (!quiz.currentQuestion) return;
-
-    const qr: QuestionResult = {
-      studentId: quiz.currentQuestion.student.id,
-      usedHintCount: revealedHintCount,
-      correct,
-      userAnswer: lastConfirmedAnswer,
-      score,
-    };
-    const newResults = [...results, qr];
-    const nextIndex = currentQuestionIndex + 1;
-
-    if (nextIndex < questions.length) {
-      setResults(newResults);
-      setCurrentQuestionIndex(nextIndex);
-      resetQuiz();
-      setCurrentQuestion(questions[nextIndex]);
-    } else {
-      // 全問終了 → 進捗をクリアしてから結果画面へ
-      clearRegularQuizProgress();
-      navigate("/result", {
-        state: {
-          results: newResults,
-        },
+    if (state.status === "ready") {
+      saveRegularQuizProgress({
+        schemaVersion: 3,
+        masterKey: state.session.masterKey,
+        index: state.session.index,
+        results: state.session.results,
+        round: toRoundSnapshot(state.session.round),
       });
+    } else if (state.status === "finished") {
+      clearRegularQuizProgress();
+      navigate("/result", { state: { results: state.session.results }, replace: true });
     }
-  }, [
-    answered,
-    quiz.currentQuestion,
-    results,
-    score,
-    correct,
-    revealedHintCount,
-    lastConfirmedAnswer,
-    currentQuestionIndex,
-    questions,
-    resetQuiz,
-    setCurrentQuestion,
-    navigate,
-  ]);
+  }, [state, navigate]);
+
+  const reveal = useCallback(() => {
+    dispatch({ type: "round", action: { type: "reveal" } });
+  }, []);
+
+  const submit = useCallback(
+    (answer: string): SubmitOutcome => {
+      if (state.status !== "ready") return "accepted";
+
+      const judgement = judgeSubmit(state.session.round, answer, allStudents);
+      if (judgement.type === "unknownStudent") {
+        setAnswerFeedback("該当する生徒が見つかりません");
+        setErrorKey((prev) => prev + 1);
+        return "unknownStudent";
+      }
+
+      if (judgement.type !== "ignored") {
+        dispatch({
+          type: "round",
+          action: { type: "submit", answer, correct: judgement.type === "correct" },
+        });
+      }
+      setAnswerFeedback(null);
+      return "accepted";
+    },
+    [state, allStudents],
+  );
+
+  const giveUp = useCallback(() => {
+    dispatch({ type: "round", action: { type: "giveUp" } });
+    setAnswerFeedback(null);
+  }, []);
+
+  const next = useCallback(() => {
+    dispatch({ type: "next" });
+    setAnswerFeedback(null);
+  }, []);
+
+  const questionId =
+    state.status === "ready" || state.status === "finished" ? String(state.session.index) : null;
+  const totalScore =
+    state.status === "ready" || state.status === "finished"
+      ? state.session.results.reduce((sum, r) => sum + r.score, 0)
+      : 0;
 
   return {
-    ...quiz,
-    loading,
-    currentQuestionIndex,
+    state,
+    questionId,
+    totalQuestions: TOTAL_QUESTIONS,
     totalScore,
-    goNext,
-    TOTAL_QUESTIONS,
+    reveal,
+    submit,
+    giveUp,
+    next,
+    answerFeedback,
+    errorKey,
   };
 }

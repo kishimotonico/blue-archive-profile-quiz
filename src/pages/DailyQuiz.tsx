@@ -1,168 +1,49 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAtom, useSetAtom, useStore } from "jotai";
-import { useQuiz } from "../hooks/useQuiz";
+import { useAtomValue } from "jotai";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
-import {
-  createDailyQuestion,
-  createQuestion,
-  getTimeUntilNextReset,
-  getScoreRank,
-  getDailyDate,
-} from "../quiz-core";
-import { answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
-import {
-  totalAttemptsAtom,
-  scoreDistributionAtom,
-  bestScoreAtom,
-  dailyProgressAtom,
-  dailyResultsStorageAtom,
-} from "../store/daily";
-import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
+import { getTimeUntilNextReset, getScoreRank, getDailyDate } from "../quiz-core";
+import { totalAttemptsAtom, scoreDistributionAtom, bestScoreAtom } from "../store/daily";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
 import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizScreen from "../components/quiz/QuizScreen";
+import { toQuizScreenRoundProps } from "../components/quiz/toQuizScreenProps";
 
 function formatTimeUntilNextReset({ hours, minutes }: { hours: number; minutes: number }): string {
   return hours > 0 ? `${hours}時間${minutes}分後` : `${minutes}分後`;
 }
 
 function DailyQuiz() {
-  const {
-    currentQuestion,
-    setCurrentQuestion,
-    revealedHintCount,
-    setRevealedHintCount,
-    answered,
-    correct,
-    score,
-    lastConfirmedAnswer,
-    answerFeedback,
-    errorKey,
-    revealNextHint,
-    submitAnswer,
-    giveUp,
-  } = useQuiz();
+  const { state, questionId, reveal, submit, giveUp, answerFeedback, errorKey } = useDailyQuiz();
 
-  const { saveTodayResult, saveProgress, clearProgress } = useDailyQuiz();
-  const setAnswered = useSetAtom(answeredAtom);
-  const setCorrect = useSetAtom(correctAtom);
-  const setScore = useSetAtom(scoreAtom);
-  const [totalAttempts] = useAtom(totalAttemptsAtom);
-  const [scoreDistribution] = useAtom(scoreDistributionAtom);
-  const [bestScore] = useAtom(bestScoreAtom);
-  const store = useStore();
+  const totalAttempts = useAtomValue(totalAttemptsAtom);
+  const scoreDistribution = useAtomValue(scoreDistributionAtom);
+  const bestScore = useAtomValue(bestScoreAtom);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
   const [showResultModal, setShowResultModal] = useState(false);
-  const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
   const hintButtonRef = useRef<HTMLButtonElement>(null);
   const showResultButtonRef = useRef<HTMLButtonElement>(null);
 
+  const answered = state.status === "ready" && state.session.round.status === "answered";
+
+  // クイズ開始時・問題切替時にヒントボタンにフォーカス
   useEffect(() => {
-    let cancelled = false;
+    if (questionId === null || answered) return;
+    hintButtonRef.current?.focus();
+  }, [questionId, answered]);
 
-    const initQuiz = async () => {
-      // 永続化値を同期的に取得する。store.get は購読を介さないため、useAtom の
-      // onMount より前のタイミングでも安全に値が読める（getOnInit: true 必須）。
-      const today = getDailyDate();
-      const storedResults = store.get(dailyResultsStorageAtom);
-      const todayResult = storedResults.recent.find((r) => r.key.baseDate === today);
+  if (state.status === "loading") return <QuizLoadingState />;
+  if (state.status === "error") return <QuizErrorState />;
 
-      if (todayResult) {
-        const restored = await createQuestion(todayResult.key);
-        if (cancelled) return;
+  const { session } = state;
+  const { round } = session;
+  const roundProps = toQuizScreenRoundProps(round);
+  const result = round.status === "answered" ? round.result : null;
 
-        preloadPortraitImage(restored.student);
-        setCurrentQuestion(restored);
-        setRevealedHintCount(restored.hints.length + 1); // 全ヒント + 立ち絵を表示
-        setAnswered(true);
-        setCorrect(todayResult.result.correct);
-        setScore(todayResult.result.score);
-        setIsAlreadyCompleted(true);
-        setLoading(false);
-        return;
-      }
-
-      // 進行中の復元を試みる
-      const storedProgress = store.get(dailyProgressAtom);
-      if (storedProgress && storedProgress.key.baseDate === today) {
-        const restored = await createQuestion(storedProgress.key);
-        if (cancelled) return;
-        preloadPortraitImage(restored.student);
-        setCurrentQuestion(restored);
-        setRevealedHintCount(storedProgress.revealedHintCount);
-        setLoading(false);
-        return;
-      }
-
-      // 新規プレイ
-      const question = await createDailyQuestion();
-      if (cancelled) return;
-      preloadPortraitImage(question.student);
-      setCurrentQuestion(question);
-      setLoading(false);
-    };
-
-    initQuiz();
-    return () => {
-      cancelled = true;
-    };
-    // 初期化はマウント時に 1 回だけ実行する。永続化値は store.get で同期取得しているため
-    // 依存配列に atom を入れる必要は無く、入れると onMount の hydration で再実行されて
-    // 競合するので意図的に空配列にしている。
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    // 進行状態を保存（ヒント開示時）
-    if (loading || answered) return;
-    if (currentQuestion && revealedHintCount > 0) {
-      saveProgress({
-        key: currentQuestion.key,
-        revealedHintCount,
-      });
-    }
-  }, [loading, currentQuestion, answered, revealedHintCount, saveProgress]);
-
-  useEffect(() => {
-    // 回答が完了したら結果を保存（既に完了済みの場合は除く）
-    if (answered && currentQuestion && !isAlreadyCompleted) {
-      saveTodayResult(currentQuestion.key, {
-        studentId: currentQuestion.student.id,
-        usedHintCount: revealedHintCount,
-        correct,
-        userAnswer: lastConfirmedAnswer,
-        score,
-      });
-      clearProgress(); // 進行状態をクリア
-    }
-  }, [
-    answered,
-    currentQuestion,
-    score,
-    revealedHintCount,
-    correct,
-    lastConfirmedAnswer,
-    isAlreadyCompleted,
-    saveTodayResult,
-    clearProgress,
-  ]);
-
-  // クイズ開始時にヒントボタンにフォーカス
-  useEffect(() => {
-    if (!loading && !answered && hintButtonRef.current) {
-      hintButtonRef.current.focus();
-    }
-  }, [loading, answered]);
-
-  if (loading) return <QuizLoadingState />;
-  if (!currentQuestion) return <QuizErrorState />;
-
-  const completedNotice = isAlreadyCompleted && (
+  const completedNotice = session.completedOnLoad && (
     <div className="bg-ba-sky-1 border border-ba-border rounded-2xl p-4 mb-3 text-center">
       <p className="font-display font-black text-ba-navy mb-2">今日のクイズは完了済みです</p>
       <p className="text-ba-ink-soft text-sm mb-2">
@@ -193,15 +74,10 @@ function DailyQuiz() {
       <QuizScreen
         modeLabel="日替わりクイズ"
         heading={heading}
-        student={currentQuestion.student}
-        hints={currentQuestion.hints}
-        revealedHintCount={revealedHintCount}
-        answered={answered}
-        correct={correct}
-        score={score}
+        {...roundProps}
         hintButtonRef={hintButtonRef}
-        revealNextHint={revealNextHint}
-        submitAnswer={submitAnswer}
+        revealNextHint={reveal}
+        submitAnswer={(answer) => submit(answer) === "accepted"}
         giveUp={giveUp}
         answerFeedback={answerFeedback}
         errorKey={errorKey}
@@ -226,80 +102,82 @@ function DailyQuiz() {
         ariaLabel="今日のクイズの結果"
         focusFallbackRef={showResultButtonRef}
       >
-        <div className="text-center">
-          <HaloRingGauge
-            value={score / 10}
-            size={100}
-            strokeWidth={7}
-            trackColor="var(--color-ba-border)"
-            fillFrom="var(--color-ba-yellow)"
-            fillTo="var(--color-ba-blue)"
-            className="mx-auto mb-1"
-          >
-            <span className="font-display text-3xl font-black text-ba-blue">
-              {getScoreRank(score)}
-            </span>
-            <span className="text-[10px] tracking-widest text-ba-ink-soft">RANK</span>
-          </HaloRingGauge>
-
-          <h2 className="text-sm font-bold text-ba-ink-soft mb-1">
-            {correct ? "正解！" : "正解は…"}
-          </h2>
-          <p className="font-display text-xl font-black text-ba-navy mb-2">
-            {currentQuestion.student.fullName}
-          </p>
-
-          <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-ba-yellow-soft/40 py-1.5 mb-3">
-            <span className="font-display text-2xl font-black text-ba-navy">{score}</span>
-            <span className="text-sm font-bold text-ba-ink-soft">/ 10 点</span>
-          </div>
-
-          <p className="text-sm text-ba-ink-soft mb-1">使用ヒント数: {revealedHintCount}</p>
-          <p className="text-sm text-ba-ink-soft mb-4">
-            次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
-          </p>
-
-          {/* 統計情報 */}
-          <div className="border-t border-ba-border pt-3 mb-4 text-left">
-            <h3 className="font-display text-base font-black text-ba-navy mb-2">統計情報</h3>
-
-            <div className="space-y-1.5 text-sm">
-              <div className="flex justify-between">
-                <span className="text-ba-ink-soft">累積挑戦回数:</span>
-                <span className="font-semibold text-ba-navy">{totalAttempts}回</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-ba-ink-soft">ベストスコア:</span>
-                <span className="font-semibold text-ba-navy">{bestScore}点</span>
-              </div>
-            </div>
-
-            <div className="mt-3">
-              <p className="text-sm text-ba-ink-soft mb-1.5">ランク分布:</p>
-              <div className="grid grid-cols-3 gap-1.5 text-xs text-ba-navy">
-                {rankDistribution.map(({ label, count }) => (
-                  <div key={label} className="rounded-lg bg-ba-bg px-2 py-1.5 text-center">
-                    <div className="font-bold">{label}</div>
-                    <div>{count}回</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Button variant="primary" className="w-full" onClick={() => navigate("/regular")}>
-              もっと遊ぶ
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => setShowResultModal(false)}
+        {result && (
+          <div className="text-center">
+            <HaloRingGauge
+              value={result.score / 10}
+              size={100}
+              strokeWidth={7}
+              trackColor="var(--color-ba-border)"
+              fillFrom="var(--color-ba-yellow)"
+              fillTo="var(--color-ba-blue)"
+              className="mx-auto mb-1"
             >
-              閉じる
-            </Button>
+              <span className="font-display text-3xl font-black text-ba-blue">
+                {getScoreRank(result.score)}
+              </span>
+              <span className="text-[10px] tracking-widest text-ba-ink-soft">RANK</span>
+            </HaloRingGauge>
+
+            <h2 className="text-sm font-bold text-ba-ink-soft mb-1">
+              {result.correct ? "正解！" : "正解は…"}
+            </h2>
+            <p className="font-display text-xl font-black text-ba-navy mb-2">
+              {round.question.student.fullName}
+            </p>
+
+            <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-ba-yellow-soft/40 py-1.5 mb-3">
+              <span className="font-display text-2xl font-black text-ba-navy">{result.score}</span>
+              <span className="text-sm font-bold text-ba-ink-soft">/ 10 点</span>
+            </div>
+
+            <p className="text-sm text-ba-ink-soft mb-1">使用ヒント数: {result.usedHintCount}</p>
+            <p className="text-sm text-ba-ink-soft mb-4">
+              次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
+            </p>
+
+            {/* 統計情報 */}
+            <div className="border-t border-ba-border pt-3 mb-4 text-left">
+              <h3 className="font-display text-base font-black text-ba-navy mb-2">統計情報</h3>
+
+              <div className="space-y-1.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-ba-ink-soft">累積挑戦回数:</span>
+                  <span className="font-semibold text-ba-navy">{totalAttempts}回</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-ba-ink-soft">ベストスコア:</span>
+                  <span className="font-semibold text-ba-navy">{bestScore}点</span>
+                </div>
+              </div>
+
+              <div className="mt-3">
+                <p className="text-sm text-ba-ink-soft mb-1.5">ランク分布:</p>
+                <div className="grid grid-cols-3 gap-1.5 text-xs text-ba-navy">
+                  {rankDistribution.map(({ label, count }) => (
+                    <div key={label} className="rounded-lg bg-ba-bg px-2 py-1.5 text-center">
+                      <div className="font-bold">{label}</div>
+                      <div>{count}回</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Button variant="primary" className="w-full" onClick={() => navigate("/regular")}>
+                もっと遊ぶ
+              </Button>
+              <Button
+                variant="secondary"
+                className="w-full"
+                onClick={() => setShowResultModal(false)}
+              >
+                閉じる
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </Modal>
     </>
   );

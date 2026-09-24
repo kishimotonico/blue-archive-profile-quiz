@@ -11,7 +11,7 @@ export interface RegularQuizCurrentQuestionState {
 }
 
 export interface RegularQuizProgress {
-  schemaVersion: 2;
+  schemaVersion: 3;
   masterKey: QuizKey;
   totalQuestions: number;
   currentQuestionIndex: number;
@@ -19,7 +19,7 @@ export interface RegularQuizProgress {
   currentQuestionState: RegularQuizCurrentQuestionState;
 }
 
-export const REGULAR_QUIZ_PROGRESS_KEY = "blue-archive-quiz-regular-progress-v2";
+export const REGULAR_QUIZ_PROGRESS_KEY = "blue-archive-quiz-regular-progress-v3";
 
 export const DEFAULT_CURRENT_QUESTION_STATE: RegularQuizCurrentQuestionState = {
   revealedHintCount: 1,
@@ -32,7 +32,7 @@ export const DEFAULT_CURRENT_QUESTION_STATE: RegularQuizCurrentQuestionState = {
 // looseObject は未知キーを保持する（旧 isValidProgress が余剰プロパティを無視していた挙動と等価）。
 const questionResultSchema: v.GenericSchema<QuestionResult> = v.looseObject({
   studentId: v.string(),
-  revealedHintCount: v.number(),
+  usedHintCount: v.number(),
   correct: v.boolean(),
   userAnswer: v.nullable(v.string()),
   score: v.number(),
@@ -49,7 +49,7 @@ const regularQuizCurrentQuestionStateSchema: v.GenericSchema<RegularQuizCurrentQ
 
 const regularQuizProgressSchema: v.GenericSchema<RegularQuizProgress> = v.pipe(
   v.looseObject({
-    schemaVersion: v.literal(2),
+    schemaVersion: v.literal(3),
     masterKey: v.looseObject({
       version: v.literal(CURRENT_ALGORITHM_VERSION),
       baseDate: v.string(),

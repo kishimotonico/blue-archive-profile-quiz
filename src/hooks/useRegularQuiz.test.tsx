@@ -185,14 +185,14 @@ describe("useRegularQuiz - goNext() の二重計上防止", () => {
     expect(navigatedResults).toHaveLength(10);
     expect(navigatedResults[0]).toEqual({
       studentId: "s1",
-      revealedHintCount: 6,
+      usedHintCount: 6,
       correct: true,
       userAnswer: "テストs1",
       score: 5,
     });
     expect(navigatedResults[9]).toEqual({
       studentId: "s10",
-      revealedHintCount: 6,
+      usedHintCount: 6,
       correct: true,
       userAnswer: "テストs10",
       score: 5,
@@ -245,14 +245,14 @@ describe("useRegularQuiz - 進捗永続化", () => {
 
   it("進捗が存在する状態で起動すると復元される", async () => {
     const seededProgress: RegularQuizProgress = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       masterKey: { version: 2, baseDate: "2026-04-21", seed: 12345 },
       totalQuestions: 10,
       currentQuestionIndex: 3,
       results: [
-        { studentId: "s1", revealedHintCount: 1, correct: true, userAnswer: "テストs1", score: 10 },
-        { studentId: "s2", revealedHintCount: 2, correct: true, userAnswer: "テストs2", score: 9 },
-        { studentId: "s3", revealedHintCount: 3, correct: true, userAnswer: "テストs3", score: 8 },
+        { studentId: "s1", usedHintCount: 1, correct: true, userAnswer: "テストs1", score: 10 },
+        { studentId: "s2", usedHintCount: 2, correct: true, userAnswer: "テストs2", score: 9 },
+        { studentId: "s3", usedHintCount: 3, correct: true, userAnswer: "テストs3", score: 8 },
       ],
       currentQuestionState: {
         revealedHintCount: 4,
@@ -305,7 +305,7 @@ describe("useRegularQuiz - 進捗永続化", () => {
       expect(progress?.results).toHaveLength(1);
       expect(progress?.results[0]).toEqual({
         studentId: "s1",
-        revealedHintCount: 1,
+        usedHintCount: 1,
         correct: false,
         userAnswer: null,
         score: 8,
@@ -315,12 +315,12 @@ describe("useRegularQuiz - 進捗永続化", () => {
 
   it("results.length と currentQuestionIndex が一致しない進捗は破棄される", async () => {
     const inconsistent: RegularQuizProgress = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       masterKey: { version: 2, baseDate: "2026-04-21", seed: 12345 },
       totalQuestions: 10,
       currentQuestionIndex: 3,
       results: [
-        { studentId: "s1", revealedHintCount: 1, correct: true, userAnswer: "テストs1", score: 10 },
+        { studentId: "s1", usedHintCount: 1, correct: true, userAnswer: "テストs1", score: 10 },
       ],
       currentQuestionState: {
         revealedHintCount: 4,

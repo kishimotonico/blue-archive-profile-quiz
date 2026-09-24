@@ -81,7 +81,7 @@ export function useRegularQuiz() {
         setLastConfirmedAnswer(restored.currentQuestionState.lastConfirmedAnswer);
       } else {
         const freshProgress: RegularQuizProgress = {
-          schemaVersion: 2,
+          schemaVersion: 3,
           masterKey: key,
           totalQuestions: TOTAL_QUESTIONS,
           currentQuestionIndex: 0,
@@ -109,7 +109,7 @@ export function useRegularQuiz() {
   useEffect(() => {
     if (loading || !masterKey) return;
     saveRegularQuizProgress({
-      schemaVersion: 2,
+      schemaVersion: 3,
       masterKey,
       totalQuestions: TOTAL_QUESTIONS,
       currentQuestionIndex,
@@ -134,7 +134,7 @@ export function useRegularQuiz() {
 
     const qr: QuestionResult = {
       studentId: quiz.currentQuestion.student.id,
-      revealedHintCount,
+      usedHintCount: revealedHintCount,
       correct,
       userAnswer: lastConfirmedAnswer,
       score,

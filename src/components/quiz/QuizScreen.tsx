@@ -152,12 +152,17 @@ function QuizScreen({
             <StudentPortrait student={student} state={portraitState} correct={correct} />
             {/* 両方のセルを同じグリッドセルに重ねて、大きい方の高さにセルを揃える。
                 実測値の min-height に頼らず、回答前後で立ち絵パネルの高さが変わらないようにする */}
-            <div className="grid shrink-0">
-              <div className={`[grid-area:1/1] ${answered ? "invisible" : ""}`} inert={answered}>
+            {/* grid-cols-1とmin-w-0が無いと、グリッドアイテムのデフォルトmin-width:autoにより
+                内側のw-full要素の幅が親のトラック幅を無視して広がり、右カラムがはみ出す */}
+            <div className="grid grid-cols-1 shrink-0">
+              <div
+                className={`col-start-1 row-start-1 min-w-0 ${answered ? "invisible" : ""}`}
+                inert={answered}
+              >
                 {playArea}
               </div>
               {answered && (
-                <div className="[grid-area:1/1] flex flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5">
+                <div className="col-start-1 row-start-1 flex min-w-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5">
                   <StudentReveal
                     student={student}
                     correct={correct}

@@ -43,6 +43,8 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
       : "border-ba-border focus:border-ba-blue",
   ].join(" ");
 
+  const isAnswerEmpty = !answer.trim();
+
   return (
     <div className="relative w-full">
       <motion.div animate={controls} className="flex gap-2 w-full">
@@ -64,9 +66,12 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
           />
           <Button
             type="submit"
-            variant="accent"
-            className="shrink-0"
-            disabled={disabled || !answer.trim()}
+            variant={isAnswerEmpty ? "secondary" : "accent"}
+            // secondaryのdisabled:opacity-50は白地+枠線をほぼ消してしまい読めなくなるため、
+            // 未入力（=secondaryかつdisabled）のときだけopacityを上げて視認性を保つ。
+            // baseのdisabled:opacity-50と同じ疑似クラスで優先順位が不定になるため`!`で明示的に上書きする
+            className={`shrink-0 ${isAnswerEmpty ? "disabled:opacity-80!" : ""}`}
+            disabled={disabled || isAnswerEmpty}
           >
             回答する
           </Button>

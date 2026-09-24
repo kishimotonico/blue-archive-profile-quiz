@@ -43,11 +43,12 @@ function RegularQuiz() {
   useEffect(() => {
     if (!answered) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        e.stopPropagation();
-        handleNext();
-      }
+      if (e.key !== "Enter") return;
+      // モーダル表示中は、モーダル内操作としてのEnterを次の問題への遷移と誤認しないようにする
+      if (document.querySelector('[role="dialog"]')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      handleNext();
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);

@@ -12,9 +12,12 @@ interface StudentPortraitProps {
 // 立ち絵は縦長なので、通常はバストアップに切り取って大きく見せ、
 // 全身は「全身を見る」モーダルで確認できるようにしている
 function StudentPortrait({ student, state, correct = false }: StudentPortraitProps) {
-  const [showFullBody, setShowFullBody] = useState(false);
+  // 開いたときの生徒IDを覚えておき、現在の生徒と一致する間だけ開いている扱いにする。
+  // useEffectで生徒切り替えを検知してsetStateするより再レンダリングが少なく済む
+  const [openedForStudentId, setOpenedForStudentId] = useState<string | null>(null);
   const revealed = state === "revealed";
   const hidden = state === "hidden";
+  const showFullBody = !hidden && openedForStudentId !== null && openedForStudentId === student?.id;
 
   const imageStateClass = revealed
     ? "opacity-100"
@@ -67,7 +70,7 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
         </span>
         <button
           type="button"
-          onClick={() => setShowFullBody(true)}
+          onClick={() => student && setOpenedForStudentId(student.id)}
           disabled={!student || hidden}
           tabIndex={hidden ? -1 : undefined}
           className="shrink-0 rounded-full border border-ba-sky-2 bg-ba-sky-1 px-3 py-1 text-xs font-bold text-ba-blue transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue disabled:opacity-40"
@@ -76,10 +79,10 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
         </button>
       </div>
 
-      {student && (
+      {student && !hidden && (
         <Modal
           isOpen={showFullBody}
-          onClose={() => setShowFullBody(false)}
+          onClose={() => setOpenedForStudentId(null)}
           title={revealed ? student.fullName : "シルエット"}
         >
           <img

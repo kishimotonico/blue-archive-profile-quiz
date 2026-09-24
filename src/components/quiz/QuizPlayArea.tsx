@@ -7,7 +7,7 @@ interface QuizPlayAreaProps {
   revealedHintCount: number;
   hintsLength: number;
   revealNextHint: () => void;
-  submitAnswer: (answer: string) => void;
+  submitAnswer: (answer: string) => boolean;
   giveUp: () => void;
   answerFeedback: string | null;
   errorKey: number;

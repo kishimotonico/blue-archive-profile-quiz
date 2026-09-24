@@ -195,6 +195,28 @@ describe("useQuiz - submitAnswer", () => {
     expect(result.current.lastConfirmedAnswer).toBeNull();
   });
 
+  it("該当する生徒が見つからないときはfalseを返し、入力欄を空にしない指示になる", async () => {
+    const { result } = await setupHook(store);
+
+    let returned!: boolean;
+    act(() => {
+      returned = result.current.submitAnswer("存在しない生徒名");
+    });
+
+    expect(returned).toBe(false);
+  });
+
+  it("正解・誤答のときはtrueを返し、入力欄を空にしてよい指示になる", async () => {
+    const { result } = await setupHook(store);
+
+    let returned!: boolean;
+    act(() => {
+      returned = result.current.submitAnswer(s2.fullName);
+    });
+
+    expect(returned).toBe(true);
+  });
+
   it("unknown の後にギブアップしても確定回答は null のまま", async () => {
     const { result } = await setupHook(store);
 

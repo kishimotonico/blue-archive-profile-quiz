@@ -3,7 +3,8 @@ import { motion, useAnimationControls } from "motion/react";
 import Button from "../common/Button";
 
 interface AnswerInputProps {
-  onSubmit: (answer: string) => void;
+  /** 入力欄を空にしてよければtrueを返す（「見つかりません」の打ち間違いを直せるようfalseの場合は残す） */
+  onSubmit: (answer: string) => boolean;
   disabled?: boolean;
   error?: string | null;
   errorKey?: number;
@@ -29,8 +30,8 @@ function AnswerInput({ onSubmit, disabled = false, error, errorKey }: AnswerInpu
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (answer.trim()) {
-      onSubmit(answer.trim());
-      setAnswer("");
+      const shouldClear = onSubmit(answer.trim());
+      if (shouldClear) setAnswer("");
     }
   };
 

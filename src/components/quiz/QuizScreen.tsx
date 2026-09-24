@@ -20,7 +20,7 @@ interface QuizScreenProps {
   score: number;
   hintButtonRef: RefObject<HTMLButtonElement | null>;
   revealNextHint: () => void;
-  submitAnswer: (answer: string) => void;
+  submitAnswer: (answer: string) => boolean;
   giveUp: () => void;
   answerFeedback: string | null;
   errorKey: number;

@@ -35,11 +35,13 @@ export function useQuiz() {
 
   /**
    * 回答を提出
+   * @returns 入力欄を空にしてよければtrue。「該当する生徒が見つかりません」の場合は
+   *          打ち間違いを直せるよう入力を残したいのでfalseを返す
    */
   const submitAnswer = useCallback(
-    (answer: string) => {
-      if (!currentQuestion) return;
-      if (answered) return;
+    (answer: string): boolean => {
+      if (!currentQuestion) return true;
+      if (answered) return true;
 
       const result = validateAnswer(answer, currentQuestion.student, allStudents);
 
@@ -51,6 +53,7 @@ export function useQuiz() {
         setScore(calculatedScore);
         setAnswered(true);
         setAnswerFeedback(null);
+        return true;
       } else if (result.type === "wrong_student") {
         // 存在する生徒だが間違い → 0点で終了
         setLastConfirmedAnswer(answer);
@@ -58,13 +61,24 @@ export function useQuiz() {
         setScore(0);
         setAnswered(true);
         setAnswerFeedback(null);
+        return true;
       } else {
         // 該当する生徒が存在しない → 続行可能（確定回答にはセットしない）
         setAnswerFeedback("該当する生徒が見つかりません");
         setErrorKey((prev) => prev + 1);
+        return false;
       }
     },
-    [currentQuestion, answered, revealedHintCount, allStudents, setLastConfirmedAnswer, setCorrect, setScore, setAnswered],
+    [
+      currentQuestion,
+      answered,
+      revealedHintCount,
+      allStudents,
+      setLastConfirmedAnswer,
+      setCorrect,
+      setScore,
+      setAnswered,
+    ],
   );
 
   /**
@@ -92,7 +106,14 @@ export function useQuiz() {
     setLastConfirmedAnswer(null);
     setAnswerFeedback(null);
     setErrorKey(0);
-  }, [setCurrentQuestion, setRevealedHintCount, setAnswered, setCorrect, setScore, setLastConfirmedAnswer]);
+  }, [
+    setCurrentQuestion,
+    setRevealedHintCount,
+    setAnswered,
+    setCorrect,
+    setScore,
+    setLastConfirmedAnswer,
+  ]);
 
   return {
     currentQuestion,

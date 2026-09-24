@@ -116,7 +116,7 @@ function HintList({
             <HintCard hint={hint} revealed={false} />
           </div>
         ))}
-        {remaining >= 2 && (
+        {isMobileLayout && remaining >= 2 && (
           <div className="pointer-events-none relative col-span-full -mt-20 flex h-20 items-end justify-center bg-linear-to-b from-transparent to-ba-bg to-85% pb-1 text-xs text-ba-ink-soft">
             残り {remaining} ヒント
           </div>

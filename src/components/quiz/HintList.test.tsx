@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import HintList from "./HintList";
 import type { Hint, Student, PortraitState } from "../../quiz-core";
@@ -30,6 +30,13 @@ const mockStudent: Student = {
 const mockHints: Hint[] = [
   { type: "school", label: "学園", value: "VAL_1" },
   { type: "club", label: "部活", value: "VAL_2" },
+];
+
+const manyHints: Hint[] = [
+  { type: "school", label: "学園", value: "VAL_1" },
+  { type: "club", label: "部活", value: "VAL_2" },
+  { type: "age", label: "年齢", value: "VAL_3" },
+  { type: "birthday", label: "誕生日", value: "VAL_4" },
 ];
 
 function renderHintList(portraitState: PortraitState) {
@@ -114,5 +121,35 @@ describe("HintList - 立ち絵表示時の自動スクロール", () => {
     );
 
     expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+  });
+});
+
+describe("HintList - 「残り n ヒント」の帯", () => {
+  it("layout=desktop では帯を表示しない", () => {
+    render(
+      <HintList
+        hints={manyHints}
+        revealedCount={1}
+        student={mockStudent}
+        portraitState="hidden"
+        layout="desktop"
+      />,
+    );
+
+    expect(screen.queryByText(/残り/)).toBeNull();
+  });
+
+  it("layout=mobile かつ残り2枚以上では帯を表示する", () => {
+    render(
+      <HintList
+        hints={manyHints}
+        revealedCount={1}
+        student={mockStudent}
+        portraitState="hidden"
+        layout="mobile"
+      />,
+    );
+
+    expect(screen.getByText(/残り 3 ヒント/)).toBeTruthy();
   });
 });

@@ -37,9 +37,10 @@ function HaloRingGauge({
       style={{ width: size, height: size }}
       role={label ? "img" : undefined}
       aria-label={label}
-      aria-hidden={label ? undefined : true}
     >
-      <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full -rotate-90">
+      {/* labelが無いときコンテナごとaria-hiddenにするとchildren（ランク文字など）も
+          読み上げられなくなるため、装飾であるSVG側にだけ常時aria-hiddenを付ける */}
+      <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full -rotate-90" aria-hidden="true">
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor={fillFrom} />

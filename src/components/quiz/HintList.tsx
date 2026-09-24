@@ -68,10 +68,8 @@ function HintList({
 
   const visibleHints = isMobileLayout ? hints.slice(0, revealedCount) : hints;
   const remaining = hints.length - revealedCount;
-  const peekHints =
-    isMobileLayout && remaining > 0
-      ? hints.slice(revealedCount, revealedCount + Math.min(remaining, 3))
-      : [];
+  const peekCount = revealedCount % 2 === 1 ? 3 : 2;
+  const peekHints = isMobileLayout ? hints.slice(revealedCount, revealedCount + peekCount) : [];
 
   // 縦長画面で下に空白が残らないよう、グリッドを左カラムの高さまで伸ばす。
   // 1行あたり HINT_ROW_MAX_HEIGHT を超える分は伸ばさず、下の余白として残す
@@ -108,23 +106,19 @@ function HintList({
             />
           </div>
         ))}
-        {peekHints.length > 0 && (
+        {/* 2列表示（md以上）では、開示済みが奇数枚のとき最後の行の空きマスも埋めて行を揃えるため、
+            見切れカードは1枚多く出す。1列表示では3枚目を隠す */}
+        {peekHints.map((hint, i) => (
           <div
-            className={`relative overflow-hidden pointer-events-none ${peekHints.length >= 2 ? "max-h-44" : ""}`}
+            key={revealedCount + i}
+            className={`pointer-events-none ${i >= 2 ? "hidden md:block" : ""}`}
           >
-            <div className="flex flex-col gap-2">
-              {peekHints.map((hint, i) => (
-                <HintCard key={revealedCount + i} hint={hint} revealed={false} />
-              ))}
-            </div>
-            {peekHints.length >= 2 && (
-              <div className="absolute inset-0 bg-linear-to-b from-transparent from-40% to-ba-bg to-85%" />
-            )}
-            {remaining >= 2 && (
-              <div className="absolute bottom-0 left-0 right-0 text-center text-xs text-ba-ink-soft pb-1">
-                残り {remaining} ヒント
-              </div>
-            )}
+            <HintCard hint={hint} revealed={false} />
+          </div>
+        ))}
+        {remaining >= 2 && (
+          <div className="pointer-events-none relative col-span-full -mt-20 flex h-20 items-end justify-center bg-linear-to-b from-transparent to-ba-bg to-85% pb-1 text-xs text-ba-ink-soft">
+            残り {remaining} ヒント
           </div>
         )}
         {isMobileLayout && portraitState !== "hidden" && (

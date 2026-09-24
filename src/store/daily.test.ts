@@ -1,14 +1,17 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach } from "vitest";
+import { createStore } from "jotai";
 import {
-  migrateDailyResultsV2ToV3,
-  STORAGE_KEY_DAILY_RESULTS_V2,
-  STORAGE_KEY_DAILY_RESULTS_V3,
+  dailyResultsStorageAtom,
+  recordDailyResultAtom,
+  totalAttemptsAtom,
+  scoreDistributionAtom,
+  bestScoreAtom,
   RECENT_DAILY_RESULTS_LIMIT,
-  type DailyResult,
   type DailyResultsStorage,
 } from "./daily";
 import type { QuizKey } from "../quiz-core/key";
+import type { QuestionResult } from "../quiz-core";
 
 const makeKey = (baseDate: string): QuizKey => ({
   version: 1,
@@ -16,125 +19,97 @@ const makeKey = (baseDate: string): QuizKey => ({
   seed: Number(baseDate.replace(/-/g, "")),
 });
 
-const makeResult = (overrides: Partial<DailyResult> = {}): DailyResult => ({
-  key: makeKey("2026-01-01"),
+const makeResult = (overrides: Partial<QuestionResult> = {}): QuestionResult => ({
   studentId: "s0",
-  score: 5,
-  revealedHintCount: 3,
+  usedHintCount: 3,
   correct: true,
-  timestamp: 1_700_000_000_000,
+  userAnswer: "s0",
+  score: 5,
   ...overrides,
 });
 
-describe("migrateDailyResultsV2ToV3", () => {
+describe("recordDailyResultAtom", () => {
+  let store: ReturnType<typeof createStore>;
+
   beforeEach(() => {
     localStorage.clear();
+    store = createStore();
   });
 
-  it("v2 が存在し v3 が無い場合: v3 を作って v2 を削除する", () => {
-    const v2: DailyResult[] = [
-      makeResult({ studentId: "a", score: 5, timestamp: 1000 }),
-      makeResult({ studentId: "b", score: 8, timestamp: 2000 }),
-    ];
-    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V2, JSON.stringify(v2));
+  it("結果を追加すると recent に反映される", () => {
+    store.set(recordDailyResultAtom, { key: makeKey("2026-01-01"), result: makeResult() });
 
-    migrateDailyResultsV2ToV3();
-
-    expect(localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V2)).toBeNull();
-    const v3Raw = localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V3);
-    expect(v3Raw).not.toBeNull();
-    const v3 = JSON.parse(v3Raw!) as DailyResultsStorage;
-    expect(v3.recent).toHaveLength(2);
-    // timestamp 降順
-    expect(v3.recent[0].studentId).toBe("b");
-    expect(v3.recent[1].studentId).toBe("a");
-    expect(v3.aggregated).toEqual({});
+    const storage = store.get(dailyResultsStorageAtom);
+    expect(storage.recent).toHaveLength(1);
+    expect(storage.recent[0].key.baseDate).toBe("2026-01-01");
+    expect(storage.recent[0].result).toEqual(makeResult());
+    expect(storage.recent[0].timestamp).toBeGreaterThan(0);
   });
 
-  it("200件のデータがある場合: recent 100件 + aggregated に100件分集約される", () => {
-    // 200件: timestamp は 1〜200 で、score は i % 11（0〜10 を循環）
-    const v2: DailyResult[] = [];
-    for (let i = 1; i <= 200; i++) {
-      v2.push(
-        makeResult({
-          studentId: `s${i}`,
-          score: i % 11,
-          timestamp: i,
-        }),
-      );
+  it("同じ baseDate の結果が既にある場合は何もしない（冪等）", () => {
+    store.set(recordDailyResultAtom, {
+      key: makeKey("2026-01-01"),
+      result: makeResult({ score: 5 }),
+    });
+    store.set(recordDailyResultAtom, {
+      key: makeKey("2026-01-01"),
+      result: makeResult({ score: 9 }),
+    });
+
+    const storage = store.get(dailyResultsStorageAtom);
+    expect(storage.recent).toHaveLength(1);
+    expect(storage.recent[0].result.score).toBe(5);
+  });
+
+  it("別の baseDate の結果は両方残る", () => {
+    store.set(recordDailyResultAtom, { key: makeKey("2026-01-01"), result: makeResult() });
+    store.set(recordDailyResultAtom, { key: makeKey("2026-01-02"), result: makeResult() });
+
+    const storage = store.get(dailyResultsStorageAtom);
+    expect(storage.recent).toHaveLength(2);
+  });
+
+  it(`recent が ${RECENT_DAILY_RESULTS_LIMIT} 件を超えると最古の結果が aggregated に繰り越される`, () => {
+    for (let i = 0; i < RECENT_DAILY_RESULTS_LIMIT; i++) {
+      const month = Math.floor(i / 28) + 1;
+      const day = (i % 28) + 1;
+      const baseDate = `2026-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      store.set(recordDailyResultAtom, {
+        key: makeKey(baseDate),
+        result: makeResult({ score: i === 0 ? 2 : 7 }),
+      });
     }
-    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V2, JSON.stringify(v2));
 
-    migrateDailyResultsV2ToV3();
+    let storage = store.get(dailyResultsStorageAtom);
+    expect(storage.recent).toHaveLength(RECENT_DAILY_RESULTS_LIMIT);
+    expect(storage.aggregated).toEqual({});
 
-    const v3 = JSON.parse(
-      localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V3)!,
-    ) as DailyResultsStorage;
+    store.set(recordDailyResultAtom, {
+      key: makeKey("2026-12-01"),
+      result: makeResult({ score: 9 }),
+    });
 
-    expect(v3.recent).toHaveLength(RECENT_DAILY_RESULTS_LIMIT);
-
-    // 最も新しい timestamp=200 から 101 までが recent (100件)
-    // timestamp 1〜100 までが aggregated に集約 (100件)
-    const aggregatedTotal = Object.values(v3.aggregated).reduce((sum, c) => sum + c, 0);
-    expect(aggregatedTotal).toBe(100);
-
-    // recent の最も古い timestamp は 101
-    const minTsInRecent = Math.min(...v3.recent.map((r) => r.timestamp));
-    expect(minTsInRecent).toBe(101);
-
-    // aggregated の集計を検証: timestamp 1〜100 のスコア (i % 11) のヒストグラム
-    const expectedAggregated: Record<number, number> = {};
-    for (let i = 1; i <= 100; i++) {
-      const s = i % 11;
-      expectedAggregated[s] = (expectedAggregated[s] ?? 0) + 1;
-    }
-    // JSON.parse で整数キーが文字列化されるので、片方を文字列キーに合わせて比較
-    const normalize = (obj: Record<string | number, number>) =>
-      Object.fromEntries(Object.entries(obj).map(([k, v]) => [String(k), v]));
-    expect(normalize(v3.aggregated)).toEqual(normalize(expectedAggregated));
-
-    // v2 は削除されている
-    expect(localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V2)).toBeNull();
+    storage = store.get(dailyResultsStorageAtom);
+    expect(storage.recent).toHaveLength(RECENT_DAILY_RESULTS_LIMIT);
+    // 最も古い(timestamp が最小の) score=2 の結果が aggregated に移動している
+    expect(storage.aggregated).toEqual({ 2: 1 });
   });
 
-  it("v3 が既にある場合は v2 を上書きしない", () => {
-    const existingV3: DailyResultsStorage = {
-      recent: [makeResult({ studentId: "existing", score: 7, timestamp: 9999 })],
-      aggregated: { 3: 5 },
+  it("aggregated への繰り越し後も統計 atom（total/distribution/best）に反映される", () => {
+    const seeded: DailyResultsStorage = {
+      recent: [
+        { key: makeKey("2026-02-01"), result: makeResult({ score: 4 }), timestamp: 2 },
+        { key: makeKey("2026-02-02"), result: makeResult({ score: 8 }), timestamp: 3 },
+      ],
+      aggregated: { 10: 50 },
     };
-    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V3, JSON.stringify(existingV3));
+    store.set(dailyResultsStorageAtom, seeded);
 
-    const v2: DailyResult[] = [makeResult({ studentId: "v2only", score: 0, timestamp: 1 })];
-    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V2, JSON.stringify(v2));
-
-    migrateDailyResultsV2ToV3();
-
-    // v3 はそのまま
-    const v3 = JSON.parse(
-      localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V3)!,
-    ) as DailyResultsStorage;
-    expect(v3).toEqual(existingV3);
-
-    // v2 はそのまま残る（v3 が既にあるなら触らない）
-    expect(localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V2)).not.toBeNull();
-  });
-
-  it("v2 が存在しない場合は何もしない", () => {
-    expect(localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V2)).toBeNull();
-    expect(localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V3)).toBeNull();
-
-    migrateDailyResultsV2ToV3();
-
-    expect(localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V2)).toBeNull();
-    expect(localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V3)).toBeNull();
-  });
-
-  it("v2 のデータが不正な JSON でも例外を投げない", () => {
-    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V2, "not-json");
-
-    expect(() => migrateDailyResultsV2ToV3()).not.toThrow();
-
-    // v3 は作られない（パース失敗時は何もしない）
-    expect(localStorage.getItem(STORAGE_KEY_DAILY_RESULTS_V3)).toBeNull();
+    expect(store.get(totalAttemptsAtom)).toBe(52);
+    expect(store.get(bestScoreAtom)).toBe(10);
+    const distribution = store.get(scoreDistributionAtom);
+    expect(distribution.perfect).toBe(50);
+    expect(distribution.medium).toBe(1); // score=4
+    expect(distribution.veryHigh).toBe(1); // score=8
   });
 });

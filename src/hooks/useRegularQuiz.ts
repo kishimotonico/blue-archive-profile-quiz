@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useSetAtom } from "jotai";
 import { useQuiz } from "./useQuiz";
 import { createQuestionSet, getDailyDate, CURRENT_ALGORITHM_VERSION } from "../quiz-core";
-import type { QuestionResult } from "../quiz-core";
+import type { QuestionResult, RoundSnapshot } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import {
   loadRegularQuizProgress,
   saveRegularQuizProgress,
   clearRegularQuizProgress,
-  DEFAULT_CURRENT_QUESTION_STATE,
   type RegularQuizProgress,
 } from "../store/regular";
 import { answeredAtom, correctAtom, scoreAtom } from "../store/quiz";
@@ -55,12 +54,26 @@ export function useRegularQuiz() {
 
   useEffect(() => {
     let cancelled = false;
+
+    // 保存済みの round snapshot を個別 atom（answered/correct/score等）に反映する。
+    // セッション全体を一つの状態として扱う reducer 化は次のタスクで行う。
+    const applyRoundSnapshot = (round: RoundSnapshot) => {
+      if (round.status === "playing") {
+        setRevealedHintCount(round.revealedHintCount);
+        return;
+      }
+      setRevealedHintCount(round.result.usedHintCount);
+      setAnswered(true);
+      setCorrect(round.result.correct);
+      setScore(round.result.score);
+      setLastConfirmedAnswer(round.result.userAnswer);
+    };
+
     const initQuiz = async () => {
       resetQuiz();
 
       const stored = loadRegularQuizProgress();
-      const restored = stored && stored.totalQuestions === TOTAL_QUESTIONS ? stored : null;
-      const key = restored ? restored.masterKey : generateMasterKey();
+      const key = stored ? stored.masterKey : generateMasterKey();
 
       const generatedQuestions = await createQuestionSet(key, TOTAL_QUESTIONS);
       if (cancelled) return;
@@ -69,24 +82,19 @@ export function useRegularQuiz() {
       setQuestions(generatedQuestions);
       setMasterKey(key);
 
-      if (restored) {
-        const safeIndex = Math.min(restored.currentQuestionIndex, generatedQuestions.length - 1);
+      if (stored) {
+        const safeIndex = Math.min(stored.index, generatedQuestions.length - 1);
         setCurrentQuestionIndex(safeIndex);
-        setResults(restored.results);
+        setResults(stored.results);
         setCurrentQuestion(generatedQuestions[safeIndex]);
-        setRevealedHintCount(restored.currentQuestionState.revealedHintCount);
-        setAnswered(restored.currentQuestionState.answered);
-        setCorrect(restored.currentQuestionState.correct);
-        setScore(restored.currentQuestionState.score);
-        setLastConfirmedAnswer(restored.currentQuestionState.lastConfirmedAnswer);
+        applyRoundSnapshot(stored.round);
       } else {
         const freshProgress: RegularQuizProgress = {
           schemaVersion: 3,
           masterKey: key,
-          totalQuestions: TOTAL_QUESTIONS,
-          currentQuestionIndex: 0,
+          index: 0,
           results: [],
-          currentQuestionState: DEFAULT_CURRENT_QUESTION_STATE,
+          round: { status: "playing", revealedHintCount: 1 },
         };
         saveRegularQuizProgress(freshProgress);
         if (generatedQuestions.length > 0) {
@@ -108,13 +116,25 @@ export function useRegularQuiz() {
   // 進行中の状態を sessionStorage に同期
   useEffect(() => {
     if (loading || !masterKey) return;
+    const round: RoundSnapshot = answered
+      ? {
+          status: "answered",
+          result: {
+            studentId: questions[currentQuestionIndex]?.student.id ?? "",
+            usedHintCount: revealedHintCount,
+            correct,
+            userAnswer: lastConfirmedAnswer,
+            score,
+          },
+        }
+      : { status: "playing", revealedHintCount };
+
     saveRegularQuizProgress({
       schemaVersion: 3,
       masterKey,
-      totalQuestions: TOTAL_QUESTIONS,
-      currentQuestionIndex,
+      index: currentQuestionIndex,
       results,
-      currentQuestionState: { revealedHintCount, answered, correct, score, lastConfirmedAnswer },
+      round,
     });
   }, [
     loading,
@@ -126,6 +146,7 @@ export function useRegularQuiz() {
     correct,
     score,
     lastConfirmedAnswer,
+    questions,
   ]);
 
   const goNext = useCallback(() => {

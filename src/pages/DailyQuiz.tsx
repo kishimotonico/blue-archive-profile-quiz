@@ -39,6 +39,7 @@ function DailyQuiz() {
     answered,
     correct,
     score,
+    lastConfirmedAnswer,
     answerFeedback,
     errorKey,
     revealNextHint,
@@ -46,7 +47,7 @@ function DailyQuiz() {
     giveUp,
   } = useQuiz();
 
-  const { saveTodayResult, discardTodayResult, saveProgress, clearProgress } = useDailyQuiz();
+  const { saveTodayResult, saveProgress, clearProgress } = useDailyQuiz();
   const setAnswered = useSetAtom(answeredAtom);
   const setCorrect = useSetAtom(correctAtom);
   const setScore = useSetAtom(scoreAtom);
@@ -75,27 +76,12 @@ function DailyQuiz() {
         const restored = await createQuestion(todayResult.key);
         if (cancelled) return;
 
-        // 整合性チェック: key から復元した生徒と保存した studentId が一致するか確認
-        if (restored.student.id !== todayResult.studentId) {
-          console.warn(
-            `Quiz integrity mismatch: expected ${todayResult.studentId}, got ${restored.student.id}. Discarding stored result.`,
-          );
-          discardTodayResult();
-          clearProgress();
-          const question = await createDailyQuestion();
-          if (cancelled) return;
-          preloadPortraitImage(question.student);
-          setCurrentQuestion(question);
-          setLoading(false);
-          return;
-        }
-
         preloadPortraitImage(restored.student);
         setCurrentQuestion(restored);
         setRevealedHintCount(restored.hints.length + 1); // 全ヒント + 立ち絵を表示
         setAnswered(true);
-        setCorrect(todayResult.correct);
-        setScore(todayResult.score);
+        setCorrect(todayResult.result.correct);
+        setScore(todayResult.result.score);
         setIsAlreadyCompleted(true);
         setLoading(false);
         return;
@@ -145,12 +131,12 @@ function DailyQuiz() {
   useEffect(() => {
     // 回答が完了したら結果を保存（既に完了済みの場合は除く）
     if (answered && currentQuestion && !isAlreadyCompleted) {
-      saveTodayResult({
-        key: currentQuestion.key,
+      saveTodayResult(currentQuestion.key, {
         studentId: currentQuestion.student.id,
-        score,
-        revealedHintCount,
+        usedHintCount: revealedHintCount,
         correct,
+        userAnswer: lastConfirmedAnswer,
+        score,
       });
       clearProgress(); // 進行状態をクリア
     }
@@ -160,6 +146,7 @@ function DailyQuiz() {
     score,
     revealedHintCount,
     correct,
+    lastConfirmedAnswer,
     isAlreadyCompleted,
     saveTodayResult,
     clearProgress,

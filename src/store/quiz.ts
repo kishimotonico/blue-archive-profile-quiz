@@ -1,12 +1,9 @@
 import { atom } from "jotai";
 import type { QuizQuestion } from "../quiz-core";
-import { loadStudents } from "../quiz-core";
 
-/**
- * 全生徒リスト（Suspense 対応の async atom）。
- * loadStudents() のモジュールキャッシュにより 2 回目以降は即時解決する。
- */
-export const allStudentsAtom = atom(async () => loadStudents());
+// store/students.ts への移動後方互換のための re-export。
+// 既存の import 元をここに残しているだけで、C の担当（controller 接続）で消す。
+export { allStudentsAtom } from "./students";
 
 /**
  * 現在のクイズ問題

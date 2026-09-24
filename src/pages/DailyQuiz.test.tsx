@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import DailyQuiz from "./DailyQuiz";
 import type { DailyResultsStorage, DailyProgress } from "../store/daily";
-import { STORAGE_KEY_DAILY_RESULTS_V3 } from "../store/daily";
+import { STORAGE_KEY_DAILY_RESULTS } from "../store/daily";
 
 const DAILY_PROGRESS_KEY = "blue-archive-quiz-daily-progress-v2";
 
@@ -113,16 +113,19 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
       recent: [
         {
           key: PROGRESS_KEY,
-          studentId: "s1",
-          score: 8,
-          revealedHintCount: 3,
-          correct: true,
+          result: {
+            studentId: "s1",
+            usedHintCount: 3,
+            correct: true,
+            userAnswer: "s1",
+            score: 8,
+          },
           timestamp: 1234567890,
         },
       ],
       aggregated: {},
     };
-    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V3, JSON.stringify(storage));
+    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS, JSON.stringify(storage));
 
     await renderDailyQuiz();
 

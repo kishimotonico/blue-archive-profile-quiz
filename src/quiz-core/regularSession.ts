@@ -5,8 +5,7 @@ import { roundReducer, startRound, type RoundAction, type RoundState } from "./r
 export type RegularSession = {
   masterKey: QuizKey;
   questions: QuizQuestion[];
-  index: number;
-  results: QuestionResult[]; // index より前の確定結果。ready の間は results.length === index
+  results: QuestionResult[];
   round: RoundState;
 };
 
@@ -17,6 +16,14 @@ export type RegularState =
   // 最終問の結果も session.results に含める。ページは最後の画面をそのまま描けばよく、
   // /result への遷移は controller の effect に任せる（reducer は遷移を知らない）。
   | { status: "finished"; session: RegularSession };
+
+/** ready は次に出す問題、finished は最後に表示した問題を指す。 */
+export function getCurrentIndex(
+  status: "ready" | "finished",
+  session: Pick<RegularSession, "results">,
+): number {
+  return status === "finished" ? session.results.length - 1 : session.results.length;
+}
 
 export type RegularAction =
   | { type: "loaded"; session: RegularSession }
@@ -50,11 +57,8 @@ function applyNext(state: RegularState): RegularState {
   if (session.round.status !== "answered") return state;
 
   const results = [...session.results, session.round.result];
-  const nextIndex = session.index + 1;
 
-  if (nextIndex >= session.questions.length) {
-    // index と round は据え置く（不変条件は崩れるが、finished の間はページが
-    // 最後の問題の画面を描き続けるために round の参照が要る）。
+  if (results.length >= session.questions.length) {
     return { status: "finished", session: { ...session, results } };
   }
 
@@ -63,8 +67,7 @@ function applyNext(state: RegularState): RegularState {
     session: {
       ...session,
       results,
-      index: nextIndex,
-      round: startRound(session.questions[nextIndex]),
+      round: startRound(session.questions[results.length]),
     },
   };
 }

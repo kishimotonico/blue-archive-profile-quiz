@@ -1,7 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { regularSessionReducer, type RegularSession, type RegularState } from "./regularSession";
+import {
+  regularSessionReducer,
+  getCurrentIndex,
+  type RegularSession,
+  type RegularState,
+} from "./regularSession";
 import { startRound, roundReducer, type RoundState } from "./round";
-import type { Hint, QuizQuestion, Student } from "./types";
+import type { Hint, QuizQuestion, QuestionResult, Student } from "./types";
 
 const makeStudent = (overrides: Partial<Student> = {}): Student => ({
   id: "miyako",
@@ -40,12 +45,14 @@ const makeQuestion = (student: Student, seed: number): QuizQuestion => ({
   key: { version: 2, baseDate: "2026-04-21", seed },
 });
 
-const makeSession = (questions: QuizQuestion[], index = 0): RegularSession => ({
+const makeSession = (
+  questions: QuizQuestion[],
+  results: QuestionResult[] = [],
+): RegularSession => ({
   masterKey: { version: 2, baseDate: "2026-04-21", seed: 0 },
   questions,
-  index,
-  results: [],
-  round: startRound(questions[index]),
+  results,
+  round: startRound(questions[results.length]),
 });
 
 const answer = (round: RoundState): RoundState =>
@@ -66,7 +73,7 @@ describe("regularSessionReducer - next", () => {
     expect(next.status).toBe("ready");
     if (next.status !== "ready") throw new Error("unreachable");
     expect(next.session.results).toHaveLength(1);
-    expect(next.session.index).toBe(1);
+    expect(getCurrentIndex("ready", next.session)).toBe(1);
     expect(next.session.round).toEqual({ status: "playing", question: q1, revealedHintCount: 1 });
   });
 
@@ -156,5 +163,16 @@ describe("regularSessionReducer - round", () => {
     const next = regularSessionReducer(answered, { type: "round", action: { type: "reveal" } });
 
     expect(next).toBe(answered);
+  });
+});
+
+describe("getCurrentIndex", () => {
+  it("ready では results.length を返す", () => {
+    expect(getCurrentIndex("ready", { results: [] })).toBe(0);
+    expect(getCurrentIndex("ready", { results: [{} as QuestionResult] })).toBe(1);
+  });
+
+  it("finished では results.length - 1 を返す", () => {
+    expect(getCurrentIndex("finished", { results: Array(10).fill({} as QuestionResult) })).toBe(9);
   });
 });

@@ -4,7 +4,6 @@ import {
   getVisibleHintCount,
   getPortraitState,
   getRemainingStages,
-  getPotentialScore,
   getNextStep,
 } from "./reveal";
 import { roundReducer } from "./round";
@@ -100,17 +99,6 @@ describe("getRemainingStages", () => {
 
   it("answered では 0", () => {
     expect(getRemainingStages(answeredState(1))).toBe(0);
-  });
-});
-
-describe("getPotentialScore", () => {
-  it("playing では今の開示数で正解した場合の得点", () => {
-    expect(getPotentialScore(playingState(1))).toBe(10);
-    expect(getPotentialScore(playingState(3))).toBe(8);
-  });
-
-  it("answered では null", () => {
-    expect(getPotentialScore(answeredState(1))).toBeNull();
   });
 });
 

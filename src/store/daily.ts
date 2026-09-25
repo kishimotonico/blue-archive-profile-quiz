@@ -55,12 +55,6 @@ export const dailyProgressAtom = atomWithStorage<DailyProgress | null>(
   { getOnInit: true },
 );
 
-/** recent（直近100件）を取り出す派生 atom。テスト等での参照用。 */
-export const recentDailyResultsAtom = atom((get) => get(dailyResultsStorageAtom).recent);
-
-/** aggregated（古い結果のスコア帯別件数）を取り出す派生 atom。 */
-export const aggregatedScoreCountsAtom = atom((get) => get(dailyResultsStorageAtom).aggregated);
-
 export const totalAttemptsAtom = atom((get) => {
   const { recent, aggregated } = get(dailyResultsStorageAtom);
   const aggregatedTotal = Object.values(aggregated).reduce((sum, c) => sum + c, 0);
@@ -104,10 +98,6 @@ export const bestScoreAtom = atom((get) => {
   return Math.max(recentMax, aggregatedMax);
 });
 
-/**
- * 直近の結果配列に新しい結果を追加し、上限を超えた最古の結果を aggregated に移す。
- * 「最古」は timestamp の最小値で判定する。
- */
 function applyOverflowToAggregated(storage: DailyResultsStorage): DailyResultsStorage {
   if (storage.recent.length <= RECENT_DAILY_RESULTS_LIMIT) {
     return storage;

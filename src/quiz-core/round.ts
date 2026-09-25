@@ -79,10 +79,10 @@ function finalize(
 }
 
 export type SubmitJudgement =
-  | { type: "correct" } // → controller が submit を dispatch する
-  | { type: "wrong" } // → controller が submit を dispatch する
-  | { type: "unknownStudent" } // → dispatch しない。入力を残してエラー表示
-  | { type: "ignored" }; // → answered 中の submit
+  | { type: "correct" }
+  | { type: "wrong" }
+  | { type: "unknownStudent" }
+  | { type: "ignored" };
 
 /**
  * allStudents を reducer に持たせず判定専用の関数に分けることで、

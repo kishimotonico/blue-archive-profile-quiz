@@ -1,6 +1,5 @@
 import type { PortraitState } from "./types";
 import type { RoundState } from "./round";
-import { calculateScore } from "./scoring";
 
 /** ヒント段階数 + 立ち絵（シルエット）の1段階。 */
 export function getTotalStages(state: RoundState): number {
@@ -25,12 +24,6 @@ export function getPortraitState(state: RoundState): PortraitState {
 export function getRemainingStages(state: RoundState): number {
   if (state.status === "answered") return 0;
   return getTotalStages(state) - state.revealedHintCount;
-}
-
-/** プレイ中に「いまの開示数で正解したら何点か」を示す用途。回答済みは確定済みの記録を見るため null。 */
-export function getPotentialScore(state: RoundState): number | null {
-  if (state.status === "answered") return null;
-  return calculateScore(state.revealedHintCount, true);
 }
 
 /** 開示ボタンが次に何をすべきかを示す。answered はボタン自体を出さないため null。 */

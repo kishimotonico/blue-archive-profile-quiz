@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import {
   regularSessionReducer,
+  getCurrentIndex,
   startRound,
   restoreRound,
   toRoundSnapshot,
@@ -55,14 +56,12 @@ export function useRegularQuiz() {
           ? {
               masterKey: key,
               questions,
-              index: stored.index,
               results: stored.results,
-              round: restoreRound(questions[stored.index], stored.round),
+              round: restoreRound(questions[getCurrentIndex("ready", stored)], stored.round),
             }
           : {
               masterKey: key,
               questions,
-              index: 0,
               results: [],
               round: startRound(questions[0]),
             };
@@ -84,7 +83,6 @@ export function useRegularQuiz() {
       saveRegularQuizProgress({
         schemaVersion: 3,
         masterKey: state.session.masterKey,
-        index: state.session.index,
         results: state.session.results,
         round: toRoundSnapshot(state.session.round),
       });
@@ -131,15 +129,16 @@ export function useRegularQuiz() {
     setAnswerFeedback(null);
   }, []);
 
-  const view =
-    state.status === "ready" || state.status === "finished"
-      ? {
-          questionId: String(state.session.index),
-          round: state.session.round,
-          index: state.session.index,
-          totalScore: state.session.results.reduce((sum, r) => sum + r.score, 0),
-        }
-      : null;
+  const view = (() => {
+    if (state.status !== "ready" && state.status !== "finished") return null;
+    const index = getCurrentIndex(state.status, state.session);
+    return {
+      questionId: String(index),
+      round: state.session.round,
+      index,
+      totalScore: state.session.results.reduce((sum, r) => sum + r.score, 0),
+    };
+  })();
 
   return {
     state,

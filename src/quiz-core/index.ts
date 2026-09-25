@@ -57,7 +57,7 @@ export type {
 } from "./round";
 
 // フリープレイのセッション
-export { regularSessionReducer } from "./regularSession";
+export { regularSessionReducer, getCurrentIndex } from "./regularSession";
 export type { RegularSession, RegularState, RegularAction } from "./regularSession";
 
 // 日替わりのセッション
@@ -70,6 +70,5 @@ export {
   getVisibleHintCount,
   getPortraitState,
   getRemainingStages,
-  getPotentialScore,
   getNextStep,
 } from "./reveal";

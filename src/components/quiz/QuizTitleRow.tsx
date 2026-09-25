@@ -8,7 +8,6 @@ interface QuizTitleRowProps {
   round: RoundState;
 }
 
-// モバイル・デスクトップ共通の見出し行。モードラベル・見出し・残りステージのリングを表示する
 function QuizTitleRow({ modeLabel, heading, round }: QuizTitleRowProps) {
   const answered = round.status === "answered";
   const totalStages = getTotalStages(round);

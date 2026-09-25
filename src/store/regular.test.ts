@@ -22,7 +22,6 @@ const makeResult = (overrides: Partial<QuestionResult> = {}): QuestionResult => 
 const makeProgress = (overrides: Partial<RegularQuizProgress> = {}): RegularQuizProgress => ({
   schemaVersion: 3,
   masterKey: { version: CURRENT_ALGORITHM_VERSION, baseDate: "2026-04-21", seed: 12345 },
-  index: 0,
   results: [],
   round: { status: "playing", revealedHintCount: 1 },
   ...overrides,
@@ -35,7 +34,6 @@ describe("store/regular", () => {
 
   it("保存した進捗をそのまま読み込める", () => {
     const progress = makeProgress({
-      index: 2,
       results: [makeResult(), makeResult({ studentId: "s2", score: 10 })],
       round: { status: "playing", revealedHintCount: 4 },
     });
@@ -47,7 +45,6 @@ describe("store/regular", () => {
 
   it("answered な round も読み込める", () => {
     const progress = makeProgress({
-      index: 1,
       results: [makeResult()],
       round: { status: "answered", result: makeResult({ studentId: "s2", score: 0 }) },
     });
@@ -67,17 +64,6 @@ describe("store/regular", () => {
 
   it("保存が無ければ null を返す", () => {
     expect(loadRegularQuizProgress()).toBeNull();
-  });
-
-  it("results.length !== index の不整合な進捗は破棄される", () => {
-    const inconsistent = makeProgress({
-      index: 3,
-      results: [makeResult()],
-    });
-    sessionStorage.setItem(REGULAR_QUIZ_PROGRESS_KEY, JSON.stringify(inconsistent));
-
-    expect(loadRegularQuizProgress()).toBeNull();
-    expect(sessionStorage.getItem(REGULAR_QUIZ_PROGRESS_KEY)).toBeNull();
   });
 
   it("masterKey.version が CURRENT_ALGORITHM_VERSION と異なる進捗は破棄される", () => {

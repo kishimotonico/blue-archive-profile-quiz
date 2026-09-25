@@ -5,7 +5,7 @@ import { Suspense, type ReactNode } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useRegularQuiz } from "./useRegularQuiz";
 import { REGULAR_QUIZ_PROGRESS_KEY, type RegularQuizProgress } from "../store/regular";
-import type { QuizQuestion, Student } from "../quiz-core";
+import { getCurrentIndex, type QuizQuestion, type Student } from "../quiz-core";
 
 const mockNavigate = vi.fn();
 
@@ -97,7 +97,6 @@ describe("useRegularQuiz - 途中再開", () => {
     const progress: RegularQuizProgress = {
       schemaVersion: 3,
       masterKey: { version: 2, baseDate: "2026-04-21", seed: 0 },
-      index: 2,
       results: [
         { studentId: s1.id, usedHintCount: 1, correct: true, userAnswer: s1.name, score: 10 },
         { studentId: s1.id, usedHintCount: 2, correct: true, userAnswer: s1.name, score: 9 },
@@ -110,7 +109,7 @@ describe("useRegularQuiz - 途中再開", () => {
 
     expect(result.current.state.status).toBe("ready");
     if (result.current.state.status !== "ready") throw new Error("unreachable");
-    expect(result.current.state.session.index).toBe(2);
+    expect(getCurrentIndex("ready", result.current.state.session)).toBe(2);
     expect(result.current.state.session.results).toHaveLength(2);
     expect(result.current.state.session.round).toEqual({
       status: "playing",

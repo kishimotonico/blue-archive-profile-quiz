@@ -5,7 +5,6 @@ import type { QuizKey, QuestionResult, RoundSnapshot } from "../quiz-core";
 export interface RegularQuizProgress {
   schemaVersion: 3;
   masterKey: QuizKey;
-  index: number;
   results: QuestionResult[];
   round: RoundSnapshot;
 }
@@ -31,21 +30,16 @@ const roundSnapshotSchema: v.GenericSchema<RoundSnapshot> = v.union([
   }),
 ]);
 
-const regularQuizProgressSchema: v.GenericSchema<RegularQuizProgress> = v.pipe(
-  v.looseObject({
-    schemaVersion: v.literal(3),
-    masterKey: v.looseObject({
-      version: v.literal(CURRENT_ALGORITHM_VERSION),
-      baseDate: v.string(),
-      seed: v.number(),
-    }),
-    index: v.number(),
-    results: v.array(questionResultSchema),
-    round: roundSnapshotSchema,
+const regularQuizProgressSchema: v.GenericSchema<RegularQuizProgress> = v.looseObject({
+  schemaVersion: v.literal(3),
+  masterKey: v.looseObject({
+    version: v.literal(CURRENT_ALGORITHM_VERSION),
+    baseDate: v.string(),
+    seed: v.number(),
   }),
-  // results.length === index の不変条件を維持
-  v.check((progress) => progress.results.length === progress.index),
-);
+  results: v.array(questionResultSchema),
+  round: roundSnapshotSchema,
+});
 
 // sessionStorage を直接扱うことでタブごと独立した進捗管理にする。
 // 再読み込み時は継続されるが、別タブでは干渉しない。

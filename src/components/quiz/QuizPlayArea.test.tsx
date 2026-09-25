@@ -1,60 +1,82 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent } from "@testing-library/react";
-import { createRef, useState } from "react";
+import { render, screen } from "@testing-library/react";
+import { createRef } from "react";
 import { describe, it, expect, vi } from "vitest";
 import QuizPlayArea from "./QuizPlayArea";
+import type { Hint, QuizQuestion, RoundState, Student } from "../../quiz-core";
+import type { AnswerDraft } from "./quizLayoutTypes";
 
-// QuizScreen は key を変えることでQuizPlayArea（＝AnswerInputの入力状態）を
-// 問題ごとに作り直す。ここでは呼び出し側の使い方に合わせ、key を切り替える
-// ラッパーコンポーネントで再現する。
-function Wrapper({ playAreaKey }: { playAreaKey: string }) {
+const makeStudent = (): Student => ({
+  id: "s1",
+  fullName: "テスト 太郎",
+  name: "タロウ",
+  school: "テスト学園",
+  grade: "1年生",
+  club: "テスト部",
+  age: "15歳",
+  birthday: "1月1日",
+  height: "160cm",
+  hobby: "テスト",
+  weaponName: "テスト銃",
+  cv: "テストCV",
+  portraitImage: "images/s1.png",
+  availableFrom: "2026-04-21",
+  skills: { ex: "", normal: "", passive: "", sub: "" },
+});
+
+const makeHints = (count: number): Hint[] =>
+  Array.from({ length: count }, (_, i) => ({
+    type: "school",
+    label: `ヒント${i + 1}`,
+    value: `値${i + 1}`,
+  }));
+
+const makeQuestion = (): QuizQuestion => ({
+  student: makeStudent(),
+  hints: makeHints(3),
+  key: { version: 2, baseDate: "2026-04-21", seed: 1 },
+});
+
+const playingRound = (revealedHintCount: number): RoundState => ({
+  status: "playing",
+  question: makeQuestion(),
+  revealedHintCount,
+});
+
+const noopAnswer: AnswerDraft = {
+  value: "",
+  onChange: vi.fn(),
+  onSubmit: vi.fn(),
+  error: { message: null, key: 0 },
+  errorVisible: false,
+  dismissError: vi.fn(),
+};
+
+function renderPlayArea(round: RoundState) {
   const hintButtonRef = createRef<HTMLButtonElement>();
-  return (
+  return render(
     <QuizPlayArea
-      key={playAreaKey}
+      round={round}
       hintButtonRef={hintButtonRef}
-      revealedHintCount={1}
-      hintsLength={3}
-      revealNextHint={vi.fn()}
-      submitAnswer={vi.fn()}
-      giveUp={vi.fn()}
-      answerFeedback={null}
-      errorKey={0}
-    />
+      actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
+      answer={noopAnswer}
+    />,
   );
 }
 
-describe("QuizPlayArea - key変更による入力リセット", () => {
-  it("key が変わると入力欄が空に戻る", () => {
-    const { rerender } = render(<Wrapper playAreaKey="student-a" />);
-
-    const input = screen.getByPlaceholderText("生徒名を入力") as HTMLInputElement;
-    fireEvent.change(input, { target: { value: "アル" } });
-    expect(input.value).toBe("アル");
-
-    rerender(<Wrapper playAreaKey="student-b" />);
-
-    const nextInput = screen.getByPlaceholderText("生徒名を入力") as HTMLInputElement;
-    expect(nextInput.value).toBe("");
+describe("QuizPlayArea - 開示ボタンの出し分け", () => {
+  it("開示数がヒント数未満なら「次のヒントを開示」", () => {
+    renderPlayArea(playingRound(1));
+    expect(screen.getByRole("button", { name: "次のヒントを開示" })).toBeTruthy();
   });
 
-  it("key が同じままなら入力欄は保持される", () => {
-    function ParentWithState() {
-      const [, setTick] = useState(0);
-      return (
-        <>
-          <button onClick={() => setTick((t) => t + 1)}>rerender</button>
-          <Wrapper playAreaKey="student-a" />
-        </>
-      );
-    }
+  it("開示数がヒント数と同じなら「シルエットを表示」", () => {
+    renderPlayArea(playingRound(3));
+    expect(screen.getByRole("button", { name: "シルエットを表示" })).toBeTruthy();
+  });
 
-    render(<ParentWithState />);
-    const input = screen.getByPlaceholderText("生徒名を入力") as HTMLInputElement;
-    fireEvent.change(input, { target: { value: "アル" } });
-
-    fireEvent.click(screen.getByRole("button", { name: "rerender" }));
-
-    expect((screen.getByPlaceholderText("生徒名を入力") as HTMLInputElement).value).toBe("アル");
+  it("開示数がヒント数を超えたら「諦めて正解を表示」", () => {
+    renderPlayArea(playingRound(4));
+    expect(screen.getByRole("button", { name: "諦めて正解を表示" })).toBeTruthy();
   });
 });

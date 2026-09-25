@@ -5,7 +5,7 @@ import Header from "../components/layout/Header";
 import Button from "../components/common/Button";
 import { getMaxScore, getScoreRank, getQuestionOutcome } from "../quiz-core";
 import type { QuestionResult, QuestionOutcome } from "../quiz-core";
-import { allStudentsAtom } from "../store/quiz";
+import { allStudentsAtom } from "../store/students";
 
 interface ResultState {
   results: QuestionResult[];
@@ -118,7 +118,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                           </span>
                         </td>
                         <td className="py-3 pr-4 text-ba-ink-soft">
-                          {hintCountLabel(r.revealedHintCount)}
+                          {hintCountLabel(r.usedHintCount)}
                         </td>
                         <td className="py-3 pr-4 text-ba-ink-soft">{r.userAnswer ?? "—"}</td>
                         <td className="py-3">
@@ -155,7 +155,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                     <div className="text-xs text-ba-ink-soft mb-2">{student?.school}</div>
                     <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
                       <dt className="text-ba-ink-soft">開示ヒント</dt>
-                      <dd className="text-ba-navy">{hintCountLabel(r.revealedHintCount)}</dd>
+                      <dd className="text-ba-navy">{hintCountLabel(r.usedHintCount)}</dd>
                       <dt className="text-ba-ink-soft">あなたの回答</dt>
                       <dd className="text-ba-navy">{r.userAnswer ?? "—"}</dd>
                       <dt className="text-ba-ink-soft">得点</dt>

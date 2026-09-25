@@ -38,7 +38,8 @@ function Header() {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  // Escapeキーでメニューを閉じる
+  // ドロワーが開いている間は全面オーバーレイで背後の操作を塞ぎ、モーダルと同時に開くことが
+  // ないため、モーダル側のEscape処理（ネイティブのdialog）とは競合しない
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isMenuOpen) {

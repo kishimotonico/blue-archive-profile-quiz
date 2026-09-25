@@ -1,13 +1,5 @@
 // 型定義
-export type {
-  Student,
-  HintType,
-  Hint,
-  QuizQuestion,
-  QuizState,
-  PortraitState,
-  QuestionResult,
-} from "./types";
+export type { Student, HintType, Hint, QuizQuestion, PortraitState, QuestionResult } from "./types";
 
 // 結果処理
 export { getQuestionOutcome } from "./result";
@@ -53,3 +45,30 @@ export type { AnswerResult } from "./answer";
 
 // スコア計算
 export { calculateScore, getMaxScore, getScoreRank } from "./scoring";
+
+// 一問の進行状態
+export { startRound, restoreRound, toRoundSnapshot, roundReducer, judgeSubmit } from "./round";
+export type {
+  RoundState,
+  RoundSnapshot,
+  RoundAction,
+  SubmitJudgement,
+  SubmitOutcome,
+} from "./round";
+
+// フリープレイのセッション
+export { regularSessionReducer, getCurrentIndex } from "./regularSession";
+export type { RegularSession, RegularState, RegularAction } from "./regularSession";
+
+// 日替わりのセッション
+export { dailySessionReducer } from "./dailySession";
+export type { DailySession, DailyState, DailyAction } from "./dailySession";
+
+// 開示段階の導出
+export {
+  getTotalStages,
+  getVisibleHintCount,
+  getPortraitState,
+  getRemainingStages,
+  getNextStep,
+} from "./reveal";

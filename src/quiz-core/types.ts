@@ -48,17 +48,9 @@ export interface QuizQuestion {
 
 export type PortraitState = "hidden" | "silhouette" | "revealed";
 
-export interface QuizState {
-  question: QuizQuestion;
-  revealedHintCount: number;
-  answered: boolean;
-  correct: boolean;
-  score: number;
-}
-
 export interface QuestionResult {
   studentId: string;
-  revealedHintCount: number; // 1〜10。10は立ち絵まで開示
+  usedHintCount: number; // 回答確定時点の開示数。1〜10。10は立ち絵まで開示
   correct: boolean;
   userAnswer: string | null; // 確定提出時の回答テキスト。ギブアップ/未提出はnull
   score: number;

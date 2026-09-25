@@ -65,7 +65,7 @@ export function getAnswerVariants(student: Student): string[] {
 export function validateAnswer(
   answer: string,
   correctStudent: Student,
-  allStudents: Student[],
+  allStudents: readonly Student[],
 ): AnswerResult {
   // 正解判定
   if (checkAnswer(answer, correctStudent)) {

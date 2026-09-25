@@ -3,12 +3,10 @@ import { render, screen, waitFor, act, fireEvent } from "@testing-library/react"
 import { Provider, createStore } from "jotai";
 import { BrowserRouter } from "react-router-dom";
 import { Suspense } from "react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import DailyQuiz from "./DailyQuiz";
 import type { DailyResultsStorage, DailyProgress } from "../store/daily";
-import { STORAGE_KEY_DAILY_RESULTS_V3 } from "../store/daily";
-
-const DAILY_PROGRESS_KEY = "blue-archive-quiz-daily-progress-v2";
+import { dailyProgressAtom, dailyResultsStorageAtom } from "../store/daily";
 
 const { mockStudent, mockQuestion } = vi.hoisted(() => {
   const student = {
@@ -63,14 +61,7 @@ vi.mock("../components/quiz/portraitImageUrl", () => ({
   NO_IMAGE_URL: "about:blank",
 }));
 
-// 「全身を見る」モーダルはデスクトップレイアウトのみに存在するため、
-// matchMediaのキャッシュ挙動（useIsDesktop）に依存せず常にデスクトップ扱いにする
-vi.mock("../hooks/useIsDesktop", () => ({
-  useIsDesktop: () => true,
-}));
-
-const renderDailyQuiz = async () => {
-  const store = createStore();
+const renderDailyQuiz = async (store: ReturnType<typeof createStore> = createStore()) => {
   let result: ReturnType<typeof render>;
   await act(async () => {
     result = render(
@@ -83,7 +74,7 @@ const renderDailyQuiz = async () => {
       </BrowserRouter>,
     );
   });
-  return result!;
+  return { ...result!, store };
 };
 
 const PROGRESS_KEY = { version: 1, baseDate: "2026-04-21", seed: 20260421 };
@@ -98,9 +89,10 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
 
   it("localStorage に dailyProgress があると revealedHintCount が復元される", async () => {
     const progress: DailyProgress = { key: PROGRESS_KEY, revealedHintCount: 3 };
-    localStorage.setItem(DAILY_PROGRESS_KEY, JSON.stringify(progress));
+    const store = createStore();
+    store.set(dailyProgressAtom, progress);
 
-    await renderDailyQuiz();
+    await renderDailyQuiz(store);
 
     // 3つ目の hint まで開示されている（VAL_HINT_3 まで表示、VAL_HINT_4 はまだ "???"）
     await waitFor(() => {
@@ -119,18 +111,22 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
       recent: [
         {
           key: PROGRESS_KEY,
-          studentId: "s1",
-          score: 8,
-          revealedHintCount: 3,
-          correct: true,
+          result: {
+            studentId: "s1",
+            usedHintCount: 3,
+            correct: true,
+            userAnswer: "s1",
+            score: 8,
+          },
           timestamp: 1234567890,
         },
       ],
       aggregated: {},
     };
-    localStorage.setItem(STORAGE_KEY_DAILY_RESULTS_V3, JSON.stringify(storage));
+    const store = createStore();
+    store.set(dailyResultsStorageAtom, storage);
 
-    await renderDailyQuiz();
+    await renderDailyQuiz(store);
 
     await waitFor(() => {
       expect(screen.getByText("今日のクイズは完了済みです")).toBeTruthy();
@@ -139,6 +135,42 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     const { createDailyQuestion, createQuestion } = await import("../quiz-core");
     expect(vi.mocked(createDailyQuestion)).not.toHaveBeenCalled();
     expect(vi.mocked(createQuestion)).toHaveBeenCalledTimes(1);
+  });
+
+  it("保存済み10点(使用ヒント数1)を再訪すると、結果モーダルに10点・使用ヒント数1が表示され、結果が二重に記録されない", async () => {
+    const storage: DailyResultsStorage = {
+      recent: [
+        {
+          key: PROGRESS_KEY,
+          result: {
+            studentId: "s1",
+            usedHintCount: 1,
+            correct: true,
+            userAnswer: "タロウ",
+            score: 10,
+          },
+          timestamp: 1234567890,
+        },
+      ],
+      aggregated: {},
+    };
+    const store = createStore();
+    store.set(dailyResultsStorageAtom, storage);
+
+    await renderDailyQuiz(store);
+
+    await waitFor(() => {
+      expect(screen.getByText("今日のクイズは完了済みです")).toBeTruthy();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "結果を見る" }));
+
+    const dialog = screen.getByRole("dialog", { name: "今日のクイズの結果" });
+    expect(dialog.textContent).toContain("10");
+    expect(screen.getByText("使用ヒント数: 1")).toBeTruthy();
+
+    // 再訪時の record effect が走っても recent は増えない（baseDate が既にあれば何もしない）
+    expect(store.get(dailyResultsStorageAtom).recent).toHaveLength(1);
   });
 
   it("localStorage が空なら新規プレイで revealedHintCount=1 から始まる", async () => {
@@ -157,16 +189,12 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
   });
 });
 
-describe("DailyQuiz - 結果モーダルの自動表示", () => {
+describe("DailyQuiz - 結果モーダル", () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it("全身を見るモーダルが開いている間は自動表示されず、閉じると開く", async () => {
+  it("回答しても自動では開かず、「結果を見る」で開く", async () => {
     // jsdomにはscrollIntoViewが無いため、HintListのシルエット表示時スクロールをスタブする
     Element.prototype.scrollIntoView = vi.fn();
 
@@ -175,35 +203,18 @@ describe("DailyQuiz - 結果モーダルの自動表示", () => {
       key: PROGRESS_KEY,
       revealedHintCount: mockQuestion.hints.length + 1,
     };
-    localStorage.setItem(DAILY_PROGRESS_KEY, JSON.stringify(progress));
+    const store = createStore();
+    store.set(dailyProgressAtom, progress);
 
-    await renderDailyQuiz();
+    await renderDailyQuiz(store);
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "諦めて正解を表示" })).toBeTruthy();
     });
 
-    // 結果表示の1.5秒遅延タイマーがfakeTimersの管理下で作られるよう、
-    // ギブアップより前にfakeTimersへ切り替える
-    vi.useFakeTimers();
-
     fireEvent.click(screen.getByRole("button", { name: "諦めて正解を表示" }));
-
-    // 全身を見るモーダルを先に開く
-    const openPortraitButton = screen.getByRole("button", { name: "全身を見る" });
-    fireEvent.click(openPortraitButton);
-    expect(screen.getAllByRole("dialog").length).toBe(1);
-
-    act(() => {
-      vi.advanceTimersByTime(1500);
-    });
-
-    // 全身モーダルが開いたままなので、結果モーダルは自動では開かない
-    expect(screen.getAllByRole("dialog").length).toBe(1);
     expect(screen.queryByRole("dialog", { name: "今日のクイズの結果" })).toBeNull();
 
-    // 全身モーダルを閉じると、保留していた結果モーダルが開く
-    fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
-
+    fireEvent.click(screen.getByRole("button", { name: "結果を見る" }));
     expect(screen.getByRole("dialog", { name: "今日のクイズの結果" })).toBeTruthy();
   });
 });

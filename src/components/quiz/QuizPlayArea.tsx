@@ -1,51 +1,50 @@
 import { type RefObject } from "react";
+import { getNextStep, type RoundState } from "../../quiz-core";
 import Button from "../common/Button";
 import AnswerInput from "./AnswerInput";
+import type { AnswerDraft } from "./quizLayoutTypes";
 
 interface QuizPlayAreaProps {
+  round: RoundState;
   hintButtonRef: RefObject<HTMLButtonElement | null>;
-  revealedHintCount: number;
-  hintsLength: number;
-  revealNextHint: () => void;
-  submitAnswer: (answer: string) => boolean;
-  giveUp: () => void;
-  answerFeedback: string | null;
-  errorKey: number;
-  /** "footer": 呼び出し側の面（QuizScreenの固定フッター）に載せるため、ここではカードで包まない */
+  actions: { reveal: () => void; giveUp: () => void };
+  answer: AnswerDraft;
+  /** "footer": 呼び出し側の面（モバイルの固定フッター）に載せるため、ここではカードで包まない */
   variant?: "footer" | "panel";
 }
 
 function QuizPlayArea({
+  round,
   hintButtonRef,
-  revealedHintCount,
-  hintsLength,
-  revealNextHint,
-  submitAnswer,
-  giveUp,
-  answerFeedback,
-  errorKey,
+  actions,
+  answer,
   variant = "panel",
 }: QuizPlayAreaProps) {
+  const nextStep = getNextStep(round);
+
   // 開示ボタンを先に置き、Tab順が「開示 → 生徒名入力 → 回答する」になるようにしている
   const hintButton =
-    revealedHintCount < hintsLength ? (
-      <Button ref={hintButtonRef} onClick={revealNextHint} variant="primary" className="w-full">
-        次のヒントを開示
+    nextStep === "hint" || nextStep === "silhouette" ? (
+      <Button ref={hintButtonRef} onClick={actions.reveal} variant="primary" className="w-full">
+        {nextStep === "hint" ? "次のヒントを開示" : "シルエットを表示"}
       </Button>
-    ) : revealedHintCount === hintsLength ? (
-      <Button ref={hintButtonRef} onClick={revealNextHint} variant="primary" className="w-full">
-        シルエットを表示
-      </Button>
-    ) : (
-      <Button ref={hintButtonRef} onClick={giveUp} variant="secondary" className="w-full">
+    ) : nextStep === "giveUp" ? (
+      <Button ref={hintButtonRef} onClick={actions.giveUp} variant="secondary" className="w-full">
         諦めて正解を表示
       </Button>
-    );
+    ) : null;
 
   const content = (
     <div className="flex flex-col items-stretch gap-3">
       {hintButton}
-      <AnswerInput onSubmit={submitAnswer} error={answerFeedback} errorKey={errorKey} />
+      <AnswerInput
+        value={answer.value}
+        onChange={answer.onChange}
+        onSubmit={answer.onSubmit}
+        error={answer.error}
+        errorVisible={answer.errorVisible}
+        onDismissError={answer.dismissError}
+      />
     </div>
   );
 

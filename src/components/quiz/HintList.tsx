@@ -1,75 +1,43 @@
 import { useRef, useEffect, useState, type CSSProperties } from "react";
-import type { Hint, Student, PortraitState } from "../../quiz-core";
+import type { Hint } from "../../quiz-core";
 import HintCard from "./HintCard";
-import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
 const HINT_ROW_MAX_HEIGHT = 128;
 
 interface HintListProps {
   hints: Hint[];
-  revealedCount: number;
-  student?: Student | null;
-  portraitState?: PortraitState;
-  /** "desktop" ではグリッドに立ち絵を含めない。右カラムに別途 StudentPortrait を表示するため */
-  layout?: "desktop" | "mobile";
+  visibleCount: number;
+  /**
+   * 開示のきらめき・スクロール演出を再生するか。playing 中の開示数増加だけを対象にし、
+   * 回答確定で全ヒントが一度に開くときは演出しない
+   */
+  animateReveal: boolean;
+  /** "desktop" では常に全件を描画し、2列グリッドで高さを揃える。"mobile" では開示済み分だけ描画する */
+  layout: "desktop" | "mobile";
 }
 
-function HintList({
-  hints,
-  revealedCount,
-  student,
-  portraitState = "hidden",
-  layout = "desktop",
-}: HintListProps) {
+function HintList({ hints, visibleCount, animateReveal, layout }: HintListProps) {
   const isMobileLayout = layout === "mobile";
   const hintRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const portraitRef = useRef<HTMLDivElement>(null);
-  const prevRevealedCount = useRef(revealedCount);
-  const prevPortraitState = useRef(portraitState);
-  const [showSilhouette, setShowSilhouette] = useState(false);
+  const prevVisibleCount = useRef(visibleCount);
   const [justRevealedIndex, setJustRevealedIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    if (revealedCount > prevRevealedCount.current && revealedCount <= hints.length) {
-      const targetRef = hintRefs.current[revealedCount - 1];
-      if (targetRef) {
-        targetRef.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      setJustRevealedIndex(revealedCount - 1);
-      prevRevealedCount.current = revealedCount;
-      const timer = setTimeout(() => setJustRevealedIndex(null), 750);
-      return () => clearTimeout(timer);
-    }
-    prevRevealedCount.current = revealedCount;
-  }, [revealedCount, hints.length]);
+    const increased = animateReveal && visibleCount > prevVisibleCount.current;
+    prevVisibleCount.current = visibleCount;
+    if (!increased || visibleCount > hints.length) return;
 
-  useEffect(() => {
-    const prevState = prevPortraitState.current;
-    if (portraitState === "silhouette" && prevState === "hidden") {
-      if (portraitRef.current) {
-        portraitRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      setShowSilhouette(false);
-      requestAnimationFrame(() => {
-        setShowSilhouette(true);
-      });
-    } else if (portraitState === "revealed") {
-      // シルエットを経由せず hidden から直接 revealed になる場合も含め、
-      // revealed への遷移直後は必ず立ち絵までスクロールする
-      if (prevState !== "revealed" && portraitRef.current) {
-        portraitRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      setShowSilhouette(true);
-    } else if (portraitState === "hidden") {
-      setShowSilhouette(false);
-    }
-    prevPortraitState.current = portraitState;
-  }, [portraitState]);
+    const targetRef = hintRefs.current[visibleCount - 1];
+    targetRef?.scrollIntoView({ behavior: "smooth", block: "center" });
+    setJustRevealedIndex(visibleCount - 1);
+    const timer = setTimeout(() => setJustRevealedIndex(null), 750);
+    return () => clearTimeout(timer);
+  }, [visibleCount, hints.length, animateReveal]);
 
-  const visibleHints = isMobileLayout ? hints.slice(0, revealedCount) : hints;
-  const remaining = hints.length - revealedCount;
-  const peekCount = revealedCount % 2 === 1 ? 3 : 2;
-  const peekHints = isMobileLayout ? hints.slice(revealedCount, revealedCount + peekCount) : [];
+  const visibleHints = isMobileLayout ? hints.slice(0, visibleCount) : hints;
+  const remaining = hints.length - visibleCount;
+  const peekCount = visibleCount % 2 === 1 ? 3 : 2;
+  const peekHints = isMobileLayout ? hints.slice(visibleCount, visibleCount + peekCount) : [];
 
   // 縦長画面で下に空白が残らないよう、グリッドを左カラムの高さまで伸ばす。
   // 1行あたり HINT_ROW_MAX_HEIGHT を超える分は伸ばさず、下の余白として残す
@@ -100,7 +68,7 @@ function HintList({
           >
             <HintCard
               hint={hint}
-              revealed={index < revealedCount}
+              revealed={index < visibleCount}
               justRevealed={index === justRevealedIndex}
               className={!isMobileLayout ? "lg:h-full" : undefined}
             />
@@ -110,7 +78,7 @@ function HintList({
             見切れカードは1枚多く出す。1列表示では3枚目を隠す */}
         {peekHints.map((hint, i) => (
           <div
-            key={revealedCount + i}
+            key={visibleCount + i}
             className={`pointer-events-none ${i >= 2 ? "hidden md:block" : ""}`}
           >
             <HintCard hint={hint} revealed={false} />
@@ -119,31 +87,6 @@ function HintList({
         {isMobileLayout && remaining >= 2 && (
           <div className="pointer-events-none relative col-span-full -mt-20 flex h-20 items-end justify-center bg-linear-to-b from-transparent to-ba-bg to-85% pb-1 text-xs text-ba-ink-soft">
             残り {remaining} ヒント
-          </div>
-        )}
-        {isMobileLayout && portraitState !== "hidden" && (
-          <div
-            ref={portraitRef}
-            data-portrait
-            className="relative col-span-full h-[60dvh] w-full overflow-hidden rounded-2xl border border-ba-border bg-white"
-          >
-            {student && (
-              <img
-                src={getPortraitImageUrl(student)}
-                alt={portraitState === "revealed" ? student.fullName : "シルエット"}
-                draggable={false}
-                className={`absolute inset-0 h-full w-full object-contain transition-all duration-500 select-none ${
-                  portraitState === "silhouette"
-                    ? showSilhouette
-                      ? "opacity-50 brightness-0 pointer-events-none"
-                      : "opacity-0 brightness-0 pointer-events-none"
-                    : "opacity-100"
-                }`}
-                onError={(e) => {
-                  e.currentTarget.src = NO_IMAGE_URL;
-                }}
-              />
-            )}
           </div>
         )}
       </div>

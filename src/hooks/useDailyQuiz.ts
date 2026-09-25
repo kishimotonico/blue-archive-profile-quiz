@@ -1,103 +1,140 @@
-import { useAtom } from "jotai";
-import { useCallback } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
+import { useAtomValue, useSetAtom, useStore } from "jotai";
 import {
-  dailyResultsStorageAtom,
-  dailyProgressAtom,
-  RECENT_DAILY_RESULTS_LIMIT,
-  type DailyResult,
-  type DailyResultsStorage,
-  type DailyProgress,
-} from "../store/daily";
-import { getDailyDate } from "../quiz-core";
-
-/**
- * 直近の結果配列に新しい結果を追加し、上限を超えた最古の結果を aggregated に移す。
- * 「最古」は timestamp の最小値で判定する。
- */
-function applyOverflowToAggregated(storage: DailyResultsStorage): DailyResultsStorage {
-  if (storage.recent.length <= RECENT_DAILY_RESULTS_LIMIT) {
-    return storage;
-  }
-
-  // 最古（最小 timestamp）のインデックスを探す
-  let oldestIdx = 0;
-  for (let i = 1; i < storage.recent.length; i++) {
-    if (storage.recent[i].timestamp < storage.recent[oldestIdx].timestamp) {
-      oldestIdx = i;
-    }
-  }
-
-  const oldest = storage.recent[oldestIdx];
-  const nextRecent = storage.recent.filter((_, i) => i !== oldestIdx);
-  const nextAggregated: Record<number, number> = {
-    ...storage.aggregated,
-    [oldest.score]: (storage.aggregated[oldest.score] ?? 0) + 1,
-  };
-
-  return { recent: nextRecent, aggregated: nextAggregated };
-}
+  dailySessionReducer,
+  startRound,
+  restoreRound,
+  judgeSubmit,
+  createDailyQuestion,
+  createQuestion,
+  getDailyDate,
+  type DailySession,
+  type SubmitOutcome,
+} from "../quiz-core";
+import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
+import { dailyResultsStorageAtom, dailyProgressAtom, recordDailyResultAtom } from "../store/daily";
+import { allStudentsAtom } from "../store/students";
 
 export function useDailyQuiz() {
-  const [dailyResultsStorage, setDailyResultsStorage] = useAtom(dailyResultsStorageAtom);
-  const [dailyProgress, setDailyProgress] = useAtom(dailyProgressAtom);
+  const [state, dispatch] = useReducer(dailySessionReducer, { status: "loading" });
+  const allStudents = useAtomValue(allStudentsAtom);
+  const store = useStore();
+  const setDailyProgress = useSetAtom(dailyProgressAtom);
+  const recordDailyResult = useSetAtom(recordDailyResultAtom);
+  const [answerFeedback, setAnswerFeedback] = useState<string | null>(null);
+  const [errorKey, setErrorKey] = useState(0);
 
-  const saveTodayResult = useCallback(
-    (result: Omit<DailyResult, "timestamp">) => {
-      const today = getDailyDate();
-      const newResult: DailyResult = {
-        ...result,
-        timestamp: Date.now(),
-      };
+  useEffect(() => {
+    let cancelled = false;
 
-      setDailyResultsStorage((prev) => {
-        // 同日重複排除は recent からのみ行う
-        // (aggregated には日付情報がなく、過去の同日データが集約済みのケースは無視する)
-        const filteredRecent = prev.recent.filter((r) => r.key.baseDate !== today);
-        const next: DailyResultsStorage = {
-          recent: [...filteredRecent, newResult],
-          aggregated: prev.aggregated,
-        };
-        return applyOverflowToAggregated(next);
-      });
+    (async () => {
+      try {
+        const today = getDailyDate();
+        const todayResult = store
+          .get(dailyResultsStorageAtom)
+          .recent.find((r) => r.key.baseDate === today);
+
+        let session: DailySession;
+        if (todayResult) {
+          const question = await createQuestion(todayResult.key);
+          if (cancelled) return;
+          session = {
+            round: restoreRound(question, { status: "answered", result: todayResult.result }),
+            completedOnLoad: true,
+          };
+        } else {
+          const progress = store.get(dailyProgressAtom);
+          if (progress && progress.key.baseDate === today) {
+            const question = await createQuestion(progress.key);
+            if (cancelled) return;
+            session = {
+              round: restoreRound(question, {
+                status: "playing",
+                revealedHintCount: progress.revealedHintCount,
+              }),
+              completedOnLoad: false,
+            };
+          } else {
+            const question = await createDailyQuestion();
+            if (cancelled) return;
+            session = { round: startRound(question), completedOnLoad: false };
+          }
+        }
+
+        preloadPortraitImage(session.round.question.student);
+        dispatch({ type: "loaded", session });
+      } catch {
+        if (!cancelled) dispatch({ type: "failed" });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // ロードはマウント時の1回だけ行う。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (state.status !== "ready") return;
+    const { round } = state.session;
+    if (round.status === "playing") {
+      setDailyProgress({ key: round.question.key, revealedHintCount: round.revealedHintCount });
+    } else {
+      // baseDate が既にあれば何もしない冪等な書き込みなので、完了済みの再訪でも二重記録しない。
+      recordDailyResult({ key: round.question.key, result: round.result });
+      setDailyProgress(null);
+    }
+  }, [state, setDailyProgress, recordDailyResult]);
+
+  const reveal = useCallback(() => {
+    dispatch({ type: "round", action: { type: "reveal" } });
+  }, []);
+
+  const submit = useCallback(
+    (answer: string): SubmitOutcome => {
+      if (state.status !== "ready") return "accepted";
+
+      const judgement = judgeSubmit(state.session.round, answer, allStudents);
+      if (judgement.type === "unknownStudent") {
+        setAnswerFeedback("該当する生徒が見つかりません");
+        setErrorKey((prev) => prev + 1);
+        return "unknownStudent";
+      }
+
+      if (judgement.type !== "ignored") {
+        dispatch({
+          type: "round",
+          action: { type: "submit", answer, correct: judgement.type === "correct" },
+        });
+      }
+      setAnswerFeedback(null);
+      return "accepted";
     },
-    [setDailyResultsStorage],
+    [state, allStudents],
   );
 
-  const getTodayResult = useCallback(() => {
-    const today = getDailyDate();
-    return dailyResultsStorage.recent.find((r) => r.key.baseDate === today);
-  }, [dailyResultsStorage]);
+  const giveUp = useCallback(() => {
+    dispatch({ type: "round", action: { type: "giveUp" } });
+    setAnswerFeedback(null);
+  }, []);
 
-  const discardTodayResult = useCallback(() => {
-    const today = getDailyDate();
-    setDailyResultsStorage((prev) => ({
-      recent: prev.recent.filter((r) => r.key.baseDate !== today),
-      aggregated: prev.aggregated,
-    }));
-  }, [setDailyResultsStorage]);
-
-  const saveProgress = useCallback(
-    (progress: DailyProgress) => {
-      setDailyProgress(progress);
-    },
-    [setDailyProgress],
-  );
-
-  const clearProgress = useCallback(() => {
-    setDailyProgress(null);
-  }, [setDailyProgress]);
+  const view =
+    state.status === "ready"
+      ? {
+          questionId: state.session.round.question.key.baseDate,
+          round: state.session.round,
+          completedOnLoad: state.session.completedOnLoad,
+        }
+      : null;
 
   return {
-    /**
-     * 直近 RECENT_DAILY_RESULTS_LIMIT(=100) 件の結果のみを返す。
-     * 長期累計は scoreDistributionAtom / totalAttemptsAtom / bestScoreAtom を参照すること。
-     */
-    recentDailyResults: dailyResultsStorage.recent,
-    saveTodayResult,
-    getTodayResult,
-    discardTodayResult,
-    dailyProgress,
-    saveProgress,
-    clearProgress,
+    state,
+    view,
+    reveal,
+    submit,
+    giveUp,
+    answerFeedback,
+    errorKey,
   };
 }

@@ -10,6 +10,7 @@
 ├── specs/               # 仕様や開発に関するドキュメント
 │   ├── 001_app-concept.md
 │   ├── 002_design-renewal-followups.md  # デザイン刷新後の設計改善案
+│   ├── 003_play-history.md              # プレイ履歴の保存仕様
 │   └── design-mocks/    # デザイン検討時の静的HTMLモック（採用案はREADME参照）
 ├── data/                # クイズに必要なデータ
 │   ├── students.json    # 全生徒のプロフィール
@@ -24,30 +25,40 @@
     │   ├── quiz.ts      # QuizKey から問題/問題セットを生成（version分岐）
     │   ├── answer.ts    # 回答判定ロジック
     │   ├── scoring.ts   # スコア計算ロジック
+    │   ├── stats.ts     # プレイ履歴（QuestionRecord[]）から統計を出す純粋関数
+    │   ├── round.ts     # 一問の状態（playing/answered）の reducer と判定
+    │   ├── reveal.ts    # 開示段階（立ち絵・残り段階・表示ヒント数）の導出
+    │   ├── regularSession.ts # フリープレイ10問の状態の reducer
+    │   ├── dailySession.ts   # 日替わりの状態の reducer
     │   ├── daily.ts     # 日替わりクイズロジック
     │   ├── result.ts    # 結果（正解/誤答/パス）判定
     │   └── index.ts
     ├── store/           # jotai atoms / 永続化
-    │   ├── quiz.ts      # プレイ中の共有状態（ルート単位にProviderでスコープ）
+    │   ├── persistedDocument.ts  # バージョン付き保存文書（parse / 移行 / 旧キー取り込み / 別タブ購読）
+    │   ├── daily.ts     # 日替わりの履歴文書（DailyHistory、localStorage 全件保存）と進捗、記録・統計の atom
     │   ├── regular.ts   # フリープレイ進捗（sessionStorage、Valibotで検証）
-    │   └── daily.ts     # 日替わりクイズ結果（localStorage、Valibotで検証）
+    │   ├── students.ts  # 生徒データの atom
+    │   └── __fixtures__/ # 保存形式の過去バージョンごとの実データ相当（移行・取り込みのテスト用）
     ├── hooks/           # カスタムフック
-    │   ├── useQuiz.ts        # 共通のクイズ操作ロジック
-    │   ├── useRegularQuiz.ts # フリープレイ（10問・進捗永続化）
-    │   └── useDailyQuiz.ts   # 日替わりクイズ
+    │   ├── useDailyQuiz.ts   # 日替わりクイズの controller
+    │   └── useRegularQuiz.ts # フリープレイ（10問・進捗永続化）の controller
     ├── components/      # Reactコンポーネント
     │   ├── common/      # 共通コンポーネント（Button, Modal, ErrorBoundaryなど）
-    │   ├── quiz/        # クイズ関連（HintList, AnswerInputなど）
+    │   ├── quiz/        # クイズ関連（QuizScreen, Mobile/DesktopQuizLayout, HintList, AnswerInputなど）
     │   └── layout/      # レイアウト（Header）
     ├── pages/           # ページコンポーネント
     │   ├── DailyQuiz.tsx    # 日替わりクイズページ（/ ルート）
     │   ├── RegularQuiz.tsx  # フリープレイページ（/regular）
     │   └── Result.tsx       # 結果表示ページ（/result）
-    ├── App.tsx          # ルーティング設定（各ルートをProvider/ErrorBoundary/Suspenseで包む）
+    ├── App.tsx          # ルーティング設定（Provider はアプリで1つ、各ルートを ErrorBoundary/Suspense で包む）
     └── main.tsx         # エントリーポイント
 ```
 
 出題アルゴリズムは `QuizKey.version` でバージョン管理しており、`*V1`/`*V2` のように関数を世代別に凍結する。過去に保存したキーを復元できるよう、既存バージョンの関数は変更しないこと（新しい挙動は version を上げて追加する）。
+
+保存形式のバージョン（`schemaVersion`）を上げる条件は `specs/003_play-history.md` に従う。上げるときは `migrations` にエントリを1つ足し、`__fixtures__` に上げる前の文書を1つ足す。フィールドを足すだけなら上げない。
+
+`store/` の永続化モジュールはモジュール評価時に `localStorage` を読むので、これを import するテストは `// @vitest-environment jsdom` を宣言する。
 
 ## 開発規約
 

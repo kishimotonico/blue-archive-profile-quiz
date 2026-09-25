@@ -76,7 +76,6 @@ interface DailyHistory {
 // store/persistedDocument.ts（汎用）
 const dailyHistoryDocument = definePersistedDocument<DailyHistory>({
   key: "blue-archive-quiz-daily-history",
-  version: 1,
   schema: dailyHistorySchema,   // Valibot。現在の形だけを知っている
   empty: { schemaVersion: 1, records: [] },
   migrations: [],               // { from: 1, migrate: (doc: unknown) => unknown } を将来足す

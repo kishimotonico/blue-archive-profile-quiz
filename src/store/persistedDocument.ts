@@ -92,7 +92,7 @@ export function definePersistedDocument<T>({
       // 取り込めない旧文書は empty を書いて捨てる。旧キーを残しても次回同じ結果になるだけ
       localStorage.setItem(key, JSON.stringify(doc));
       localStorage.removeItem(legacy.key);
-      return doc; // 最初に見つかったものだけ
+      return doc;
     }
     return empty; // 何も無ければ書かない（初訪問でキーを作らない）
   };

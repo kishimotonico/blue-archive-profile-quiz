@@ -55,3 +55,13 @@ export interface QuestionResult {
   userAnswer: string | null; // 確定提出時の回答テキスト。ギブアップ/未提出はnull
   score: number;
 }
+
+// QuestionResult のうち userAnswer だけ欠落を許す。欠落は「未記録」で、旧バージョンから取り込んだ記録にだけ現れる。
+// Omit で導くのは、QuestionResult に optional の項目を足したとき記録側の型を触らずに済むようにするため
+export type RecordedResult = Omit<QuestionResult, "userAnswer"> & { userAnswer?: string | null };
+
+export interface QuestionRecord {
+  key: QuizKey;
+  result: RecordedResult;
+  playedAt: number; // 回答を確定した時刻（epoch ms）
+}

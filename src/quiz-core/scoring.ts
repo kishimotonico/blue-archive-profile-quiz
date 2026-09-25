@@ -29,6 +29,8 @@ export function getMaxScore(): number {
   return 10;
 }
 
+export type ScoreRank = "SS" | "S" | "A" | "B" | "C" | "D";
+
 /**
  * スコアのランク判定
  * - 10点: SS
@@ -38,7 +40,7 @@ export function getMaxScore(): number {
  * - 1-3点: C
  * - 0点: D
  */
-export function getScoreRank(score: number): "SS" | "S" | "A" | "B" | "C" | "D" {
+export function getScoreRank(score: number): ScoreRank {
   if (score >= 10) return "SS";
   if (score >= 8) return "S";
   if (score >= 6) return "A";

@@ -12,7 +12,7 @@ import {
   type SubmitOutcome,
 } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
-import { dailyResultsStorageAtom, dailyProgressAtom, recordDailyResultAtom } from "../store/daily";
+import { dailyHistoryAtom, dailyProgressAtom, recordDailyResultAtom } from "../store/daily";
 import { allStudentsAtom } from "../store/students";
 
 export function useDailyQuiz() {
@@ -30,16 +30,22 @@ export function useDailyQuiz() {
     (async () => {
       try {
         const today = getDailyDate();
-        const todayResult = store
-          .get(dailyResultsStorageAtom)
-          .recent.find((r) => r.key.baseDate === today);
+        const todayRecord = store
+          .get(dailyHistoryAtom)
+          .records.find((r) => r.key.baseDate === today);
 
         let session: DailySession;
-        if (todayResult) {
-          const question = await createQuestion(todayResult.key);
+        if (todayRecord) {
+          const question = await createQuestion(todayRecord.key);
           if (cancelled) return;
           session = {
-            round: restoreRound(question, { status: "answered", result: todayResult.result }),
+            round: restoreRound(question, {
+              status: "answered",
+              // RoundState の result は新規プレイの型（userAnswer 必須）。日替わり画面は userAnswer を表示しないので、
+              // 型を満たすためだけに null を置く。この null が保存に戻ることはない: todayRecord が見つかった時点で
+              // 同じ baseDate の記録が存在し、recordDailyResultAtom はその場合何もしないため。
+              result: { ...todayRecord.result, userAnswer: todayRecord.result.userAnswer ?? null },
+            }),
             completedOnLoad: true,
           };
         } else {

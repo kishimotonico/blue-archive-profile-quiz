@@ -5,8 +5,8 @@ import { BrowserRouter } from "react-router-dom";
 import { Suspense } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import DailyQuiz from "./DailyQuiz";
-import type { DailyResultsStorage, DailyProgress } from "../store/daily";
-import { dailyProgressAtom, dailyResultsStorageAtom } from "../store/daily";
+import type { DailyHistory, DailyProgress } from "../store/daily";
+import { dailyProgressAtom, dailyHistoryAtom } from "../store/daily";
 
 const { mockStudent, mockQuestion } = vi.hoisted(() => {
   const student = {
@@ -107,8 +107,9 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
   });
 
   it("localStorage に今日の dailyResult があると完了済み画面が表示される", async () => {
-    const storage: DailyResultsStorage = {
-      recent: [
+    const history: DailyHistory = {
+      schemaVersion: 1,
+      records: [
         {
           key: PROGRESS_KEY,
           result: {
@@ -118,13 +119,12 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
             userAnswer: "s1",
             score: 8,
           },
-          timestamp: 1234567890,
+          playedAt: 1234567890,
         },
       ],
-      aggregated: {},
     };
     const store = createStore();
-    store.set(dailyResultsStorageAtom, storage);
+    store.set(dailyHistoryAtom, history);
 
     await renderDailyQuiz(store);
 
@@ -138,8 +138,9 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
   });
 
   it("保存済み10点(使用ヒント数1)を再訪すると、結果モーダルに10点・使用ヒント数1が表示され、結果が二重に記録されない", async () => {
-    const storage: DailyResultsStorage = {
-      recent: [
+    const history: DailyHistory = {
+      schemaVersion: 1,
+      records: [
         {
           key: PROGRESS_KEY,
           result: {
@@ -149,13 +150,12 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
             userAnswer: "タロウ",
             score: 10,
           },
-          timestamp: 1234567890,
+          playedAt: 1234567890,
         },
       ],
-      aggregated: {},
     };
     const store = createStore();
-    store.set(dailyResultsStorageAtom, storage);
+    store.set(dailyHistoryAtom, history);
 
     await renderDailyQuiz(store);
 
@@ -169,8 +169,8 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     expect(dialog.textContent).toContain("10");
     expect(screen.getByText("使用ヒント数: 1")).toBeTruthy();
 
-    // 再訪時の record effect が走っても recent は増えない（baseDate が既にあれば何もしない）
-    expect(store.get(dailyResultsStorageAtom).recent).toHaveLength(1);
+    // 再訪時の record effect が走っても records は増えない（baseDate が既にあれば何もしない）
+    expect(store.get(dailyHistoryAtom).records).toHaveLength(1);
   });
 
   it("localStorage が空なら新規プレイで revealedHintCount=1 から始まる", async () => {

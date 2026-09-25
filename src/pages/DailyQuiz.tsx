@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
 import { getTimeUntilNextReset, getScoreRank, getDailyDate } from "../quiz-core";
-import { totalAttemptsAtom, scoreDistributionAtom, bestScoreAtom } from "../store/daily";
+import { dailyStatsAtom } from "../store/daily";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
 import HaloRingGauge from "../components/common/HaloRingGauge";
@@ -18,9 +18,7 @@ function formatTimeUntilNextReset({ hours, minutes }: { hours: number; minutes: 
 function DailyQuiz() {
   const { state, view, reveal, submit, giveUp, answerFeedback, errorKey } = useDailyQuiz();
 
-  const totalAttempts = useAtomValue(totalAttemptsAtom);
-  const scoreDistribution = useAtomValue(scoreDistributionAtom);
-  const bestScore = useAtomValue(bestScoreAtom);
+  const { totalAttempts, bestScore, rankCounts } = useAtomValue(dailyStatsAtom);
   const navigate = useNavigate();
   const [showResultModal, setShowResultModal] = useState(false);
 
@@ -41,14 +39,16 @@ function DailyQuiz() {
     </div>
   );
 
-  const rankDistribution = [
-    { label: "SS (10点)", count: scoreDistribution.perfect },
-    { label: "S (8-9点)", count: scoreDistribution.veryHigh },
-    { label: "A (6-7点)", count: scoreDistribution.high },
-    { label: "B (4-5点)", count: scoreDistribution.medium },
-    { label: "C (1-3点)", count: scoreDistribution.low },
-    { label: "D (0点)", count: scoreDistribution.zero },
-  ];
+  const rankDistribution = (
+    [
+      ["SS", "SS (10点)"],
+      ["S", "S (8-9点)"],
+      ["A", "A (6-7点)"],
+      ["B", "B (4-5点)"],
+      ["C", "C (1-3点)"],
+      ["D", "D (0点)"],
+    ] as const
+  ).map(([rank, label]) => ({ label, count: rankCounts[rank] }));
 
   const heading = (() => {
     const [, month, day] = getDailyDate().split("-");

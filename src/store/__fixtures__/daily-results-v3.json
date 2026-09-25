@@ -1,0 +1,29 @@
+{
+  "recent": [
+    {
+      "key": { "version": 1, "baseDate": "2026-04-22", "seed": 20260422 },
+      "studentId": "hoshino",
+      "score": 0,
+      "revealedHintCount": 10,
+      "correct": false,
+      "timestamp": 1776900000000
+    },
+    {
+      "key": { "version": 1, "baseDate": "2026-04-21", "seed": 20260421 },
+      "studentId": "shiroko",
+      "score": 8,
+      "revealedHintCount": 3,
+      "correct": true,
+      "timestamp": 1776800000000
+    },
+    {
+      "key": { "version": 2, "baseDate": "2026-05-01", "seed": 20260501 },
+      "studentId": "aru",
+      "score": 1,
+      "revealedHintCount": 10,
+      "correct": true,
+      "timestamp": 1777600000000
+    }
+  ],
+  "aggregated": { "10": 2 }
+}

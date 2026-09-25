@@ -1,5 +1,14 @@
 // 型定義
-export type { Student, HintType, Hint, QuizQuestion, PortraitState, QuestionResult } from "./types";
+export type {
+  Student,
+  HintType,
+  Hint,
+  QuizQuestion,
+  PortraitState,
+  QuestionResult,
+  RecordedResult,
+  QuestionRecord,
+} from "./types";
 
 // 結果処理
 export { getQuestionOutcome } from "./result";
@@ -45,6 +54,11 @@ export type { AnswerResult } from "./answer";
 
 // スコア計算
 export { calculateScore, getMaxScore, getScoreRank } from "./scoring";
+export type { ScoreRank } from "./scoring";
+
+// プレイ履歴の統計
+export { summarizeRecords } from "./stats";
+export type { RecordStats } from "./stats";
 
 // 一問の進行状態
 export { startRound, restoreRound, toRoundSnapshot, roundReducer, judgeSubmit } from "./round";

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "note": "doc",
+  "records": [
+    {
+      "key": { "version": 1, "baseDate": "2026-04-21", "seed": 20260421, "note": "key" },
+      "result": {
+        "studentId": "shiroko",
+        "usedHintCount": 3,
+        "correct": true,
+        "score": 8,
+        "note": "result"
+      },
+      "playedAt": 1776800000000,
+      "note": "record"
+    },
+    {
+      "key": { "version": 1, "baseDate": "2026-04-22", "seed": 20260422 },
+      "result": {
+        "studentId": "hoshino",
+        "usedHintCount": 10,
+        "correct": false,
+        "userAnswer": null,
+        "score": 0
+      },
+      "playedAt": 1776900000000
+    },
+    {
+      "key": { "version": 2, "baseDate": "2026-05-01", "seed": 20260501 },
+      "result": {
+        "studentId": "aru",
+        "usedHintCount": 5,
+        "correct": false,
+        "userAnswer": "アル",
+        "score": 0
+      },
+      "playedAt": 1777600000000
+    }
+  ]
+}

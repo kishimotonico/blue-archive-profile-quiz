@@ -2,7 +2,7 @@
 
 日替わりクイズの結果を保存する形式と、その保存層の作りを決めます。今の形式（直近100件 + スコア別件数）は、後から欲しくなる統計に足りず、形式を変えるたびにデータを捨ててきました。この案は、保存形式を「滅多に変えなくて済む形」にし、変えるときも決まった手順で済むようにするためのものです。
 
-レビューしてほしい点は末尾の「未決」と、「将来の機能との突き合わせ」で漏れがないかです。
+実装は Opus が設計案を書き、Fable がレビューしてから進めます。
 
 ## 方針
 
@@ -150,7 +150,7 @@ const dailyHistoryDocument = definePersistedDocument<DailyHistory>({
 - `parse`: 壊れた JSON → `empty` / 未知のフィールドが全階層で保持される / v3 のフィクスチャで `userAnswer` が欠落のまま
 - `getItem`: 本体キーが無く v3 がある → 取り込んで保存し、v3 を消す / 本体キーがある → v3 があっても読まない / 二度読んでも結果が変わらない
 - `subscribe`: 別タブの storage イベントで届いた値も `parse` を通る
-- `recordDailyResultAtom`: 同じ `baseDate` を二度記録しても1件 / `playedAt` 昇順が保たれる
+- `recordDailyResultAtom`: 同じ `baseDate` を二度記録しても1件 / `key.baseDate` 昇順が保たれる
 - `quiz-core/stats.ts`: 各統計を小さな `QuestionRecord[]` で確認
 
 ## 決めたこと

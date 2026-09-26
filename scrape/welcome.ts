@@ -44,15 +44,7 @@ function loadLocalEnvFiles(): void {
   }
 }
 
-function uploadImage(id: string): void {
-  loadLocalEnvFiles();
-
-  const bucket = process.env.R2_BUCKET;
-  if (!bucket) {
-    console.error('Error: R2_BUCKET is not set. Set it in scrape/.env and run `pnpm run welcome` again.');
-    process.exit(1);
-  }
-
+function uploadImage(id: string, bucket: string): void {
   const prefix = process.env.R2_IMAGE_PREFIX ?? 'portrait';
   const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, '');
   const objectPath = `${bucket}/${normalizedPrefix}/${id}.png`;
@@ -80,11 +72,19 @@ function main() {
     process.exit(1);
   }
 
+  loadLocalEnvFiles();
+  // スクレイピングの後で気づくと取得からやり直す手間がかかるので、先に確かめる
+  const bucket = process.env.R2_BUCKET;
+  if (!bucket) {
+    console.error('Error: R2_BUCKET is not set. Set it in scrape/.env.');
+    process.exit(1);
+  }
+
   appendStudentIfMissing(id, wikiName);
   run('pnpm', ['run', 'scrape', id]);
   run('pnpm', ['run', 'sync-images', id]);
   run('pnpm', ['run', 'merge']);
-  uploadImage(id);
+  uploadImage(id, bucket);
 }
 
 main();

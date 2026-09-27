@@ -70,8 +70,11 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                     className={`p-3 rounded-lg text-center ${outcomeClass(outcome)}`}
                   >
                     <div className="text-xs">Q{index + 1}</div>
-                    <div className="font-display text-lg font-black">{getScoreRank(r.score)}</div>
-                    <div className="text-xs">{r.score}点</div>
+                    <div className="font-bold text-lg tabular-nums">
+                      {r.score}
+                      <span className="text-xs font-normal">点</span>
+                    </div>
+                    <div className="text-xs opacity-80">{getScoreRank(r.score)}</div>
                   </div>
                 );
               })}
@@ -120,7 +123,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                         </td>
                         <td className="py-3 pr-4 text-ba-ink-soft">{r.userAnswer ?? "—"}</td>
                         <td className="py-3">
-                          <span className="font-medium text-ba-navy">{r.score}点</span>
+                          <span className="font-bold text-ba-navy tabular-nums">{r.score}点</span>
                           <span className="ml-1 text-xs text-ba-ink-soft">
                             {getScoreRank(r.score)}
                           </span>
@@ -158,7 +161,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                       <dd className="text-ba-navy">{r.userAnswer ?? "—"}</dd>
                       <dt className="text-ba-ink-soft">得点</dt>
                       <dd className="text-ba-navy">
-                        {r.score}点{" "}
+                        <span className="font-bold tabular-nums">{r.score}点</span>{" "}
                         <span className="text-ba-ink-soft">{getScoreRank(r.score)}</span>
                       </dd>
                     </dl>

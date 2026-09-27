@@ -3,7 +3,7 @@ import { atomWithStorage } from "jotai/utils";
 import * as v from "valibot";
 import type { QuizKey } from "../quiz-core/key";
 import type { QuestionResult, QuestionRecord, RecordStats } from "../quiz-core";
-import { summarizeRecords } from "../quiz-core";
+import { summarizeRecords, getDailyDate } from "../quiz-core";
 import { definePersistedDocument } from "./persistedDocument";
 
 export interface DailyProgress {
@@ -120,3 +120,8 @@ export const recordDailyResultAtom = atom(
 export const dailyStatsAtom = atom<RecordStats>((get) =>
   summarizeRecords(get(dailyHistoryAtom).records),
 );
+
+export const todayDailyRecordAtom = atom<QuestionRecord | null>((get) => {
+  const today = getDailyDate();
+  return get(dailyHistoryAtom).records.find((r) => r.key.baseDate === today) ?? null;
+});

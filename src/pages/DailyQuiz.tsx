@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
-import { getTimeUntilNextReset, getScoreRank, getDailyDate } from "../quiz-core";
+import {
+  getTimeUntilNextReset,
+  formatTimeUntilNextReset,
+  getScoreRank,
+  getDailyDate,
+} from "../quiz-core";
 import { dailyStatsAtom } from "../store/daily";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
@@ -10,10 +15,6 @@ import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizLoadingState from "../components/quiz/QuizLoadingState";
 import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizScreen from "../components/quiz/QuizScreen";
-
-function formatTimeUntilNextReset({ hours, minutes }: { hours: number; minutes: number }): string {
-  return hours > 0 ? `${hours}時間${minutes}分後` : `${minutes}分後`;
-}
 
 function DailyQuiz() {
   const { state, view, reveal, submit, giveUp, answerFeedback, errorKey } = useDailyQuiz();

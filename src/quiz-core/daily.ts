@@ -70,3 +70,13 @@ export function getTimeUntilNextReset(): { hours: number; minutes: number } {
 
   return { hours, minutes };
 }
+
+export function formatTimeUntilNextReset({
+  hours,
+  minutes,
+}: {
+  hours: number;
+  minutes: number;
+}): string {
+  return hours > 0 ? `${hours}時間${minutes}分後` : `${minutes}分後`;
+}

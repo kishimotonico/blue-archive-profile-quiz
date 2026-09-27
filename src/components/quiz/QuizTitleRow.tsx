@@ -14,9 +14,7 @@ function QuizTitleRow({ modeLabel, heading, round }: QuizTitleRowProps) {
   const remainingStages = getRemainingStages(round);
 
   return (
-    // pr-16はモバイル右上固定のハンバーガーボタン（Header側、top-3 right-3, w-11 h-11）と
-    // ゲージが重ならないための余白。md以上ではハンバーガーが無いので不要
-    <div className="shrink-0 flex items-center justify-between gap-3 py-3 pr-16 md:py-1.5 md:pr-0">
+    <div className="shrink-0 flex items-center justify-between gap-3 py-3 md:py-1.5">
       <div className="min-w-0 flex flex-col gap-0.5">
         <span className="text-xs font-bold text-ba-ink-soft truncate">{modeLabel}</span>
         <h1 className="font-display text-xl font-black leading-tight text-ba-navy truncate">

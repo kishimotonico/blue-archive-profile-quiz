@@ -45,9 +45,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
       <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <h1 className="font-display text-2xl font-black text-ba-navy mb-6 pr-16 md:pr-0">
-            クイズ結果
-          </h1>
+          <h1 className="font-display text-2xl font-black text-ba-navy mb-6">クイズ結果</h1>
 
           {/* 合計スコア */}
           <div className="bg-white border border-ba-border rounded-2xl p-8 mb-6">

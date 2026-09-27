@@ -5,21 +5,31 @@ function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
   return (
     <div className="w-6 h-6 flex flex-col justify-center items-center gap-1.5">
       <span
-        className={`block w-5 h-0.5 bg-ba-blue transition-all duration-300 ${
+        className={`block w-5 h-0.5 bg-ba-navy transition-all duration-300 ${
           isOpen ? "rotate-45 translate-y-2" : ""
         }`}
       />
       <span
-        className={`block w-5 h-0.5 bg-ba-blue transition-all duration-300 ${
+        className={`block w-5 h-0.5 bg-ba-navy transition-all duration-300 ${
           isOpen ? "opacity-0" : ""
         }`}
       />
       <span
-        className={`block w-5 h-0.5 bg-ba-blue transition-all duration-300 ${
+        className={`block w-5 h-0.5 bg-ba-navy transition-all duration-300 ${
           isOpen ? "-rotate-45 -translate-y-2" : ""
         }`}
       />
     </div>
+  );
+}
+
+function TitleMark() {
+  return (
+    <span
+      className="inline-block w-2.5 h-[18px] bg-ba-sky shrink-0"
+      style={{ clipPath: "polygon(40% 0, 100% 0, 60% 100%, 0 100%)" }}
+      aria-hidden="true"
+    />
   );
 }
 
@@ -53,44 +63,56 @@ function Header() {
 
   return (
     <>
-      <div className="ba-stripe-band" aria-hidden="true" />
-
-      <header className="hidden md:flex bg-linear-to-r from-ba-blue-light to-ba-blue text-white h-12 items-center px-4 shadow-xs relative z-50">
+      {/* sticky にすると、モバイルの回答後フッターやデスクトップの固定要素と重なる余地が増えるため、
+          スクロールするページが無い（3ページとも min-h-[100dvh] 1画面構成）今は static のままにする */}
+      <header className="flex h-11 md:h-12 items-center px-4 bg-white/90 backdrop-blur-xs border-b border-ba-border relative z-50">
         <Link
           to="/"
-          className="font-display text-lg font-black hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 font-display text-base md:text-lg font-black text-ba-navy hover:opacity-80 transition-opacity"
         >
+          <TitleMark />
           ブルアカプロフクイズ
         </Link>
 
         {/* デスクトップナビ */}
-        <nav className="ml-auto flex gap-2">
+        <nav className="ml-auto hidden md:flex gap-2">
           <Link
             to="/"
-            className="text-sm font-bold px-3 py-1 rounded-sm hover:bg-white/20 transition-colors"
+            className={`text-sm font-bold px-3 py-1 transition-colors ${
+              location.pathname === "/"
+                ? // 14px の文字だと sky 上の白文字は AA (4.5:1) に届かないため、面には ba-blue を使う
+                  "bg-ba-blue text-white"
+                : "text-ba-navy hover:bg-ba-sky-1"
+            }`}
+            style={{ clipPath: "polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)" }}
             aria-current={location.pathname === "/" ? "page" : undefined}
           >
             日替わり
           </Link>
           <Link
             to="/regular"
-            className="text-sm font-bold px-3 py-1 rounded-sm hover:bg-white/20 transition-colors"
+            className={`text-sm font-bold px-3 py-1 transition-colors ${
+              location.pathname === "/regular"
+                ? "bg-ba-blue text-white"
+                : "text-ba-navy hover:bg-ba-sky-1"
+            }`}
+            style={{ clipPath: "polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)" }}
             aria-current={location.pathname === "/regular" ? "page" : undefined}
           >
             フリープレイ
           </Link>
         </nav>
-      </header>
 
-      <button
-        className="md:hidden fixed top-3 right-3 z-50 w-11 h-11 flex items-center justify-center bg-white/90 backdrop-blur-xs rounded-lg shadow-lg hover:bg-white transition-colors"
-        onClick={toggleMenu}
-        aria-label="メニュー"
-        aria-expanded={isMenuOpen}
-        aria-controls="mobile-menu"
-      >
-        <HamburgerIcon isOpen={isMenuOpen} />
-      </button>
+        <button
+          className="md:hidden ml-auto w-11 h-11 flex items-center justify-center"
+          onClick={toggleMenu}
+          aria-label="メニュー"
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+        >
+          <HamburgerIcon isOpen={isMenuOpen} />
+        </button>
+      </header>
 
       {/* 背景オーバーレイ */}
       {isMenuOpen && (

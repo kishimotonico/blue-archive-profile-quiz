@@ -9,8 +9,11 @@ layer(base);
   --color-ba-blue: #0866c8;
   --color-ba-blue-light: #0776df;
   --color-ba-cyan: #47c5fb;
+  /* ゲーム本編寄りの明るい青。白文字とのコントラストが3.48:1しかないため、
+     白文字を載せるのは19px以上の太字（大きい文字はAAの必要比が3:1に下がる）だけに限る */
+  --color-ba-sky: #128afa;
   --color-ba-navy: #2b3a55;
-  --color-ba-yellow: #ffee00;
+  --color-ba-yellow: #ffe433;
   --color-ba-yellow-soft: #f3e27a;
   --color-ba-bg: #f3f7fb;
   --color-ba-sky-1: #dff1ff;
@@ -58,20 +61,6 @@ body {
 }
 
 @layer components {
-  .ba-stripe-band {
-    position: relative;
-    width: 100%;
-    height: 8px;
-    opacity: 0.9;
-    background: repeating-linear-gradient(
-      -35deg,
-      var(--color-ba-blue) 0 22px,
-      var(--color-ba-cyan) 22px 40px,
-      transparent 40px 46px,
-      transparent 46px 60px
-    );
-  }
-
   .ba-ring-fill {
     transition: stroke-dashoffset 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }

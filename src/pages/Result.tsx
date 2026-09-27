@@ -171,7 +171,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
           {/* アクションボタン */}
           <div className="space-y-3">
             <Link to="/regular" className="block">
-              <Button variant="primary" className="w-full">
+              <Button variant="accent" className="w-full">
                 もう一度プレイ
               </Button>
             </Link>

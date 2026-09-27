@@ -33,7 +33,9 @@ function DailyQuiz() {
       <p className="text-ba-ink-soft text-sm mb-2">
         次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
       </p>
-      <Button variant="primary" size="sm" onClick={() => navigate("/regular")}>
+      {/* この通知は primaryAction（結果を見る、accent）と同時に表示されるため、
+          画面内の強調ボタンが2つにならないよう secondary にする */}
+      <Button variant="secondary" size="sm" onClick={() => navigate("/regular")}>
         もっと遊ぶ
       </Button>
     </div>
@@ -138,7 +140,7 @@ function DailyQuiz() {
             </div>
 
             <div className="space-y-1.5">
-              <Button variant="primary" className="w-full" onClick={() => navigate("/regular")}>
+              <Button variant="accent" className="w-full" onClick={() => navigate("/regular")}>
                 もっと遊ぶ
               </Button>
               <Button

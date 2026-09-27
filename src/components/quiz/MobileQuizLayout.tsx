@@ -74,7 +74,7 @@ function MobileQuizLayout({
             {afterAnswer.notice}
             <Button
               ref={primaryButtonRef}
-              variant="primary"
+              variant="accent"
               className="w-full"
               onClick={afterAnswer.primaryAction.onClick}
             >

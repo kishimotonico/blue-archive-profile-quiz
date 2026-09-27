@@ -21,11 +21,19 @@ function QuizPlayArea({
   variant = "panel",
 }: QuizPlayAreaProps) {
   const nextStep = getNextStep(round);
+  // 画面内の強調ボタン（primary/accent）は常に1つまでにする。回答欄に入力があると
+  // 「回答する」が accent になるため、その間は開示ボタンを secondary に下げる
+  const isAnswerEmpty = !answer.value.trim();
 
   // 開示ボタンを先に置き、Tab順が「開示 → 生徒名入力 → 回答する」になるようにしている
   const hintButton =
     nextStep === "hint" || nextStep === "silhouette" ? (
-      <Button ref={hintButtonRef} onClick={actions.reveal} variant="primary" className="w-full">
+      <Button
+        ref={hintButtonRef}
+        onClick={actions.reveal}
+        variant={isAnswerEmpty ? "primary" : "secondary"}
+        className="w-full"
+      >
         {nextStep === "hint" ? "次のヒントを開示" : "シルエットを表示"}
       </Button>
     ) : nextStep === "giveUp" ? (

@@ -70,7 +70,7 @@ function Modal({ isOpen, onClose, title, ariaLabel, children }: ModalProps) {
               </h2>
             )}
 
-            <div className="mb-4">{children}</div>
+            <div>{children}</div>
           </div>
         </>
       )}

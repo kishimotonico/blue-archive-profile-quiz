@@ -88,10 +88,10 @@ function DailyQuiz() {
               fillTo="var(--color-ba-blue)"
               className="mx-auto mb-1"
             >
-              <span className="font-display text-3xl font-black text-ba-blue">
-                {getScoreRank(result.score)}
+              <span className="font-display text-3xl font-black text-ba-navy tabular-nums">
+                {result.score}
               </span>
-              <span className="text-[10px] tracking-widest text-ba-ink-soft">RANK</span>
+              <span className="text-[10px] tracking-widest text-ba-ink-soft">/ 10点</span>
             </HaloRingGauge>
 
             <h2 className="text-sm font-bold text-ba-ink-soft mb-1">
@@ -101,12 +101,11 @@ function DailyQuiz() {
               {round.question.student.fullName}
             </p>
 
-            <div className="flex items-baseline justify-center gap-1 rounded-lg border border-ba-yellow-soft bg-ba-yellow-soft/40 py-1.5 mb-3">
-              <span className="font-display text-2xl font-black text-ba-navy">{result.score}</span>
-              <span className="text-sm font-bold text-ba-ink-soft">/ 10 点</span>
-            </div>
+            {/* ランクは点数の補足なので、点数（ゲージ中央）より目立たせない */}
+            <span className="inline-block rounded-full border border-ba-border px-2.5 py-0.5 text-sm text-ba-ink-soft mb-3">
+              ランク {getScoreRank(result.score)}
+            </span>
 
-            <p className="text-sm text-ba-ink-soft mb-1">使用ヒント数: {result.usedHintCount}</p>
             <p className="text-sm text-ba-ink-soft mb-4">
               次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
             </p>

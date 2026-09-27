@@ -12,7 +12,6 @@
     "update-overrides": "pnpm exec tsx update-overrides.ts"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "^1.66.0",
     "@types/node": "^22.0.0",
     "playwright": "^1.50.0",
     "tsx": "^4.19.0",

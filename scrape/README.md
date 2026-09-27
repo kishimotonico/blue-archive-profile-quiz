@@ -1,6 +1,6 @@
 # blue-archive-wiki-scraper
 
-[ブルーアーカイブ非公式wiki](https://bluearchive.wikiru.jp/) から各生徒のプロフィールを取得して保存するためのスクリプトです。
+[ブルーアーカイブ非公式wiki](https://bluearchive.wikiru.jp/) から各生徒のプロフィールと立ち絵を取得し、クイズ用のデータを作るスクリプトです。
 
 ## ⚠️ 注意事項
 
@@ -10,65 +10,83 @@
 - **取得済みのデータは再取得しないこと。** キャッシュや出力済みJSONがある場合は自動的にスキップされます
 - **サイトに過度な負荷をかけないこと。** 必要最小限の処理にとどめてください
 
-## セットアップ
+## 初回セットアップ
+
+以降のコマンドはすべて `scrape/` ディレクトリで実行します。
 
 ```bash
 pnpm install
 pnpm exec playwright install chromium
+cp .env.example .env
 ```
 
-## 使い方
+`.env` には、立ち絵をアップロードする Cloudflare R2 の情報を書きます。項目の意味は `.env.example` のコメントを見てください。
 
-### 新しい生徒を追加
+## 新しい生徒を追加する
 
-通常はこのコマンドだけを実行します。生徒IDは英語名、Wikiのページ名は日本語表記を指定します。
+普段の作業はこのセクションだけで完結します。
+
+### 1. welcome を実行する
+
+生徒IDとWikiのページ名を指定して実行します。生徒IDは英小文字の名前（例: `miyako`）、Wikiのページ名は日本語表記（例: `ミヤコ`）です。
 
 ```bash
 pnpm run welcome miyako ミヤコ
 ```
 
-このコマンドで、マスターへの追記、対象生徒のスクレイピング、画像同期、`data/students.json` の再生成まで行います。最後にR2へ画像をアップロードするコマンドが表示されるので、コピーして実行してください。
+このコマンドは次の処理をまとめて行います。
 
-Wiki由来データに手修正が必要な場合は、`data/students.json` を直接編集してから `update-overrides` を実行します。
+1. `data/students-master.yaml` に生徒を追記
+2. Wikiから生徒データと立ち絵を取得
+3. 立ち絵を `data/images/portrait/` にコピー
+4. `data/students.json` を再生成
+5. 立ち絵を R2 にアップロード
+
+途中で失敗した場合は、原因を直してから同じコマンドをもう一度実行してください。登録済みの生徒はマスターに重複して追記されません。
+
+### 2. 生成されたデータを確認する
+
+`data/students.json` の差分を見て、プロフィールが正しく取れているか確認します。Wikiの記載が欠けていたり表記が揺れていたりすることがあるので、特に武器名などは目で確認してください。
+
+### 3. 必要なら手修正する
+
+おかしな値があれば `data/students.json` を直接編集し、次を実行します。
 
 ```bash
 pnpm run update-overrides
 ```
 
-これでスクレイピング結果との差分が `data/student-overrides.yaml` に保存され、以降の `merge` でも反映されます。
+編集した差分が `data/student-overrides.yaml` に保存されます。こうしておくと、あとで再スクレイピングして `students.json` を作り直しても手修正が残ります。
 
-### 全件スクレイピング
+## その他のコマンド
 
-`data/students-master.yaml` に記載された全生徒を対象にスクレイピングします。
-既に `output/students/<id>.json` が存在する生徒はスキップされます。
+`welcome` の中で使われているコマンドを個別に実行したいときに使います。新しい生徒を追加するだけなら使う必要はありません。
 
-```bash
-pnpm run scrape
-```
+### 生徒データを取り直す
 
-### 特定の生徒だけ再取得
-
-生徒IDを引数に指定すると、その1件のみを取得します（キャッシュは使わず再取得）。
+生徒IDを指定すると、その1人だけをキャッシュを使わずに取り直します。生徒IDは `data/students-master.yaml` のキーです。
 
 ```bash
 pnpm run scrape aru
 ```
 
-生徒IDは `data/students-master.yaml` のキーに対応します。
+引数なしで実行すると、マスターに載っている全生徒が対象になります。取得済み（`output/students/<id>.json` がある）の生徒はスキップされます。
 
-### データのマージ
+```bash
+pnpm run scrape
+```
 
-個別JSONを `data/students.json` にまとめます。マスターとJSONの件数が一致しない場合はエラーになります。
+### students.json を作り直す
 
-`data/student-overrides.yaml` が存在する場合は、Wiki由来データに手修正を重ねてから出力します。
+`output/students/` の個別JSONをまとめ、`data/student-overrides.yaml` の手修正を重ねて `data/students.json` に出力します。マスターとJSONの件数が合わないときはエラーになります。
 
 ```bash
 pnpm run merge
 ```
 
-### 画像の同期
+### 立ち絵をコピーし直す
 
-スクレイピング済みの立ち絵画像を `data/images/portrait/` に同期します。既存画像と内容が異なる場合は、デフォルトでは上書きせず警告します。
+取得済みの立ち絵を `data/images/portrait/` にコピーします。生徒IDを省略すると全員が対象です。コピー先に内容の違う画像がある場合は上書きせずに警告するので、上書きしたいときは `--force` を付けます。
 
 ```bash
 pnpm run sync-images

@@ -44,20 +44,14 @@ function loadLocalEnvFiles(): void {
   }
 }
 
-function printUploadCommand(id: string): void {
-  loadLocalEnvFiles();
-
-  const bucket = process.env.R2_BUCKET ?? 'R2_BUCKET';
-  const prefix = process.env.R2_IMAGE_PREFIX ?? 'images/portrait';
+function uploadImage(id: string, bucket: string): void {
+  const prefix = process.env.R2_IMAGE_PREFIX ?? 'portrait';
   const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, '');
   const objectPath = `${bucket}/${normalizedPrefix}/${id}.png`;
   const filePath = `../data/images/portrait/${id}.png`;
-  const command = `pnpm exec dotenvx run -f .env -- pnpm exec wrangler r2 object put "${objectPath}" --file "${filePath}" --remote`;
 
-  console.log('\nRemote upload command (run from scrape/):');
-  console.log('');
-  console.log(command);
-  console.log('');
+  console.log(`\nUploading to R2: ${objectPath}`);
+  run('pnpm', ['exec', 'wrangler', 'r2', 'object', 'put', objectPath, '--file', filePath, '--remote']);
 }
 
 function main() {
@@ -78,11 +72,19 @@ function main() {
     process.exit(1);
   }
 
+  loadLocalEnvFiles();
+  // スクレイピングの後で気づくと取得からやり直す手間がかかるので、先に確かめる
+  const bucket = process.env.R2_BUCKET;
+  if (!bucket) {
+    console.error('Error: R2_BUCKET is not set. Set it in scrape/.env.');
+    process.exit(1);
+  }
+
   appendStudentIfMissing(id, wikiName);
   run('pnpm', ['run', 'scrape', id]);
   run('pnpm', ['run', 'sync-images', id]);
   run('pnpm', ['run', 'merge']);
-  printUploadCommand(id);
+  uploadImage(id, bucket);
 }
 
 main();

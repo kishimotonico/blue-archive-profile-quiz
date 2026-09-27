@@ -20,12 +20,12 @@ function Button({
 
   const variantClasses = {
     // box-shadow は1つのプロパティで base の shadow-sm と上書きし合うため、外側の影もまとめて important で指定する。
-    // 立体感は下端の内側影で出す。色は直書きせずトークンから導出する
+    // 立体感は下端の内側影で出す。影の色は地の色のトークンから導出し、地の色を変えても追従させる
     primary:
       "bg-ba-sky text-white shadow-[inset_0_-3px_0_0_color-mix(in_srgb,var(--color-ba-blue)_55%,transparent),0_1px_3px_0_rgb(0_0_0_/_0.1),0_1px_2px_-1px_rgb(0_0_0_/_0.1)]! active:shadow-none!",
     secondary: "bg-white text-ba-navy border-2 border-ba-border shadow-none hover:bg-ba-bg",
     accent:
-      "bg-linear-to-b from-yellow-100 to-ba-yellow text-ba-navy shadow-[inset_0_-3px_0_0_color-mix(in_srgb,#a16207_45%,transparent),0_1px_3px_0_rgb(0_0_0_/_0.1),0_1px_2px_-1px_rgb(0_0_0_/_0.1)]! active:shadow-none!",
+      "bg-linear-to-b from-yellow-100 to-ba-yellow text-ba-navy shadow-[inset_0_-3px_0_0_color-mix(in_srgb,var(--color-ba-yellow)_50%,black),0_1px_3px_0_rgb(0_0_0_/_0.1),0_1px_2px_-1px_rgb(0_0_0_/_0.1)]! active:shadow-none!",
   };
 
   // 文字サイズは variant ではなく size にだけ紐づける。同じボタンが状態（回答欄の入力有無など）で

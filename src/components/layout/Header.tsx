@@ -63,8 +63,6 @@ function Header() {
 
   return (
     <>
-      {/* sticky にすると、モバイルの回答後フッターやデスクトップの固定要素と重なる余地が増えるため、
-          スクロールするページが無い（3ページとも min-h-[100dvh] 1画面構成）今は static のままにする */}
       <header className="flex h-11 md:h-12 items-center px-4 bg-white/90 backdrop-blur-xs border-b border-ba-border relative z-50">
         <Link
           to="/"

@@ -14,7 +14,7 @@ export type RegularState =
   | { status: "error" }
   | { status: "ready"; session: RegularSession }
   // 最終問の結果も session.results に含める。ページは最後の画面をそのまま描けばよく、
-  // /result への遷移は controller の effect に任せる（reducer は遷移を知らない）。
+  // /result への遷移は controller の next ハンドラに任せる（reducer は遷移を知らない）。
   | { status: "finished"; session: RegularSession };
 
 /** ready は次に出す問題、finished は最後に表示した問題を指す。 */

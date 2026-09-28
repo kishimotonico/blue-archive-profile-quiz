@@ -1,4 +1,4 @@
-import { useRef, type RefObject } from "react";
+import { useState, type RefObject } from "react";
 import type { PortraitState, Student } from "../../quiz-core";
 import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
@@ -24,12 +24,8 @@ function MobilePortraitCard({
   className = "",
 }: MobilePortraitCardProps) {
   const expanded = portraitState !== "hidden";
-  // 最初から silhouette/revealed で復元された場合は演出を再生しない。mount時に固定する値
-  const playGrowAnimationRef = useRef<boolean | null>(null);
-  if (playGrowAnimationRef.current === null) {
-    playGrowAnimationRef.current = portraitState === "hidden";
-  }
-  const playRevealAnimation = playGrowAnimationRef.current;
+  // 最初から silhouette/revealed で復元された場合は演出を再生しない。mount時の値で固定する
+  const [playRevealAnimation] = useState(() => portraitState === "hidden");
 
   return (
     <div
@@ -43,7 +39,7 @@ function MobilePortraitCard({
         "[--portrait-compact-height:max(7rem,25dvh)]",
         expanded
           ? `h-[min(60dvh,calc(100cqh_-_2rem))] [clip-path:inset(0_round_1rem)] border-ba-border bg-white${
-              playGrowAnimationRef.current ? " ba-portrait-grow" : ""
+              playRevealAnimation ? " ba-portrait-grow" : ""
             }`
           : "h-[max(7rem,25dvh)] border-transparent bg-ba-sky-1/60",
         className,

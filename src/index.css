@@ -93,6 +93,12 @@ body {
   .ba-portrait-grow {
     animation: ba-portrait-grow 0.5s ease-out forwards;
   }
+
+  /* シルエットの初回フェードイン。transitionは要素の新規挿入では再生されないため、
+     mount時に必ず0%から再生されるanimationを使う */
+  .ba-silhouette-fadein {
+    animation: ba-silhouette-fadein 0.5s ease-out forwards;
+  }
 }
 
 @keyframes ba-shine-sweep {
@@ -113,6 +119,15 @@ body {
   }
 }
 
+@keyframes ba-silhouette-fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ba-shine::after {
     display: none;
@@ -126,5 +141,10 @@ body {
   .ba-portrait-grow {
     animation: none;
     clip-path: inset(0 round 1rem);
+  }
+
+  .ba-silhouette-fadein {
+    animation: none;
+    opacity: 0.5;
   }
 }

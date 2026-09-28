@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useRef, type RefObject } from "react";
 import type { PortraitState, Student } from "../../quiz-core";
 import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
@@ -16,13 +16,10 @@ interface MobilePortraitCardProps {
 // - hidden中（「？」枠）の高さ（h-[max(7rem,25dvh)]）: 最低保証7rem(112px)に、
 //   縦長画面では25dvhまで伸ばす。全ヒント開示時の行数から余りを見積もる方式をやめたため、
 //   端末によっては全開示・最下部で枠の下に空白が残ることがあるが、それは許容する
-// - 展開後の高さの上限（h-[min(60dvh,calc(100dvh_-_20rem))]）: 60dvhと、画面の残り
-//   （ヘッダー・タイトル行・操作エリア・隙間ぶんを引いた分）の小さい方を使い、
-//   低い端末で上端が見切れないようにする。操作エリアは回答前後で高さを揃えてあるため、
-//   この残りは端末の高さだけで決まる定数になる。実測（header+タイトル行=128px、
-//   操作エリア=142px、隙間16px、計286px≒17.9rem）に、scrollIntoViewが実際に届く
-//   スクロール量の余裕ぶん（実測で最大14px不足した）を含めた安全マージンを足した20rem。
-//   Header/QuizTitleRow/操作エリアの高さを変えたらこの値も見直す必要がある
+// - 展開後の高さの上限（h-[min(60dvh,calc(100cqh_-_2rem))]）: 60dvhと、スクロール領域
+//   自身の高さ（親のMobileQuizLayoutが container-type:size にしているため cqh で参照できる）
+//   から余白ぶんを引いた値の小さい方を使い、低い端末で上端が見切れないようにする。
+//   ヘッダーや操作エリアの高さを直接見積もる必要がなく、それらを変えてもこの値の見直しは不要
 
 // モバイルではヒント一覧の下に立ち絵を表示する。デスクトップの立ち絵パネルとは
 // 切り抜き・スクロール挙動が異なるため、StudentPortrait とは別コンポーネントにしている
@@ -33,31 +30,14 @@ function MobilePortraitCard({
   className = "",
 }: MobilePortraitCardProps) {
   const expanded = portraitState !== "hidden";
-  // 最初から silhouette/revealed で描画された（復元）場合は広がる演出を再生しない。
-  // mount時の一度だけ判定すればよい値なので、再レンダーのたびに参照し直さないようrefに固定する
+  // 最初から silhouette/revealed で描画された（復元）場合は、枠が広がる演出・シルエットの
+  // フェードインをどちらも再生しない。mount時の一度だけ判定すればよい値なので、
+  // 再レンダーのたびに参照し直さないようrefに固定する
   const playGrowAnimationRef = useRef<boolean | null>(null);
   if (playGrowAnimationRef.current === null) {
     playGrowAnimationRef.current = portraitState === "hidden";
   }
-
-  const prevPortraitState = useRef(portraitState);
-  // 復元などで最初から silhouette のときは、フェードインを待たずに見せる
-  const [showSilhouette, setShowSilhouette] = useState(portraitState !== "hidden");
-
-  useEffect(() => {
-    const prevState = prevPortraitState.current;
-    if (portraitState === "silhouette" && prevState === "hidden") {
-      setShowSilhouette(false);
-      requestAnimationFrame(() => {
-        setShowSilhouette(true);
-      });
-    } else if (portraitState === "revealed") {
-      setShowSilhouette(true);
-    } else if (portraitState === "hidden") {
-      setShowSilhouette(false);
-    }
-    prevPortraitState.current = portraitState;
-  }, [portraitState]);
+  const playRevealAnimation = playGrowAnimationRef.current;
 
   return (
     <div
@@ -70,7 +50,7 @@ function MobilePortraitCard({
         // ba-portrait-grow（index.css）のクリップ開始値。hidden中の高さ（h-[max(7rem,25dvh)]）と揃える
         "[--portrait-compact-height:max(7rem,25dvh)]",
         expanded
-          ? `h-[min(60dvh,calc(100dvh_-_20rem))] [clip-path:inset(0_round_1rem)] border-ba-border bg-white${
+          ? `h-[min(60dvh,calc(100cqh_-_2rem))] [clip-path:inset(0_round_1rem)] border-ba-border bg-white${
               playGrowAnimationRef.current ? " ba-portrait-grow" : ""
             }`
           : "h-[max(7rem,25dvh)] border-transparent bg-ba-sky-1/60",
@@ -84,11 +64,13 @@ function MobilePortraitCard({
           src={getPortraitImageUrl(student)}
           alt={portraitState === "revealed" ? student.fullName : "シルエット"}
           draggable={false}
-          className={`absolute inset-0 h-full w-full object-contain transition-all duration-500 select-none ${
+          className={`absolute inset-0 h-full w-full object-contain transition-[opacity,filter] duration-500 select-none ${
             portraitState === "silhouette"
-              ? showSilhouette
-                ? "opacity-50 brightness-0 pointer-events-none"
-                : "opacity-0 brightness-0 pointer-events-none"
+              ? `brightness-0 pointer-events-none ${
+                  playRevealAnimation
+                    ? "ba-silhouette-fadein motion-reduce:opacity-50"
+                    : "opacity-50"
+                }`
               : "opacity-100"
           }`}
           onError={(e) => {

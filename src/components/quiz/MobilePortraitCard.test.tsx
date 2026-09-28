@@ -76,9 +76,9 @@ describe("MobilePortraitCard - 展開後の見た目", () => {
     expect(containerRef.current?.className).toContain("[clip-path:inset(0_round_1rem)]");
   });
 
-  it("枠の高さの上限を固定値（60dvhと画面残りの小さい方）にする", () => {
+  it("枠の高さの上限を、60dvhとスクロール領域自身の高さ（cqh）の小さい方にする", () => {
     const { containerRef } = renderCard("silhouette");
-    expect(containerRef.current?.className).toContain("h-[min(60dvh,calc(100dvh_-_20rem))]");
+    expect(containerRef.current?.className).toContain("h-[min(60dvh,calc(100cqh_-_2rem))]");
   });
 });
 

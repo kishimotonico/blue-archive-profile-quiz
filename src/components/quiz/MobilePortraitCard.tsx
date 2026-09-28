@@ -129,7 +129,11 @@ function MobilePortraitCard({
   // 決めてしまうことで、実際に答え合わせが起きてもスクロール位置は変えずに済む。
   // 広がりきる前にスクロールすると、まだ縮んだ枠を基準に位置がずれるため、高さの
   // transitionend を待ってから位置を決める。reduced motion では transition 自体が無く
-  // transitionend も飛ばないため、即座に決める
+  // transitionend も飛ばないため、即座に決める。
+  // 位置決めは一度きりにしたいため、height の transitionend/transitioncancel を
+  // 受けたら両方のリスナーをその場で解除する（effectの依存はexpandedだけなので、
+  // 解除しないと回答済みのまま残り続け、以後の60dvh再計算によるheight transitionの
+  // たびに再スクロールしてしまう）
   useEffect(() => {
     const wasExpanded = prevExpanded.current;
     prevExpanded.current = expanded;
@@ -143,12 +147,18 @@ function MobilePortraitCard({
       return;
     }
 
-    const handleTransitionEnd = (e: TransitionEvent) => {
+    const handleHeightTransitionSettled = (e: TransitionEvent) => {
       if (e.propertyName !== "height" || e.target !== el) return;
+      el.removeEventListener("transitionend", handleHeightTransitionSettled);
+      el.removeEventListener("transitioncancel", handleHeightTransitionSettled);
       scrollToRestingPosition(el, answeredOperationAreaHeightRef.current, "smooth");
     };
-    el.addEventListener("transitionend", handleTransitionEnd);
-    return () => el.removeEventListener("transitionend", handleTransitionEnd);
+    el.addEventListener("transitionend", handleHeightTransitionSettled);
+    el.addEventListener("transitioncancel", handleHeightTransitionSettled);
+    return () => {
+      el.removeEventListener("transitionend", handleHeightTransitionSettled);
+      el.removeEventListener("transitioncancel", handleHeightTransitionSettled);
+    };
   }, [expanded]);
 
   return (

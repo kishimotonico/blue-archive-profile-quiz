@@ -304,6 +304,26 @@ describe("MobilePortraitCard - 回答後の高さを見込んだ位置決め", (
     expect(Element.prototype.scrollBy).toHaveBeenCalledTimes(1);
   });
 
+  it("広がりきった後にheightのtransitionendが再度発生しても、位置を決め直さない", () => {
+    // 展開後にビューポートの高さが変わると60dvhの再計算でheightのtransitionが再び走り、
+    // transitionendも再発火する。リスナーを解除し忘れると、そのたびに再スクロールしてしまう
+    const answeredOperationAreaHeight = 200;
+    const { rerender, container } = renderCardInScrollArea("hidden", answeredOperationAreaHeight);
+
+    rerender(
+      <ScrollAreaWrapper
+        portraitState="silhouette"
+        answeredOperationAreaHeight={answeredOperationAreaHeight}
+      />,
+    );
+
+    const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
+    portraitEl.dispatchEvent(makeTransitionEndEvent("height"));
+    portraitEl.dispatchEvent(makeTransitionEndEvent("height"));
+
+    expect(Element.prototype.scrollBy).toHaveBeenCalledTimes(1);
+  });
+
   it("silhouette → revealed（答え合わせ）では位置を決め直さない", () => {
     const answeredOperationAreaHeight = 200;
     const { rerender } = renderCardInScrollArea("silhouette", answeredOperationAreaHeight);

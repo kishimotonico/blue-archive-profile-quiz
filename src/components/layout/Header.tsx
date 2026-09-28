@@ -209,9 +209,12 @@ function Header() {
 
         {/* デスクトップナビ */}
         <nav className="ml-auto hidden md:flex gap-2">
+          {/* nav に items-center が無いため、align-items: stretch でこのリンクが GithubLink（h-9）の
+              高さまで伸び、文字はその中で上詰め（テキストは中央揃えにならない）になっていた。
+              flex items-center + 固定高さ(h-9) で GithubLink・区切り線と光学的に揃える */}
           <Link
             to="/"
-            className={`text-sm font-bold px-3 py-1 transition-colors ${
+            className={`flex h-9 items-center text-sm font-bold px-3 transition-colors ${
               location.pathname === "/"
                 ? // 14px の文字だと sky 上の白文字は AA (4.5:1) に届かないため、面には ba-blue を使う
                   "bg-ba-blue text-white"
@@ -224,7 +227,7 @@ function Header() {
           </Link>
           <Link
             to="/regular"
-            className={`text-sm font-bold px-3 py-1 transition-colors ${
+            className={`flex h-9 items-center text-sm font-bold px-3 transition-colors ${
               location.pathname === "/regular"
                 ? "bg-ba-blue text-white"
                 : "text-ba-navy hover:bg-ba-sky-1"

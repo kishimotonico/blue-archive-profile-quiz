@@ -40,7 +40,12 @@ function QuizPlayArea({
         {nextStep === "hint" ? "次のヒントを開示" : "シルエットを表示"}
       </Button>
     ) : nextStep === "giveUp" ? (
-      <Button onClick={actions.giveUp} variant="secondary" className="w-full">
+      <Button
+        onClick={actions.giveUp}
+        variant="secondary"
+        className="w-full"
+        autoFocus={autoFocusHintButton}
+      >
         諦めて正解を表示
       </Button>
     ) : (

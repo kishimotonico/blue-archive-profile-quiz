@@ -76,3 +76,17 @@ describe("QuizPlayArea - 開示ボタンの出し分け", () => {
     expect(screen.getByRole("button", { name: "諦めて正解を表示" })).toBeTruthy();
   });
 });
+
+describe("QuizPlayArea - autoFocusHintButton", () => {
+  it("シルエット表示済み（giveUp段階）のplayingを初期状態にしても「諦めて正解を表示」にフォーカスする", () => {
+    render(
+      <QuizPlayArea
+        round={playingRound(4)}
+        autoFocusHintButton
+        actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
+        answer={noopAnswer}
+      />,
+    );
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "諦めて正解を表示" }));
+  });
+});

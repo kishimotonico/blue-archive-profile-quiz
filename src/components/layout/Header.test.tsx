@@ -116,3 +116,16 @@ describe("Header のモバイルメニュー", () => {
     expect(link.getAttribute("rel")).toBe("noopener noreferrer");
   });
 });
+
+describe("Header のデスクトップナビ", () => {
+  it("ナビ内にGitHubへのアイコンリンクが新しいタブで開く設定で存在する", () => {
+    renderHeader("/");
+    // モバイルパネル側（アクセシブルネームが"GitHub"を含む文言）とは名前が異なるので区別できる
+    const link = screen.getByRole("link", { name: "GitHub（新しいタブで開く）" });
+    expect(link.getAttribute("href")).toBe(
+      "https://github.com/kishimotonico/blue-archive-profile-quiz",
+    );
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+  });
+});

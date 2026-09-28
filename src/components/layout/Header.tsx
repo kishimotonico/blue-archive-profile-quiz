@@ -221,17 +221,16 @@ function Header() {
         </button>
       </header>
 
-      {/* 背景オーバーレイ。ヘッダー自体は隠さず、その下だけを覆う */}
-      {isMenuOpen && (
-        <div
-          className="md:hidden fixed inset-x-0 top-11 bottom-0 bg-ba-navy/45 z-40"
-          onClick={closeMenu}
-          aria-hidden="true"
-        />
-      )}
+      {/* オーバーレイとパネルは常時マウントし、同じ長さのトランジションで開閉する。
+          オーバーレイだけ即座に出し入れすると、画面の明暗がパネルより先に切り替わってちらつく */}
+      <div
+        className={`md:hidden fixed inset-x-0 top-11 bottom-0 bg-ba-navy/45 z-40 transition-opacity duration-200 motion-reduce:transition-none ${
+          isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={closeMenu}
+        aria-hidden="true"
+      />
 
-      {/* モバイルの下りパネル。常時マウントし、opacity/translateYだけで開閉することで
-          閉じるアニメーションもCSSトランジションに乗せる */}
       <div
         id="mobile-menu"
         inert={!isMenuOpen}

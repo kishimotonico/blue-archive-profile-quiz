@@ -27,17 +27,45 @@ const mockStudent: Student = {
   skills: { ex: "", normal: "", passive: "", sub: "" },
 };
 
-function renderCard(portraitState: PortraitState) {
-  return render(<MobilePortraitCard student={mockStudent} portraitState={portraitState} />);
+// 高さ未測定（0）を既定にする。centerフォールバックの挙動を検証するテストで使う
+function renderCard(portraitState: PortraitState, answeredOperationAreaHeight = 0) {
+  return render(
+    <MobilePortraitCard
+      student={mockStudent}
+      portraitState={portraitState}
+      answeredOperationAreaHeight={answeredOperationAreaHeight}
+    />,
+  );
 }
 
-// MobileQuizLayout側の実際のDOM構造（.overflow-y-autoの祖先）を再現し、
-// silhouette→revealedの見切れ補正（scrollBy）を検証できるようにする
-function renderCardInScrollArea(portraitState: PortraitState) {
-  return render(
+// MobileQuizLayout側の実際のDOM構造（.overflow-y-autoの祖先と、操作エリアを示す
+// [data-quiz-footer-area]）を再現し、回答後の高さを見込んだ位置決め（scrollBy）を
+// 検証できるようにする
+function ScrollAreaWrapper({
+  portraitState,
+  answeredOperationAreaHeight,
+}: {
+  portraitState: PortraitState;
+  answeredOperationAreaHeight: number;
+}) {
+  return (
     <div className="overflow-y-auto">
-      <MobilePortraitCard student={mockStudent} portraitState={portraitState} />
-    </div>,
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState={portraitState}
+        answeredOperationAreaHeight={answeredOperationAreaHeight}
+      />
+      <div data-quiz-footer-area />
+    </div>
+  );
+}
+
+function renderCardInScrollArea(portraitState: PortraitState, answeredOperationAreaHeight: number) {
+  return render(
+    <ScrollAreaWrapper
+      portraitState={portraitState}
+      answeredOperationAreaHeight={answeredOperationAreaHeight}
+    />,
   );
 }
 
@@ -68,7 +96,7 @@ function makeTransitionEndEvent(propertyName: string): TransitionEvent {
   return event;
 }
 
-describe("MobilePortraitCard - 枠が広がるタイミングでの自動スクロール", () => {
+describe("MobilePortraitCard - 高さ未測定時は広がりきったタイミングでcenterへ寄せる", () => {
   beforeEach(() => {
     Element.prototype.scrollIntoView = vi.fn();
     mockPrefersReducedMotion(false);
@@ -77,7 +105,13 @@ describe("MobilePortraitCard - 枠が広がるタイミングでの自動スク�
   it("hidden → silhouette では、枠のheight transitionendが起きるまでスクロールしない", () => {
     const { rerender, container } = renderCard("hidden");
 
-    rerender(<MobilePortraitCard student={mockStudent} portraitState="silhouette" />);
+    rerender(
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="silhouette"
+        answeredOperationAreaHeight={0}
+      />,
+    );
     expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
 
     const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
@@ -92,7 +126,13 @@ describe("MobilePortraitCard - 枠が広がるタイミングでの自動スク�
 
   it("height以外のtransitionendではスクロールしない", () => {
     const { rerender, container } = renderCard("hidden");
-    rerender(<MobilePortraitCard student={mockStudent} portraitState="silhouette" />);
+    rerender(
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="silhouette"
+        answeredOperationAreaHeight={0}
+      />,
+    );
 
     const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
     portraitEl.dispatchEvent(makeTransitionEndEvent("opacity"));
@@ -102,7 +142,13 @@ describe("MobilePortraitCard - 枠が広がるタイミングでの自動スク�
 
   it("hidden → revealed（シルエットを経由せず正解した場合）でも、枠が広がりきってからスクロールする", () => {
     const { rerender, container } = renderCard("hidden");
-    rerender(<MobilePortraitCard student={mockStudent} portraitState="revealed" />);
+    rerender(
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="revealed"
+        answeredOperationAreaHeight={0}
+      />,
+    );
     expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
 
     const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
@@ -111,39 +157,105 @@ describe("MobilePortraitCard - 枠が広がるタイミングでの自動スク�
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
   });
 
-  it("silhouette → revealed では枠は広がらないが、最小余白を割り込んだ分だけscrollByで補正する", () => {
-    Element.prototype.scrollBy = vi.fn();
-    const { rerender } = renderCardInScrollArea("silhouette");
+  it("revealed のまま再レンダリングされてもスクロールしない", () => {
+    const { rerender } = renderCard("revealed");
 
     rerender(
-      <div className="overflow-y-auto">
-        <MobilePortraitCard student={mockStudent} portraitState="revealed" />
-      </div>,
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="revealed"
+        answeredOperationAreaHeight={0}
+      />,
     );
 
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+  });
+});
+
+describe("MobilePortraitCard - 回答後の高さを見込んだ位置決め", () => {
+  beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+    Element.prototype.scrollBy = vi.fn();
+    mockPrefersReducedMotion(false);
+  });
+
+  it("hidden → silhouette では、広がりきった時点で回答後の高さを見込んだ位置までscrollByする", () => {
+    const answeredOperationAreaHeight = 200;
+    const { rerender, container } = renderCardInScrollArea("hidden", answeredOperationAreaHeight);
+
+    rerender(
+      <ScrollAreaWrapper
+        portraitState="silhouette"
+        answeredOperationAreaHeight={answeredOperationAreaHeight}
+      />,
+    );
+
+    const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
+    portraitEl.dispatchEvent(makeTransitionEndEvent("height"));
+
     // jsdomではレイアウトが無くgetBoundingClientRectが全て0を返すため、
-    // 最小余白（16px）分だけ常に不足として補正される
+    // 同じ式で期待値を計算する（実装と同じ計算式であることの確認）。
+    // 操作エリア（[data-quiz-footer-area]）のbottomも0なので、
+    // desiredBottom = 0 - answeredOperationAreaHeight - MIN_BOTTOM_GAP(20)
+    const desiredBottom = 0 - answeredOperationAreaHeight - 20;
+    const expectedDelta = 0 - desiredBottom;
     expect(Element.prototype.scrollBy).toHaveBeenCalledTimes(1);
-    expect(Element.prototype.scrollBy).toHaveBeenCalledWith({ top: 16, behavior: "smooth" });
+    expect(Element.prototype.scrollBy).toHaveBeenCalledWith({
+      top: expectedDelta,
+      behavior: "smooth",
+    });
     expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
   });
 
-  it("silhouette → revealed で祖先に.overflow-y-autoが無ければ何もしない", () => {
-    Element.prototype.scrollBy = vi.fn();
-    const { rerender } = renderCard("silhouette");
+  it("hidden → revealed直行でも同じ基準で1回だけ位置を決める", () => {
+    const answeredOperationAreaHeight = 150;
+    const { rerender, container } = renderCardInScrollArea("hidden", answeredOperationAreaHeight);
 
-    rerender(<MobilePortraitCard student={mockStudent} portraitState="revealed" />);
+    rerender(
+      <ScrollAreaWrapper
+        portraitState="revealed"
+        answeredOperationAreaHeight={answeredOperationAreaHeight}
+      />,
+    );
+    const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
+    portraitEl.dispatchEvent(makeTransitionEndEvent("height"));
+
+    expect(Element.prototype.scrollBy).toHaveBeenCalledTimes(1);
+  });
+
+  it("silhouette → revealed（答え合わせ）では位置を決め直さない", () => {
+    const answeredOperationAreaHeight = 200;
+    const { rerender } = renderCardInScrollArea("silhouette", answeredOperationAreaHeight);
+
+    rerender(
+      <ScrollAreaWrapper
+        portraitState="revealed"
+        answeredOperationAreaHeight={answeredOperationAreaHeight}
+      />,
+    );
 
     expect(Element.prototype.scrollBy).not.toHaveBeenCalled();
     expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
   });
 
-  it("revealed のまま再レンダリングされてもスクロールしない", () => {
-    const { rerender } = renderCard("revealed");
+  it(".overflow-y-autoの祖先が無ければcenterへフォールバックする", () => {
+    const { rerender, container } = renderCard("hidden", 200);
+    rerender(
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="silhouette"
+        answeredOperationAreaHeight={200}
+      />,
+    );
 
-    rerender(<MobilePortraitCard student={mockStudent} portraitState="revealed" />);
+    const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
+    portraitEl.dispatchEvent(makeTransitionEndEvent("height"));
 
-    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+      block: "center",
+    });
+    expect(Element.prototype.scrollBy).not.toHaveBeenCalled();
   });
 });
 
@@ -156,7 +268,13 @@ describe("MobilePortraitCard - prefers-reduced-motionでの自動スクロール
   it("hidden → silhouette で、transitionendを待たず即座にスクロールする", () => {
     const { rerender } = renderCard("hidden");
 
-    rerender(<MobilePortraitCard student={mockStudent} portraitState="silhouette" />);
+    rerender(
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="silhouette"
+        answeredOperationAreaHeight={0}
+      />,
+    );
 
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
@@ -179,7 +297,13 @@ describe("MobilePortraitCard - シルエットの表示", () => {
 
   it("hidden → silhouette ではフェードインして見える", async () => {
     const { rerender } = renderCard("hidden");
-    rerender(<MobilePortraitCard student={mockStudent} portraitState="silhouette" />);
+    rerender(
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="silhouette"
+        answeredOperationAreaHeight={0}
+      />,
+    );
     await waitFor(() => {
       expect(screen.getByRole("img").className).toContain("opacity-50");
     });

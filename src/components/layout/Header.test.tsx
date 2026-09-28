@@ -61,9 +61,7 @@ describe("Header のモバイルメニュー", () => {
   it("/ では日替わりタイルにaria-current='page'が付く", () => {
     const panel = renderHeader("/");
     openMenu();
-    expect(panel.getByRole("link", { name: /日替わり/ }).getAttribute("aria-current")).toBe(
-      "page",
-    );
+    expect(panel.getByRole("link", { name: /日替わり/ }).getAttribute("aria-current")).toBe("page");
     expect(panel.getByRole("link", { name: /フリープレイ/ }).getAttribute("aria-current")).toBe(
       null,
     );

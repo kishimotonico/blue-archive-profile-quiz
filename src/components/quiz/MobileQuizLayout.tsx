@@ -54,6 +54,54 @@ function RevealedFace({
   );
 }
 
+// 「？」枠（hidden）の最低の高さ。MobilePortraitCard側の枠の見た目と揃える
+const COMPACT_PORTRAIT_MIN_HEIGHT = 112;
+// HintCard.tsx の min-h-[84px] と揃える。長いヒント値で実際の行数が増えても、
+// ここでは最低保証の高さだけを見積もれば十分（枠が少し小さめに収まるだけで、
+// 「全開示でも画面下に余白が残る」側には倒れない）
+const HINT_CARD_MIN_HEIGHT = 84;
+// HintList/MobileQuizLayout共通のgap-2（0.5rem）
+const HINT_GAP = 8;
+// スクロール領域の内側コンテンツに付けているpb-4
+const SCROLL_CONTENT_BOTTOM_PADDING = 16;
+// 展開後の枠の下端と回答後の操作エリアの間に残す隙間。MobilePortraitCard.tsx側の
+// MIN_BOTTOM_GAP（scrollToRestingPositionの目標値）と揃えている
+const EXPANDED_BOTTOM_GAP = 20;
+// MobilePortraitCard.tsx側のMAIN_BOTTOM_PADDINGと揃えている。scrollToRestingPositionが
+// 画面下端からこのぶんを引いた位置を着地点の基準にしているため、上限の計算も
+// 同じ基準（画面下端 - MAIN_BOTTOM_PADDING）から逆算する必要がある
+const MAIN_BOTTOM_PADDING = 16;
+
+/**
+ * 展開後（silhouette/revealed）の枠の高さの上限（px）。60dvh固定だと、回答後の
+ * 操作エリア（revealedHeight）が高い生徒では、枠の下端を操作エリアの手前に収める
+ * ための逆算スクロール（MobilePortraitCard側のscrollToRestingPosition）が枠を
+ * 上に押し上げすぎて、枠の上端がスクロール領域からはみ出し見切れることがある。
+ * そのため、scrollToRestingPositionが実際に狙う着地点（画面下端を基準にした
+ * desiredBottom）から逆算した「収まる残り」を上限として渡し、実際の採用値
+ * （60dvhとの小さい方）はCSSのmin()側に委ねる。
+ *
+ * spaceBelowScrollAreaTopには、スクロール領域の高さ（scrollAreaHeight）ではなく
+ * 「タイトル行の下端（スクロール領域の上端）から、scrollToRestingPositionが狙う
+ * 着地点の基準（画面下端 - MobilePortraitCard.tsx側のMAIN_BOTTOM_PADDING）までの距離」を
+ * 渡す必要がある。scrollAreaHeight単体は、答え合わせで操作エリアがfooter（未回答時の
+ * 操作欄）からrevealed（回答後の面）に入れ替わるとその高さの差分だけ伸縮する
+ * （flexの兄弟要素なので）。上限の計算にscrollAreaHeightをそのまま使うと、答え合わせの
+ * 前後で枠の高さ自体が変わってしまい、シルエット表示後と回答後でtop/heightが一致する
+ * 不変条件が崩れる。タイトル行の下端から画面下端までの距離はこの入れ替わりの影響を
+ * 受けないため、代わりにこちらを基準にする。
+ *
+ * 純関数として切り出しているのは、DOM描画を介さずロジックだけを検証できるようにするため
+ * （jsdomはCSSのmin()とdvh単位の組み合わせを解釈できず、描画結果からの検証が難しい）
+ */
+export function computeExpandedMaxHeight(
+  spaceBelowScrollAreaTop: number,
+  revealedHeight: number,
+): number {
+  if (spaceBelowScrollAreaTop <= 0) return Number.MAX_SAFE_INTEGER;
+  return Math.max(0, spaceBelowScrollAreaTop - revealedHeight - EXPANDED_BOTTOM_GAP);
+}
+
 // lg（1024px）未満。立ち絵はヒント一覧の下に表示し、回答欄は画面下部に固定する
 function MobileQuizLayout({
   modeLabel,
@@ -72,28 +120,41 @@ function MobileQuizLayout({
   const dummyPrimaryButtonRef = useRef<HTMLButtonElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
   const revealedRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   // 表示していない面の高さ。表示面は自然な高さを取り、この差分をスクロール領域側の
   // 余白として確保することで、操作エリアの高さが変わってもスクロール領域の
   // scrollHeight+clientHeightの合計が一定に保たれ、scrollTopのクランプによる
   // 立ち絵の位置ずれを避けられる
   const [footerHeight, setFooterHeight] = useState(0);
   const [revealedHeight, setRevealedHeight] = useState(0);
+  // 「？」枠の高さを、端末の縦幅に応じてスクロール領域いっぱいまで伸ばすために測る
+  const [scrollAreaHeight, setScrollAreaHeight] = useState(0);
+  // 展開後の枠の高さの上限（computeExpandedMaxHeight）に使う、タイトル行の下端
+  // （スクロール領域の上端）から画面下端までの距離。ヘッダー・タイトル行の高さで
+  // 決まり、答え合わせで操作エリアの内容が入れ替わっても変わらない
+  const [scrollAreaTop, setScrollAreaTop] = useState(0);
 
   useEffect(() => {
     if (typeof ResizeObserver !== "function") return;
     const footerEl = footerRef.current;
     const revealedEl = revealedRef.current;
-    if (!footerEl || !revealedEl) return;
+    const scrollAreaEl = scrollAreaRef.current;
+    if (!footerEl || !revealedEl || !scrollAreaEl) return;
 
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const height = entry.borderBoxSize?.[0]?.blockSize ?? entry.contentRect.height;
         if (entry.target === footerEl) setFooterHeight(height);
         else if (entry.target === revealedEl) setRevealedHeight(height);
+        else if (entry.target === scrollAreaEl) {
+          setScrollAreaHeight(height);
+          setScrollAreaTop(entry.target.getBoundingClientRect().top);
+        }
       }
     });
     observer.observe(footerEl);
     observer.observe(revealedEl);
+    observer.observe(scrollAreaEl);
     return () => observer.disconnect();
   }, []);
 
@@ -117,6 +178,7 @@ function MobileQuizLayout({
   const correct = answered && round.result.correct;
   const score = answered ? round.result.score : 0;
   const portraitState = getPortraitState(round);
+  const portraitExpanded = portraitState !== "hidden";
   const visibleHintCount = getVisibleHintCount(round);
 
   const makePlayArea = (ref: RefObject<HTMLButtonElement | null>) => (
@@ -152,11 +214,36 @@ function MobileQuizLayout({
       ? Math.max(0, footerHeight - revealedHeight)
       : Math.max(0, revealedHeight - footerHeight)) + restingPositionScrollHeadroom;
 
+  // 枠が広がったあと（silhouette/revealed）は今まで通り、スクロール領域末尾の
+  // 見えない余白として確保する。hidden（「？」枠）の間だけは、この余白を
+  // 「？」枠自体の高さに繰り込んで見せる。必要なスクロール余白の量は変えず、
+  // ただの空白として画面下に見えていたぶんを枠の白地に吸収させるだけなので、
+  // scrollHeightに基づく位置決めの計算式（scrollToRestingPosition）には影響しない
+  const layoutSpacerHeight = portraitExpanded ? spacerHeight : 0;
+
+  // 「？」枠は最低112pxだが、スクロール領域に余りがあればそのぶんまで伸ばして
+  // 画面下に空白を残さない。ヒントを開くたびに枠が縮んで見えるのを避けるため、
+  // 「今開示済みのヒント数」ではなく「全ヒントを開示したときに残る分」を基準に
+  // 高さを決める。全開示状態でも枠がこの高さに収まらなければ、そのぶんは
+  // スクロールが発生するだけで構わない
+  const hintCount = round.question.hints.length;
+  const fullHintsHeight = hintCount * HINT_CARD_MIN_HEIGHT + Math.max(0, hintCount - 1) * HINT_GAP;
+  const compactFillHeight = Math.max(
+    COMPACT_PORTRAIT_MIN_HEIGHT,
+    scrollAreaHeight - fullHintsHeight - HINT_GAP - SCROLL_CONTENT_BOTTOM_PADDING,
+  );
+  const compactPortraitHeight = compactFillHeight + spacerHeight;
+  // window.innerHeightは実機のツールバー表示/非表示で多少動くが、60dvh自体も同じ理由で
+  // 変動する値なので、上限計算に使う分には同じ前提で揃っておりズレない
+  const spaceBelowScrollAreaTop =
+    typeof window !== "undefined" ? window.innerHeight - MAIN_BOTTOM_PADDING - scrollAreaTop : 0;
+  const expandedMaxHeight = computeExpandedMaxHeight(spaceBelowScrollAreaTop, revealedHeight);
+
   return (
     <div className="flex-1 flex flex-col min-h-0 min-w-0">
       <QuizTitleRow modeLabel={modeLabel} heading={heading} round={round} />
 
-      <div className="flex-1 overflow-y-auto min-h-0">
+      <div ref={scrollAreaRef} className="flex-1 overflow-y-auto min-h-0">
         {/* pb-4は立ち絵枠の下端と操作エリアの上端の間に、スクロール最下部でも
             ヒントカード間隔（gap-2=8px）より広い余白を必ず残すため */}
         <div className="flex flex-col gap-2 pb-4">
@@ -180,9 +267,11 @@ function MobileQuizLayout({
             student={student}
             portraitState={portraitState}
             answeredOperationAreaHeight={revealedHeight}
+            compactHeight={compactPortraitHeight}
+            expandedMaxHeight={expandedMaxHeight}
           />
-          {spacerHeight > 0 && (
-            <div style={{ height: spacerHeight }} aria-hidden="true" data-portrait-spacer />
+          {layoutSpacerHeight > 0 && (
+            <div style={{ height: layoutSpacerHeight }} aria-hidden="true" data-portrait-spacer />
           )}
         </div>
       </div>

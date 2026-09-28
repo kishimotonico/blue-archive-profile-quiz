@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import MobileQuizLayout from "./MobileQuizLayout";
+import MobileQuizLayout, { computeExpandedMaxHeight } from "./MobileQuizLayout";
 import type { Hint, QuestionResult, QuizQuestion, RoundState, Student } from "../../quiz-core";
 import type { AfterAnswer, AnswerDraft } from "./quizLayoutTypes";
 
@@ -206,5 +206,123 @@ describe("MobileQuizLayout - 回答後の面が短いときのスクロール領
     const spacer = container.querySelector("[data-portrait-spacer]") as HTMLElement | null;
     expect(spacer).not.toBeNull();
     expect(spacer?.style.height).toBe("64px");
+  });
+});
+
+describe("MobileQuizLayout - 「？」枠（hidden）の高さ", () => {
+  let observedCallback: ResizeObserverCallback | null = null;
+
+  beforeEach(() => {
+    observedCallback = null;
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(cb: ResizeObserverCallback) {
+          observedCallback = cb;
+        }
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("hidden中は、スクロール領域の余りぶんまで枠を伸ばし、末尾に別途余白を残さない", () => {
+    // playingRound（1問中1ヒント目まで開示）はまだsilhouetteに達していないため hidden
+    const { container } = renderLayout(playingRound, {
+      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
+    });
+
+    const [footerWrapper, revealedWrapper] = Array.from(
+      container.querySelectorAll("[data-quiz-footer-area] > div"),
+    ) as HTMLElement[];
+    const footerEl = footerWrapper.firstElementChild as HTMLElement;
+    const revealedEl = revealedWrapper.firstElementChild as HTMLElement;
+    const scrollAreaEl = container.querySelector(".overflow-y-auto") as HTMLElement;
+
+    act(() => {
+      observedCallback?.(
+        [
+          { target: revealedEl, contentRect: { height: 100 } } as unknown as ResizeObserverEntry,
+          { target: footerEl, contentRect: { height: 150 } } as unknown as ResizeObserverEntry,
+          {
+            target: scrollAreaEl,
+            contentRect: { height: 400 },
+          } as unknown as ResizeObserverEntry,
+        ],
+        {} as ResizeObserver,
+      );
+    });
+
+    // ヒント1つのquestion: 全開示時のヒント高さ見積り = 1 * 84px。
+    // 残り = 400 - 84 - 8(gap) - 16(pb-4) = 292px（最低112pxより大きいのでこちらを採用）。
+    // さらにスクロール位置決め用の余白（未回答中はrevealedHeight[100]がfooterHeight[150]を
+    // 超えないので差分0 + headroom64 = 64px）を枠自身に繰り込むため、292 + 64 = 356px になる
+    const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
+    expect(portraitEl.style.height).toBe("356px");
+    // 末尾の見えない余白は、hidden中は枠に繰り込まれるため描画しない
+    expect(container.querySelector("[data-portrait-spacer]")).toBeNull();
+  });
+
+  it("スクロール領域の余りが無いときは最低112pxを使う", () => {
+    const { container } = renderLayout(playingRound, {
+      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
+    });
+
+    const [footerWrapper, revealedWrapper] = Array.from(
+      container.querySelectorAll("[data-quiz-footer-area] > div"),
+    ) as HTMLElement[];
+    const footerEl = footerWrapper.firstElementChild as HTMLElement;
+    const revealedEl = revealedWrapper.firstElementChild as HTMLElement;
+    const scrollAreaEl = container.querySelector(".overflow-y-auto") as HTMLElement;
+
+    act(() => {
+      observedCallback?.(
+        [
+          { target: revealedEl, contentRect: { height: 100 } } as unknown as ResizeObserverEntry,
+          { target: footerEl, contentRect: { height: 100 } } as unknown as ResizeObserverEntry,
+          {
+            target: scrollAreaEl,
+            contentRect: { height: 100 },
+          } as unknown as ResizeObserverEntry,
+        ],
+        {} as ResizeObserver,
+      );
+    });
+
+    // 残り = 100 - 84 - 8 - 16 = -8px なので最低保証の112pxを使う。
+    // スクロール位置決め用の余白（差分0 + headroom64）を足して 112 + 64 = 176px
+    const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
+    expect(portraitEl.style.height).toBe("176px");
+  });
+});
+
+// jsdomはCSSのmin()とdvh単位の組み合わせを解釈できず、style.heightに反映されない
+// （実ブラウザでは問題なく評価される）ため、DOM描画からではなく
+// MobileQuizLayoutが実際に呼んでいる純関数（computeExpandedMaxHeight）を直接検証する。
+//
+// 引数はscrollAreaHeight（スクロール領域単体の高さ）ではなくspaceBelowScrollAreaTop
+// （タイトル行の下端＝スクロール領域の上端から画面下端までの距離）である点に注意。
+// footer（未回答時の操作欄。mainのp-4を-mb-4で打ち消して画面端まで伸びる）と
+// revealed（回答後の面。打ち消しなし）とで画面端までの伸び方が異なるため、
+// scrollAreaHeight+現在の操作エリア高さの単純な合計は答え合わせの前後で一致しない。
+// spaceBelowScrollAreaTopはヘッダー・タイトル行の高さだけで決まり、この入れ替わりの
+// 影響を受けない
+describe("MobileQuizLayout - 展開後（silhouette/revealed）の枠の高さの上限（computeExpandedMaxHeight）", () => {
+  it("回答後の操作エリアが高いと、60dvhの代わりに使う「収まる残り」を返す", () => {
+    // 500(タイトル行より下の距離) - 200(revealedHeight) - 20(隙間) = 280px
+    expect(computeExpandedMaxHeight(500, 200)).toBe(280);
+  });
+
+  it("残りが負になるときは0を返す（60dvh側は使われず枠はほぼ潰れる想定）", () => {
+    expect(computeExpandedMaxHeight(100, 200)).toBe(0);
+  });
+
+  it("スクロール領域の高さが未測定（0）のときは上限を掛けない", () => {
+    expect(computeExpandedMaxHeight(0, 200)).toBe(Number.MAX_SAFE_INTEGER);
   });
 });

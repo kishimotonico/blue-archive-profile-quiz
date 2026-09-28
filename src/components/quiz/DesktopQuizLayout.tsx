@@ -1,4 +1,6 @@
-import { getPortraitState, getVisibleHintCount } from "../../quiz-core";
+import { useRef } from "react";
+import { flushSync } from "react-dom";
+import { getNextStep, getPortraitState, getVisibleHintCount } from "../../quiz-core";
 import Button from "../common/Button";
 import HintList from "./HintList";
 import QuizPlayArea from "./QuizPlayArea";
@@ -17,19 +19,32 @@ function DesktopQuizLayout({
   afterAnswer,
   primaryButtonRef,
 }: QuizLayoutProps) {
+  const justRevealedHintRef = useRef<HTMLDivElement>(null);
+
   const { student } = round.question;
   const answered = round.status === "answered";
   const correct = answered && round.result.correct;
   const score = answered ? round.result.score : 0;
   const portraitState = getPortraitState(round);
   const visibleHintCount = getVisibleHintCount(round);
+  const nextStep = getNextStep(round);
+
+  // flushSyncで確定させないと、まだ開示前のDOMを基準にscrollIntoViewしてしまう。画面内に
+  // 収まっていれば動かず、はみ出すときだけ最小限動く
+  const handleReveal =
+    nextStep === "hint"
+      ? () => {
+          flushSync(() => actions.reveal());
+          justRevealedHintRef.current?.scrollIntoView({ block: "nearest" });
+        }
+      : actions.reveal;
 
   const playArea = (
     <QuizPlayArea
       variant="panel"
       autoFocusHintButton={round.status === "playing"}
       round={round}
-      actions={actions}
+      actions={{ reveal: handleReveal, giveUp: actions.giveUp }}
       answer={answer}
     />
   );
@@ -45,6 +60,7 @@ function DesktopQuizLayout({
             visibleCount={visibleHintCount}
             animateReveal={round.status === "playing"}
             layout="desktop"
+            justRevealedRef={justRevealedHintRef}
           />
         </div>
       </div>

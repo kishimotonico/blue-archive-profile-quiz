@@ -1,10 +1,14 @@
 // @vitest-environment jsdom
-import { createRef } from "react";
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { createRef, useState } from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import DesktopQuizLayout from "./DesktopQuizLayout";
+import { roundReducer } from "../../quiz-core";
 import type { Hint, QuestionResult, QuizQuestion, RoundState, Student } from "../../quiz-core";
 import type { AfterAnswer, AnswerDraft } from "./quizLayoutTypes";
+
+// jsdomにはscrollIntoViewが無いため、開示時のヒントカードへのスクロールをスタブする
+Element.prototype.scrollIntoView = vi.fn();
 
 vi.mock("./portraitImageUrl", () => ({
   getPortraitImageUrl: vi.fn().mockReturnValue("about:blank"),
@@ -75,6 +79,30 @@ function renderLayout(round: RoundState, afterAnswer: AfterAnswer) {
   return { ...utils, primaryButtonRef };
 }
 
+// actions.reveal は実際にroundを進めるreducerと繋ぐ。開示直後のスクロール判定はflushSync後の
+// 実DOMを見て行うため、propsを外から書き換えるだけのrenderLayoutでは再現できない
+function renderStatefulLayout(initialRound: RoundState, afterAnswer: AfterAnswer) {
+  function Harness() {
+    const [round, setRound] = useState(initialRound);
+    const primaryButtonRef = createRef<HTMLButtonElement>();
+    return (
+      <DesktopQuizLayout
+        modeLabel="テストモード"
+        heading="見出し"
+        round={round}
+        actions={{
+          reveal: () => setRound((prev) => roundReducer(prev, { type: "reveal" })),
+          giveUp: () => setRound((prev) => roundReducer(prev, { type: "giveUp" })),
+        }}
+        answer={noopAnswer}
+        afterAnswer={afterAnswer}
+        primaryButtonRef={primaryButtonRef}
+      />
+    );
+  }
+  return render(<Harness />);
+}
+
 describe("DesktopQuizLayout - マウント時の主ボタンへのフォーカス", () => {
   it("answered状態でマウントされると主ボタンにフォーカスがある", () => {
     renderLayout(answeredRound, { primaryAction: { label: "結果を見る", onClick: vi.fn() } });
@@ -103,5 +131,42 @@ describe("DesktopQuizLayout - マウント時の主ボタンへのフォーカ�
     button.click();
 
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("DesktopQuizLayout - ヒント開示時のスクロール位置決め（scrollIntoView）", () => {
+  beforeEach(() => {
+    (Element.prototype.scrollIntoView as ReturnType<typeof vi.fn>).mockClear();
+  });
+
+  it("まだヒントが残っている開示操作では、新しく開示したヒントカードへscrollIntoViewする", () => {
+    const twoHintQuestion: QuizQuestion = {
+      ...question,
+      hints: [
+        { type: "school", label: "学園", value: "テスト学園" },
+        { type: "club", label: "部活", value: "テスト部" },
+      ],
+    };
+    const round: RoundState = {
+      status: "playing",
+      question: twoHintQuestion,
+      revealedHintCount: 1,
+    };
+    renderStatefulLayout(round, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
+
+    fireEvent.click(screen.getByRole("button", { name: "次のヒントを開示" }));
+
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ block: "nearest" });
+  });
+
+  it("最後のヒントを開示してシルエットに変わる操作ではscrollIntoViewしない（立ち絵パネルは常に画面内のため）", () => {
+    renderStatefulLayout(playingRound, {
+      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "シルエットを表示" }));
+
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
   });
 });

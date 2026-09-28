@@ -1,7 +1,10 @@
 // @vitest-environment jsdom
 import { render, screen, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import MobileQuizLayout, { computeExpandedMaxHeight } from "./MobileQuizLayout";
+import MobileQuizLayout, {
+  computeExpandedMaxHeight,
+  computeFullHintsHeight,
+} from "./MobileQuizLayout";
 import type { Hint, QuestionResult, QuizQuestion, RoundState, Student } from "../../quiz-core";
 import type { AfterAnswer, AnswerDraft } from "./quizLayoutTypes";
 
@@ -298,6 +301,21 @@ describe("MobileQuizLayout - 「？」枠（hidden）の高さ", () => {
     // スクロール位置決め用の余白（差分0 + headroom64）を足して 112 + 64 = 176px
     const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
     expect(portraitEl.style.height).toBe("176px");
+  });
+});
+
+// useIsHintGridTwoColumnが参照するwindow.matchMediaのMediaQueryListはモジュール内で
+// キャッシュされるため、DOM描画を介したテストではテストごとに列数を切り替えにくい。
+// そのためcomputeFullHintsHeightを直接検証する
+describe("MobileQuizLayout - 全開示時のヒント高さ見積もり（computeFullHintsHeight）", () => {
+  it("1列では行数=ヒント数分をそのまま積む", () => {
+    // 5行: 5*84 + 4*8 = 452
+    expect(computeFullHintsHeight(5, 1)).toBe(452);
+  });
+
+  it("2列（md〜lg未満）では行数を列数で割った分だけ積む", () => {
+    // ceil(5/2)=3行: 3*84 + 2*8 = 268
+    expect(computeFullHintsHeight(5, 2)).toBe(268);
   });
 });
 

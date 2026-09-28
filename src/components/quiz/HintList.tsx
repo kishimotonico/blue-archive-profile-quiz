@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, type CSSProperties } from "react";
 import type { Hint } from "../../quiz-core";
 import HintCard from "./HintCard";
+import { HINT_CARD_MIN_HEIGHT_PX, HINT_GRID_GAP_PX } from "./hintDimensions";
 
 const HINT_ROW_MAX_HEIGHT = 128;
 
@@ -44,8 +45,8 @@ function HintList({ hints, visibleCount, animateReveal, layout }: HintListProps)
   const desktopRows = Math.ceil(hints.length / 2);
   const desktopGridStyle = !isMobileLayout
     ? ({
-        "--hint-grid-rows": `repeat(${desktopRows}, minmax(84px, 1fr))`,
-        "--hint-grid-max-h": `calc(${desktopRows} * ${HINT_ROW_MAX_HEIGHT}px + ${desktopRows - 1} * 0.5rem)`,
+        "--hint-grid-rows": `repeat(${desktopRows}, minmax(${HINT_CARD_MIN_HEIGHT_PX}px, 1fr))`,
+        "--hint-grid-max-h": `calc(${desktopRows} * ${HINT_ROW_MAX_HEIGHT}px + ${desktopRows - 1} * ${HINT_GRID_GAP_PX}px)`,
       } as CSSProperties)
     : undefined;
 

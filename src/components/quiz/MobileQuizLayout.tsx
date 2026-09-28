@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { getPortraitState, getVisibleHintCount, type Student } from "../../quiz-core";
+import { useIsHintGridTwoColumn } from "../../hooks/useHintGridTwoColumn";
 import Button from "../common/Button";
 import HintList from "./HintList";
+import { HINT_CARD_MIN_HEIGHT_PX, HINT_GRID_GAP_PX } from "./hintDimensions";
 import MobilePortraitCard from "./MobilePortraitCard";
 import QuizPlayArea from "./QuizPlayArea";
 import QuizTitleRow from "./QuizTitleRow";
@@ -56,12 +58,6 @@ function RevealedFace({
 
 // 「？」枠（hidden）の最低の高さ。MobilePortraitCard側の枠の見た目と揃える
 const COMPACT_PORTRAIT_MIN_HEIGHT = 112;
-// HintCard.tsx の min-h-[84px] と揃える。長いヒント値で実際の行数が増えても、
-// ここでは最低保証の高さだけを見積もれば十分（枠が少し小さめに収まるだけで、
-// 「全開示でも画面下に余白が残る」側には倒れない）
-const HINT_CARD_MIN_HEIGHT = 84;
-// HintList/MobileQuizLayout共通のgap-2（0.5rem）
-const HINT_GAP = 8;
 // スクロール領域の内側コンテンツに付けているpb-4
 const SCROLL_CONTENT_BOTTOM_PADDING = 16;
 // 展開後の枠の下端と回答後の操作エリアの間に残す隙間。MobilePortraitCard.tsx側の
@@ -102,6 +98,20 @@ export function computeExpandedMaxHeight(
   return Math.max(0, spaceBelowScrollAreaTop - revealedHeight - EXPANDED_BOTTOM_GAP);
 }
 
+/**
+ * 全ヒントを開示したときにHintListが実際に使う行数ぶんの高さ（px）。HintListはmd（768px）
+ * 以上で2列になるため、1列固定で見積もると768〜1023px（lg未満・md以上）で実際より多い
+ * 行数を見積もってしまう。
+ *
+ * 純関数として切り出しているのは、useIsHintGridTwoColumnが参照するwindow.matchMediaの
+ * MediaQueryListがモジュール内でキャッシュされ、テストごとに値を切り替えにくいため
+ * （DOM描画を介さずロジックだけを検証できるようにする）
+ */
+export function computeFullHintsHeight(hintCount: number, columns: number): number {
+  const rows = Math.ceil(hintCount / Math.max(1, columns));
+  return rows * HINT_CARD_MIN_HEIGHT_PX + Math.max(0, rows - 1) * HINT_GRID_GAP_PX;
+}
+
 // lg（1024px）未満。立ち絵はヒント一覧の下に表示し、回答欄は画面下部に固定する
 function MobileQuizLayout({
   modeLabel,
@@ -111,6 +121,9 @@ function MobileQuizLayout({
   answer,
   afterAnswer,
 }: QuizLayoutProps) {
+  // md（768px）〜lg未満ではHintListが2列表示になるため、「？」枠の高さ見積もりの
+  // 行数もそれに合わせる必要がある（常に1列前提だと768〜1023pxで実際より多く見積もる）
+  const isHintGridTwoColumn = useIsHintGridTwoColumn();
   const hintButtonRef = useRef<HTMLButtonElement>(null);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   // 高さ測定用に非表示で複製する面のボタンに使う。実際のフォーカス対象
@@ -227,10 +240,10 @@ function MobileQuizLayout({
   // 高さを決める。全開示状態でも枠がこの高さに収まらなければ、そのぶんは
   // スクロールが発生するだけで構わない
   const hintCount = round.question.hints.length;
-  const fullHintsHeight = hintCount * HINT_CARD_MIN_HEIGHT + Math.max(0, hintCount - 1) * HINT_GAP;
+  const fullHintsHeight = computeFullHintsHeight(hintCount, isHintGridTwoColumn ? 2 : 1);
   const compactFillHeight = Math.max(
     COMPACT_PORTRAIT_MIN_HEIGHT,
-    scrollAreaHeight - fullHintsHeight - HINT_GAP - SCROLL_CONTENT_BOTTOM_PADDING,
+    scrollAreaHeight - fullHintsHeight - HINT_GRID_GAP_PX - SCROLL_CONTENT_BOTTOM_PADDING,
   );
   const compactPortraitHeight = compactFillHeight + spacerHeight;
   // window.innerHeightは実機のツールバー表示/非表示で多少動くが、60dvh自体も同じ理由で

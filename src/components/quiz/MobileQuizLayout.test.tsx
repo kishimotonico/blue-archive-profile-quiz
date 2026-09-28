@@ -1,14 +1,11 @@
 // @vitest-environment jsdom
-import { render, screen, act } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import MobileQuizLayout, {
-  computeExpandedMaxHeight,
-  computeFullHintsHeight,
-} from "./MobileQuizLayout";
+import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import MobileQuizLayout from "./MobileQuizLayout";
 import type { Hint, QuestionResult, QuizQuestion, RoundState, Student } from "../../quiz-core";
 import type { AfterAnswer, AnswerDraft } from "./quizLayoutTypes";
 
-// jsdomにはscrollIntoViewが無いため、回答済みマウント時の立ち絵スクロールをスタブする
+// jsdomにはscrollIntoViewが無いため、展開時の立ち絵スクロールをスタブする
 Element.prototype.scrollIntoView = vi.fn();
 
 const makeStudent = (): Student => ({
@@ -85,8 +82,8 @@ describe("MobileQuizLayout - 回答後の主ボタンへのフォーカス", () 
       primaryAction: { label: "次の問題へ", onClick: vi.fn() },
     });
 
-    // 操作エリアは状態ごとの自然な高さで表示するため、playing中は主ボタンをDOMに持たない
-    // （高さ測定用の複製はaria-hiddenの内側にあり、アクセシビリティツリーからは見えない）
+    // 操作エリアは常に両方の面をDOMに持ち、invisible/inertで表示だけ切り替えるため、
+    // playing中は回答後の主ボタンがアクセシビリティツリー上に現れない
     expect(screen.queryByRole("button", { name: "次の問題へ" })).toBeNull();
     rerender(
       <MobileQuizLayout
@@ -114,7 +111,7 @@ describe("MobileQuizLayout - 回答後の主ボタンへのフォーカス", () 
   });
 });
 
-describe("MobileQuizLayout - 操作エリアの高さと空白", () => {
+describe("MobileQuizLayout - 操作エリアの出し分け", () => {
   it("playing中は回答後の面をアクセシビリティツリー上に持たず、開示ボタンは1つだけ見える", () => {
     renderLayout(playingRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
@@ -128,219 +125,87 @@ describe("MobileQuizLayout - 操作エリアの高さと空白", () => {
     expect(screen.getAllByRole("button", { name: "次の問題へ" })).toHaveLength(1);
     expect(screen.queryByRole("button", { name: "シルエットを表示" })).toBeNull();
   });
+
+  it("answered中は正誤・得点・生徒名を1行にまとめて表示する", () => {
+    renderLayout(answeredRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
+
+    expect(screen.getByText("正解！")).not.toBeNull();
+    expect(screen.getByText("10")).not.toBeNull();
+    expect(screen.getByText(question.student.fullName)).not.toBeNull();
+  });
 });
 
-describe("MobileQuizLayout - 回答後の面が短いときのスクロール領域側の余白", () => {
-  // jsdomはレイアウトを計算しないため、ResizeObserverのコールバックを直接呼び出せる
-  // スタブに差し替えて、差分の計算だけを検証する
-  let observedCallback: ResizeObserverCallback | null = null;
-
+describe("MobileQuizLayout - 展開の瞬間の位置決め（scrollIntoView）", () => {
   beforeEach(() => {
-    observedCallback = null;
-    vi.stubGlobal(
-      "ResizeObserver",
-      class {
-        constructor(cb: ResizeObserverCallback) {
-          observedCallback = cb;
-        }
-        observe() {}
-        unobserve() {}
-        disconnect() {}
-      },
+    (Element.prototype.scrollIntoView as ReturnType<typeof vi.fn>).mockClear();
+  });
+
+  it("最後のヒントを開示してシルエットに変わる操作では、一度だけscrollIntoViewする", () => {
+    renderLayout(playingRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
+
+    screen.getByRole("button", { name: "シルエットを表示" }).click();
+
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ block: "end" });
+  });
+
+  it("まだヒントが残っている開示操作ではscrollIntoViewしない", () => {
+    const twoHintQuestion: QuizQuestion = {
+      ...question,
+      hints: [
+        { type: "school", label: "学園", value: "テスト学園" },
+        { type: "club", label: "部活", value: "テスト部" },
+      ],
+    };
+    const round: RoundState = {
+      status: "playing",
+      question: twoHintQuestion,
+      revealedHintCount: 1,
+    };
+    renderLayout(round, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
+
+    screen.getByRole("button", { name: "次のヒントを開示" }).click();
+
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+  });
+
+  it("シルエット表示中の回答（回答するボタン）ではscrollIntoViewしない（既に展開済みのため）", () => {
+    const silhouetteRound: RoundState = {
+      status: "playing",
+      question,
+      revealedHintCount: question.hints.length + 1,
+    };
+    render(
+      <MobileQuizLayout
+        modeLabel="テストモード"
+        heading="見出し"
+        round={silhouetteRound}
+        actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
+        answer={{ ...noopAnswer, value: "タロウ" }}
+        afterAnswer={{ primaryAction: { label: "次の問題へ", onClick: vi.fn() } }}
+      />,
     );
+
+    screen.getByRole("button", { name: "回答する" }).click();
+
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it("answered中に回答後の面が開示面より低いとき、その差分だけスクロール領域末尾に余白を確保する", () => {
-    const { container } = renderLayout(answeredRound, {
-      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
-    });
-
-    // 開示面（footer）が常に1番目、回答後の面（revealed）が常に2番目。表示状態は
-    // invisible/inertだけで切り替わり、DOM上の位置は答え合わせの前後で変わらない。
-    // refは各ラッパーの内側のdivに付いている
-    const [footerWrapper, revealedWrapper] = Array.from(
-      container.querySelectorAll("[data-quiz-footer-area] > div"),
-    ) as HTMLElement[];
-    const footerEl = footerWrapper.firstElementChild as HTMLElement;
-    const revealedEl = revealedWrapper.firstElementChild as HTMLElement;
-
-    act(() => {
-      observedCallback?.(
-        [
-          { target: revealedEl, contentRect: { height: 100 } } as unknown as ResizeObserverEntry,
-          { target: footerEl, contentRect: { height: 160 } } as unknown as ResizeObserverEntry,
-        ],
-        {} as ResizeObserver,
-      );
-    });
-
-    // 差分（160-100=60）に、立ち絵枠のスクロール位置決めに必要な余白（64px、
-    // MobileQuizLayout側のrestingPositionScrollHeadroom）を足した値になる
-    const spacer = container.querySelector("[data-portrait-spacer]") as HTMLElement | null;
-    expect(spacer).not.toBeNull();
-    expect(spacer?.style.height).toBe("124px");
-  });
-
-  it("answered中に差分が無くても、スクロール位置決め用の余白ぶんの領域は常に確保する", () => {
-    const { container } = renderLayout(answeredRound, {
-      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
-    });
-
-    const [footerWrapper, revealedWrapper] = Array.from(
-      container.querySelectorAll("[data-quiz-footer-area] > div"),
-    ) as HTMLElement[];
-    const footerEl = footerWrapper.firstElementChild as HTMLElement;
-    const revealedEl = revealedWrapper.firstElementChild as HTMLElement;
-
-    act(() => {
-      observedCallback?.(
-        [
-          { target: revealedEl, contentRect: { height: 150 } } as unknown as ResizeObserverEntry,
-          { target: footerEl, contentRect: { height: 150 } } as unknown as ResizeObserverEntry,
-        ],
-        {} as ResizeObserver,
-      );
-    });
-
-    const spacer = container.querySelector("[data-portrait-spacer]") as HTMLElement | null;
-    expect(spacer).not.toBeNull();
-    expect(spacer?.style.height).toBe("64px");
-  });
-});
-
-describe("MobileQuizLayout - 「？」枠（hidden）の高さ", () => {
-  let observedCallback: ResizeObserverCallback | null = null;
-
-  beforeEach(() => {
-    observedCallback = null;
-    vi.stubGlobal(
-      "ResizeObserver",
-      class {
-        constructor(cb: ResizeObserverCallback) {
-          observedCallback = cb;
-        }
-        observe() {}
-        unobserve() {}
-        disconnect() {}
-      },
+  it("ヒント途中でも回答（hidden→revealed直行）すると、一度だけscrollIntoViewする", () => {
+    render(
+      <MobileQuizLayout
+        modeLabel="テストモード"
+        heading="見出し"
+        round={playingRound}
+        actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
+        answer={{ ...noopAnswer, value: "タロウ" }}
+        afterAnswer={{ primaryAction: { label: "次の問題へ", onClick: vi.fn() } }}
+      />,
     );
-  });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
+    screen.getByRole("button", { name: "回答する" }).click();
 
-  it("hidden中は、スクロール領域の余りぶんまで枠を伸ばし、末尾に別途余白を残さない", () => {
-    // playingRound（1問中1ヒント目まで開示）はまだsilhouetteに達していないため hidden
-    const { container } = renderLayout(playingRound, {
-      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
-    });
-
-    const [footerWrapper, revealedWrapper] = Array.from(
-      container.querySelectorAll("[data-quiz-footer-area] > div"),
-    ) as HTMLElement[];
-    const footerEl = footerWrapper.firstElementChild as HTMLElement;
-    const revealedEl = revealedWrapper.firstElementChild as HTMLElement;
-    const scrollAreaEl = container.querySelector(".overflow-y-auto") as HTMLElement;
-
-    act(() => {
-      observedCallback?.(
-        [
-          { target: revealedEl, contentRect: { height: 100 } } as unknown as ResizeObserverEntry,
-          { target: footerEl, contentRect: { height: 150 } } as unknown as ResizeObserverEntry,
-          {
-            target: scrollAreaEl,
-            contentRect: { height: 400 },
-          } as unknown as ResizeObserverEntry,
-        ],
-        {} as ResizeObserver,
-      );
-    });
-
-    // ヒント1つのquestion: 全開示時のヒント高さ見積り = 1 * 84px。
-    // 残り = 400 - 84 - 8(gap) - 16(pb-4) = 292px（最低112pxより大きいのでこちらを採用）。
-    // さらにスクロール位置決め用の余白（未回答中はrevealedHeight[100]がfooterHeight[150]を
-    // 超えないので差分0 + headroom64 = 64px）を枠自身に繰り込むため、292 + 64 = 356px になる
-    const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
-    expect(portraitEl.style.height).toBe("356px");
-    // 末尾の見えない余白は、hidden中は枠に繰り込まれるため描画しない
-    expect(container.querySelector("[data-portrait-spacer]")).toBeNull();
-  });
-
-  it("スクロール領域の余りが無いときは最低112pxを使う", () => {
-    const { container } = renderLayout(playingRound, {
-      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
-    });
-
-    const [footerWrapper, revealedWrapper] = Array.from(
-      container.querySelectorAll("[data-quiz-footer-area] > div"),
-    ) as HTMLElement[];
-    const footerEl = footerWrapper.firstElementChild as HTMLElement;
-    const revealedEl = revealedWrapper.firstElementChild as HTMLElement;
-    const scrollAreaEl = container.querySelector(".overflow-y-auto") as HTMLElement;
-
-    act(() => {
-      observedCallback?.(
-        [
-          { target: revealedEl, contentRect: { height: 100 } } as unknown as ResizeObserverEntry,
-          { target: footerEl, contentRect: { height: 100 } } as unknown as ResizeObserverEntry,
-          {
-            target: scrollAreaEl,
-            contentRect: { height: 100 },
-          } as unknown as ResizeObserverEntry,
-        ],
-        {} as ResizeObserver,
-      );
-    });
-
-    // 残り = 100 - 84 - 8 - 16 = -8px なので最低保証の112pxを使う。
-    // スクロール位置決め用の余白（差分0 + headroom64）を足して 112 + 64 = 176px
-    const portraitEl = container.querySelector("[data-portrait]") as HTMLElement;
-    expect(portraitEl.style.height).toBe("176px");
-  });
-});
-
-// useIsHintGridTwoColumnが参照するwindow.matchMediaのMediaQueryListはモジュール内で
-// キャッシュされるため、DOM描画を介したテストではテストごとに列数を切り替えにくい。
-// そのためcomputeFullHintsHeightを直接検証する
-describe("MobileQuizLayout - 全開示時のヒント高さ見積もり（computeFullHintsHeight）", () => {
-  it("1列では行数=ヒント数分をそのまま積む", () => {
-    // 5行: 5*84 + 4*8 = 452
-    expect(computeFullHintsHeight(5, 1)).toBe(452);
-  });
-
-  it("2列（md〜lg未満）では行数を列数で割った分だけ積む", () => {
-    // ceil(5/2)=3行: 3*84 + 2*8 = 268
-    expect(computeFullHintsHeight(5, 2)).toBe(268);
-  });
-});
-
-// jsdomはCSSのmin()とdvh単位の組み合わせを解釈できず、style.heightに反映されない
-// （実ブラウザでは問題なく評価される）ため、DOM描画からではなく
-// MobileQuizLayoutが実際に呼んでいる純関数（computeExpandedMaxHeight）を直接検証する。
-//
-// 引数はscrollAreaHeight（スクロール領域単体の高さ）ではなくspaceBelowScrollAreaTop
-// （タイトル行の下端＝スクロール領域の上端から画面下端までの距離）である点に注意。
-// footer（未回答時の操作欄。mainのp-4を-mb-4で打ち消して画面端まで伸びる）と
-// revealed（回答後の面。打ち消しなし）とで画面端までの伸び方が異なるため、
-// scrollAreaHeight+現在の操作エリア高さの単純な合計は答え合わせの前後で一致しない。
-// spaceBelowScrollAreaTopはヘッダー・タイトル行の高さだけで決まり、この入れ替わりの
-// 影響を受けない
-describe("MobileQuizLayout - 展開後（silhouette/revealed）の枠の高さの上限（computeExpandedMaxHeight）", () => {
-  it("回答後の操作エリアが高いと、60dvhの代わりに使う「収まる残り」を返す", () => {
-    // 500(タイトル行より下の距離) - 200(revealedHeight) - 20(隙間) = 280px
-    expect(computeExpandedMaxHeight(500, 200)).toBe(280);
-  });
-
-  it("残りが負になるときは0を返す（60dvh側は使われず枠はほぼ潰れる想定）", () => {
-    expect(computeExpandedMaxHeight(100, 200)).toBe(0);
-  });
-
-  it("スクロール領域の高さが未測定（0）のときは上限を掛けない", () => {
-    expect(computeExpandedMaxHeight(0, 200)).toBe(Number.MAX_SAFE_INTEGER);
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ block: "end" });
   });
 });

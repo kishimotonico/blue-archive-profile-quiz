@@ -111,9 +111,8 @@ function MenuTile({ to, isCurrent, icon, name, description, onNavigate }: MenuTi
   );
 }
 
-// 今日の日替わりの状況（回答済み/未回答）と次の更新までの時間を表示する。
-// メニューは常時マウントしたまま開閉するため、開閉のたびにこのコンポーネントも再描画され、
-// getDailyDate() が最新の日付を返す（朝4:00をまたいだ後の再訪でも、開き直せば最新化される）
+// メニューは常時マウントしたまま開閉するため、開くたびに再描画されて日付が最新化される
+// （朝4:00をまたいだ後の再訪も開き直せば反映される）
 function DailyStatusRow() {
   const history = useAtomValue(dailyHistoryAtom);
   const today = getDailyDate();

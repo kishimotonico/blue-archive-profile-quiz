@@ -11,15 +11,9 @@ interface MobilePortraitCardProps {
   className?: string;
 }
 
-// Tailwindの任意値はソース中の文字列をそのまま静的解析するため、クラス名は
-// テンプレートで組み立てずリテラルで書く必要がある。下のクラス名中の値の根拠:
-// - hidden中（「？」枠）の高さ（h-[max(7rem,25dvh)]）: 最低保証7rem(112px)に、
-//   縦長画面では25dvhまで伸ばす。全ヒント開示時の行数から余りを見積もる方式をやめたため、
-//   端末によっては全開示・最下部で枠の下に空白が残ることがあるが、それは許容する
-// - 展開後の高さの上限（h-[min(60dvh,calc(100cqh_-_2rem))]）: 60dvhと、スクロール領域
-//   自身の高さ（親のMobileQuizLayoutが container-type:size にしているため cqh で参照できる）
-//   から余白ぶんを引いた値の小さい方を使い、低い端末で上端が見切れないようにする。
-//   ヘッダーや操作エリアの高さを直接見積もる必要がなく、それらを変えてもこの値の見直しは不要
+// Tailwindの任意値は文字列をそのまま静的解析するため、クラス名はテンプレートで
+// 組み立てずリテラルで書く必要がある。展開後の高さ上限はcqh（MobileQuizLayout参照）と
+// 60dvhの小さい方を使い、低い端末で上端が見切れないようにする
 
 // モバイルではヒント一覧の下に立ち絵を表示する。デスクトップの立ち絵パネルとは
 // 切り抜き・スクロール挙動が異なるため、StudentPortrait とは別コンポーネントにしている
@@ -30,9 +24,7 @@ function MobilePortraitCard({
   className = "",
 }: MobilePortraitCardProps) {
   const expanded = portraitState !== "hidden";
-  // 最初から silhouette/revealed で描画された（復元）場合は、枠が広がる演出・シルエットの
-  // フェードインをどちらも再生しない。mount時の一度だけ判定すればよい値なので、
-  // 再レンダーのたびに参照し直さないようrefに固定する
+  // 最初から silhouette/revealed で復元された場合は演出を再生しない。mount時に固定する値
   const playGrowAnimationRef = useRef<boolean | null>(null);
   if (playGrowAnimationRef.current === null) {
     playGrowAnimationRef.current = portraitState === "hidden";
@@ -84,9 +76,8 @@ function MobilePortraitCard({
           <span className="text-4xl font-light text-ba-blue/40">?</span>
         </div>
       )}
-      {/* 10枚目のヒントのように見せるラベル。HintCard.tsxのラベルと同じ書式・内側余白に揃える。
-          expanded後もDOMからは外さず不透明度だけ落とす。unmountすると枠が広がる
-          演出と足並みが揃わず、ラベルだけ先に消えて見えるため */}
+      {/* 10枚目のヒントのように見せるラベル。unmountすると枠が広がる演出と足並みが揃わないため、
+          expanded後も不透明度だけ落として残す */}
       <span
         aria-hidden="true"
         className={`pointer-events-none absolute left-0 top-0 px-3.5 py-2.5 text-xs font-bold text-ba-ink-soft transition-opacity duration-500 motion-reduce:transition-none ${

@@ -86,16 +86,13 @@ body {
     pointer-events: none;
   }
 
-  /* モバイルの立ち絵枠が「？」枠から広がる演出。要素は広がる前後で同じDOMノードのまま
-     final heightへ切り替わるため、transitionでは広がる前の見た目（クリップの開始値）が
-     一度も実際には描画されておらず補間の起点にできない。animationならクラス付与のたびに
-     0%から再生できるため、こちらを使う */
+  /* transitionだと広がる前の見た目（クリップの開始値）が描画されず補間の起点にできないため、
+     クラス付与のたびに0%から再生できるanimationを使う */
   .ba-portrait-grow {
     animation: ba-portrait-grow 0.5s ease-out forwards;
   }
 
-  /* シルエットの初回フェードイン。transitionは要素の新規挿入では再生されないため、
-     mount時に必ず0%から再生されるanimationを使う */
+  /* transitionは要素の新規挿入では再生されないため、mount時に必ず再生されるanimationを使う */
   .ba-silhouette-fadein {
     animation: ba-silhouette-fadein 0.5s ease-out forwards;
   }

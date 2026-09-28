@@ -146,18 +146,12 @@ describe("useRegularQuiz - 10問目の next", () => {
 });
 
 describe("useRegularQuiz - 同じ生徒が続く問題", () => {
-  it("next で次の問題が playing・開示1 で始まり、回答欄のエラー表示が消える", async () => {
+  it("next で次の問題が playing・開示1 で始まる", async () => {
     const { result } = await renderRegularQuiz();
-
-    act(() => {
-      result.current.submit("存在しない生徒名");
-    });
-    expect(result.current.answerFeedback).toBe("該当する生徒が見つかりません");
 
     act(() => {
       result.current.submit(s1.fullName);
     });
-    expect(result.current.answerFeedback).toBeNull();
 
     act(() => {
       result.current.next();
@@ -170,12 +164,11 @@ describe("useRegularQuiz - 同じ生徒が続く問題", () => {
       question: (questions as QuizQuestion[])[1],
       revealedHintCount: 1,
     });
-    expect(result.current.answerFeedback).toBeNull();
   });
 });
 
 describe("useRegularQuiz - submit", () => {
-  it("unknownStudent のとき answerFeedback が出て状態は playing のまま", async () => {
+  it("unknownStudent を返し、状態は playing のまま進まない", async () => {
     const { result } = await renderRegularQuiz();
 
     let outcome!: string;
@@ -184,7 +177,6 @@ describe("useRegularQuiz - submit", () => {
     });
 
     expect(outcome).toBe("unknownStudent");
-    expect(result.current.answerFeedback).toBe("該当する生徒が見つかりません");
     expect(result.current.state.status).toBe("ready");
     if (result.current.state.status !== "ready") throw new Error("unreachable");
     expect(result.current.state.session.round.status).toBe("playing");

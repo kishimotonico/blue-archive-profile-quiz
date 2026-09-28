@@ -1,4 +1,3 @@
-import { type RefObject } from "react";
 import { getNextStep, type RoundState } from "../../quiz-core";
 import Button from "../common/Button";
 import AnswerInput from "./AnswerInput";
@@ -6,7 +5,8 @@ import type { AnswerDraft } from "./quizLayoutTypes";
 
 interface QuizPlayAreaProps {
   round: RoundState;
-  hintButtonRef: RefObject<HTMLButtonElement | null>;
+  /** マウント時に開示/諦めボタンへ自動的にフォーカスするか（問題ごとに1回だけ） */
+  autoFocusHintButton?: boolean;
   actions: { reveal: () => void; giveUp: () => void };
   answer: AnswerDraft;
   /** "footer": 呼び出し側の面（モバイルの固定フッター）に載せるため、ここではカードで包まない */
@@ -15,7 +15,7 @@ interface QuizPlayAreaProps {
 
 function QuizPlayArea({
   round,
-  hintButtonRef,
+  autoFocusHintButton = false,
   actions,
   answer,
   variant = "panel",
@@ -32,25 +32,19 @@ function QuizPlayArea({
   const hintButton =
     nextStep === "hint" || nextStep === "silhouette" ? (
       <Button
-        ref={hintButtonRef}
         onClick={actions.reveal}
         variant={isAnswerEmpty ? "primary" : "secondary"}
         className="w-full"
+        autoFocus={autoFocusHintButton}
       >
         {nextStep === "hint" ? "次のヒントを開示" : "シルエットを表示"}
       </Button>
     ) : nextStep === "giveUp" ? (
-      <Button ref={hintButtonRef} onClick={actions.giveUp} variant="secondary" className="w-full">
+      <Button onClick={actions.giveUp} variant="secondary" className="w-full">
         諦めて正解を表示
       </Button>
     ) : (
-      <Button
-        ref={hintButtonRef}
-        variant="secondary"
-        className="w-full invisible"
-        tabIndex={-1}
-        aria-hidden="true"
-      >
+      <Button variant="secondary" className="w-full invisible" inert>
         諦めて正解を表示
       </Button>
     );
@@ -63,7 +57,6 @@ function QuizPlayArea({
         onChange={answer.onChange}
         onSubmit={answer.onSubmit}
         error={answer.error}
-        errorVisible={answer.errorVisible}
         onDismissError={answer.dismissError}
       />
     </div>

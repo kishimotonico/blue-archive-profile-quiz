@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import DesktopQuizLayout from "./DesktopQuizLayout";
@@ -53,14 +54,18 @@ const answeredRound: RoundState = { status: "answered", question, result: answer
 const noopAnswer: AnswerDraft = {
   value: "",
   onChange: vi.fn(),
-  onSubmit: vi.fn(),
-  error: { message: null, key: 0 },
-  errorVisible: false,
+  onSubmit: vi.fn().mockReturnValue("accepted"),
+  error: null,
   dismissError: vi.fn(),
 };
 
-function renderLayout(round: RoundState, afterAnswer: AfterAnswer) {
-  return render(
+function renderLayout(
+  round: RoundState,
+  afterAnswer: AfterAnswer,
+  options: { autoFocusOnMount?: boolean } = {},
+) {
+  const primaryButtonRef = createRef<HTMLButtonElement>();
+  const utils = render(
     <DesktopQuizLayout
       modeLabel="テストモード"
       heading="見出し"
@@ -68,38 +73,40 @@ function renderLayout(round: RoundState, afterAnswer: AfterAnswer) {
       actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
       answer={noopAnswer}
       afterAnswer={afterAnswer}
+      primaryButtonRef={primaryButtonRef}
+      autoFocusOnMount={options.autoFocusOnMount ?? true}
     />,
   );
+  return { ...utils, primaryButtonRef };
 }
 
-describe("DesktopQuizLayout - 回答後の主ボタンへのフォーカス", () => {
-  it("回答済みの状態でマウントされると主ボタンにフォーカスがある", () => {
+describe("DesktopQuizLayout - マウント時の主ボタンへのフォーカス", () => {
+  it("answered状態・autoFocusOnMountでマウントされると主ボタンにフォーカスがある", () => {
     renderLayout(answeredRound, { primaryAction: { label: "結果を見る", onClick: vi.fn() } });
 
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "結果を見る" }));
   });
 
-  it("playing から answered に変わると主ボタンにフォーカスが移る", () => {
-    const { rerender } = renderLayout(playingRound, {
-      primaryAction: { label: "結果を見る", onClick: vi.fn() },
-    });
+  it("playing状態でマウントされると、主ボタンにはフォーカスしない（開示ボタン側に譲る）", () => {
+    renderLayout(playingRound, { primaryAction: { label: "結果を見る", onClick: vi.fn() } });
 
     // 立ち絵パネルの高さを answered/playing で変えないため、ボタンは playing 中も
     // mount されたまま、親セルが inert（invisible）になっている
-    const primaryButtonWhilePlaying = screen.getByRole("button", { name: "結果を見る" });
-    expect(primaryButtonWhilePlaying.closest("[inert]")).not.toBeNull();
-    rerender(
-      <DesktopQuizLayout
-        modeLabel="テストモード"
-        heading="見出し"
-        round={answeredRound}
-        actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
-        answer={noopAnswer}
-        afterAnswer={{ primaryAction: { label: "結果を見る", onClick: vi.fn() } }}
-      />,
+    const primaryButton = screen.getByRole("button", { name: "結果を見る" });
+    expect(primaryButton.closest("[inert]")).not.toBeNull();
+    expect(document.activeElement).not.toBe(primaryButton);
+    // 代わりに開示ボタン側へ autoFocus する
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "シルエットを表示" }));
+  });
+
+  it("autoFocusOnMount=false なら answered 状態でマウントされてもフォーカスしない", () => {
+    renderLayout(
+      answeredRound,
+      { primaryAction: { label: "結果を見る", onClick: vi.fn() } },
+      { autoFocusOnMount: false },
     );
 
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "結果を見る" }));
+    expect(document.activeElement).not.toBe(screen.getByRole("button", { name: "結果を見る" }));
   });
 
   it("フォーカスされた主ボタンの click で primaryAction が呼ばれる", () => {

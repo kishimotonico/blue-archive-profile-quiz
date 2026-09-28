@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { useState, type HTMLAttributes } from "react";
 import { describe, it, expect, vi } from "vitest";
 import AnswerInput from "./AnswerInput";
-import type { AnswerError } from "./quizLayoutTypes";
+import type { AnswerFeedbackError } from "./quizLayoutTypes";
 
 const startMock = vi.hoisted(() => vi.fn());
 
@@ -21,7 +21,13 @@ vi.mock("motion/react", () => ({
 
 // AnswerInput は controlled のため、呼び出し側（QuizBody 相当）の状態管理を
 // テスト用の小さなラッパーで再現する
-function Wrapper({ onSubmit, error }: { onSubmit: (value: string) => void; error: AnswerError }) {
+function Wrapper({
+  onSubmit,
+  error,
+}: {
+  onSubmit: (value: string) => "accepted" | "unknownStudent";
+  error: AnswerFeedbackError | null;
+}) {
   const [value, setValue] = useState("");
   return (
     <AnswerInput
@@ -29,7 +35,6 @@ function Wrapper({ onSubmit, error }: { onSubmit: (value: string) => void; error
       onChange={setValue}
       onSubmit={() => onSubmit(value)}
       error={error}
-      errorVisible={error.key > 0}
       onDismissError={() => {}}
     />
   );
@@ -37,8 +42,8 @@ function Wrapper({ onSubmit, error }: { onSubmit: (value: string) => void; error
 
 describe("AnswerInput - controlled入力", () => {
   it("回答するボタンを押すと onSubmit が呼ばれる", () => {
-    const onSubmit = vi.fn();
-    render(<Wrapper onSubmit={onSubmit} error={{ message: null, key: 0 }} />);
+    const onSubmit = vi.fn().mockReturnValue("accepted" as const);
+    render(<Wrapper onSubmit={onSubmit} error={null} />);
 
     const input = screen.getByPlaceholderText("生徒名を入力") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "陸八魔アル" } });
@@ -53,8 +58,7 @@ describe("AnswerInput - controlled入力", () => {
         value=""
         onChange={vi.fn()}
         onSubmit={vi.fn()}
-        error={{ message: null, key: 0 }}
-        errorVisible={false}
+        error={null}
         onDismissError={vi.fn()}
       />,
     );
@@ -66,19 +70,50 @@ describe("AnswerInput - controlled入力", () => {
 });
 
 describe("AnswerInput - エラー表示", () => {
-  it("errorVisible が true のとき、エラーメッセージの吹き出しを表示する", () => {
+  it("error があるとき、エラーメッセージの吹き出しを role=alert で表示する", () => {
     render(
       <AnswerInput
         value="あああ"
         onChange={vi.fn()}
         onSubmit={vi.fn()}
-        error={{ message: "該当する生徒が見つかりません", key: 1 }}
-        errorVisible={true}
+        error={{ message: "該当する生徒が見つかりません", attempt: 1 }}
         onDismissError={vi.fn()}
       />,
     );
 
-    expect(screen.getByText("該当する生徒が見つかりません")).toBeTruthy();
+    const alert = screen.getByRole("alert");
+    expect(alert.textContent).toContain("該当する生徒が見つかりません");
+  });
+
+  it("error があるとき、入力欄に aria-invalid と aria-describedby が付く", () => {
+    render(
+      <AnswerInput
+        value="あああ"
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        error={{ message: "該当する生徒が見つかりません", attempt: 1 }}
+        onDismissError={vi.fn()}
+      />,
+    );
+
+    const input = screen.getByLabelText("生徒名");
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+    expect(input.getAttribute("aria-describedby")).toBe(screen.getByRole("alert").id);
+  });
+
+  it("error が null のときは吹き出しを表示せず、入力欄も invalid にしない", () => {
+    render(
+      <AnswerInput
+        value=""
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        error={null}
+        onDismissError={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getByLabelText("生徒名").getAttribute("aria-invalid")).toBe("false");
   });
 
   it("吹き出しをクリックすると onDismissError が呼ばれる", () => {
@@ -88,8 +123,7 @@ describe("AnswerInput - エラー表示", () => {
         value="あああ"
         onChange={vi.fn()}
         onSubmit={vi.fn()}
-        error={{ message: "該当する生徒が見つかりません", key: 1 }}
-        errorVisible={true}
+        error={{ message: "該当する生徒が見つかりません", attempt: 1 }}
         onDismissError={onDismissError}
       />,
     );
@@ -100,70 +134,51 @@ describe("AnswerInput - エラー表示", () => {
 });
 
 describe("AnswerInput - シェイクの再生条件", () => {
-  it("error.key が0より大きい状態でマウントしても、シェイクは再生しない（レイアウト切り替えの再マウントを想定）", () => {
+  it("送信結果が unknownStudent のときだけシェイクを再生する", () => {
+    startMock.mockClear();
+    const onSubmit = vi.fn().mockReturnValue("unknownStudent" as const);
+    render(
+      <AnswerInput
+        value="あ"
+        onChange={vi.fn()}
+        onSubmit={onSubmit}
+        error={null}
+        onDismissError={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(startMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("送信結果が accepted のときはシェイクを再生しない", () => {
+    startMock.mockClear();
+    const onSubmit = vi.fn().mockReturnValue("accepted" as const);
+    render(
+      <AnswerInput
+        value="あ"
+        onChange={vi.fn()}
+        onSubmit={onSubmit}
+        error={null}
+        onDismissError={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+
+    expect(startMock).not.toHaveBeenCalled();
+  });
+
+  it("エラーがある状態でマウントしただけでは（送信していないので）シェイクは再生しない", () => {
     startMock.mockClear();
     render(
       <AnswerInput
         value=""
         onChange={vi.fn()}
         onSubmit={vi.fn()}
-        error={{ message: "該当する生徒が見つかりません", key: 3 }}
-        errorVisible={true}
-        onDismissError={vi.fn()}
-      />,
-    );
-
-    expect(startMock).not.toHaveBeenCalled();
-  });
-
-  it("error.key が変わるとシェイクを再生する", () => {
-    startMock.mockClear();
-    const { rerender } = render(
-      <AnswerInput
-        value=""
-        onChange={vi.fn()}
-        onSubmit={vi.fn()}
-        error={{ message: null, key: 0 }}
-        errorVisible={false}
-        onDismissError={vi.fn()}
-      />,
-    );
-    expect(startMock).not.toHaveBeenCalled();
-
-    rerender(
-      <AnswerInput
-        value=""
-        onChange={vi.fn()}
-        onSubmit={vi.fn()}
-        error={{ message: "該当する生徒が見つかりません", key: 1 }}
-        errorVisible={true}
-        onDismissError={vi.fn()}
-      />,
-    );
-
-    expect(startMock).toHaveBeenCalledTimes(1);
-  });
-
-  it("同じ error.key のまま再レンダリングされても再生しない", () => {
-    startMock.mockClear();
-    const { rerender } = render(
-      <AnswerInput
-        value=""
-        onChange={vi.fn()}
-        onSubmit={vi.fn()}
-        error={{ message: "該当する生徒が見つかりません", key: 1 }}
-        errorVisible={true}
-        onDismissError={vi.fn()}
-      />,
-    );
-
-    rerender(
-      <AnswerInput
-        value="a"
-        onChange={vi.fn()}
-        onSubmit={vi.fn()}
-        error={{ message: "該当する生徒が見つかりません", key: 1 }}
-        errorVisible={true}
+        error={{ message: "該当する生徒が見つかりません", attempt: 3 }}
         onDismissError={vi.fn()}
       />,
     );

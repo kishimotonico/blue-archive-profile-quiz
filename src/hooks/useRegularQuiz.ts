@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import {
@@ -37,8 +37,6 @@ export function useRegularQuiz() {
   const [state, dispatch] = useReducer(regularSessionReducer, { status: "loading" });
   const allStudents = useAtomValue(allStudentsAtom);
   const navigate = useNavigate();
-  const [answerFeedback, setAnswerFeedback] = useState<string | null>(null);
-  const [errorKey, setErrorKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,6 +76,8 @@ export function useRegularQuiz() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 進捗（ready状態）のsessionStorageへの保存は、reducerの状態を外部ストレージへ写す同期なので
+  // effectのままでよい。finishedへの遷移はユーザー操作（nextハンドラ）の結果なのでそちらへ移す
   useEffect(() => {
     if (state.status === "ready") {
       saveRegularQuizProgress({
@@ -86,48 +86,45 @@ export function useRegularQuiz() {
         results: state.session.results,
         round: toRoundSnapshot(state.session.round),
       });
-    } else if (state.status === "finished") {
-      clearRegularQuizProgress();
-      navigate("/result", { state: { results: state.session.results }, replace: true });
     }
-  }, [state, navigate]);
+  }, [state]);
 
-  const reveal = useCallback(() => {
+  const reveal = () => {
     dispatch({ type: "round", action: { type: "reveal" } });
-  }, []);
+  };
 
-  const submit = useCallback(
-    (answer: string): SubmitOutcome => {
-      if (state.status !== "ready") return "accepted";
+  const submit = (answer: string): SubmitOutcome => {
+    if (state.status !== "ready") return "accepted";
 
-      const judgement = judgeSubmit(state.session.round, answer, allStudents);
-      if (judgement.type === "unknownStudent") {
-        setAnswerFeedback("該当する生徒が見つかりません");
-        setErrorKey((prev) => prev + 1);
-        return "unknownStudent";
-      }
+    const judgement = judgeSubmit(state.session.round, answer, allStudents);
+    if (judgement.type === "unknownStudent") return "unknownStudent";
 
-      if (judgement.type !== "ignored") {
-        dispatch({
-          type: "round",
-          action: { type: "submit", answer, correct: judgement.type === "correct" },
-        });
-      }
-      setAnswerFeedback(null);
-      return "accepted";
-    },
-    [state, allStudents],
-  );
+    if (judgement.type !== "ignored") {
+      dispatch({
+        type: "round",
+        action: { type: "submit", answer, correct: judgement.type === "correct" },
+      });
+    }
+    return "accepted";
+  };
 
-  const giveUp = useCallback(() => {
+  const giveUp = () => {
     dispatch({ type: "round", action: { type: "giveUp" } });
-    setAnswerFeedback(null);
-  }, []);
+  };
 
-  const next = useCallback(() => {
+  // reducerは純粋関数なので、dispatchする前に同じ入力で先に評価して「finishedへ進むか」を
+  // 判定できる。遷移はこの操作（「次の問題へ」を押した）の結果なので、状態を監視するeffectではなく
+  // ここで直接行う
+  const next = () => {
+    if (state.status === "ready") {
+      const nextState = regularSessionReducer(state, { type: "next" });
+      if (nextState.status === "finished") {
+        clearRegularQuizProgress();
+        navigate("/result", { state: { results: nextState.session.results }, replace: true });
+      }
+    }
     dispatch({ type: "next" });
-    setAnswerFeedback(null);
-  }, []);
+  };
 
   const view = (() => {
     if (state.status !== "ready" && state.status !== "finished") return null;
@@ -148,7 +145,5 @@ export function useRegularQuiz() {
     submit,
     giveUp,
     next,
-    answerFeedback,
-    errorKey,
   };
 }

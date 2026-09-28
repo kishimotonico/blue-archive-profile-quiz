@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
 import {
   dailySessionReducer,
@@ -21,8 +21,6 @@ export function useDailyQuiz() {
   const store = useStore();
   const setDailyProgress = useSetAtom(dailyProgressAtom);
   const recordDailyResult = useSetAtom(recordDailyResultAtom);
-  const [answerFeedback, setAnswerFeedback] = useState<string | null>(null);
-  const [errorKey, setErrorKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -93,37 +91,28 @@ export function useDailyQuiz() {
     }
   }, [state, setDailyProgress, recordDailyResult]);
 
-  const reveal = useCallback(() => {
+  const reveal = () => {
     dispatch({ type: "round", action: { type: "reveal" } });
-  }, []);
+  };
 
-  const submit = useCallback(
-    (answer: string): SubmitOutcome => {
-      if (state.status !== "ready") return "accepted";
+  const submit = (answer: string): SubmitOutcome => {
+    if (state.status !== "ready") return "accepted";
 
-      const judgement = judgeSubmit(state.session.round, answer, allStudents);
-      if (judgement.type === "unknownStudent") {
-        setAnswerFeedback("該当する生徒が見つかりません");
-        setErrorKey((prev) => prev + 1);
-        return "unknownStudent";
-      }
+    const judgement = judgeSubmit(state.session.round, answer, allStudents);
+    if (judgement.type === "unknownStudent") return "unknownStudent";
 
-      if (judgement.type !== "ignored") {
-        dispatch({
-          type: "round",
-          action: { type: "submit", answer, correct: judgement.type === "correct" },
-        });
-      }
-      setAnswerFeedback(null);
-      return "accepted";
-    },
-    [state, allStudents],
-  );
+    if (judgement.type !== "ignored") {
+      dispatch({
+        type: "round",
+        action: { type: "submit", answer, correct: judgement.type === "correct" },
+      });
+    }
+    return "accepted";
+  };
 
-  const giveUp = useCallback(() => {
+  const giveUp = () => {
     dispatch({ type: "round", action: { type: "giveUp" } });
-    setAnswerFeedback(null);
-  }, []);
+  };
 
   const view =
     state.status === "ready"
@@ -140,7 +129,5 @@ export function useDailyQuiz() {
     reveal,
     submit,
     giveUp,
-    answerFeedback,
-    errorKey,
   };
 }

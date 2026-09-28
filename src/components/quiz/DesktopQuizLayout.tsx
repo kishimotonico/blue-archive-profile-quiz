@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { getPortraitState, getVisibleHintCount } from "../../quiz-core";
 import Button from "../common/Button";
 import HintList from "./HintList";
@@ -16,22 +15,9 @@ function DesktopQuizLayout({
   actions,
   answer,
   afterAnswer,
+  primaryButtonRef,
+  autoFocusOnMount,
 }: QuizLayoutProps) {
-  const hintButtonRef = useRef<HTMLButtonElement>(null);
-  const primaryButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (round.status === "playing") hintButtonRef.current?.focus();
-    // playing でマウントされたとき（新しい問題・再開・レイアウト切り替え）にだけフォーカスしたいため、
-    // 依存配列は空にしてマウント時の1回だけに絞る
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    // 回答した瞬間と、回答済みの状態でマウントされたとき（日替わりの再訪・レイアウト切り替え）の両方でフォーカスしたい
-    if (round.status === "answered") primaryButtonRef.current?.focus();
-  }, [round.status]);
-
   const { student } = round.question;
   const answered = round.status === "answered";
   const correct = answered && round.result.correct;
@@ -42,7 +28,9 @@ function DesktopQuizLayout({
   const playArea = (
     <QuizPlayArea
       variant="panel"
-      hintButtonRef={hintButtonRef}
+      // autoFocusOnMount は問題ごとに1回だけ立つ（QuizBody参照）ため、画面幅が lg を
+      // またいでレイアウトが再マウントされてもフォーカスは飛ばない
+      autoFocusHintButton={autoFocusOnMount && round.status === "playing"}
       round={round}
       actions={actions}
       answer={answer}
@@ -93,6 +81,7 @@ function DesktopQuizLayout({
                 ref={primaryButtonRef}
                 variant="accent"
                 className="w-full"
+                autoFocus={autoFocusOnMount && answered}
                 onClick={afterAnswer.primaryAction.onClick}
               >
                 {afterAnswer.primaryAction.label}

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { RoundState } from "../../quiz-core";
 import Header from "../layout/Header";
 import QuizBody from "./QuizBody";
-import type { AfterAnswer, AnswerError, QuizActions } from "./quizLayoutTypes";
+import type { AfterAnswer, QuizActions } from "./quizLayoutTypes";
 
 interface QuizScreenProps {
   modeLabel: string;
@@ -11,7 +11,6 @@ interface QuizScreenProps {
   questionId: string;
   round: RoundState;
   actions: QuizActions;
-  answerError: AnswerError;
   afterAnswer: AfterAnswer;
 }
 
@@ -23,7 +22,6 @@ function QuizScreen({
   questionId,
   round,
   actions,
-  answerError,
   afterAnswer,
 }: QuizScreenProps) {
   return (
@@ -44,7 +42,6 @@ function QuizScreen({
           heading={heading}
           round={round}
           actions={actions}
-          answerError={answerError}
           afterAnswer={afterAnswer}
         />
       </main>

@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useAtomValue } from "jotai";
+import { Calendar, Shuffle } from "lucide-react";
 import { getTimeUntilNextReset, formatTimeUntilNextReset } from "../../quiz-core";
 import { todayDailyRecordAtom } from "../../store/daily";
 import HaloRingGauge from "../common/HaloRingGauge";
@@ -49,42 +50,6 @@ function CurrentBadge() {
     >
       表示中
     </span>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg
-      className="w-6 h-6 text-ba-blue"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.75}
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <rect x="3.5" y="4.5" width="17" height="16" rx="2" />
-      <path strokeLinecap="round" d="M3.5 9.5h17M8 2.5v4M16 2.5v4" />
-    </svg>
-  );
-}
-
-function ShuffleIcon() {
-  return (
-    <svg
-      className="w-6 h-6 text-ba-blue"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.75}
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M3 6.5h4l9 11h5M3 17.5h4l2.2-2.7M14.2 8.7L16 6.5h5"
-      />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M18 3.5l3 3-3 3M18 20.5l3-3-3-3" />
-    </svg>
   );
 }
 
@@ -279,14 +244,14 @@ function Header() {
             <MenuTile
               to="/"
               isCurrent={location.pathname === "/"}
-              icon={<CalendarIcon />}
+              icon={<Calendar className="w-6 h-6 text-ba-blue" />}
               name="日替わり"
               description="毎日4:00に更新・1日1回"
             />
             <MenuTile
               to="/regular"
               isCurrent={location.pathname === "/regular"}
-              icon={<ShuffleIcon />}
+              icon={<Shuffle className="w-6 h-6 text-ba-blue" />}
               name="フリープレイ"
               description="ランダムに10問・何度でも"
             />

@@ -85,6 +85,14 @@ body {
     animation: ba-shine-sweep 0.7s ease-out;
     pointer-events: none;
   }
+
+  /* モバイルの立ち絵枠が「？」枠から広がる演出。要素は広がる前後で同じDOMノードのまま
+     final heightへ切り替わるため、transitionでは広がる前の見た目（クリップの開始値）が
+     一度も実際には描画されておらず補間の起点にできない。animationならクラス付与のたびに
+     0%から再生できるため、こちらを使う */
+  .ba-portrait-grow {
+    animation: ba-portrait-grow 0.5s ease-out forwards;
+  }
 }
 
 @keyframes ba-shine-sweep {
@@ -96,6 +104,15 @@ body {
   }
 }
 
+@keyframes ba-portrait-grow {
+  from {
+    clip-path: inset(0 0 calc(100% - var(--portrait-compact-height, 0px)) 0 round 1rem);
+  }
+  to {
+    clip-path: inset(0 round 1rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ba-shine::after {
     display: none;
@@ -104,5 +121,10 @@ body {
 
   .ba-ring-fill {
     transition: none;
+  }
+
+  .ba-portrait-grow {
+    animation: none;
+    clip-path: inset(0 round 1rem);
   }
 }

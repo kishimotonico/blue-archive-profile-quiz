@@ -103,6 +103,33 @@ describe("Header のモバイルメニュー", () => {
     expect(panel.getByText("今日の日替わり 8点")).toBeTruthy();
   });
 
+  it("日付が変わった後は、履歴を書き換えなくても再度開くと未回答表示に切り替わる", async () => {
+    const { getDailyDate } = await import("../../quiz-core");
+    const history: DailyHistory = {
+      schemaVersion: 1,
+      records: [
+        {
+          key: { version: 1, baseDate: TODAY, seed: 20260421 },
+          result: { studentId: "s1", usedHintCount: 3, correct: true, userAnswer: "s1", score: 8 },
+          playedAt: 1234567890,
+        },
+      ],
+    };
+    const store = createStore();
+    store.set(dailyHistoryAtom, history);
+
+    const panel = renderHeader("/", store);
+    openMenu();
+    expect(panel.getByText("今日の日替わり 8点")).toBeTruthy();
+
+    // メニューを閉じ、日付が変わった状態を模してから再度開く
+    fireEvent.click(screen.getByRole("button", { name: "メニュー" }));
+    vi.mocked(getDailyDate).mockReturnValue("2026-04-22");
+    openMenu();
+
+    expect(panel.getByText("今日の日替わりはまだ回答していません")).toBeTruthy();
+  });
+
   it("GitHubへのリンクが新しいタブで開く設定で存在する", () => {
     const panel = renderHeader("/");
     openMenu();

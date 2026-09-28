@@ -121,7 +121,13 @@ export const dailyStatsAtom = atom<RecordStats>((get) =>
   summarizeRecords(get(dailyHistoryAtom).records),
 );
 
+// 「今日」の出題日。dailyHistoryAtom は書き換えられない限り変化せず、todayDailyRecordAtom
+// が getDailyDate() を直接呼ぶだけだと朝4:00をまたいでも再計算されない（jotaiの派生atomは
+// 読んだ他のatomが変わったときにしか再評価しない）。この値を明示的に書き直すことで、
+// 表示側（Header）が「開いたタイミングで最新化する」を選べるようにする
+export const currentDailyDateAtom = atom(getDailyDate());
+
 export const todayDailyRecordAtom = atom<QuestionRecord | null>((get) => {
-  const today = getDailyDate();
+  const today = get(currentDailyDateAtom);
   return get(dailyHistoryAtom).records.find((r) => r.key.baseDate === today) ?? null;
 });

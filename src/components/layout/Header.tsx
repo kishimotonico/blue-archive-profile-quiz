@@ -1,9 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { Calendar, Shuffle } from "lucide-react";
-import { getTimeUntilNextReset, formatTimeUntilNextReset } from "../../quiz-core";
-import { todayDailyRecordAtom } from "../../store/daily";
+import { getDailyDate, getTimeUntilNextReset, formatTimeUntilNextReset } from "../../quiz-core";
+import { currentDailyDateAtom, todayDailyRecordAtom } from "../../store/daily";
 import HaloRingGauge from "../common/HaloRingGauge";
 
 const GITHUB_URL = "https://github.com/kishimotonico/blue-archive-profile-quiz";
@@ -143,6 +143,7 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
+  const setCurrentDailyDate = useSetAtom(currentDailyDateAtom);
 
   // メニュー開閉状態を切り替え
   const toggleMenu = () => {
@@ -153,6 +154,12 @@ function Header() {
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
+
+  // メニュー内のDailyStatusRowは常時マウントされているため、開くタイミングで出題日を
+  // 読み直さないと、朝4:00をまたいだ後の再訪でも前日の記録を表示し続けてしまう
+  useEffect(() => {
+    if (isMenuOpen) setCurrentDailyDate(getDailyDate());
+  }, [isMenuOpen, setCurrentDailyDate]);
 
   // パネルが開いている間は全面オーバーレイで背後の操作を塞ぎ、モーダルと同時に開くことが
   // ないため、モーダル側のEscape処理（ネイティブのdialog）とは競合しない

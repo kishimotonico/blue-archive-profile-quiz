@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import HintList from "./HintList";
@@ -46,9 +47,19 @@ describe("HintList - 開示のきらめき", () => {
     expect(cards.every((el) => !el?.className.includes("ba-shine"))).toBe(true);
   });
 
-  it("開示位置に scrollIntoView 先となる id を各カードに振る（mobile）", () => {
-    render(<HintList hints={mockHints} visibleCount={1} animateReveal layout="mobile" />);
+  it("justRevealedRef に直近開示したカードの要素を渡す（mobile）", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(
+      <HintList
+        hints={mockHints}
+        visibleCount={1}
+        animateReveal
+        layout="mobile"
+        justRevealedRef={ref}
+      />,
+    );
 
-    expect(document.getElementById("hint-0")).not.toBeNull();
+    expect(ref.current).not.toBeNull();
+    expect(ref.current?.textContent).toContain("VAL_1");
   });
 });

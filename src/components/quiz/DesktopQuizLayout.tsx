@@ -16,7 +16,6 @@ function DesktopQuizLayout({
   answer,
   afterAnswer,
   primaryButtonRef,
-  autoFocusOnMount,
 }: QuizLayoutProps) {
   const { student } = round.question;
   const answered = round.status === "answered";
@@ -28,9 +27,7 @@ function DesktopQuizLayout({
   const playArea = (
     <QuizPlayArea
       variant="panel"
-      // autoFocusOnMount は問題ごとに1回だけ立つ（QuizBody参照）ため、画面幅が lg を
-      // またいでレイアウトが再マウントされてもフォーカスは飛ばない
-      autoFocusHintButton={autoFocusOnMount && round.status === "playing"}
+      autoFocusHintButton={round.status === "playing"}
       round={round}
       actions={actions}
       answer={answer}
@@ -54,10 +51,8 @@ function DesktopQuizLayout({
 
       <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
         <StudentPortrait student={student} state={portraitState} correct={correct} />
-        {/* 両方のセルを同じグリッドセルに重ねて、大きい方の高さにセルを揃える。
-            実測値の min-height に頼らず、回答前後で立ち絵パネルの高さが変わらないようにする */}
-        {/* grid-cols-1とmin-w-0が無いと、グリッドアイテムのデフォルトmin-width:autoにより
-            内側のw-full要素の幅が親のトラック幅を無視して広がり、右カラムがはみ出す */}
+        {/* 両方のセルを同じグリッドセルに重ね、回答前後で立ち絵パネルの高さを揃える */}
+        {/* grid-cols-1とmin-w-0が無いと、内側のw-full要素が親トラック幅を無視して右カラムがはみ出す */}
         <div className="grid grid-cols-1 shrink-0">
           <div
             className={`col-start-1 row-start-1 min-w-0 ${answered ? "invisible" : ""}`}
@@ -65,9 +60,7 @@ function DesktopQuizLayout({
           >
             {playArea}
           </div>
-          {/* answered と同時に一方だけ mount/unmount すると、mount されていない側の
-              高さがグリッド行の計算に加わらず、回答前後で立ち絵パネルの高さが変わってしまう。
-              常に両方 mount し、invisible/inert だけで切り替える */}
+          {/* 常に両方 mount し invisible/inert だけで切り替える（片方を unmount すると高さが揃わない） */}
           <div
             className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 ${
               answered ? "" : "invisible"
@@ -81,7 +74,7 @@ function DesktopQuizLayout({
                 ref={primaryButtonRef}
                 variant="accent"
                 className="w-full"
-                autoFocus={autoFocusOnMount && answered}
+                autoFocus={answered}
                 onClick={afterAnswer.primaryAction.onClick}
               >
                 {afterAnswer.primaryAction.label}

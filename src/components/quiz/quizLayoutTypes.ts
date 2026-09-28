@@ -42,8 +42,4 @@ export interface QuizLayoutProps {
   /** 回答確定後にフォーカスする主ボタンの ref。QuizBody が flushSync の直後に読むため、
    * レイアウトをまたいでも同じ ref を使えるよう QuizBody が持つ */
   primaryButtonRef: RefObject<HTMLButtonElement | null>;
-  /** この問題で最初に描画されたときだけ true。画面幅の変化でレイアウトが
-   * Desktop/Mobile 間で切り替わっても再マウントの起点にならないよう、questionId ごとに
-   * 1回だけ立つ QuizBody 側の値を渡す */
-  autoFocusOnMount: boolean;
 }

@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import type { Hint } from "../../quiz-core";
 import HintCard from "./HintCard";
 
@@ -11,9 +12,11 @@ interface HintListProps {
   animateReveal: boolean;
   /** "desktop" では常に全件を描画し、2列グリッドで高さを揃える。"mobile" では開示済み分だけ描画する */
   layout: "desktop" | "mobile";
+  /** 直近に開示したカードの要素。呼び出し側がscrollIntoViewするために渡す */
+  justRevealedRef?: RefObject<HTMLDivElement | null>;
 }
 
-function HintList({ hints, visibleCount, animateReveal, layout }: HintListProps) {
+function HintList({ hints, visibleCount, animateReveal, layout, justRevealedRef }: HintListProps) {
   const isMobileLayout = layout === "mobile";
   const visibleHints = isMobileLayout ? hints.slice(0, visibleCount) : hints;
   const remaining = hints.length - visibleCount;
@@ -28,7 +31,7 @@ function HintList({ hints, visibleCount, animateReveal, layout }: HintListProps)
         }`}
       >
         {visibleHints.map((hint, index) => (
-          <div key={index} id={isMobileLayout ? `hint-${index}` : undefined}>
+          <div key={index} ref={index === visibleCount - 1 ? justRevealedRef : undefined}>
             <HintCard
               hint={hint}
               revealed={index < visibleCount}

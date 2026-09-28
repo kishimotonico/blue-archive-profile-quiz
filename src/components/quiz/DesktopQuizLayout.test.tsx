@@ -59,11 +59,7 @@ const noopAnswer: AnswerDraft = {
   dismissError: vi.fn(),
 };
 
-function renderLayout(
-  round: RoundState,
-  afterAnswer: AfterAnswer,
-  options: { autoFocusOnMount?: boolean } = {},
-) {
+function renderLayout(round: RoundState, afterAnswer: AfterAnswer) {
   const primaryButtonRef = createRef<HTMLButtonElement>();
   const utils = render(
     <DesktopQuizLayout
@@ -74,14 +70,13 @@ function renderLayout(
       answer={noopAnswer}
       afterAnswer={afterAnswer}
       primaryButtonRef={primaryButtonRef}
-      autoFocusOnMount={options.autoFocusOnMount ?? true}
     />,
   );
   return { ...utils, primaryButtonRef };
 }
 
 describe("DesktopQuizLayout - マウント時の主ボタンへのフォーカス", () => {
-  it("answered状態・autoFocusOnMountでマウントされると主ボタンにフォーカスがある", () => {
+  it("answered状態でマウントされると主ボタンにフォーカスがある", () => {
     renderLayout(answeredRound, { primaryAction: { label: "結果を見る", onClick: vi.fn() } });
 
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "結果を見る" }));
@@ -97,16 +92,6 @@ describe("DesktopQuizLayout - マウント時の主ボタンへのフォーカ�
     expect(document.activeElement).not.toBe(primaryButton);
     // 代わりに開示ボタン側へ autoFocus する
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "シルエットを表示" }));
-  });
-
-  it("autoFocusOnMount=false なら answered 状態でマウントされてもフォーカスしない", () => {
-    renderLayout(
-      answeredRound,
-      { primaryAction: { label: "結果を見る", onClick: vi.fn() } },
-      { autoFocusOnMount: false },
-    );
-
-    expect(document.activeElement).not.toBe(screen.getByRole("button", { name: "結果を見る" }));
   });
 
   it("フォーカスされた主ボタンの click で primaryAction が呼ばれる", () => {

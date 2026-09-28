@@ -26,16 +26,7 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
 
-  // この QuizBody インスタンス（＝1問）の最初のコミットかどうか。画面幅が変わって
-  // Desktop/Mobileのレイアウトが再マウントされても、questionIdが同じ間は再度trueにならない。
-  // レンダー本体で直接refを書き換えると、StrictModeの二重描画で最初のコミット前に
-  // falseへ変わってしまうため、実際にコミットされた後のeffectで一度だけ倒す
-  const isFirstRenderRef = useRef(true);
-  const autoFocusOnMount = isFirstRenderRef.current;
-
-  // タイマーの後始末に加え、マウント済みフラグをコミット後に倒す
   useEffect(() => {
-    isFirstRenderRef.current = false;
     return () => clearTimeout(errorTimerRef.current);
   }, []);
 
@@ -55,9 +46,7 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     dismissError();
   };
 
-  // flushSyncでactions.submit（controller側のdispatch）を同期的に確定させてから
-  // primaryButtonRefを読むのは、回答確定でボタンがinert/invisibleでなくなったDOMを
-  // 見てフォーカスしたいため（変化前のDOMのままだとinert要素にフォーカスできない）
+  // flushSyncで確定させないと、ボタンがまだinertなDOMのままでfocus()が効かない
   const handleSubmit = (): SubmitOutcome => {
     let outcome!: SubmitOutcome;
     flushSync(() => {
@@ -95,7 +84,6 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     answer,
     afterAnswer,
     primaryButtonRef,
-    autoFocusOnMount,
   };
 
   return isDesktop ? <DesktopQuizLayout {...layoutProps} /> : <MobileQuizLayout {...layoutProps} />;

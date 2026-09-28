@@ -6,7 +6,8 @@ import {
   getTimeUntilNextReset,
   formatTimeUntilNextReset,
   getScoreRank,
-  getDailyDate,
+  getScoreRankLabel,
+  SCORE_RANKS,
 } from "../quiz-core";
 import { dailyStatsAtom } from "../store/daily";
 import Button from "../components/common/Button";
@@ -17,7 +18,7 @@ import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizScreen from "../components/quiz/QuizScreen";
 
 function DailyQuiz() {
-  const { state, view, reveal, submit, giveUp, answerFeedback, errorKey } = useDailyQuiz();
+  const { state, view, reveal, submit, giveUp } = useDailyQuiz();
 
   const { totalAttempts, bestScore, rankCounts } = useAtomValue(dailyStatsAtom);
   const navigate = useNavigate();
@@ -42,19 +43,15 @@ function DailyQuiz() {
     </div>
   );
 
-  const rankDistribution = (
-    [
-      ["SS", "SS (10点)"],
-      ["S", "S (8-9点)"],
-      ["A", "A (6-7点)"],
-      ["B", "B (4-5点)"],
-      ["C", "C (1-3点)"],
-      ["D", "D (0点)"],
-    ] as const
-  ).map(([rank, label]) => ({ label, count: rankCounts[rank] }));
+  const rankDistribution = SCORE_RANKS.map(({ rank }) => ({
+    label: getScoreRankLabel(rank),
+    count: rankCounts[rank],
+  }));
 
+  // 見出しは出題日（key.baseDate）から作る。描画時点の getDailyDate() だと、朝4:00を
+  // またいで開いたままにしたとき見出しの日付と実際の問題がずれる
   const heading = (() => {
-    const [, month, day] = getDailyDate().split("-");
+    const [, month, day] = round.question.key.baseDate.split("-");
     return `${Number(month)}月${Number(day)}日`;
   })();
 
@@ -66,7 +63,6 @@ function DailyQuiz() {
         questionId={view.questionId}
         round={view.round}
         actions={{ reveal, submit, giveUp }}
-        answerError={{ message: answerFeedback, key: errorKey }}
         afterAnswer={{
           primaryAction: { label: "結果を見る", onClick: () => setShowResultModal(true) },
           notice: completedNotice,

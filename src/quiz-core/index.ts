@@ -54,7 +54,13 @@ export { checkAnswer, validateAnswer } from "./answer";
 export type { AnswerResult } from "./answer";
 
 // スコア計算
-export { calculateScore, getMaxScore, getScoreRank } from "./scoring";
+export {
+  calculateScore,
+  getMaxScore,
+  getScoreRank,
+  getScoreRankLabel,
+  SCORE_RANKS,
+} from "./scoring";
 export type { ScoreRank } from "./scoring";
 
 // プレイ履歴の統計

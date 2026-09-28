@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import Header from "../components/layout/Header";
 import Button from "../components/common/Button";
@@ -29,6 +29,7 @@ function hintCountLabel(count: number): string {
 
 function ResultContent({ results }: { results: QuestionResult[] }) {
   const allStudents = useAtomValue(allStudentsAtom);
+  const navigate = useNavigate();
 
   const studentMap = useMemo(() => {
     const map = new Map(allStudents.map((s) => [s.id, s]));
@@ -171,18 +172,14 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
             </div>
           </div>
 
-          {/* アクションボタン */}
+          {/* アクションボタン。a > button の入れ子を避けるため、Link ではなく navigate で遷移する */}
           <div className="space-y-3">
-            <Link to="/regular" className="block">
-              <Button variant="accent" className="w-full">
-                もう一度プレイ
-              </Button>
-            </Link>
-            <Link to="/" className="block">
-              <Button variant="secondary" className="w-full">
-                ホームに戻る
-              </Button>
-            </Link>
+            <Button variant="accent" className="w-full" onClick={() => navigate("/regular")}>
+              もう一度プレイ
+            </Button>
+            <Button variant="secondary" className="w-full" onClick={() => navigate("/")}>
+              ホームに戻る
+            </Button>
           </div>
         </div>
       </div>
@@ -192,6 +189,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
 
 function Result() {
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as ResultState | null;
 
   if (!state || !state.results) {
@@ -202,9 +200,9 @@ function Result() {
           <div className="max-w-2xl mx-auto text-center">
             <h1 className="font-display text-2xl font-black text-ba-navy mb-8">結果</h1>
             <p className="text-ba-ink-soft mb-8">結果データがありません</p>
-            <Link to="/">
-              <Button variant="primary">ホームに戻る</Button>
-            </Link>
+            <Button variant="primary" onClick={() => navigate("/")}>
+              ホームに戻る
+            </Button>
           </div>
         </div>
       </div>

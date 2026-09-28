@@ -1,7 +1,9 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { createRef, useState } from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import MobileQuizLayout from "./MobileQuizLayout";
+import { roundReducer } from "../../quiz-core";
 import type { Hint, QuestionResult, QuizQuestion, RoundState, Student } from "../../quiz-core";
 import type { AfterAnswer, AnswerDraft } from "./quizLayoutTypes";
 
@@ -51,52 +53,78 @@ const answeredRound: RoundState = { status: "answered", question, result: answer
 const noopAnswer: AnswerDraft = {
   value: "",
   onChange: vi.fn(),
-  onSubmit: vi.fn(),
-  error: { message: null, key: 0 },
-  errorVisible: false,
+  onSubmit: vi.fn().mockReturnValue("accepted"),
+  error: null,
   dismissError: vi.fn(),
 };
 
-function renderLayout(round: RoundState, afterAnswer: AfterAnswer) {
-  return render(
+function renderLayout(
+  round: RoundState,
+  afterAnswer: AfterAnswer,
+  options: { answer?: AnswerDraft; autoFocusOnMount?: boolean } = {},
+) {
+  const primaryButtonRef = createRef<HTMLButtonElement>();
+  const utils = render(
     <MobileQuizLayout
       modeLabel="テストモード"
       heading="見出し"
       round={round}
       actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
-      answer={noopAnswer}
+      answer={options.answer ?? noopAnswer}
       afterAnswer={afterAnswer}
+      primaryButtonRef={primaryButtonRef}
+      autoFocusOnMount={options.autoFocusOnMount ?? true}
     />,
   );
+  return { ...utils, primaryButtonRef };
 }
 
-describe("MobileQuizLayout - 回答後の主ボタンへのフォーカス", () => {
-  it("回答済みの状態でマウントされると主ボタンにフォーカスがある", () => {
+// actions.reveal は実際にroundを進めるreducerと繋ぐ。展開・スクロールの判定はflushSync後の
+// 実DOMを見て行うため、propsを外から書き換えるだけのrenderLayoutでは再現できない
+function renderStatefulLayout(initialRound: RoundState, afterAnswer: AfterAnswer) {
+  function Harness() {
+    const [round, setRound] = useState(initialRound);
+    const primaryButtonRef = createRef<HTMLButtonElement>();
+    return (
+      <MobileQuizLayout
+        modeLabel="テストモード"
+        heading="見出し"
+        round={round}
+        actions={{
+          reveal: () => setRound((prev) => roundReducer(prev, { type: "reveal" })),
+          giveUp: () => setRound((prev) => roundReducer(prev, { type: "giveUp" })),
+        }}
+        answer={noopAnswer}
+        afterAnswer={afterAnswer}
+        primaryButtonRef={primaryButtonRef}
+        autoFocusOnMount
+      />
+    );
+  }
+  return render(<Harness />);
+}
+
+describe("MobileQuizLayout - マウント時のフォーカス", () => {
+  it("answered状態・autoFocusOnMountでマウントされると主ボタンにフォーカスがある", () => {
     renderLayout(answeredRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
   });
 
-  it("playing から answered に変わると主ボタンにフォーカスが移る", () => {
-    const { rerender } = renderLayout(playingRound, {
-      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
-    });
+  it("playing状態でマウントされると、開示ボタンにフォーカスがある", () => {
+    renderLayout(playingRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
-    // 操作エリアは常に両方の面をDOMに持ち、invisible/inertで表示だけ切り替えるため、
-    // playing中は回答後の主ボタンがアクセシビリティツリー上に現れない
-    expect(screen.queryByRole("button", { name: "次の問題へ" })).toBeNull();
-    rerender(
-      <MobileQuizLayout
-        modeLabel="テストモード"
-        heading="見出し"
-        round={answeredRound}
-        actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
-        answer={noopAnswer}
-        afterAnswer={{ primaryAction: { label: "次の問題へ", onClick: vi.fn() } }}
-      />,
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "シルエットを表示" }));
+  });
+
+  it("autoFocusOnMount=false なら answered 状態でマウントされてもフォーカスしない", () => {
+    renderLayout(
+      answeredRound,
+      { primaryAction: { label: "次の問題へ", onClick: vi.fn() } },
+      { autoFocusOnMount: false },
     );
 
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
+    expect(document.activeElement).not.toBe(screen.getByRole("button", { name: "次の問題へ" }));
   });
 
   it("フォーカスされた主ボタンの click で primaryAction が呼ばれる", () => {
@@ -112,18 +140,19 @@ describe("MobileQuizLayout - 回答後の主ボタンへのフォーカス", () 
 });
 
 describe("MobileQuizLayout - 操作エリアの出し分け", () => {
-  it("playing中は回答後の面をアクセシビリティツリー上に持たず、開示ボタンは1つだけ見える", () => {
+  it("playing中は回答後の面がinertになり、開示ボタン側が操作できる", () => {
     renderLayout(playingRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
-    expect(screen.getAllByRole("button", { name: "シルエットを表示" })).toHaveLength(1);
-    expect(screen.queryByRole("button", { name: "次の問題へ" })).toBeNull();
+    expect(screen.getByRole("button", { name: "シルエットを表示" }).closest("[inert]")).toBeNull();
+    expect(screen.getByRole("button", { name: "次の問題へ" }).closest("[inert]")).not.toBeNull();
   });
 
-  it("answered中は開示ボタンをアクセシビリティツリー上に持たず、主ボタンは1つだけ見える", () => {
+  it("answered中は開示ボタン側の面がinertになり、主ボタン側が操作できる", () => {
     renderLayout(answeredRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
-    expect(screen.getAllByRole("button", { name: "次の問題へ" })).toHaveLength(1);
-    expect(screen.queryByRole("button", { name: "シルエットを表示" })).toBeNull();
+    expect(screen.getByRole("button", { name: "次の問題へ" }).closest("[inert]")).toBeNull();
+    // answered中はQuizPlayAreaが諦めボタンではなく非表示のプレースホルダを描画する
+    expect(screen.getByText("諦めて正解を表示").closest("[inert]")).not.toBeNull();
   });
 
   it("answered中は正誤・得点・生徒名を1行にまとめて表示する", () => {
@@ -135,12 +164,12 @@ describe("MobileQuizLayout - 操作エリアの出し分け", () => {
   });
 });
 
-describe("MobileQuizLayout - 展開の瞬間の位置決め（scrollIntoView）", () => {
+describe("MobileQuizLayout - 展開・スクロールの位置決め（scrollIntoView）", () => {
   beforeEach(() => {
     (Element.prototype.scrollIntoView as ReturnType<typeof vi.fn>).mockClear();
   });
 
-  it("最後のヒントを開示してシルエットに変わる操作では、一度だけscrollIntoViewする", () => {
+  it("最後のヒントを開示してシルエットに変わる操作では、一度だけ立ち絵枠へscrollIntoViewする", () => {
     renderLayout(playingRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
     screen.getByRole("button", { name: "シルエットを表示" }).click();
@@ -149,7 +178,7 @@ describe("MobileQuizLayout - 展開の瞬間の位置決め（scrollIntoView）"
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ block: "end" });
   });
 
-  it("まだヒントが残っている開示操作ではscrollIntoViewしない", () => {
+  it("まだヒントが残っている開示操作では、新しく開示したヒントカードへscrollIntoViewする", () => {
     const twoHintQuestion: QuizQuestion = {
       ...question,
       hints: [
@@ -162,11 +191,12 @@ describe("MobileQuizLayout - 展開の瞬間の位置決め（scrollIntoView）"
       question: twoHintQuestion,
       revealedHintCount: 1,
     };
-    renderLayout(round, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
+    renderStatefulLayout(round, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
-    screen.getByRole("button", { name: "次のヒントを開示" }).click();
+    fireEvent.click(screen.getByRole("button", { name: "次のヒントを開示" }));
 
-    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ block: "center" });
   });
 
   it("シルエット表示中の回答（回答するボタン）ではscrollIntoViewしない（既に展開済みのため）", () => {
@@ -175,15 +205,10 @@ describe("MobileQuizLayout - 展開の瞬間の位置決め（scrollIntoView）"
       question,
       revealedHintCount: question.hints.length + 1,
     };
-    render(
-      <MobileQuizLayout
-        modeLabel="テストモード"
-        heading="見出し"
-        round={silhouetteRound}
-        actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
-        answer={{ ...noopAnswer, value: "タロウ" }}
-        afterAnswer={{ primaryAction: { label: "次の問題へ", onClick: vi.fn() } }}
-      />,
+    renderLayout(
+      silhouetteRound,
+      { primaryAction: { label: "次の問題へ", onClick: vi.fn() } },
+      { answer: { ...noopAnswer, value: "タロウ" } },
     );
 
     screen.getByRole("button", { name: "回答する" }).click();
@@ -192,20 +217,33 @@ describe("MobileQuizLayout - 展開の瞬間の位置決め（scrollIntoView）"
   });
 
   it("ヒント途中でも回答（hidden→revealed直行）すると、一度だけscrollIntoViewする", () => {
-    render(
-      <MobileQuizLayout
-        modeLabel="テストモード"
-        heading="見出し"
-        round={playingRound}
-        actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
-        answer={{ ...noopAnswer, value: "タロウ" }}
-        afterAnswer={{ primaryAction: { label: "次の問題へ", onClick: vi.fn() } }}
-      />,
+    renderLayout(
+      playingRound,
+      { primaryAction: { label: "次の問題へ", onClick: vi.fn() } },
+      { answer: { ...noopAnswer, value: "タロウ" } },
     );
 
     screen.getByRole("button", { name: "回答する" }).click();
 
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ block: "end" });
+  });
+
+  it("回答欄が unknownStudent を返したときは、枠が hidden のままでもscrollIntoViewしない", () => {
+    renderLayout(
+      playingRound,
+      { primaryAction: { label: "次の問題へ", onClick: vi.fn() } },
+      {
+        answer: {
+          ...noopAnswer,
+          value: "存在しない生徒",
+          onSubmit: vi.fn().mockReturnValue("unknownStudent"),
+        },
+      },
+    );
+
+    screen.getByRole("button", { name: "回答する" }).click();
+
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
   });
 });

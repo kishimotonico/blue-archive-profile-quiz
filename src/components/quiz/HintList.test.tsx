@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import HintList from "./HintList";
 import type { Hint } from "../../quiz-core";
 
@@ -30,29 +30,25 @@ describe("HintList - 「残り n ヒント」の帯", () => {
   });
 });
 
-describe("HintList - 開示演出のスクロール", () => {
-  beforeEach(() => {
-    Element.prototype.scrollIntoView = vi.fn();
+describe("HintList - 開示のきらめき", () => {
+  it("animateReveal=true のとき、直近に開示した1枚だけがきらめく", () => {
+    render(<HintList hints={mockHints} visibleCount={2} animateReveal layout="mobile" />);
+
+    const cards = screen.getAllByText(/VAL_/).map((el) => el.parentElement);
+    expect(cards[0]?.className).not.toContain("ba-shine");
+    expect(cards[1]?.className).toContain("ba-shine");
   });
 
-  it("animateReveal=true で visibleCount が増えると開示位置へスクロールする", () => {
-    const { rerender } = render(
-      <HintList hints={mockHints} visibleCount={1} animateReveal layout="mobile" />,
-    );
-    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+  it("animateReveal=false のときはきらめかない（回答確定で一斉に開くケース）", () => {
+    render(<HintList hints={mockHints} visibleCount={2} animateReveal={false} layout="mobile" />);
 
-    rerender(<HintList hints={mockHints} visibleCount={2} animateReveal layout="mobile" />);
-
-    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
+    const cards = screen.getAllByText(/VAL_/).map((el) => el.parentElement);
+    expect(cards.every((el) => !el?.className.includes("ba-shine"))).toBe(true);
   });
 
-  it("animateReveal=false のときは visibleCount が増えてもスクロールしない（回答確定で一斉に開くケース）", () => {
-    const { rerender } = render(
-      <HintList hints={mockHints} visibleCount={1} animateReveal={false} layout="mobile" />,
-    );
+  it("開示位置に scrollIntoView 先となる id を各カードに振る（mobile）", () => {
+    render(<HintList hints={mockHints} visibleCount={1} animateReveal layout="mobile" />);
 
-    rerender(<HintList hints={mockHints} visibleCount={2} animateReveal={false} layout="mobile" />);
-
-    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+    expect(document.getElementById("hint-0")).not.toBeNull();
   });
 });

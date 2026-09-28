@@ -1,9 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useState, useEffect } from "react";
+import { useAtomValue } from "jotai";
 import { Calendar, Shuffle } from "lucide-react";
 import { getDailyDate, getTimeUntilNextReset, formatTimeUntilNextReset } from "../../quiz-core";
-import { currentDailyDateAtom, todayDailyRecordAtom } from "../../store/daily";
+import { dailyHistoryAtom } from "../../store/daily";
 import HaloRingGauge from "../common/HaloRingGauge";
 
 const GITHUB_URL = "https://github.com/kishimotonico/blue-archive-profile-quiz";
@@ -90,12 +90,14 @@ interface MenuTileProps {
   icon: React.ReactNode;
   name: string;
   description: string;
+  onNavigate: () => void;
 }
 
-function MenuTile({ to, isCurrent, icon, name, description }: MenuTileProps) {
+function MenuTile({ to, isCurrent, icon, name, description, onNavigate }: MenuTileProps) {
   return (
     <Link
       to={to}
+      onClick={onNavigate}
       className={`relative flex flex-col items-center gap-1 rounded-xl border bg-white px-2 py-2.5 text-center transition-colors ${
         isCurrent ? "border-ba-blue" : "border-ba-border hover:bg-ba-sky-1"
       }`}
@@ -109,9 +111,13 @@ function MenuTile({ to, isCurrent, icon, name, description }: MenuTileProps) {
   );
 }
 
-// 今日の日替わりの状況（回答済み/未回答）と次の更新までの時間を表示する
+// 今日の日替わりの状況（回答済み/未回答）と次の更新までの時間を表示する。
+// メニューは常時マウントしたまま開閉するため、開閉のたびにこのコンポーネントも再描画され、
+// getDailyDate() が最新の日付を返す（朝4:00をまたいだ後の再訪でも、開き直せば最新化される）
 function DailyStatusRow() {
-  const todayRecord = useAtomValue(todayDailyRecordAtom);
+  const history = useAtomValue(dailyHistoryAtom);
+  const today = getDailyDate();
+  const todayRecord = history.records.find((r) => r.key.baseDate === today) ?? null;
   const score = todayRecord?.result.score ?? null;
   const nextReset = formatTimeUntilNextReset(getTimeUntilNextReset());
 
@@ -142,24 +148,13 @@ function DailyStatusRow() {
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const menuRef = useRef<HTMLDivElement>(null);
-  const setCurrentDailyDate = useSetAtom(currentDailyDateAtom);
 
   // メニュー開閉状態を切り替え
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  // ページ遷移時にメニューを閉じる
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location.pathname]);
-
-  // メニュー内のDailyStatusRowは常時マウントされているため、開くタイミングで出題日を
-  // 読み直さないと、朝4:00をまたいだ後の再訪でも前日の記録を表示し続けてしまう
-  useEffect(() => {
-    if (isMenuOpen) setCurrentDailyDate(getDailyDate());
-  }, [isMenuOpen, setCurrentDailyDate]);
+  const closeMenu = () => setIsMenuOpen(false);
 
   // パネルが開いている間は全面オーバーレイで背後の操作を塞ぎ、モーダルと同時に開くことが
   // ないため、モーダル側のEscape処理（ネイティブのdialog）とは競合しない
@@ -231,7 +226,7 @@ function Header() {
       {isMenuOpen && (
         <div
           className="md:hidden fixed inset-x-0 top-11 bottom-0 bg-ba-navy/45 z-40"
-          onClick={() => setIsMenuOpen(false)}
+          onClick={closeMenu}
           aria-hidden="true"
         />
       )}
@@ -239,7 +234,6 @@ function Header() {
       {/* モバイルの下りパネル。常時マウントし、opacity/translateYだけで開閉することで
           閉じるアニメーションもCSSトランジションに乗せる */}
       <div
-        ref={menuRef}
         id="mobile-menu"
         inert={!isMenuOpen}
         className={`md:hidden fixed inset-x-0 top-11 z-50 bg-white border-b border-ba-border shadow-lg transition-[opacity,transform] duration-200 motion-reduce:transition-none motion-reduce:duration-0 ${
@@ -254,6 +248,7 @@ function Header() {
               icon={<Calendar className="w-6 h-6 text-ba-blue" />}
               name="日替わり"
               description="毎日4:00に更新・1日1回"
+              onNavigate={closeMenu}
             />
             <MenuTile
               to="/regular"
@@ -261,6 +256,7 @@ function Header() {
               icon={<Shuffle className="w-6 h-6 text-ba-blue" />}
               name="フリープレイ"
               description="ランダムに10問・何度でも"
+              onNavigate={closeMenu}
             />
           </div>
 

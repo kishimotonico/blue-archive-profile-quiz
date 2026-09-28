@@ -82,7 +82,10 @@ describe("MobileQuizLayout - 回答後の主ボタンへのフォーカス", () 
       primaryAction: { label: "次の問題へ", onClick: vi.fn() },
     });
 
-    expect(screen.queryByRole("button", { name: "次の問題へ" })).toBeNull();
+    // footer とこの面を同じ高さに揃えるため、ボタンは playing 中も mount されたまま、
+    // 親セルが inert（invisible）になっている
+    const primaryButtonWhilePlaying = screen.getByRole("button", { name: "次の問題へ" });
+    expect(primaryButtonWhilePlaying.closest("[inert]")).not.toBeNull();
     rerender(
       <MobileQuizLayout
         modeLabel="テストモード"

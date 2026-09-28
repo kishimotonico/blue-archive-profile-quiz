@@ -77,22 +77,28 @@ function DesktopQuizLayout({
           >
             {playArea}
           </div>
-          {answered && (
-            <div className="col-start-1 row-start-1 flex min-w-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5">
-              <StudentReveal student={student} correct={correct} score={score} showName={false} />
-              <div className="mt-2 w-full">
-                {afterAnswer.notice}
-                <Button
-                  ref={primaryButtonRef}
-                  variant="accent"
-                  className="w-full"
-                  onClick={afterAnswer.primaryAction.onClick}
-                >
-                  {afterAnswer.primaryAction.label}
-                </Button>
-              </div>
+          {/* answered と同時に一方だけ mount/unmount すると、mount されていない側の
+              高さがグリッド行の計算に加わらず、回答前後で立ち絵パネルの高さが変わってしまう。
+              常に両方 mount し、invisible/inert だけで切り替える */}
+          <div
+            className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 ${
+              answered ? "" : "invisible"
+            }`}
+            inert={!answered}
+          >
+            <StudentReveal student={student} correct={correct} score={score} showName={false} />
+            <div className="mt-2 w-full">
+              {afterAnswer.notice}
+              <Button
+                ref={primaryButtonRef}
+                variant="accent"
+                className="w-full"
+                onClick={afterAnswer.primaryAction.onClick}
+              >
+                {afterAnswer.primaryAction.label}
+              </Button>
             </div>
-          )}
+          </div>
         </div>
       </aside>
     </>

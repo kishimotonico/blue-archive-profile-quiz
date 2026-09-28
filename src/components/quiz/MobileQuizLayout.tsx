@@ -67,8 +67,26 @@ function MobileQuizLayout({
         </div>
       </div>
 
-      {answered && (
-        <div className="py-3 flex flex-col items-center gap-3">
+      {/* footer と回答後の面を同じグリッドセルに重ね、常に両方 mount したまま invisible/inert で
+          切り替える。片方だけ mount/unmount すると、その分だけ下の面全体の高さが変わり、
+          スクロール領域の残り高さが変わって（下端までスクロール済みのときにクランプが起きて）
+          立ち絵の表示位置がずれるため */}
+      <div className="shrink-0 grid grid-cols-1">
+        {/* -mx-4 -mb-4 は main の余白を打ち消して画面端まで白い面にするため */}
+        <div
+          className={`col-start-1 row-start-1 min-w-0 -mx-4 -mb-4 border-t border-ba-border bg-white px-4 py-3 ${
+            answered ? "invisible" : ""
+          }`}
+          inert={answered}
+        >
+          {playArea}
+        </div>
+        <div
+          className={`col-start-1 row-start-1 min-w-0 flex flex-col items-center gap-3 py-3 ${
+            answered ? "" : "invisible"
+          }`}
+          inert={!answered}
+        >
           <StudentReveal student={student} correct={correct} score={score} />
           <div className="mt-1 w-full max-w-xs">
             {afterAnswer.notice}
@@ -82,15 +100,7 @@ function MobileQuizLayout({
             </Button>
           </div>
         </div>
-      )}
-
-      {/* 回答後は playArea が無くなるため、枠（背景・ボーダー）ごと消す。
-          -mx-4 -mb-4 は main の余白を打ち消して画面端まで白い面にするため */}
-      {!answered && (
-        <div className="-mx-4 -mb-4 shrink-0 border-t border-ba-border bg-white px-4 py-3">
-          {playArea}
-        </div>
-      )}
+      </div>
     </div>
   );
 }

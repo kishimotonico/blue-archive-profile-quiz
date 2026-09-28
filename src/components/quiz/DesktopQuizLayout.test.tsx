@@ -84,7 +84,10 @@ describe("DesktopQuizLayout - 回答後の主ボタンへのフォーカス", ()
       primaryAction: { label: "結果を見る", onClick: vi.fn() },
     });
 
-    expect(screen.queryByRole("button", { name: "結果を見る" })).toBeNull();
+    // 立ち絵パネルの高さを answered/playing で変えないため、ボタンは playing 中も
+    // mount されたまま、親セルが inert（invisible）になっている
+    const primaryButtonWhilePlaying = screen.getByRole("button", { name: "結果を見る" });
+    expect(primaryButtonWhilePlaying.closest("[inert]")).not.toBeNull();
     rerender(
       <DesktopQuizLayout
         modeLabel="テストモード"

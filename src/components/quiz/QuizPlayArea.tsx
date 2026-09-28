@@ -25,7 +25,10 @@ function QuizPlayArea({
   // 「回答する」が accent になるため、その間は開示ボタンを secondary に下げる
   const isAnswerEmpty = !answer.value.trim();
 
-  // 開示ボタンを先に置き、Tab順が「開示 → 生徒名入力 → 回答する」になるようにしている
+  // 開示ボタンを先に置き、Tab順が「開示 → 生徒名入力 → 回答する」になるようにしている。
+  // 回答済み（nextStep === null）でもボタン自体は invisible で残し、枠を消す。desktop の立ち絵パネルは
+  // このコンポーネントを常に mount したまま invisible/inert で切り替えるため、ボタンの有無で高さが
+  // 変わると立ち絵パネルの高さも一緒に変わってしまう
   const hintButton =
     nextStep === "hint" || nextStep === "silhouette" ? (
       <Button
@@ -40,7 +43,17 @@ function QuizPlayArea({
       <Button ref={hintButtonRef} onClick={actions.giveUp} variant="secondary" className="w-full">
         諦めて正解を表示
       </Button>
-    ) : null;
+    ) : (
+      <Button
+        ref={hintButtonRef}
+        variant="secondary"
+        className="w-full invisible"
+        tabIndex={-1}
+        aria-hidden="true"
+      >
+        諦めて正解を表示
+      </Button>
+    );
 
   const content = (
     <div className="flex flex-col items-stretch gap-3">

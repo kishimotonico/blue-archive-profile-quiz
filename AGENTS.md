@@ -50,7 +50,7 @@
     │   ├── DailyQuiz.tsx    # 日替わりクイズページ（/ ルート）
     │   ├── RegularQuiz.tsx  # フリープレイページ（/regular）
     │   └── Result.tsx       # 結果表示ページ（/result）
-    ├── App.tsx          # ルーティング設定（Provider はアプリで1つ、各ルートを ErrorBoundary/Suspense で包む）
+    ├── App.tsx          # ルーティング設定（Provider はアプリで1つ、Header を持つレイアウトルートの下に各ルートを ErrorBoundary/Suspense で包んで配置）
     └── main.tsx         # エントリーポイント
 ```
 

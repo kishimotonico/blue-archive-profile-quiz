@@ -44,18 +44,6 @@ export function checkAnswer(answer: string, student: Student): boolean {
 }
 
 /**
- * 回答候補を生成（デバッグ用）
- */
-export function getAnswerVariants(student: Student): string[] {
-  return [
-    student.fullName,
-    student.name,
-    hiraganaToKatakana(student.fullName),
-    hiraganaToKatakana(student.name),
-  ];
-}
-
-/**
  * 回答を検証し、正解/誤答/不明を判定
  * @param answer ユーザーの回答
  * @param correctStudent 正解の生徒

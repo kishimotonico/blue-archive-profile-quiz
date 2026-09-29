@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import Button from "../components/common/Button";
-import { getMaxScore, getScoreRank, getQuestionOutcome } from "../quiz-core";
+import { getScoreRank, getQuestionOutcome, summarizeResults } from "../quiz-core";
 import type { QuestionResult, QuestionOutcome } from "../quiz-core";
 import { allStudentsAtom } from "../store/students";
 
@@ -36,9 +36,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
   }, [allStudents]);
 
   const totalQuestions = results.length;
-  const totalScore = results.reduce((s, r) => s + r.score, 0);
-  const correctCount = results.filter((r) => r.correct).length;
-  const maxPossibleScore = getMaxScore() * totalQuestions;
+  const { totalScore, correctCount, maxScore: maxPossibleScore } = summarizeResults(results);
 
   return (
     // Header はレイアウトルート（App.tsx）にあるため、ここでは画面残り高さを直接計算する

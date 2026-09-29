@@ -10,6 +10,7 @@ import {
   judgeSubmit,
   createQuestionSet,
   getDailyDate,
+  summarizeResults,
   CURRENT_ALGORITHM_VERSION,
   type RegularSession,
   type RegularState,
@@ -117,7 +118,7 @@ export function useRegularQuiz() {
     questionId: String(index),
     round: state.session.round,
     index,
-    totalScore: state.session.results.reduce((sum, r) => sum + r.score, 0),
+    totalScore: summarizeResults(state.session.results).totalScore,
   };
 
   return {

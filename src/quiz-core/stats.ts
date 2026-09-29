@@ -1,6 +1,6 @@
-import type { QuestionRecord } from "./types";
+import type { QuestionRecord, QuestionResult } from "./types";
 import type { ScoreRank } from "./scoring";
-import { getScoreRank } from "./scoring";
+import { getScoreRank, getMaxScore } from "./scoring";
 
 export interface RecordStats {
   totalAttempts: number;
@@ -20,4 +20,21 @@ export function summarizeRecords(records: readonly QuestionRecord[]): RecordStat
     bestScore = Math.max(bestScore, result.score);
   }
   return { totalAttempts: records.length, bestScore, rankCounts };
+}
+
+export interface ResultsSummary {
+  totalScore: number;
+  correctCount: number;
+  maxScore: number;
+}
+
+/** プレイ中の1セッション分の集計。summarizeRecords と違い、記録済みの正誤・得点をそのまま合算する */
+export function summarizeResults(results: readonly QuestionResult[]): ResultsSummary {
+  let totalScore = 0;
+  let correctCount = 0;
+  for (const r of results) {
+    totalScore += r.score;
+    if (r.correct) correctCount += 1;
+  }
+  return { totalScore, correctCount, maxScore: getMaxScore() * results.length };
 }

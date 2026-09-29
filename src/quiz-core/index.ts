@@ -33,8 +33,8 @@ export {
 } from "./scoring";
 
 // プレイ履歴の統計
-export { summarizeRecords } from "./stats";
-export type { RecordStats } from "./stats";
+export { summarizeRecords, summarizeResults } from "./stats";
+export type { RecordStats, ResultsSummary } from "./stats";
 
 // 一問の進行状態
 export { startRound, restoreRound, toRoundSnapshot, roundReducer, judgeSubmit } from "./round";

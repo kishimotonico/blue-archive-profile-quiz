@@ -188,8 +188,10 @@ function Header() {
   // パネルが開いている間は全面オーバーレイで背後の操作を塞ぎ、モーダルと同時に開くことが
   // ないため、モーダル側のEscape処理（ネイティブのdialog）とは競合しない
   useEffect(() => {
+    if (!isMenuOpen) return;
+
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isMenuOpen) {
+      if (e.key === "Escape") {
         setIsMenuOpen(false);
       }
     };

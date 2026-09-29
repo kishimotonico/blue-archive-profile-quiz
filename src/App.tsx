@@ -20,7 +20,7 @@ function RouteBoundary({ children }: { children: ReactNode }) {
 }
 
 // Header をレイアウトルートに1つだけ置き、ルート遷移や Suspense の解決のたびに再マウントされない
-// ようにする。高さは各ページ側で「画面 - ヘッダー高さ」を計算するため、ここでは min-h に留める
+// ようにする。各画面側でヘッダー高さ分を引いた高さを扱うため、ここでは min-h に留める
 function AppLayout() {
   return (
     <div className="min-h-[100dvh] flex flex-col">

@@ -39,8 +39,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
   const { totalScore, correctCount, maxScore: maxPossibleScore } = summarizeResults(results);
 
   return (
-    // Header はレイアウトルート（App.tsx）にあるため、ここでは画面残り高さを直接計算する
-    <div className="min-h-[calc(100dvh-2.75rem)] md:min-h-[calc(100dvh-3rem)]">
+    <div className="min-h-[calc(100dvh-var(--header-height))]">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <h1 className="font-display text-2xl font-black text-ba-navy mb-6">クイズ結果</h1>
@@ -191,7 +190,7 @@ function Result() {
 
   if (!state || !state.results) {
     return (
-      <div className="min-h-[calc(100dvh-2.75rem)] md:min-h-[calc(100dvh-3rem)]">
+      <div className="min-h-[calc(100dvh-var(--header-height))]">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto text-center">
             <h1 className="font-display text-2xl font-black text-ba-navy mb-8">結果</h1>

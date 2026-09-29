@@ -31,6 +31,18 @@ layer(base);
   --font-sans: "Noto Sans JP", sans-serif;
 }
 
+/* ヘッダー高さは Header 自身のほか、モバイルメニューの開始位置や各画面の残り高さ計算など
+   複数箇所が参照するため、変数に1本化する */
+:root {
+  --header-height: 2.75rem;
+}
+
+@media (width >= 48rem) {
+  :root {
+    --header-height: 3rem;
+  }
+}
+
 /* デスクトップナビの現在地表示に使う平行四辺形カット。同じ形をナビ項目ごとに style={{ clipPath }}
    で書くと値がずれたときに1箇所直し忘れるため、ユーティリティにまとめる */
 @utility clip-nav-slant {

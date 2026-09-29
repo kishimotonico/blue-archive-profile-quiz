@@ -44,7 +44,6 @@ export interface RoundView {
   nextStep: "hint" | "silhouette" | "giveUp" | null;
 }
 
-// Mobile/DesktopQuizLayout の両方が round から同じ値を導いていたのをまとめる
 export function getRoundView(state: RoundState): RoundView {
   const answered = state.status === "answered";
   return {

@@ -202,7 +202,7 @@ function Header() {
 
   return (
     <>
-      <header className="flex h-11 md:h-12 items-center px-4 bg-white/90 backdrop-blur-xs border-b border-ba-border relative z-50">
+      <header className="flex h-(--header-height) items-center px-4 bg-white/90 backdrop-blur-xs border-b border-ba-border relative z-50">
         <Link
           to="/"
           className="flex items-center gap-2 font-display text-base md:text-lg font-black text-ba-navy hover:opacity-80 transition-opacity"
@@ -235,7 +235,7 @@ function Header() {
       {/* オーバーレイとパネルは常時マウントし、同じ長さのトランジションで開閉する。
           オーバーレイだけ即座に出し入れすると、画面の明暗がパネルより先に切り替わってちらつく */}
       <div
-        className={`md:hidden fixed inset-x-0 top-11 bottom-0 bg-ba-navy/45 z-40 transition-opacity duration-200 motion-reduce:transition-none ${
+        className={`md:hidden fixed inset-x-0 top-(--header-height) bottom-0 bg-ba-navy/45 z-40 transition-opacity duration-200 motion-reduce:transition-none ${
           isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={closeMenu}
@@ -245,7 +245,7 @@ function Header() {
       <div
         id="mobile-menu"
         inert={!isMenuOpen}
-        className={`md:hidden fixed inset-x-0 top-11 z-50 bg-white border-b border-ba-border shadow-lg transition-[opacity,transform] duration-200 motion-reduce:transition-none motion-reduce:duration-0 ${
+        className={`md:hidden fixed inset-x-0 top-(--header-height) z-50 bg-white border-b border-ba-border shadow-lg transition-[opacity,transform] duration-200 motion-reduce:transition-none motion-reduce:duration-0 ${
           isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
         }`}
       >

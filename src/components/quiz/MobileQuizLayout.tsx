@@ -1,6 +1,6 @@
 import { useRef, type ReactNode, type RefObject } from "react";
 import { flushSync } from "react-dom";
-import { getNextStep, getPortraitState, getVisibleHintCount, type Student } from "../../quiz-core";
+import { getRoundView, type Student } from "../../quiz-core";
 import Button from "../common/Button";
 import HintList from "./HintList";
 import MobilePortraitCard from "./MobilePortraitCard";
@@ -83,13 +83,8 @@ function MobileQuizLayout({
   const portraitRef = useRef<HTMLDivElement>(null);
   const justRevealedHintRef = useRef<HTMLDivElement>(null);
 
-  const { student } = round.question;
-  const answered = round.status === "answered";
-  const correct = answered && round.result.correct;
-  const score = answered ? round.result.score : 0;
-  const portraitState = getPortraitState(round);
-  const visibleHintCount = getVisibleHintCount(round);
-  const nextStep = getNextStep(round);
+  const { student, answered, correct, score, portraitState, visibleHintCount, nextStep } =
+    getRoundView(round);
 
   // flushSyncで確定させないと、枠がまだ縮んだままのDOMを基準にscrollIntoViewしてしまう
   const scrollPortraitIntoView = () => {

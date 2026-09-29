@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { flushSync } from "react-dom";
-import { getNextStep, getPortraitState, getVisibleHintCount } from "../../quiz-core";
+import { getRoundView } from "../../quiz-core";
 import Button from "../common/Button";
 import HintList from "./HintList";
 import QuizPlayArea from "./QuizPlayArea";
@@ -21,13 +21,8 @@ function DesktopQuizLayout({
 }: QuizLayoutProps) {
   const justRevealedHintRef = useRef<HTMLDivElement>(null);
 
-  const { student } = round.question;
-  const answered = round.status === "answered";
-  const correct = answered && round.result.correct;
-  const score = answered ? round.result.score : 0;
-  const portraitState = getPortraitState(round);
-  const visibleHintCount = getVisibleHintCount(round);
-  const nextStep = getNextStep(round);
+  const { student, answered, correct, score, portraitState, visibleHintCount, nextStep } =
+    getRoundView(round);
 
   // flushSyncで確定させないと、まだ開示前のDOMを基準にscrollIntoViewしてしまう。画面内に
   // 収まっていれば動かず、はみ出すときだけ最小限動く

@@ -49,4 +49,11 @@ export { dailySessionReducer } from "./dailySession";
 export type { DailySession } from "./dailySession";
 
 // 開示段階の導出
-export { getTotalStages, getVisibleHintCount, getPortraitState, getRemainingStages, getNextStep } from "./reveal";
+export {
+  getTotalStages,
+  getVisibleHintCount,
+  getPortraitState,
+  getRemainingStages,
+  getNextStep,
+  getRoundView,
+} from "./reveal";

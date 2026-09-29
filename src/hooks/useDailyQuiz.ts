@@ -13,7 +13,12 @@ import {
   type SubmitOutcome,
 } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
-import { dailyHistoryAtom, dailyProgressAtom, recordDailyResultAtom } from "../store/daily";
+import {
+  dailyHistoryAtom,
+  dailyProgressAtom,
+  recordDailyResultAtom,
+  findDailyRecord,
+} from "../store/daily";
 import { allStudentsAtom } from "../store/students";
 
 // 今日の記録・進捗の有無で「復元」か「新規」かが決まる。この分岐は useReducer の遅延初期化に
@@ -21,7 +26,7 @@ import { allStudentsAtom } from "../store/students";
 function initDailySession(store: ReturnType<typeof useStore>) {
   return (allStudents: Student[]): DailySession => {
     const today = getDailyDate();
-    const todayRecord = store.get(dailyHistoryAtom).records.find((r) => r.key.baseDate === today);
+    const todayRecord = findDailyRecord(store.get(dailyHistoryAtom), today);
 
     let session: DailySession;
     if (todayRecord) {

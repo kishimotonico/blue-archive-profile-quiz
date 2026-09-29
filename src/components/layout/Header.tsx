@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useAtomValue } from "jotai";
 import { Calendar, Shuffle } from "lucide-react";
 import { getDailyDate, getTimeUntilNextReset, formatTimeUntilNextReset } from "../../quiz-core";
-import { dailyHistoryAtom } from "../../store/daily";
+import { dailyHistoryAtom, findDailyRecord } from "../../store/daily";
 import HaloRingGauge from "../common/HaloRingGauge";
 
 const GITHUB_URL = "https://github.com/kishimotonico/blue-archive-profile-quiz";
@@ -116,7 +116,7 @@ function MenuTile({ to, isCurrent, icon, name, description, onNavigate }: MenuTi
 function DailyStatusRow() {
   const history = useAtomValue(dailyHistoryAtom);
   const today = getDailyDate();
-  const todayRecord = history.records.find((r) => r.key.baseDate === today) ?? null;
+  const todayRecord = findDailyRecord(history, today);
   const score = todayRecord?.result.score ?? null;
   const nextReset = formatTimeUntilNextReset(getTimeUntilNextReset());
 

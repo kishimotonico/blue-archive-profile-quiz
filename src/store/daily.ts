@@ -102,6 +102,10 @@ export const dailyHistoryDocument = definePersistedDocument<DailyHistory>({
 
 export const dailyHistoryAtom = dailyHistoryDocument.atom;
 
+export function findDailyRecord(history: DailyHistory, baseDate: string): QuestionRecord | null {
+  return history.records.find((r) => r.key.baseDate === baseDate) ?? null;
+}
+
 // 完了済みの日を再訪したときに二重記録しないよう、同じ baseDate が既にあれば何もしない
 export const recordDailyResultAtom = atom(
   null,

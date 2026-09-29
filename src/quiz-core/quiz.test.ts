@@ -210,6 +210,129 @@ describe("createQuestionSet（version:2）", () => {
   });
 });
 
+// 過去に発行した QuizKey は再訪しても同じ問題を再現できる必要がある。
+// version 1・2 の出題結果を固定値で固定し、アルゴリズムや実装の変更で
+// 意図せず結果が変わってしまうことを防ぐ。
+describe("既存バージョンの出題結果の固定値テスト", () => {
+  const FIXED_BASE_DATE = "2026-02-10";
+
+  it("version:1 のキーは常に同じ生徒・同じヒント順を返す", () => {
+    const key: QuizKey = { version: 1, baseDate: FIXED_BASE_DATE, seed: dateToSeed(FIXED_BASE_DATE) };
+    const q = createQuestion(allStudents, key);
+
+    expect(q.student.id).toBe("himari");
+    expect(q.hints.map((h) => h.type)).toEqual([
+      "club",
+      "hobby",
+      "age",
+      "familyName",
+      "cv",
+      "birthday",
+      "height",
+      "school",
+      "weaponName",
+    ]);
+  });
+
+  it("version:1 のランダムなシードのキーも常に同じ生徒・同じヒント順を返す", () => {
+    const key: QuizKey = { version: 1, baseDate: FIXED_BASE_DATE, seed: 459804437 };
+    const q = createQuestion(allStudents, key);
+
+    expect(q.student.id).toBe("ritsu");
+    expect(q.hints.map((h) => h.type)).toEqual([
+      "familyName",
+      "height",
+      "age",
+      "weaponName",
+      "cv",
+      "club",
+      "hobby",
+      "birthday",
+      "school",
+    ]);
+  });
+
+  it("version:2 のキーは常に同じ生徒・同じヒント順を返す", () => {
+    const key: QuizKey = { version: 2, baseDate: FIXED_BASE_DATE, seed: dateToSeed(FIXED_BASE_DATE) };
+    const q = createQuestion(allStudents, key);
+
+    expect(q.student.id).toBe("natsu");
+    expect(q.hints.map((h) => h.type)).toEqual([
+      "height",
+      "hobby",
+      "club",
+      "school",
+      "cv",
+      "age",
+      "weaponName",
+      "familyName",
+      "birthday",
+    ]);
+  });
+
+  it("version:2 のランダムなシードのキーも常に同じ生徒・同じヒント順を返す", () => {
+    const key: QuizKey = { version: 2, baseDate: FIXED_BASE_DATE, seed: 459804437 };
+    const q = createQuestion(allStudents, key);
+
+    expect(q.student.id).toBe("junko");
+    expect(q.hints.map((h) => h.type)).toEqual([
+      "hobby",
+      "weaponName",
+      "school",
+      "club",
+      "cv",
+      "height",
+      "birthday",
+      "familyName",
+      "age",
+    ]);
+  });
+
+  it("version:1 の createQuestionSet(10問) は常に同じ生徒の並びを返す", () => {
+    const masterKey: QuizKey = {
+      version: 1,
+      baseDate: FIXED_BASE_DATE,
+      seed: dateToSeed(FIXED_BASE_DATE),
+    };
+    const questions = createQuestionSet(allStudents, masterKey, 10);
+
+    expect(questions.map((q) => q.student.id)).toEqual([
+      "akane",
+      "mika",
+      "arisu",
+      "minori",
+      "atsuko",
+      "miyo",
+      "chiaki",
+      "momoi",
+      "eimi",
+      "natsu",
+    ]);
+  });
+
+  it("version:2 の createQuestionSet(10問) は常に同じ生徒の並びを返す", () => {
+    const masterKey: QuizKey = {
+      version: 2,
+      baseDate: FIXED_BASE_DATE,
+      seed: dateToSeed(FIXED_BASE_DATE),
+    };
+    const questions = createQuestionSet(allStudents, masterKey, 10);
+
+    expect(questions.map((q) => q.student.id)).toEqual([
+      "neru",
+      "megu",
+      "sumire",
+      "kaede",
+      "kotama",
+      "hoshino",
+      "kisaki",
+      "moe",
+      "hanako",
+      "haruka",
+    ]);
+  });
+});
+
 describe("seededRandomV2 確率的均一性（smoke test）", () => {
   it("1000回生成した値の平均が 0.5 に近い", () => {
     const rng = seededRandomV2(0xdeadbeef);

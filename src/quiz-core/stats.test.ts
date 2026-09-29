@@ -30,7 +30,13 @@ describe("summarizeRecords", () => {
 });
 
 function makeResult(score: number, correct: boolean): QuestionResult {
-  return { studentId: "shiroko", usedHintCount: 1, correct, userAnswer: correct ? "shiroko" : null, score };
+  return {
+    studentId: "shiroko",
+    usedHintCount: 1,
+    correct,
+    userAnswer: correct ? "shiroko" : null,
+    score,
+  };
 }
 
 describe("summarizeResults", () => {

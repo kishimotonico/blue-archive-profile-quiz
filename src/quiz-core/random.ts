@@ -17,7 +17,7 @@ export function shuffleV1<T>(array: T[], seed: number): T[] {
 
 export function deriveSeedV1(master: number, tag: string, index = 0): number {
   let h = master ^ 0x9e3779b9;
-  for (const ch of tag) h = (((h << 5) - h) + ch.charCodeAt(0)) | 0;
+  for (const ch of tag) h = ((h << 5) - h + ch.charCodeAt(0)) | 0;
   h = (h * 16777619) ^ index;
   return h >>> 0;
 }

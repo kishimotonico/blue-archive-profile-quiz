@@ -217,7 +217,11 @@ describe("既存バージョンの出題結果の固定値テスト", () => {
   const FIXED_BASE_DATE = "2026-02-10";
 
   it("version:1 のキーは常に同じ生徒・同じヒント順を返す", () => {
-    const key: QuizKey = { version: 1, baseDate: FIXED_BASE_DATE, seed: dateToSeed(FIXED_BASE_DATE) };
+    const key: QuizKey = {
+      version: 1,
+      baseDate: FIXED_BASE_DATE,
+      seed: dateToSeed(FIXED_BASE_DATE),
+    };
     const q = createQuestion(allStudents, key);
 
     expect(q.student.id).toBe("himari");
@@ -253,7 +257,11 @@ describe("既存バージョンの出題結果の固定値テスト", () => {
   });
 
   it("version:2 のキーは常に同じ生徒・同じヒント順を返す", () => {
-    const key: QuizKey = { version: 2, baseDate: FIXED_BASE_DATE, seed: dateToSeed(FIXED_BASE_DATE) };
+    const key: QuizKey = {
+      version: 2,
+      baseDate: FIXED_BASE_DATE,
+      seed: dateToSeed(FIXED_BASE_DATE),
+    };
     const q = createQuestion(allStudents, key);
 
     expect(q.student.id).toBe("natsu");

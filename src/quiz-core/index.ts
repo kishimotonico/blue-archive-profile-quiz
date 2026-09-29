@@ -1,5 +1,12 @@
 // 型定義
-export type { Student, Hint, QuizQuestion, PortraitState, QuestionResult, QuestionRecord } from "./types";
+export type {
+  Student,
+  Hint,
+  QuizQuestion,
+  PortraitState,
+  QuestionResult,
+  QuestionRecord,
+} from "./types";
 
 // 結果処理
 export { getQuestionOutcome } from "./result";
@@ -25,12 +32,7 @@ export {
 } from "./daily";
 
 // スコア計算
-export {
-  getMaxScore,
-  getScoreRank,
-  getScoreRankLabel,
-  SCORE_RANKS,
-} from "./scoring";
+export { getMaxScore, getScoreRank, getScoreRankLabel, SCORE_RANKS } from "./scoring";
 
 // プレイ履歴の統計
 export { summarizeRecords, summarizeResults } from "./stats";

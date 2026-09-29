@@ -12,7 +12,9 @@ import {
   getDailyDate,
   CURRENT_ALGORITHM_VERSION,
   type RegularSession,
+  type RegularState,
   type QuizKey,
+  type Student,
   type SubmitOutcome,
 } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
@@ -33,48 +35,36 @@ function generateMasterKey(): QuizKey {
   };
 }
 
+// sessionStorage の進捗有無で「復元」か「新規」かが決まる。この分岐は useReducer の遅延初期化に
+// 閉じ込め、reducer 自体は round/next の委譲だけを知る純粋な状態機械のままにする。
+function initRegularState(allStudents: Student[]): RegularState {
+  const stored = loadRegularQuizProgress();
+  const key = stored ? stored.masterKey : generateMasterKey();
+  const questions = createQuestionSet(allStudents, key, TOTAL_QUESTIONS);
+
+  questions.forEach((q) => preloadPortraitImage(q.student));
+
+  const session: RegularSession = stored
+    ? {
+        masterKey: key,
+        questions,
+        results: stored.results,
+        round: restoreRound(questions[getCurrentIndex("ready", stored)], stored.round),
+      }
+    : {
+        masterKey: key,
+        questions,
+        results: [],
+        round: startRound(questions[0]),
+      };
+  return { status: "ready", session };
+}
+
 export function useRegularQuiz() {
-  const [state, dispatch] = useReducer(regularSessionReducer, { status: "loading" });
   const allStudents = useAtomValue(allStudentsAtom);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    let cancelled = false;
-
-    (async () => {
-      try {
-        const stored = loadRegularQuizProgress();
-        const key = stored ? stored.masterKey : generateMasterKey();
-        const questions = await createQuestionSet(key, TOTAL_QUESTIONS);
-        if (cancelled) return;
-
-        questions.forEach((q) => preloadPortraitImage(q.student));
-
-        const session: RegularSession = stored
-          ? {
-              masterKey: key,
-              questions,
-              results: stored.results,
-              round: restoreRound(questions[getCurrentIndex("ready", stored)], stored.round),
-            }
-          : {
-              masterKey: key,
-              questions,
-              results: [],
-              round: startRound(questions[0]),
-            };
-        dispatch({ type: "loaded", session });
-      } catch {
-        if (!cancelled) dispatch({ type: "failed" });
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-    // ロードはマウント時の1回だけ行う。
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [state, dispatch] = useReducer(regularSessionReducer, allStudents, initRegularState);
 
   // 進捗（ready状態）のsessionStorageへの保存は、reducerの状態を外部ストレージへ写す同期なので
   // effectのままでよい。finishedへの遷移はユーザー操作（nextハンドラ）の結果なのでそちらへ移す
@@ -94,8 +84,6 @@ export function useRegularQuiz() {
   };
 
   const submit = (answer: string): SubmitOutcome => {
-    if (state.status !== "ready") return "accepted";
-
     const judgement = judgeSubmit(state.session.round, answer, allStudents);
     if (judgement.type === "unknownStudent") return "unknownStudent";
 
@@ -116,29 +104,23 @@ export function useRegularQuiz() {
   // 判定できる。遷移はこの操作（「次の問題へ」を押した）の結果なので、状態を監視するeffectではなく
   // ここで直接行う
   const next = () => {
-    if (state.status === "ready") {
-      const nextState = regularSessionReducer(state, { type: "next" });
-      if (nextState.status === "finished") {
-        clearRegularQuizProgress();
-        navigate("/result", { state: { results: nextState.session.results }, replace: true });
-      }
+    const nextState = regularSessionReducer(state, { type: "next" });
+    if (nextState.status === "finished") {
+      clearRegularQuizProgress();
+      navigate("/result", { state: { results: nextState.session.results }, replace: true });
     }
     dispatch({ type: "next" });
   };
 
-  const view = (() => {
-    if (state.status !== "ready" && state.status !== "finished") return null;
-    const index = getCurrentIndex(state.status, state.session);
-    return {
-      questionId: String(index),
-      round: state.session.round,
-      index,
-      totalScore: state.session.results.reduce((sum, r) => sum + r.score, 0),
-    };
-  })();
+  const index = getCurrentIndex(state.status, state.session);
+  const view = {
+    questionId: String(index),
+    round: state.session.round,
+    index,
+    totalScore: state.session.results.reduce((sum, r) => sum + r.score, 0),
+  };
 
   return {
-    state,
     view,
     totalQuestions: TOTAL_QUESTIONS,
     reveal,

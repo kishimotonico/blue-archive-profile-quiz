@@ -20,7 +20,7 @@
     │   ├── types.ts     # 型定義
     │   ├── key.ts       # QuizKey（version/baseDate/seed）の定義とエンコード
     │   ├── random.ts    # 決定論的な乱数・シャッフル・seed派生（v1/v2）
-    │   ├── students.ts  # 生徒データ読み込み・出題プール・生徒選定
+    │   ├── students.ts  # 生徒データのparse・出題プール・生徒選定（fetchは持たない）
     │   ├── hints.ts     # ヒント生成ロジック
     │   ├── quiz.ts      # QuizKey から問題/問題セットを生成（version分岐）
     │   ├── answer.ts    # 回答判定ロジック
@@ -37,7 +37,7 @@
     │   ├── persistedDocument.ts  # バージョン付き保存文書（parse / 移行 / 旧キー取り込み / 別タブ購読）
     │   ├── daily.ts     # 日替わりの履歴文書（DailyHistory、localStorage 全件保存）と進捗、記録・統計の atom
     │   ├── regular.ts   # フリープレイ進捗（sessionStorage、Valibotで検証）
-    │   ├── students.ts  # 生徒データの atom
+    │   ├── students.ts  # 生徒データのfetchとStudent[]変換を行うatom（allStudentsAtom）
     │   └── __fixtures__/ # 保存形式の過去バージョンごとの実データ相当（移行・取り込みのテスト用）
     ├── hooks/           # カスタムフック
     │   ├── useDailyQuiz.ts   # 日替わりクイズの controller

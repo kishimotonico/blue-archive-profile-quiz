@@ -1,5 +1,5 @@
 import { CURRENT_ALGORITHM_VERSION, type QuizKey } from "./key";
-import type { QuizQuestion } from "./types";
+import type { QuizQuestion, Student } from "./types";
 import { createQuestion } from "./quiz";
 
 // JST 4:00 = UTC+5 0:00
@@ -30,8 +30,8 @@ export function getDailyQuizKey(date?: string): QuizKey {
   };
 }
 
-export async function createDailyQuestion(date?: string): Promise<QuizQuestion> {
-  return createQuestion(getDailyQuizKey(date));
+export function createDailyQuestion(students: Student[], date?: string): QuizQuestion {
+  return createQuestion(students, getDailyQuizKey(date));
 }
 
 export function getNextQuizDate(date?: string): string {

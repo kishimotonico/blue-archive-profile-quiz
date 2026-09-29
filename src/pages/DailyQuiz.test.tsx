@@ -48,11 +48,15 @@ vi.mock("../quiz-core", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../quiz-core")>();
   return {
     ...actual,
-    loadStudents: vi.fn().mockResolvedValue([mockStudent]),
     getDailyDate: vi.fn().mockReturnValue("2026-04-21"),
-    createDailyQuestion: vi.fn().mockResolvedValue(mockQuestion),
-    createQuestion: vi.fn().mockResolvedValue(mockQuestion),
+    createDailyQuestion: vi.fn().mockReturnValue(mockQuestion),
+    createQuestion: vi.fn().mockReturnValue(mockQuestion),
   };
+});
+
+vi.mock("../store/students", async () => {
+  const { atom } = await import("jotai");
+  return { allStudentsAtom: atom(async () => [mockStudent]) };
 });
 
 vi.mock("../components/quiz/portraitImageUrl", () => ({

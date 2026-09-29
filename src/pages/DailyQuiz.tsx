@@ -13,18 +13,14 @@ import { dailyStatsAtom } from "../store/daily";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
 import HaloRingGauge from "../components/common/HaloRingGauge";
-import QuizLoadingState from "../components/quiz/QuizLoadingState";
-import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizScreen from "../components/quiz/QuizScreen";
 
 function DailyQuiz() {
-  const { state, view, reveal, submit, giveUp } = useDailyQuiz();
+  const { view, reveal, submit, giveUp } = useDailyQuiz();
 
   const { totalAttempts, bestScore, rankCounts } = useAtomValue(dailyStatsAtom);
   const navigate = useNavigate();
   const [showResultModal, setShowResultModal] = useState(false);
-
-  if (!view) return state.status === "error" ? <QuizErrorState /> : <QuizLoadingState />;
 
   const { round } = view;
   const result = round.status === "answered" ? round.result : null;

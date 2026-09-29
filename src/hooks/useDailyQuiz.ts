@@ -9,79 +9,65 @@ import {
   createQuestion,
   getDailyDate,
   type DailySession,
+  type Student,
   type SubmitOutcome,
 } from "../quiz-core";
 import { preloadPortraitImage } from "../components/quiz/portraitImageUrl";
 import { dailyHistoryAtom, dailyProgressAtom, recordDailyResultAtom } from "../store/daily";
 import { allStudentsAtom } from "../store/students";
 
+// 今日の記録・進捗の有無で「復元」か「新規」かが決まる。この分岐は useReducer の遅延初期化に
+// 閉じ込め、reducer 自体は round の委譲だけを知る純粋な状態機械のままにする。
+function initDailySession(store: ReturnType<typeof useStore>) {
+  return (allStudents: Student[]): DailySession => {
+    const today = getDailyDate();
+    const todayRecord = store.get(dailyHistoryAtom).records.find((r) => r.key.baseDate === today);
+
+    let session: DailySession;
+    if (todayRecord) {
+      const question = createQuestion(allStudents, todayRecord.key);
+      session = {
+        round: restoreRound(question, {
+          status: "answered",
+          // RoundState の result は新規プレイの型（userAnswer 必須）。日替わり画面は userAnswer を表示しないので、
+          // 型を満たすためだけに null を置く。この null が保存に戻ることはない: todayRecord が見つかった時点で
+          // 同じ baseDate の記録が存在し、recordDailyResultAtom はその場合何もしないため。
+          result: { ...todayRecord.result, userAnswer: todayRecord.result.userAnswer ?? null },
+        }),
+        completedOnLoad: true,
+      };
+    } else {
+      const progress = store.get(dailyProgressAtom);
+      if (progress && progress.key.baseDate === today) {
+        const question = createQuestion(allStudents, progress.key);
+        session = {
+          round: restoreRound(question, {
+            status: "playing",
+            revealedHintCount: progress.revealedHintCount,
+          }),
+          completedOnLoad: false,
+        };
+      } else {
+        const question = createDailyQuestion(allStudents);
+        session = { round: startRound(question), completedOnLoad: false };
+      }
+    }
+
+    preloadPortraitImage(session.round.question.student);
+    return session;
+  };
+}
+
 export function useDailyQuiz() {
-  const [state, dispatch] = useReducer(dailySessionReducer, { status: "loading" });
   const allStudents = useAtomValue(allStudentsAtom);
   const store = useStore();
   const setDailyProgress = useSetAtom(dailyProgressAtom);
   const recordDailyResult = useSetAtom(recordDailyResultAtom);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    (async () => {
-      try {
-        const today = getDailyDate();
-        const todayRecord = store
-          .get(dailyHistoryAtom)
-          .records.find((r) => r.key.baseDate === today);
-
-        let session: DailySession;
-        if (todayRecord) {
-          const question = await createQuestion(todayRecord.key);
-          if (cancelled) return;
-          session = {
-            round: restoreRound(question, {
-              status: "answered",
-              // RoundState の result は新規プレイの型（userAnswer 必須）。日替わり画面は userAnswer を表示しないので、
-              // 型を満たすためだけに null を置く。この null が保存に戻ることはない: todayRecord が見つかった時点で
-              // 同じ baseDate の記録が存在し、recordDailyResultAtom はその場合何もしないため。
-              result: { ...todayRecord.result, userAnswer: todayRecord.result.userAnswer ?? null },
-            }),
-            completedOnLoad: true,
-          };
-        } else {
-          const progress = store.get(dailyProgressAtom);
-          if (progress && progress.key.baseDate === today) {
-            const question = await createQuestion(progress.key);
-            if (cancelled) return;
-            session = {
-              round: restoreRound(question, {
-                status: "playing",
-                revealedHintCount: progress.revealedHintCount,
-              }),
-              completedOnLoad: false,
-            };
-          } else {
-            const question = await createDailyQuestion();
-            if (cancelled) return;
-            session = { round: startRound(question), completedOnLoad: false };
-          }
-        }
-
-        preloadPortraitImage(session.round.question.student);
-        dispatch({ type: "loaded", session });
-      } catch {
-        if (!cancelled) dispatch({ type: "failed" });
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-    // ロードはマウント時の1回だけ行う。
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [session, dispatch] = useReducer(dailySessionReducer, allStudents, initDailySession(store));
 
   useEffect(() => {
-    if (state.status !== "ready") return;
-    const { round } = state.session;
+    const { round } = session;
     if (round.status === "playing") {
       setDailyProgress({ key: round.question.key, revealedHintCount: round.revealedHintCount });
     } else {
@@ -89,42 +75,33 @@ export function useDailyQuiz() {
       recordDailyResult({ key: round.question.key, result: round.result });
       setDailyProgress(null);
     }
-  }, [state, setDailyProgress, recordDailyResult]);
+  }, [session, setDailyProgress, recordDailyResult]);
 
   const reveal = () => {
-    dispatch({ type: "round", action: { type: "reveal" } });
+    dispatch({ type: "reveal" });
   };
 
   const submit = (answer: string): SubmitOutcome => {
-    if (state.status !== "ready") return "accepted";
-
-    const judgement = judgeSubmit(state.session.round, answer, allStudents);
+    const judgement = judgeSubmit(session.round, answer, allStudents);
     if (judgement.type === "unknownStudent") return "unknownStudent";
 
     if (judgement.type !== "ignored") {
-      dispatch({
-        type: "round",
-        action: { type: "submit", answer, correct: judgement.type === "correct" },
-      });
+      dispatch({ type: "submit", answer, correct: judgement.type === "correct" });
     }
     return "accepted";
   };
 
   const giveUp = () => {
-    dispatch({ type: "round", action: { type: "giveUp" } });
+    dispatch({ type: "giveUp" });
   };
 
-  const view =
-    state.status === "ready"
-      ? {
-          questionId: state.session.round.question.key.baseDate,
-          round: state.session.round,
-          completedOnLoad: state.session.completedOnLoad,
-        }
-      : null;
+  const view = {
+    questionId: session.round.question.key.baseDate,
+    round: session.round,
+    completedOnLoad: session.completedOnLoad,
+  };
 
   return {
-    state,
     view,
     reveal,
     submit,

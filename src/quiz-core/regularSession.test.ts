@@ -146,9 +146,14 @@ describe("regularSessionReducer - round", () => {
   });
 
   it("ready 以外では同一参照を返す", () => {
-    const loading: RegularState = { status: "loading" };
-    const next = regularSessionReducer(loading, { type: "round", action: { type: "reveal" } });
-    expect(next).toBe(loading);
+    const q0 = makeQuestion(makeStudent(), 1);
+    const session = makeSession([q0]);
+    const finished: RegularState = {
+      status: "finished",
+      session: { ...session, round: answer(session.round) },
+    };
+    const next = regularSessionReducer(finished, { type: "round", action: { type: "reveal" } });
+    expect(next).toBe(finished);
   });
 
   it("roundReducer が同一参照を返せば state も同一参照を返す", () => {

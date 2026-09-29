@@ -20,13 +20,13 @@ export { CURRENT_ALGORITHM_VERSION, encodeQuizKey, decodeQuizKey } from "./key";
 
 // 生徒データ
 export {
-  loadStudents,
-  getStudentById,
+  parseStudents,
   getStudentPool,
   pickStudentV1,
   pickStudentV2,
   extractFamilyName,
 } from "./students";
+export type { StudentEntry } from "./students";
 
 // ヒント生成
 export { generateHintsV1, generateHintsV2 } from "./hints";
@@ -83,7 +83,7 @@ export type { RegularSession, RegularState, RegularAction } from "./regularSessi
 
 // 日替わりのセッション
 export { dailySessionReducer } from "./dailySession";
-export type { DailySession, DailyState, DailyAction } from "./dailySession";
+export type { DailySession } from "./dailySession";
 
 // 開示段階の導出
 export {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { dailySessionReducer, type DailySession, type DailyState } from "./dailySession";
+import { dailySessionReducer, type DailySession } from "./dailySession";
 import { startRound } from "./round";
 import type { Hint, QuizQuestion, Student } from "./types";
 
@@ -44,63 +44,39 @@ const makeSession = (): DailySession => ({
   completedOnLoad: false,
 });
 
-describe("dailySessionReducer - round", () => {
-  it("ready のときだけ roundReducer に委譲する", () => {
-    const state: DailyState = { status: "ready", session: makeSession() };
+describe("dailySessionReducer", () => {
+  it("roundReducer に委譲する", () => {
+    const session = makeSession();
 
-    const next = dailySessionReducer(state, { type: "round", action: { type: "reveal" } });
+    const next = dailySessionReducer(session, { type: "reveal" });
 
-    expect(next.status).toBe("ready");
-    if (next.status !== "ready") throw new Error("unreachable");
-    expect(next.session.round).toEqual({
+    expect(next.round).toEqual({
       status: "playing",
       question: makeQuestion(),
       revealedHintCount: 2,
     });
   });
 
-  it("ready 以外では同一参照を返す", () => {
-    const loading: DailyState = { status: "loading" };
-    const next = dailySessionReducer(loading, { type: "round", action: { type: "reveal" } });
-    expect(next).toBe(loading);
-  });
-
-  it("roundReducer が同一参照を返せば state も同一参照を返す", () => {
+  it("roundReducer が同一参照を返せば session も同一参照を返す", () => {
     const session = makeSession();
-    const answered: DailyState = {
-      status: "ready",
-      session: {
-        ...session,
-        round: {
-          status: "answered",
-          question: session.round.question,
-          result: {
-            studentId: session.round.question.student.id,
-            usedHintCount: 1,
-            correct: true,
-            userAnswer: "ミヤコ",
-            score: 10,
-          },
+    const answered: DailySession = {
+      ...session,
+      round: {
+        status: "answered",
+        question: session.round.question,
+        result: {
+          studentId: session.round.question.student.id,
+          usedHintCount: 1,
+          correct: true,
+          userAnswer: "ミヤコ",
+          score: 10,
         },
       },
     };
 
     // answered への reveal は roundReducer 側で no-op になる
-    const next = dailySessionReducer(answered, { type: "round", action: { type: "reveal" } });
+    const next = dailySessionReducer(answered, { type: "reveal" });
 
     expect(next).toBe(answered);
-  });
-});
-
-describe("dailySessionReducer - loaded / failed", () => {
-  it("loaded で ready になる", () => {
-    const session = makeSession();
-    const next = dailySessionReducer({ status: "loading" }, { type: "loaded", session });
-    expect(next).toEqual({ status: "ready", session });
-  });
-
-  it("failed で error になる", () => {
-    const next = dailySessionReducer({ status: "loading" }, { type: "failed" });
-    expect(next).toEqual({ status: "error" });
   });
 });

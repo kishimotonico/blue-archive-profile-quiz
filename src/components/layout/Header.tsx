@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAtomValue } from "jotai";
 import { Calendar, Shuffle } from "lucide-react";
@@ -86,28 +86,59 @@ function GithubLink({ className }: { className: string }) {
 
 interface MenuTileProps {
   to: string;
-  isCurrent: boolean;
+  end?: boolean;
   icon: React.ReactNode;
   name: string;
   description: string;
   onNavigate: () => void;
 }
 
-function MenuTile({ to, isCurrent, icon, name, description, onNavigate }: MenuTileProps) {
+function MenuTile({ to, end, icon, name, description, onNavigate }: MenuTileProps) {
   return (
-    <Link
+    <NavLink
       to={to}
+      end={end}
       onClick={onNavigate}
-      className={`relative flex flex-col items-center gap-1 rounded-xl border bg-white px-2 py-2.5 text-center transition-colors ${
-        isCurrent ? "border-ba-blue" : "border-ba-border hover:bg-ba-sky-1"
-      }`}
-      aria-current={isCurrent ? "page" : undefined}
+      className={({ isActive }) =>
+        `relative flex flex-col items-center gap-1 rounded-xl border bg-white px-2 py-2.5 text-center transition-colors ${
+          isActive ? "border-ba-blue" : "border-ba-border hover:bg-ba-sky-1"
+        }`
+      }
     >
-      {isCurrent && <CurrentBadge />}
-      {icon}
-      <span className="font-sans font-bold text-[15px] text-ba-navy">{name}</span>
-      <span className="text-xs text-ba-ink-soft">{description}</span>
-    </Link>
+      {({ isActive }) => (
+        <>
+          {isActive && <CurrentBadge />}
+          {icon}
+          <span className="font-sans font-bold text-[15px] text-ba-navy">{name}</span>
+          <span className="text-xs text-ba-ink-soft">{description}</span>
+        </>
+      )}
+    </NavLink>
+  );
+}
+
+interface NavTabProps {
+  to: string;
+  end?: boolean;
+  children: React.ReactNode;
+}
+
+function NavTab({ to, end, children }: NavTabProps) {
+  return (
+    <NavLink
+      to={to}
+      end={end}
+      className={({ isActive }) =>
+        `clip-nav-slant flex h-9 items-center text-sm font-bold px-3 transition-colors ${
+          isActive
+            ? // 14px の文字だと sky 上の白文字は AA (4.5:1) に届かないため、面には ba-blue を使う
+              "bg-ba-blue text-white"
+            : "text-ba-navy hover:bg-ba-sky-1"
+        }`
+      }
+    >
+      {children}
+    </NavLink>
   );
 }
 
@@ -146,7 +177,6 @@ function DailyStatusRow() {
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
 
   // メニュー開閉状態を切り替え
   const toggleMenu = () => {
@@ -181,31 +211,10 @@ function Header() {
 
         {/* デスクトップナビ */}
         <nav className="ml-auto hidden md:flex gap-2">
-          <Link
-            to="/"
-            className={`flex h-9 items-center text-sm font-bold px-3 transition-colors ${
-              location.pathname === "/"
-                ? // 14px の文字だと sky 上の白文字は AA (4.5:1) に届かないため、面には ba-blue を使う
-                  "bg-ba-blue text-white"
-                : "text-ba-navy hover:bg-ba-sky-1"
-            }`}
-            style={{ clipPath: "polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)" }}
-            aria-current={location.pathname === "/" ? "page" : undefined}
-          >
+          <NavTab to="/" end>
             日替わり
-          </Link>
-          <Link
-            to="/regular"
-            className={`flex h-9 items-center text-sm font-bold px-3 transition-colors ${
-              location.pathname === "/regular"
-                ? "bg-ba-blue text-white"
-                : "text-ba-navy hover:bg-ba-sky-1"
-            }`}
-            style={{ clipPath: "polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)" }}
-            aria-current={location.pathname === "/regular" ? "page" : undefined}
-          >
-            フリープレイ
-          </Link>
+          </NavTab>
+          <NavTab to="/regular">フリープレイ</NavTab>
           <span className="w-px h-5 self-center bg-ba-border" aria-hidden="true" />
           <GithubLink className="flex items-center justify-center w-9 h-9 text-ba-navy rounded-lg transition-colors hover:bg-ba-sky-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue" />
         </nav>
@@ -242,7 +251,7 @@ function Header() {
           <div className="grid grid-cols-2 gap-2">
             <MenuTile
               to="/"
-              isCurrent={location.pathname === "/"}
+              end
               icon={<Calendar className="w-6 h-6 text-ba-blue" />}
               name="日替わり"
               description="毎日4:00に更新・1日1回"
@@ -250,7 +259,6 @@ function Header() {
             />
             <MenuTile
               to="/regular"
-              isCurrent={location.pathname === "/regular"}
               icon={<Shuffle className="w-6 h-6 text-ba-blue" />}
               name="フリープレイ"
               description="ランダムに10問・何度でも"

@@ -31,6 +31,12 @@ layer(base);
   --font-sans: "Noto Sans JP", sans-serif;
 }
 
+/* デスクトップナビの現在地表示に使う平行四辺形カット。同じ形をナビ項目ごとに style={{ clipPath }}
+   で書くと値がずれたときに1箇所直し忘れるため、ユーティリティにまとめる */
+@utility clip-nav-slant {
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still

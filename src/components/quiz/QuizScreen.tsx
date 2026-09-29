@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import type { RoundState } from "../../quiz-core";
-import Header from "../layout/Header";
 import QuizBody from "./QuizBody";
 import type { AfterAnswer, QuizActions } from "./quizLayoutTypes";
 
@@ -25,9 +24,9 @@ function QuizScreen({
   afterAnswer,
 }: QuizScreenProps) {
   return (
-    <div className="h-[100dvh] flex flex-col">
-      <Header />
-
+    // Header はレイアウトルート（App.tsx）にあるため、ここでは画面残り高さを直接計算する
+    // （h-11 md:h-12 のヘッダー分を引く）
+    <div className="h-[calc(100dvh-2.75rem)] md:h-[calc(100dvh-3rem)] flex flex-col">
       {/* overflow-hidden だと main もスクロールコンテナになり、立ち絵の scrollIntoView が main まで
           動かして位置がずれるため overflow-clip にする。その場合 min-h-0 がないと flex の最小高さが
           中身の高さになり画面からはみ出す */}

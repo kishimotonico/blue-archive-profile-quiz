@@ -49,7 +49,7 @@ describe("MobilePortraitCard - hiddenの間の表示", () => {
 
   it("stateがhiddenのときは枠の高さを固定値（最低7rem、縦長画面で25dvh）にする", () => {
     const { containerRef } = renderCard("hidden");
-    expect(containerRef.current?.className).toContain("h-[max(7rem,25dvh)]");
+    expect(containerRef.current?.className).toContain("h-(--portrait-compact-height)");
   });
 
   it("「シルエット」ラベルを表示する", () => {

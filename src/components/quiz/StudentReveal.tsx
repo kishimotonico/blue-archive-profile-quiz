@@ -1,14 +1,9 @@
-import type { Student } from "../../quiz-core";
-
 interface StudentRevealProps {
-  student: Student;
   correct: boolean;
   score: number;
-  /** デスクトップでは立ち絵パネル側に名前行があるため、重複しないよう false にする */
-  showName?: boolean;
 }
 
-function StudentReveal({ student, correct, score, showName = true }: StudentRevealProps) {
+function StudentReveal({ correct, score }: StudentRevealProps) {
   return (
     <div className="py-2 text-center">
       <div
@@ -20,9 +15,6 @@ function StudentReveal({ student, correct, score, showName = true }: StudentReve
           <span className="text-xs font-bold">点</span>
         </span>
       </div>
-      {showName && (
-        <div className="mt-1 font-display text-xl font-black text-ba-navy">{student.fullName}</div>
-      )}
     </div>
   );
 }

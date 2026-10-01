@@ -37,37 +37,35 @@ function AnswerInput({ value, onChange, onSubmit, error, onDismissError }: Answe
   const isAnswerEmpty = !value.trim();
 
   return (
-    <div className="relative w-full">
-      <motion.div animate={controls} className="flex gap-2 w-full">
-        <form onSubmit={handleSubmit} className="flex gap-2 w-full">
-          <label htmlFor="answer-input" className="sr-only">
-            生徒名
-          </label>
-          <input
-            id="answer-input"
-            type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="生徒名を入力"
-            autoComplete="off"
-            data-1p-ignore
-            data-lpignore="true"
-            data-form-type="other"
-            aria-invalid={error !== null}
-            aria-describedby={error ? errorId : undefined}
-            className={inputClass}
-          />
-          <Button
-            type="submit"
-            variant={isAnswerEmpty ? "secondary" : "accent"}
-            // 白地の secondary に disabled:opacity-50 が掛かると、ボタンの輪郭がほぼ消えて読めなくなるため
-            className={`shrink-0 ${isAnswerEmpty ? "disabled:opacity-80!" : ""}`}
-            disabled={isAnswerEmpty}
-          >
-            回答する
-          </Button>
-        </form>
-      </motion.div>
+    <div className="relative">
+      <motion.form animate={controls} onSubmit={handleSubmit} className="flex gap-2">
+        <label htmlFor="answer-input" className="sr-only">
+          生徒名
+        </label>
+        <input
+          id="answer-input"
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="生徒名を入力"
+          autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
+          data-form-type="other"
+          aria-invalid={error !== null}
+          aria-describedby={error ? errorId : undefined}
+          className={inputClass}
+        />
+        <Button
+          type="submit"
+          variant={isAnswerEmpty ? "secondary" : "accent"}
+          // 白地の secondary に disabled:opacity-50 が掛かると、ボタンの輪郭がほぼ消えて読めなくなるため
+          className={`shrink-0 ${isAnswerEmpty ? "disabled:opacity-80!" : ""}`}
+          disabled={isAnswerEmpty}
+        >
+          回答する
+        </Button>
+      </motion.form>
 
       {/* key={error.attempt} で、同じ文言が続いても吹き出しを出し直す（スクリーンリーダーへの再読み上げに必要） */}
       {error && (

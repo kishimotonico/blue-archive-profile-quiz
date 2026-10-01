@@ -7,38 +7,26 @@ interface MobilePortraitCardProps {
   portraitState: PortraitState;
   /** MobileQuizLayout が scrollIntoView の対象にする */
   containerRef: RefObject<HTMLDivElement | null>;
-  className?: string;
 }
 
 // デスクトップの StudentPortrait とは切り抜き・スクロール挙動が異なるため別コンポーネントにする
-function MobilePortraitCard({
-  student,
-  portraitState,
-  containerRef,
-  className = "",
-}: MobilePortraitCardProps) {
+function MobilePortraitCard({ student, portraitState, containerRef }: MobilePortraitCardProps) {
   const expanded = portraitState !== "hidden";
 
+  // 高さは即座に切り替え、見た目は clip-path の遷移で広げる。height を遷移させると img が毎フレーム
+  // 再レイアウトされる。hidden 中は clip-path を遷移させない。dvh が変わると切り込みの値も変わり、
+  // 下端が欠けて見えるため。
+  // 展開時の高さの cqh は MobileQuizLayout のスクロール領域基準で、60dvh との小さい方にして低い端末でも
+  // 上端が見切れないようにする。2rem は scroll-margin-bottom（1rem）とスクロール領域内側の下余白
+  // （pb-4）の合計で、scrollIntoView した枠の上下に同じ1rem の隙間が残る
   return (
     <div
       ref={containerRef}
-      data-portrait
-      className={[
-        "relative w-full overflow-hidden rounded-2xl border duration-500 ease-out motion-reduce:transition-none",
-        // scrollIntoView で操作エリアとの間に残す隙間
-        "[scroll-margin-bottom:1rem]",
-        // 高さは即座に切り替え、見た目は clip-path の遷移で広げる。height を遷移させると img が毎フレーム再レイアウトされる
-        "[--portrait-compact-height:max(7rem,25dvh)]",
-        "starting:[clip-path:inset(0_0_calc(100%_-_var(--portrait-compact-height))_0_round_1rem)]",
-        // cqh は MobileQuizLayout のスクロール領域基準。60dvh との小さい方にして低い端末でも上端が見切れないようにする。
-        // hidden 中は clip-path を遷移させない。dvh が変わると切り込みの値も変わり、下端が欠けて見えるため
+      className={`relative w-full overflow-hidden rounded-2xl border duration-500 ease-out motion-reduce:transition-none [scroll-margin-bottom:1rem] [--portrait-compact-height:max(7rem,25dvh)] starting:[clip-path:inset(0_0_calc(100%_-_var(--portrait-compact-height))_0_round_1rem)] ${
         expanded
           ? "h-[min(60dvh,calc(100cqh_-_2rem))] [clip-path:inset(0_round_1rem)] transition-[background-color,border-color,clip-path] border-ba-border bg-white"
-          : "h-[max(7rem,25dvh)] [clip-path:inset(0_0_calc(100%_-_var(--portrait-compact-height))_0_round_1rem)] transition-[background-color,border-color] border-transparent bg-ba-sky-1/60",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+          : "h-(--portrait-compact-height) [clip-path:inset(0_0_calc(100%_-_var(--portrait-compact-height))_0_round_1rem)] transition-[background-color,border-color] border-transparent bg-ba-sky-1/60"
+      }`}
     >
       {expanded ? (
         <img

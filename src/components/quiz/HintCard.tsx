@@ -1,3 +1,4 @@
+import type { Ref } from "react";
 import type { Hint } from "../../quiz-core";
 
 interface HintCardProps {
@@ -5,11 +6,14 @@ interface HintCardProps {
   revealed: boolean;
   justRevealed?: boolean;
   className?: string;
+  /** 呼び出し側がscrollIntoViewするために渡す */
+  ref?: Ref<HTMLDivElement>;
 }
 
-function HintCard({ hint, revealed, justRevealed = false, className = "" }: HintCardProps) {
+function HintCard({ hint, revealed, justRevealed = false, className = "", ref }: HintCardProps) {
   return (
     <div
+      ref={ref}
       className={`relative flex min-h-[84px] flex-col justify-center gap-1.5 overflow-hidden rounded-2xl border px-3.5 py-2.5 text-left ${
         revealed ? "border-ba-blue/40 bg-white" : "border-transparent bg-ba-sky-1/60"
       } transition-[background-color,border-color] duration-500 motion-reduce:transition-none starting:border-transparent starting:bg-ba-sky-1/60 ${justRevealed ? "ba-shine" : ""} ${className}`}

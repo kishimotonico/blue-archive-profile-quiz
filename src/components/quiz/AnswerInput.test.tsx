@@ -8,13 +8,13 @@ import type { AnswerFeedbackError } from "./quizLayoutTypes";
 const startMock = vi.hoisted(() => vi.fn());
 
 // shake演出（motionのcontrols.start）の呼び出し有無だけを検証したいため、
-// motion.divは通常のdivに、useAnimationControlsはstartをスパイできるスタブに差し替える
+// motion.formは通常のformに、useAnimationControlsはstartをスパイできるスタブに差し替える
 vi.mock("motion/react", () => ({
   motion: {
-    div: ({
+    form: ({
       animate: _animate,
       ...props
-    }: HTMLAttributes<HTMLDivElement> & { animate?: unknown }) => <div {...props} />,
+    }: HTMLAttributes<HTMLFormElement> & { animate?: unknown }) => <form {...props} />,
   },
   useAnimationControls: () => ({ start: startMock }),
 }));

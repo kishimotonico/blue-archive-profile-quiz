@@ -24,37 +24,34 @@ function HintList({ hints, visibleCount, animateReveal, layout, justRevealedRef 
   const peekHints = isMobileLayout ? hints.slice(visibleCount, visibleCount + peekCount) : [];
 
   return (
-    <div className={!isMobileLayout ? "lg:h-full" : undefined}>
-      <div
-        className={`grid grid-cols-1 gap-2 md:grid-cols-2 ${
-          !isMobileLayout ? "lg:h-full lg:auto-rows-[minmax(84px,128px)] lg:content-start" : ""
-        }`}
-      >
-        {visibleHints.map((hint, index) => (
-          <div key={index} ref={index === visibleCount - 1 ? justRevealedRef : undefined}>
-            <HintCard
-              hint={hint}
-              revealed={index < visibleCount}
-              justRevealed={animateReveal && index === visibleCount - 1}
-              className={!isMobileLayout ? "lg:h-full" : undefined}
-            />
-          </div>
-        ))}
-        {/* 2列（md以上）では奇数枚のとき最後の行の空きを埋めるため見切れカードを1枚多く出す */}
-        {peekHints.map((hint, i) => (
-          <div
-            key={visibleCount + i}
-            className={`pointer-events-none ${i >= 2 ? "hidden md:block" : ""}`}
-          >
-            <HintCard hint={hint} revealed={false} />
-          </div>
-        ))}
-        {isMobileLayout && remaining >= 2 && (
-          <div className="pointer-events-none relative col-span-full -mt-20 flex h-20 items-end justify-center bg-linear-to-b from-transparent to-ba-bg to-85% pb-1 text-xs text-ba-ink-soft">
-            残り {remaining} ヒント
-          </div>
-        )}
-      </div>
+    <div
+      className={`grid grid-cols-1 gap-2 md:grid-cols-2 ${
+        !isMobileLayout ? "lg:h-full lg:auto-rows-[minmax(84px,128px)] lg:content-start" : ""
+      }`}
+    >
+      {visibleHints.map((hint, index) => (
+        <HintCard
+          key={index}
+          ref={index === visibleCount - 1 ? justRevealedRef : undefined}
+          hint={hint}
+          revealed={index < visibleCount}
+          justRevealed={animateReveal && index === visibleCount - 1}
+        />
+      ))}
+      {/* 2列（md以上）では奇数枚のとき最後の行の空きを埋めるため見切れカードを1枚多く出す */}
+      {peekHints.map((hint, i) => (
+        <HintCard
+          key={visibleCount + i}
+          hint={hint}
+          revealed={false}
+          className={`pointer-events-none ${i >= 2 ? "max-md:hidden" : ""}`}
+        />
+      ))}
+      {isMobileLayout && remaining >= 2 && (
+        <div className="pointer-events-none relative col-span-full -mt-20 flex h-20 items-end justify-center bg-linear-to-b from-transparent to-ba-bg to-85% pb-1 text-xs text-ba-ink-soft">
+          残り {remaining} ヒント
+        </div>
+      )}
     </div>
   );
 }

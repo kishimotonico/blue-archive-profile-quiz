@@ -74,7 +74,7 @@ function DesktopQuizLayout({
             }`}
             inert={!answered}
           >
-            <StudentReveal student={student} correct={correct} score={score} showName={false} />
+            <StudentReveal correct={correct} score={score} />
             <div className="mt-2 w-full">
               {afterAnswer.notice}
               <Button

@@ -14,8 +14,7 @@ function HintCard({ hint, revealed, justRevealed = false, className = "" }: Hint
         revealed ? "border-ba-blue/40 bg-white" : "border-transparent bg-ba-sky-1/60"
       } transition-[background-color,border-color] duration-500 motion-reduce:transition-none starting:border-transparent starting:bg-ba-sky-1/60 ${justRevealed ? "ba-shine" : ""} ${className}`}
     >
-      {/* 未開示との差は背景色（bg-ba-sky-1/60 vs bg-white）で付けており、
-          文字色自体は不透明度を下げるとAAコントラストを割るため両方とも同じ濃さにする */}
+      {/* 文字色は不透明度を下げると AA を割るため、未開示との差は背景色だけで付ける */}
       <span className="text-xs font-bold text-ba-ink-soft">{hint.label}</span>
       {/* 未開示でも値の行ぶんの高さを確保し、開示前後でラベル位置がずれないようにする */}
       <span

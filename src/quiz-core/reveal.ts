@@ -1,7 +1,6 @@
 import type { PortraitState, Student } from "./types";
 import type { RoundState } from "./round";
 
-/** ヒント段階数 + 立ち絵（シルエット）の1段階。 */
 export function getTotalStages(state: RoundState): number {
   return state.question.hints.length + 1;
 }

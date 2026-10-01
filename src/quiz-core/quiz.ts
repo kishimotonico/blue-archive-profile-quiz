@@ -46,7 +46,6 @@ function createQuestionSetV1(
 
   // 各 subKey 単独で createQuestion(subKey) を呼んでも同じ生徒が復元されるよう、
   // 各問の生徒選定も subKey.seed から pickStudentV1 で行う（QuizKey の自己完結性を保証）。
-  // 重複排除は attempt カウンタで決定論的に処理する。
   const usedStudentIds = new Set<string>();
   const subKeys: QuizKey[] = [];
   let attempt = 0;
@@ -93,7 +92,6 @@ function createQuestionSetV2(
       throw new Error("Failed to assemble unique question set: pool too small or seed exhausted");
     }
     const subSeed = deriveSeedV1(masterKey.seed, "q", attempt++);
-    // createQuestionV2 と同一の生徒選定式: deriveSeedV1(subSeed, "pick") を pickStudentV2 に渡す
     const student = pickStudentV2(pool, deriveSeedV1(subSeed, "pick"));
     if (!usedStudentIds.has(student.id)) {
       usedStudentIds.add(student.id);

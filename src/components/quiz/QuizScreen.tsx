@@ -13,7 +13,6 @@ interface QuizScreenProps {
   afterAnswer: AfterAnswer;
 }
 
-// 日替わりクイズ・フリープレイで共通のレイアウトのみを持つ。
 // 結果モーダルや初期化・進捗保存などページ固有のロジックは呼び出し側に残す。
 function QuizScreen({
   modeLabel,

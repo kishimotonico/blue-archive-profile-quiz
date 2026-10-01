@@ -9,8 +9,7 @@ interface StudentPortraitProps {
   correct?: boolean;
 }
 
-// 立ち絵は縦長なので、通常はバストアップに切り取って大きく見せ、
-// 全身は「全身を見る」モーダルで確認できるようにしている
+// 立ち絵は縦長なので、通常はバストアップに切り取って大きく見せる
 function StudentPortrait({ student, state, correct = false }: StudentPortraitProps) {
   const [showFullBody, setShowFullBody] = useState(false);
   const revealed = state === "revealed";
@@ -51,8 +50,7 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
         )}
       </div>
 
-      {/* hiddenの間も条件分岐で消さず invisible で隠す（消すと立ち絵の表示枠の高さが変わるため）。
-          非表示中の除外は inert だけで足りる（フォーカス・支援技術のどちらからも外れる） */}
+      {/* hidden の間も invisible で残す（消すと立ち絵枠の高さが変わるため）。フォーカス・支援技術からは inert で外す */}
       <div
         className={`flex shrink-0 items-center justify-between gap-2 border-t border-ba-border px-3 py-2 ${
           hidden ? "invisible" : ""

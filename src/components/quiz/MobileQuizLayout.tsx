@@ -57,7 +57,6 @@ function RevealedFace({
   );
 }
 
-// lg（1024px）未満。立ち絵はヒント一覧の下に表示し、回答欄は画面下部に固定する
 function MobileQuizLayout({
   modeLabel,
   heading,
@@ -73,12 +72,12 @@ function MobileQuizLayout({
   const { student, answered, correct, score, portraitState, visibleHintCount, nextStep } =
     getRoundView(round);
 
-  // flushSyncで確定させないと、枠がまだ縮んだままのDOMを基準にscrollIntoViewしてしまう
   const scrollPortraitIntoView = () => {
     portraitRef.current?.scrollIntoView({ block: "end" });
   };
   const willExpandOnReveal = portraitState === "hidden" && nextStep === "silhouette";
 
+  // flushSync で DOM を確定させないと、枠が縮んだままの状態を基準に scrollIntoView してしまう
   const handleReveal = (() => {
     if (willExpandOnReveal) {
       return () => {

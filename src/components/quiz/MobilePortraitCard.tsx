@@ -5,18 +5,12 @@ import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 interface MobilePortraitCardProps {
   student: Student;
   portraitState: PortraitState;
-  /** 展開の瞬間に一度だけ scrollIntoView するため、呼び出し側（MobileQuizLayout）の
-   * クリックハンドラから枠のDOMを参照できるようにする */
+  /** MobileQuizLayout が scrollIntoView の対象にする */
   containerRef: RefObject<HTMLDivElement | null>;
   className?: string;
 }
 
-// Tailwindの任意値は文字列をそのまま静的解析するため、クラス名はテンプレートで
-// 組み立てずリテラルで書く必要がある。展開後の高さ上限はcqh（MobileQuizLayout参照）と
-// 60dvhの小さい方を使い、低い端末で上端が見切れないようにする
-
-// モバイルではヒント一覧の下に立ち絵を表示する。デスクトップの立ち絵パネルとは
-// 切り抜き・スクロール挙動が異なるため、StudentPortrait とは別コンポーネントにしている
+// デスクトップの StudentPortrait とは切り抜き・スクロール挙動が異なるため別コンポーネントにする
 function MobilePortraitCard({
   student,
   portraitState,
@@ -31,7 +25,7 @@ function MobilePortraitCard({
       data-portrait
       className={[
         "relative w-full overflow-hidden rounded-2xl border duration-500 ease-out motion-reduce:transition-none",
-        // 枠の下端と操作エリアの間に残す隙間。回答前後で操作エリアの高さを揃えたため固定値で表せる
+        // scrollIntoView で操作エリアとの間に残す隙間
         "[scroll-margin-bottom:1rem]",
         // 高さは即座に切り替え、見た目は clip-path の遷移で広げる。height を遷移させると img が毎フレーム再レイアウトされる
         "[--portrait-compact-height:max(7rem,25dvh)]",
@@ -61,8 +55,7 @@ function MobilePortraitCard({
           }}
         />
       ) : (
-        // 縮んだ状態はヒント一覧の10枚目の未開示カードに見せたいため、
-        // HintCard の未開示面（bg-ba-sky-1/60・枠なし）と同じ地の上に「？」だけを中央に置く
+        // 縮んだ状態は10枚目の未開示ヒントカードに見せる
         <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
           <span className="text-4xl font-light text-ba-blue/40">?</span>
         </div>

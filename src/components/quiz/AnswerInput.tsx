@@ -69,8 +69,7 @@ function AnswerInput({ value, onChange, onSubmit, error, onDismissError }: Answe
         </form>
       </motion.div>
 
-      {/* key={error.attempt} で、同じ文言が続いても吹き出しを出し直す（スクリーンリーダーへの
-          再読み上げに必要）。自動で閉じる処理はQuizBody側がタイマーでerrorをnullにして行う */}
+      {/* key={error.attempt} で、同じ文言が続いても吹き出しを出し直す（スクリーンリーダーへの再読み上げに必要） */}
       {error && (
         <div
           key={error.attempt}

@@ -101,9 +101,8 @@ export function useRegularQuiz() {
     dispatch({ type: "round", action: { type: "giveUp" } });
   };
 
-  // reducerは純粋関数なので、dispatchする前に同じ入力で先に評価して「finishedへ進むか」を
-  // 判定できる。遷移はこの操作（「次の問題へ」を押した）の結果なので、状態を監視するeffectではなく
-  // ここで直接行う
+  // 遷移は「次の問題へ」の操作の結果なので、状態を監視する effect ではなく、
+  // reducer を先に評価してここで直接行う
   const next = () => {
     const nextState = regularSessionReducer(state, { type: "next" });
     if (nextState.status === "finished") {

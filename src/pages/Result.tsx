@@ -44,7 +44,6 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
         <div className="max-w-2xl mx-auto">
           <h1 className="font-display text-2xl font-black text-ba-navy mb-6">クイズ結果</h1>
 
-          {/* 合計スコア */}
           <div className="bg-white border border-ba-border rounded-2xl p-8 mb-6">
             <div className="text-center">
               <div className="font-display text-6xl font-black text-ba-blue mb-4">{totalScore}</div>
@@ -55,7 +54,6 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
             </div>
           </div>
 
-          {/* 問題ごとのスコア（グリッド） */}
           <div className="bg-white border border-ba-border rounded-2xl p-6 mb-6">
             <h2 className="font-display text-lg font-black text-ba-navy mb-4">問題ごとのスコア</h2>
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -78,11 +76,9 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
             </div>
           </div>
 
-          {/* 詳細テーブル */}
           <div className="bg-white border border-ba-border rounded-2xl p-6 mb-6">
             <h2 className="font-display text-lg font-black text-ba-navy mb-4">詳細</h2>
 
-            {/* デスクトップ: テーブル */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm text-left">
                 <thead>
@@ -132,7 +128,6 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
               </table>
             </div>
 
-            {/* モバイル: カード */}
             <div className="md:hidden space-y-3">
               {results.map((r, index) => {
                 const outcome = getQuestionOutcome(r);
@@ -168,7 +163,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
             </div>
           </div>
 
-          {/* アクションボタン。a > button の入れ子を避けるため、Link ではなく navigate で遷移する */}
+          {/* a > button の入れ子を避けるため、Link ではなく navigate で遷移する */}
           <div className="space-y-3">
             <Button variant="accent" className="w-full" onClick={() => navigate("/regular")}>
               もう一度プレイ

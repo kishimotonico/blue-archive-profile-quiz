@@ -53,8 +53,7 @@ function CurrentBadge() {
   );
 }
 
-// @primer/octicons 19.38.0 の mark-github-16 をそのまま使う。GitHub のブランドガイドラインでマークの変形・加工が禁止され、
-// 色も白か黒に限られているため、パスには手を入れず、周りの文字色に合わせず黒で固定する
+// @primer/octicons 19.38.0 の mark-github-16。ブランドガイドラインで変形・加工が禁止され色も白か黒に限られるため、パスは触らず黒で固定する
 function GithubIcon({ className }: { className: string }) {
   return (
     <svg
@@ -68,7 +67,7 @@ function GithubIcon({ className }: { className: string }) {
   );
 }
 
-// デスクトップナビの右端に置くGitHubへのアイコンリンク。モバイルパネルのリンクとURL・アイコンを共有する
+// モバイルパネルのリンクと URL・アイコンを共有する
 function GithubLink({ className }: { className: string }) {
   return (
     <a
@@ -178,15 +177,13 @@ function DailyStatusRow() {
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // メニュー開閉状態を切り替え
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
   const closeMenu = () => setIsMenuOpen(false);
 
-  // パネルが開いている間は全面オーバーレイで背後の操作を塞ぎ、モーダルと同時に開くことが
-  // ないため、モーダル側のEscape処理（ネイティブのdialog）とは競合しない
+  // オーバーレイで背後を塞ぐためモーダルと同時には開かず、dialog のネイティブ Escape とは競合しない
   useEffect(() => {
     if (!isMenuOpen) return;
 
@@ -211,7 +208,6 @@ function Header() {
           ブルアカプロフクイズ
         </Link>
 
-        {/* デスクトップナビ */}
         <nav className="ml-auto hidden md:flex gap-2">
           <NavTab to="/" end>
             日替わり

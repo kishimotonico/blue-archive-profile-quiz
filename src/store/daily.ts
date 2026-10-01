@@ -75,7 +75,7 @@ const dailyResultsV3Schema = v.looseObject({
 
 export function importDailyHistoryFromV3(doc: unknown): unknown {
   const parsed = v.safeParse(dailyResultsV3Schema, doc);
-  if (!parsed.success) return undefined; // 汎用層の検証で empty になる
+  if (!parsed.success) return undefined;
   const records: QuestionRecord[] = parsed.output.recent
     .map((r) => ({
       key: r.key,

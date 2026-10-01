@@ -103,7 +103,6 @@ function DailyQuiz() {
               次の問題まで: {formatTimeUntilNextReset(getTimeUntilNextReset())}
             </p>
 
-            {/* 統計情報 */}
             <div className="border-t border-ba-border pt-3 mb-4 text-left">
               <h3 className="font-display text-base font-black text-ba-navy mb-2">統計情報</h3>
 

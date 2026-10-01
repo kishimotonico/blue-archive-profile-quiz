@@ -34,9 +34,8 @@ function initDailySession(store: ReturnType<typeof useStore>) {
       session = {
         round: restoreRound(question, {
           status: "answered",
-          // RoundState の result は新規プレイの型（userAnswer 必須）。日替わり画面は userAnswer を表示しないので、
-          // 型を満たすためだけに null を置く。この null が保存に戻ることはない: todayRecord が見つかった時点で
-          // 同じ baseDate の記録が存在し、recordDailyResultAtom はその場合何もしないため。
+          // 型を満たすためだけに null を置く。todayRecord がある時点で同じ baseDate の記録が
+          // 存在し、recordDailyResultAtom は何もしないので、この null は保存に戻らない
           result: { ...todayRecord.result, userAnswer: todayRecord.result.userAnswer ?? null },
         }),
         completedOnLoad: true,

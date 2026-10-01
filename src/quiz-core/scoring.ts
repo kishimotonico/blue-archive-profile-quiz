@@ -1,30 +1,14 @@
-/**
- * スコア計算ロジック
- */
-
-/**
- * 開示したヒント数に応じてスコアを計算
- * - 1ヒント: 10点
- * - 2ヒント: 9点
- * - 3ヒント: 8点
- * - ...
- * - 9ヒント: 2点
- * - 立ち絵（10）: 1点
- * - 不正解: 0点
- */
+/** ヒント1つで10点、以降1点ずつ減り、立ち絵（10段階目）は1点。不正解は0点 */
 export function calculateScore(revealedHintCount: number, correct: boolean): number {
   if (!correct) {
     return 0;
   }
 
-  // ヒント数が1〜10の範囲（10は立ち絵表示時）
+  // 1〜10 は立ち絵を含む開示段階数
   const score = Math.min(getMaxScore(), Math.max(1, 11 - revealedHintCount));
   return score;
 }
 
-/**
- * 最大スコアを取得
- */
 export function getMaxScore(): number {
   return 10;
 }
@@ -44,9 +28,6 @@ export const SCORE_RANKS: readonly { rank: ScoreRank; min: number; max: number }
   { rank: "D", min: 0, max: 0 },
 ];
 
-/**
- * スコアのランク判定
- */
 export function getScoreRank(score: number): ScoreRank {
   return (SCORE_RANKS.find((r) => score >= r.min) ?? SCORE_RANKS[SCORE_RANKS.length - 1]).rank;
 }

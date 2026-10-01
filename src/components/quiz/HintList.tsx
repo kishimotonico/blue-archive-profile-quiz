@@ -35,14 +35,12 @@ function HintList({ hints, visibleCount, animateReveal, layout, justRevealedRef 
             <HintCard
               hint={hint}
               revealed={index < visibleCount}
-              // 直近に開示した1枚だけがきらめく。開示数から導くため、前回値の記憶は要らない
               justRevealed={animateReveal && index === visibleCount - 1}
               className={!isMobileLayout ? "lg:h-full" : undefined}
             />
           </div>
         ))}
-        {/* 2列表示（md以上）では、開示済みが奇数枚のとき最後の行の空きマスも埋めて行を揃えるため、
-            見切れカードは1枚多く出す。1列表示では3枚目を隠す */}
+        {/* 2列（md以上）では奇数枚のとき最後の行の空きを埋めるため見切れカードを1枚多く出す */}
         {peekHints.map((hint, i) => (
           <div
             key={visibleCount + i}

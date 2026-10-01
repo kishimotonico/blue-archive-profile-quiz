@@ -8,8 +8,7 @@ export interface QuizActions {
   giveUp: () => void;
 }
 
-/** 回答欄のエラー表示。message・attempt は QuizBody が submit の結果から作る。
- * attempt は同じ文言が続いても吹き出し・シェイクを出し直すための識別値 */
+/** attempt は同じ文言が続いても吹き出し・シェイクを出し直すための識別値 */
 export interface AnswerFeedbackError {
   message: string;
   attempt: number;
@@ -31,7 +30,6 @@ export interface AfterAnswer {
   notice?: ReactNode;
 }
 
-/** QuizBody → 各レイアウトへ渡す共通 props */
 export interface QuizLayoutProps {
   modeLabel: string;
   heading: ReactNode;

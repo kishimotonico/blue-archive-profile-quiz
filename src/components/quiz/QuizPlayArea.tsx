@@ -18,9 +18,8 @@ function QuizPlayArea({ round, autoFocusHintButton = false, actions, answer }: Q
   const isAnswerEmpty = !answer.value.trim();
 
   // 開示ボタンを先に置き、Tab順が「開示 → 生徒名入力 → 回答する」になるようにしている。
-  // 回答済み（nextStep === null）でもボタン自体は invisible で残し、枠を消す。desktop の立ち絵パネルは
-  // このコンポーネントを常に mount したまま invisible で切り替えるため、ボタンの有無で高さが
-  // 変わると立ち絵パネルの高さも一緒に変わってしまう
+  // 回答済み（nextStep === null）でも同じ大きさのボタンを残す。各レイアウトはこの面を mount したまま
+  // invisible で切り替えるため、ボタンの有無で高さが変わると回答前後で操作エリアの高さが揃わない
   const hintButton =
     nextStep === "hint" || nextStep === "silhouette" ? (
       <Button
@@ -41,7 +40,7 @@ function QuizPlayArea({ round, autoFocusHintButton = false, actions, answer }: Q
         諦めて正解を表示
       </Button>
     ) : (
-      <Button variant="secondary" className="w-full invisible">
+      <Button variant="secondary" className="w-full">
         諦めて正解を表示
       </Button>
     );

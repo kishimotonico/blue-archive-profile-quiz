@@ -34,7 +34,6 @@ function DesktopQuizLayout({
 
   const playArea = (
     <QuizPlayArea
-      variant="panel"
       autoFocusHintButton={round.status === "playing"}
       round={round}
       actions={{ reveal: handleReveal, giveUp: actions.giveUp }}
@@ -43,9 +42,9 @@ function DesktopQuizLayout({
   );
 
   return (
-    <>
+    <div className="flex h-full gap-4 p-4">
       <div className="flex-1 flex flex-col min-h-0 min-w-0">
-        <QuizTitleRow modeLabel={modeLabel} heading={heading} round={round} />
+        <QuizTitleRow modeLabel={modeLabel} heading={heading} round={round} className="py-1.5" />
 
         <div className="flex-1 overflow-y-auto min-h-0">
           <HintList
@@ -62,15 +61,15 @@ function DesktopQuizLayout({
         <StudentPortrait student={student} state={portraitState} correct={correct} />
         {/* 両方を同じグリッドセルに重ね、常に mount して invisible/inert だけで切り替える（片方を unmount すると回答前後で高さが揃わない） */}
         {/* grid-cols-1とmin-w-0が無いと、内側のw-full要素が親トラック幅を無視して右カラムがはみ出す */}
-        <div className="grid grid-cols-1 shrink-0">
+        <div className="grid grid-cols-1 shrink-0 rounded-2xl border border-ba-border bg-white p-4">
           <div
-            className={`col-start-1 row-start-1 min-w-0 ${answered ? "invisible" : ""}`}
+            className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center ${answered ? "invisible" : ""}`}
             inert={answered}
           >
             {playArea}
           </div>
           <div
-            className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 ${
+            className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center ${
               answered ? "" : "invisible"
             }`}
             inert={!answered}
@@ -91,7 +90,7 @@ function DesktopQuizLayout({
           </div>
         </div>
       </aside>
-    </>
+    </div>
   );
 }
 

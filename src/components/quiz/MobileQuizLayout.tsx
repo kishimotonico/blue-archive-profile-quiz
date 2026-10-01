@@ -28,7 +28,7 @@ function RevealedFace({
   primaryButtonRef,
 }: RevealedFaceProps) {
   return (
-    <div className="min-w-0 flex flex-col items-stretch gap-3 py-3">
+    <div className="min-w-0 flex flex-col items-stretch gap-3">
       {afterAnswer.notice}
       <div className="flex min-w-0 items-center justify-center gap-2 rounded-lg border-2 border-transparent px-4 py-3 text-base">
         <span
@@ -107,7 +107,6 @@ function MobileQuizLayout({
 
   const playArea = (
     <QuizPlayArea
-      variant="footer"
       autoFocusHintButton={round.status === "playing"}
       round={round}
       actions={{ reveal: handleReveal, giveUp: actions.giveUp }}
@@ -116,14 +115,19 @@ function MobileQuizLayout({
   );
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 min-w-0">
-      <QuizTitleRow modeLabel={modeLabel} heading={heading} round={round} />
+    <div className="flex h-full flex-col">
+      <QuizTitleRow
+        modeLabel={modeLabel}
+        heading={heading}
+        round={round}
+        className="px-4 pt-5 pb-3 md:pt-5.5 md:pb-1.5"
+      />
 
       {/* スクロール領域を絶対配置にするのは、立ち絵枠の高さ上限（MobilePortraitCard の cqh）の解決を
           祖先の flex の内在サイズ計算に左右させないため。Chrome では flex アイテムのままだと 0 に解決される */}
       <div className="flex-1 min-h-0 relative">
         <div className="absolute inset-0 overflow-y-auto [container-type:size] scroll-smooth motion-reduce:scroll-auto">
-          <div className="flex flex-col gap-2 pb-4">
+          <div className="flex flex-col gap-2 px-4 pb-4">
             <HintList
               hints={round.question.hints}
               visibleCount={visibleHintCount}
@@ -142,21 +146,19 @@ function MobileQuizLayout({
 
       {/* 回答前後で操作エリアの高さを揃えてあるため（RevealedFace参照）、両方を同じ
           グリッドセルに重ねて描画するだけで答え合わせの前後で高さが変わらない。
-          -mx-4 px-4 は main の左右余白を打ち消して白い面を画面端まで伸ばすため。下余白は main 側で
-          モバイルだけ0にしてあり、白い面が画面下端に接する。
           各セルの min-w-0 は、無いとグリッドの列が中身の最小幅まで広がって右にはみ出すため */}
       <div
-        className="shrink-0 grid -mx-4 px-4 border-t border-ba-border bg-white"
+        className="shrink-0 grid border-t border-ba-border bg-white px-4 py-3"
         data-quiz-footer-area
       >
         <div
-          className={`[grid-area:1/1] min-w-0 py-3 ${answered ? "invisible" : ""}`}
+          className={`col-start-1 row-start-1 min-w-0 ${answered ? "invisible" : ""}`}
           inert={answered}
         >
           {playArea}
         </div>
         <div
-          className={`[grid-area:1/1] min-w-0 ${!answered ? "invisible" : ""}`}
+          className={`col-start-1 row-start-1 min-w-0 ${!answered ? "invisible" : ""}`}
           inert={!answered}
         >
           <RevealedFace

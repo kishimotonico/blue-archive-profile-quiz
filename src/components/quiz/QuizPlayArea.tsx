@@ -9,17 +9,9 @@ interface QuizPlayAreaProps {
   autoFocusHintButton?: boolean;
   actions: { reveal: () => void; giveUp: () => void };
   answer: AnswerDraft;
-  /** "footer": 呼び出し側の面（モバイルの固定フッター）に載せるため、ここではカードで包まない */
-  variant?: "footer" | "panel";
 }
 
-function QuizPlayArea({
-  round,
-  autoFocusHintButton = false,
-  actions,
-  answer,
-  variant = "panel",
-}: QuizPlayAreaProps) {
+function QuizPlayArea({ round, autoFocusHintButton = false, actions, answer }: QuizPlayAreaProps) {
   const nextStep = getNextStep(round);
   // 画面内の強調ボタン（primary/accent）は常に1つまでにする。回答欄に入力があると
   // 「回答する」が accent になるため、その間は開示ボタンを secondary に下げる
@@ -54,7 +46,7 @@ function QuizPlayArea({
       </Button>
     );
 
-  const content = (
+  return (
     <div className="flex flex-col items-stretch gap-3">
       {hintButton}
       <AnswerInput
@@ -64,16 +56,6 @@ function QuizPlayArea({
         error={answer.error}
         onDismissError={answer.dismissError}
       />
-    </div>
-  );
-
-  if (variant === "footer") {
-    return content;
-  }
-
-  return (
-    <div className="shrink-0 flex flex-col justify-center rounded-2xl border border-ba-border bg-white p-3.5 sm:p-4">
-      {content}
     </div>
   );
 }

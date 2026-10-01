@@ -1,32 +1,19 @@
 import type { Student } from "./types";
 import { seededRandomV1, seededRandomV2 } from "./random";
 
-let studentsCache: Student[] | null = null;
-
-type StudentEntry = {
+export type StudentEntry = {
   profile: Omit<Student, "id" | "portraitImage" | "availableFrom">;
   images: { portrait: string };
   availableFrom: string | null;
 };
 
-export async function loadStudents(): Promise<Student[]> {
-  if (studentsCache) {
-    return studentsCache;
-  }
-
-  const response = await fetch(`${import.meta.env.BASE_URL}data/students.json`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch students.json: ${response.status} ${response.statusText}`);
-  }
-  const data = (await response.json()) as Record<string, StudentEntry>;
-
-  studentsCache = Object.entries(data).map(([id, entry]) => ({
+export function parseStudents(data: Record<string, StudentEntry>): Student[] {
+  return Object.entries(data).map(([id, entry]) => ({
     id,
     ...entry.profile,
     portraitImage: entry.images.portrait,
     availableFrom: entry.availableFrom,
   }));
-  return studentsCache;
 }
 
 export function extractFamilyName(fullName: string): string {
@@ -37,14 +24,8 @@ export function extractFamilyName(fullName: string): string {
   return fullName;
 }
 
-export async function getStudentById(id: string): Promise<Student | undefined> {
-  const students = await loadStudents();
-  return students.find((s) => s.id === id);
-}
-
-export async function getStudentPool(baseDate: string): Promise<Student[]> {
-  const all = await loadStudents();
-  return all
+export function getStudentPool(students: Student[], baseDate: string): Student[] {
+  return students
     .filter((s): s is Student & { availableFrom: string } => s.availableFrom !== null)
     .filter((s) => s.availableFrom <= baseDate)
     .sort((a, b) =>

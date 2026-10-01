@@ -5,6 +5,7 @@ import {
   getPortraitState,
   getRemainingStages,
   getNextStep,
+  getRoundView,
 } from "./reveal";
 import { roundReducer } from "./round";
 import type { Hint, QuizQuestion, Student } from "./types";
@@ -118,5 +119,33 @@ describe("getNextStep", () => {
 
   it("answered では null", () => {
     expect(getNextStep(answeredState(1))).toBeNull();
+  });
+});
+
+describe("getRoundView", () => {
+  it("playing では answered が false、correct/score は初期値", () => {
+    const view = getRoundView(playingState(2));
+    expect(view.student).toEqual(makeStudent());
+    expect(view.answered).toBe(false);
+    expect(view.correct).toBe(false);
+    expect(view.score).toBe(0);
+    expect(view.portraitState).toBe(getPortraitState(playingState(2)));
+    expect(view.visibleHintCount).toBe(getVisibleHintCount(playingState(2)));
+    expect(view.nextStep).toBe(getNextStep(playingState(2)));
+  });
+
+  it("answered では answered/correct/score が result から決まる", () => {
+    const round = answeredState(1);
+    const view = getRoundView(round);
+    expect(view.answered).toBe(true);
+    expect(view.correct).toBe(true);
+    expect(view.score).toBeGreaterThan(0);
+    expect(view.nextStep).toBeNull();
+  });
+
+  it("不正解の answered では correct が false", () => {
+    const view = getRoundView(answeredState(1, false));
+    expect(view.correct).toBe(false);
+    expect(view.score).toBe(0);
   });
 });

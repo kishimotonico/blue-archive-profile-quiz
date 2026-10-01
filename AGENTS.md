@@ -6,12 +6,12 @@
 
 ```
 /
+├── DESIGN.md            # デザインガイド
 ├── scrape/              # スクレイピング関連のコード
 ├── specs/               # 仕様や開発に関するドキュメント
 │   ├── 001_app-concept.md
-│   ├── 002_design-renewal-followups.md  # デザイン刷新後の設計改善案
-│   ├── 003_play-history.md              # プレイ履歴の保存仕様
-│   └── design-mocks/    # デザイン検討時の静的HTMLモック（採用案はREADME参照）
+│   ├── 002_design-renewal-followups.md  # デザイン刷新後の残課題
+│   └── 003_play-history.md              # プレイ履歴の保存仕様
 ├── data/                # クイズに必要なデータ
 │   ├── students.json    # 全生徒のプロフィール
 │   └── images/portrait/ # 生徒の立ち絵画像（リポジトリには含めない）
@@ -20,7 +20,7 @@
     │   ├── types.ts     # 型定義
     │   ├── key.ts       # QuizKey（version/baseDate/seed）の定義とエンコード
     │   ├── random.ts    # 決定論的な乱数・シャッフル・seed派生（v1/v2）
-    │   ├── students.ts  # 生徒データ読み込み・出題プール・生徒選定
+    │   ├── students.ts  # 生徒データのparse・出題プール・生徒選定（fetchは持たない）
     │   ├── hints.ts     # ヒント生成ロジック
     │   ├── quiz.ts      # QuizKey から問題/問題セットを生成（version分岐）
     │   ├── answer.ts    # 回答判定ロジック
@@ -37,7 +37,7 @@
     │   ├── persistedDocument.ts  # バージョン付き保存文書（parse / 移行 / 旧キー取り込み / 別タブ購読）
     │   ├── daily.ts     # 日替わりの履歴文書（DailyHistory、localStorage 全件保存）と進捗、記録・統計の atom
     │   ├── regular.ts   # フリープレイ進捗（sessionStorage、Valibotで検証）
-    │   ├── students.ts  # 生徒データの atom
+    │   ├── students.ts  # 生徒データのfetchとStudent[]変換を行うatom（allStudentsAtom）
     │   └── __fixtures__/ # 保存形式の過去バージョンごとの実データ相当（移行・取り込みのテスト用）
     ├── hooks/           # カスタムフック
     │   ├── useDailyQuiz.ts   # 日替わりクイズの controller
@@ -50,7 +50,7 @@
     │   ├── DailyQuiz.tsx    # 日替わりクイズページ（/ ルート）
     │   ├── RegularQuiz.tsx  # フリープレイページ（/regular）
     │   └── Result.tsx       # 結果表示ページ（/result）
-    ├── App.tsx          # ルーティング設定（Provider はアプリで1つ、各ルートを ErrorBoundary/Suspense で包む）
+    ├── App.tsx          # ルーティング設定（Provider はアプリで1つ、Header を持つレイアウトルートの下に各ルートを ErrorBoundary/Suspense で包んで配置）
     └── main.tsx         # エントリーポイント
 ```
 
@@ -72,6 +72,7 @@
 - MUST: Reactのベストプラクティスに従うこと
   - useEffectの依存配列を適切に設定し、無限ループを避けること
   - 状態更新がre-renderを引き起こす場合、意図した動作か必ず確認すること
+  - 見た目は状態から宣言的に導き、描画結果を観測して後から補正する実装で要件を満たさないこと
 - SHOULD: コード内のコメントはWHY（理由・制約）とWHY NOT（代替案を採らない理由）だけを書き、WHAT/HOWや変更の経緯は書かない。ただしpropsのJSDocにはWHATを書いてもよい（名前と型から明らかなものは除く）
 
 ### UI/UX開発
@@ -80,6 +81,7 @@
   - モバイルのみの変更なのか、両方に適用するのかを必ず確認
   - レスポンシブデザインを考慮し、適切なブレークポイントを使用
 - SHOULD: モバイルではハンバーガーメニュー（サイドドロワー）、デスクトップではヘッダーメニューを使用
+- MUST: 見た目を変えるときは `DESIGN.md` に従うこと
 
 ### Git運用
 

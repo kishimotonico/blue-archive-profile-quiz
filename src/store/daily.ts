@@ -75,7 +75,7 @@ const dailyResultsV3Schema = v.looseObject({
 
 export function importDailyHistoryFromV3(doc: unknown): unknown {
   const parsed = v.safeParse(dailyResultsV3Schema, doc);
-  if (!parsed.success) return undefined; // 汎用層の検証で empty になる
+  if (!parsed.success) return undefined;
   const records: QuestionRecord[] = parsed.output.recent
     .map((r) => ({
       key: r.key,
@@ -101,6 +101,10 @@ export const dailyHistoryDocument = definePersistedDocument<DailyHistory>({
 });
 
 export const dailyHistoryAtom = dailyHistoryDocument.atom;
+
+export function findDailyRecord(history: DailyHistory, baseDate: string): QuestionRecord | null {
+  return history.records.find((r) => r.key.baseDate === baseDate) ?? null;
+}
 
 // 完了済みの日を再訪したときに二重記録しないよう、同じ baseDate が既にあれば何もしない
 export const recordDailyResultAtom = atom(

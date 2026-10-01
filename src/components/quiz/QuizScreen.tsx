@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import type { RoundState } from "../../quiz-core";
-import Header from "../layout/Header";
 import QuizBody from "./QuizBody";
-import type { AfterAnswer, AnswerError, QuizActions } from "./quizLayoutTypes";
+import type { AfterAnswer, QuizActions } from "./quizLayoutTypes";
 
 interface QuizScreenProps {
   modeLabel: string;
@@ -11,11 +10,9 @@ interface QuizScreenProps {
   questionId: string;
   round: RoundState;
   actions: QuizActions;
-  answerError: AnswerError;
   afterAnswer: AfterAnswer;
 }
 
-// 日替わりクイズ・フリープレイで共通のレイアウトのみを持つ。
 // 結果モーダルや初期化・進捗保存などページ固有のロジックは呼び出し側に残す。
 function QuizScreen({
   modeLabel,
@@ -23,28 +20,21 @@ function QuizScreen({
   questionId,
   round,
   actions,
-  answerError,
   afterAnswer,
 }: QuizScreenProps) {
   return (
-    <div className="h-[100dvh] flex flex-col">
-      <Header />
-
-      <main className="flex-1 flex flex-col lg:flex-row gap-4 p-4 pt-2 md:pt-4 max-w-6xl xl:max-w-7xl mx-auto w-full overflow-hidden">
-        {/* 問題が変わるたびに下書き・エラー表示・開示演出の状態を作り直す。
-            画面幅が変わってモバイル/デスクトップのレイアウトが切り替わっても、
-            questionId は変わらないため QuizBody は作り直されず下書きが残る */}
-        <QuizBody
-          key={questionId}
-          modeLabel={modeLabel}
-          heading={heading}
-          round={round}
-          actions={actions}
-          answerError={answerError}
-          afterAnswer={afterAnswer}
-        />
-      </main>
-    </div>
+    // overflow-hidden だと main もスクロールコンテナになり、立ち絵の scrollIntoView が main まで
+    // 動かして位置がずれるため overflow-clip にする
+    <main className="h-[calc(100dvh-var(--header-height))] max-w-6xl xl:max-w-7xl mx-auto w-full overflow-clip">
+      <QuizBody
+        key={questionId}
+        modeLabel={modeLabel}
+        heading={heading}
+        round={round}
+        actions={actions}
+        afterAnswer={afterAnswer}
+      />
+    </main>
   );
 }
 

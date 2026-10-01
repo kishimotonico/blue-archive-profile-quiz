@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "jotai": "^2.16.2",
+    "lucide-react": "^1.47.0",
     "motion": "^12.36.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -1,13 +1,10 @@
 import { useSyncExternalStore } from "react";
 
-// md（768px）幅では2カラムにするとヒントも立ち絵も窮屈になるため、lg以上をデスクトップ扱いにする。
-// ヘッダーはmd（768px）でデスクトップ用に切り替わるため、768〜1023pxはデスクトップ用ヘッダーと
-// モバイル型のクイズ画面（ヒントは2列）が同居する。ヘッダーと違いクイズ画面は要素数が多く窮屈さの
-// 影響が大きいため、両者のブレークポイントを揃えずこの組み合わせを意図的に許容している
+// mdでは2カラムにするとヒントも立ち絵も窮屈なため、lg以上をデスクトップ扱いにする。
+// ヘッダー（mdで切替）とは意図的に揃えない
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
-// MediaQueryListの生成コストを避けるため、初回アクセス時に一度だけ作って使い回す。
-// jsdom など matchMedia を持たない環境ではモバイル扱いにフォールバックする
+// matchMedia を持たない jsdom ではモバイル扱いにする
 let cachedMql: MediaQueryList | null | undefined;
 
 function matchDesktop(): MediaQueryList | null {

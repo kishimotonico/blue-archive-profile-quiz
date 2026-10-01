@@ -10,11 +10,9 @@ export type RegularSession = {
 };
 
 export type RegularState =
-  | { status: "loading" }
-  | { status: "error" }
   | { status: "ready"; session: RegularSession }
   // 最終問の結果も session.results に含める。ページは最後の画面をそのまま描けばよく、
-  // /result への遷移は controller の effect に任せる（reducer は遷移を知らない）。
+  // /result への遷移は controller の next ハンドラに任せる（reducer は遷移を知らない）。
   | { status: "finished"; session: RegularSession };
 
 /** ready は次に出す問題、finished は最後に表示した問題を指す。 */
@@ -25,18 +23,10 @@ export function getCurrentIndex(
   return status === "finished" ? session.results.length - 1 : session.results.length;
 }
 
-export type RegularAction =
-  | { type: "loaded"; session: RegularSession }
-  | { type: "failed" }
-  | { type: "round"; action: RoundAction }
-  | { type: "next" };
+export type RegularAction = { type: "round"; action: RoundAction } | { type: "next" };
 
 export function regularSessionReducer(state: RegularState, action: RegularAction): RegularState {
   switch (action.type) {
-    case "loaded":
-      return { status: "ready", session: action.session };
-    case "failed":
-      return { status: "error" };
     case "round":
       return applyRound(state, action.action);
     case "next":

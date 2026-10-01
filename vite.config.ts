@@ -46,5 +46,8 @@ export default defineConfig({
     globals: true,
     environment: "node",
     setupFiles: ["./src/testSetup.ts"],
+    // .claude/worktrees はエージェント作業用の一時ワークツリーで、gitの管理外だが
+    // vitestの既定excludeには含まれないため、素朴なコピーが二重に収集されてしまう
+    exclude: ["**/node_modules/**", "**/.claude/**"],
   },
 });

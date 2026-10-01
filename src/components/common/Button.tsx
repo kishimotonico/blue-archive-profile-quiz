@@ -16,17 +16,24 @@ function Button({
 }: ButtonProps) {
   // transition-colors を別クラスで足すと transition-property が上書きし合うため、色も同じリストに含める
   const baseClasses =
-    "inline-flex items-center justify-center font-display font-black rounded-lg shadow-sm transition-[filter,transform,box-shadow,background-color,border-color,color] duration-150 active:translate-y-0.5 active:shadow-none hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue focus-visible:ring-offset-1";
+    "inline-flex items-center justify-center font-sans font-bold rounded-lg shadow-sm transition-[filter,transform,box-shadow,background-color,border-color,color] duration-150 active:translate-y-0.5 active:shadow-none hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ba-blue focus-visible:ring-offset-1";
 
+  // secondary だけ border-2 で枠を見せ、primary/accent は同じ太さの透明枠を敷いて高さを揃える。
+  // ボタンは同じ位置で variant が切り替わる（回答欄の入力有無など）ため、枠の有無で高さが変わると
+  // 隣接する立ち絵エリアなどのレイアウトまでずれる
   const variantClasses = {
-    // 白文字のコントラストを保つとグラデの明度差がほぼ出ないため、文字の載らない上端の線で光沢を出す。
-    // box-shadow は1つのプロパティで base の shadow-sm と上書きし合うため、外側の影もまとめて important で指定する
+    // box-shadow は1つのプロパティで base の shadow-sm と上書きし合うため、外側の影もまとめて important で指定する。
+    // 立体感は下端の内側影で出す。影の色は地の色のトークンから導出し、地の色を変えても追従させる。
+    // 地は ba-blue-light（白文字比4.5:1）。ba-sky は3.48:1のため通常サイズの太字文字には使えない
     primary:
-      "bg-linear-to-b from-ba-blue-light to-ba-blue text-white shadow-[inset_0_1px_0_0_rgb(71_197_251_/_0.9),0_1px_3px_0_rgb(0_0_0_/_0.1),0_1px_2px_-1px_rgb(0_0_0_/_0.1)]! active:shadow-none!",
+      "border-2 border-transparent bg-ba-blue-light text-white shadow-[inset_0_-3px_0_0_color-mix(in_srgb,var(--color-ba-blue)_55%,transparent),0_1px_3px_0_rgb(0_0_0_/_0.1),0_1px_2px_-1px_rgb(0_0_0_/_0.1)]! active:shadow-none!",
     secondary: "bg-white text-ba-navy border-2 border-ba-border shadow-none hover:bg-ba-bg",
-    accent: "bg-linear-to-b from-yellow-100 to-ba-yellow text-ba-navy",
+    accent:
+      "border-2 border-transparent bg-linear-to-b from-yellow-100 to-ba-yellow text-ba-navy shadow-[inset_0_-3px_0_0_color-mix(in_srgb,var(--color-ba-yellow)_50%,black),0_1px_3px_0_rgb(0_0_0_/_0.1),0_1px_2px_-1px_rgb(0_0_0_/_0.1)]! active:shadow-none!",
   };
 
+  // 文字サイズは variant ではなく size にだけ紐づける。同じボタンが状態（回答欄の入力有無など）で
+  // primary/secondary/accent を切り替えるとき、文字サイズが variant で変わるとボタンの高さが跳ねるため
   const sizeClasses = {
     sm: "min-h-11 py-2 px-4 text-sm",
     md: "py-3 px-6 text-base",

@@ -1,43 +1,24 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
+import { describe, it, expect } from "vitest";
 import { createQuestion, createQuestionSet } from "./quiz";
 import { dateToSeed } from "./daily";
-import { deriveSeedV1, seededRandomV2 } from "./random";
-import { pickStudentV2 } from "./students";
+import { deriveSeedV1, seededRandomV1, seededRandomV2 } from "./random";
+import { parseStudents, pickStudentV2, type StudentEntry } from "./students";
 import type { QuizKey } from "./key";
 
-// students.ts の loadStudents は fetch + import.meta.env.BASE_URL を使うため、
-// テスト環境では global.fetch をモックして data/students.json を直接返す。
 const studentsJsonPath = path.resolve(process.cwd(), "data/students.json");
 const studentsJsonText = readFileSync(studentsJsonPath, "utf-8");
-
-beforeAll(() => {
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(JSON.parse(studentsJsonText)),
-      }),
-    ),
-  );
-  // import.meta.env.BASE_URL はテスト環境では undefined になりうるが、
-  // モック fetch では引数を使わないため問題なし
-});
-
-afterAll(() => {
-  vi.unstubAllGlobals();
-});
+const allStudents = parseStudents(JSON.parse(studentsJsonText) as Record<string, StudentEntry>);
 
 // テスト用の共通日付（pool が十分存在する日）
 const BASE_DATE = "2026-06-20";
 
 describe("createQuestion（version:1）", () => {
-  it("version:1 キーを渡すと createQuestionV1 経由で解決される", async () => {
+  it("version:1 キーを渡すと createQuestionV1 経由で解決される", () => {
     const key: QuizKey = { version: 1, baseDate: BASE_DATE, seed: dateToSeed(BASE_DATE) };
-    const q1 = await createQuestion(key);
-    const q2 = await createQuestion(key);
+    const q1 = createQuestion(allStudents, key);
+    const q2 = createQuestion(allStudents, key);
 
     expect(q1.student.id).toBe(q2.student.id);
     expect(q1.hints.map((h) => h.type)).toEqual(q2.hints.map((h) => h.type));
@@ -46,46 +27,26 @@ describe("createQuestion（version:1）", () => {
 });
 
 describe("createQuestion（version:2）", () => {
-  it("同じ version:2 キーを渡すと同じ生徒・同じヒント順を返す（決定論的）", async () => {
+  it("同じ version:2 キーを渡すと同じ生徒・同じヒント順を返す（決定論的）", () => {
     const key: QuizKey = { version: 2, baseDate: BASE_DATE, seed: dateToSeed(BASE_DATE) };
-    const q1 = await createQuestion(key);
-    const q2 = await createQuestion(key);
+    const q1 = createQuestion(allStudents, key);
+    const q2 = createQuestion(allStudents, key);
 
     expect(q1.student.id).toBe(q2.student.id);
     expect(q1.hints.map((h) => h.type)).toEqual(q2.hints.map((h) => h.type));
     expect(q1.key).toEqual(key);
   });
 
-  it("version:2 の生徒選定は deriveSeedV1(seed, 'pick') を使う（生の seed を使わない）", async () => {
+  it("version:2 の生徒選定は deriveSeedV1(seed, 'pick') を使う（生の seed を使わない）", () => {
     const seed = dateToSeed(BASE_DATE);
     const key: QuizKey = { version: 2, baseDate: BASE_DATE, seed };
 
     // createQuestion の内部動作を検証：
     // v2 では pickStudentV2(pool, deriveSeedV1(seed, "pick")) が呼ばれているはず
-    const q = await createQuestion(key);
+    const q = createQuestion(allStudents, key);
 
     // students.json を直接読んで pool を再構築して期待値を計算
-    const data = JSON.parse(studentsJsonText) as Record<
-      string,
-      {
-        profile: {
-          fullName: string;
-          name: string;
-          school: string;
-          grade: string | null;
-          club: string;
-          age: string;
-          birthday: string;
-          height: string;
-          hobby: string;
-          weaponName: string;
-          cv: string;
-          skills: { ex: string; normal: string; passive: string; sub: string };
-        };
-        images: { portrait: string };
-        availableFrom: string | null;
-      }
-    >;
+    const data = JSON.parse(studentsJsonText) as Record<string, StudentEntry>;
     const pool = Object.entries(data)
       .filter(([, e]) => e.availableFrom !== null && e.availableFrom <= BASE_DATE)
       .sort((a, b) =>
@@ -111,27 +72,27 @@ describe("createQuestion（version:2）", () => {
     expect(q.student.id).toBe(expectedStudent.id);
   });
 
-  it("version:2 と version:1 では（通常）異なる生徒が選ばれる", async () => {
+  it("version:2 と version:1 では（通常）異なる生徒が選ばれる", () => {
     const seed = dateToSeed(BASE_DATE);
     const keyV1: QuizKey = { version: 1, baseDate: BASE_DATE, seed };
     const keyV2: QuizKey = { version: 2, baseDate: BASE_DATE, seed };
 
-    const qV1 = await createQuestion(keyV1);
-    const qV2 = await createQuestion(keyV2);
+    const qV1 = createQuestion(allStudents, keyV1);
+    const qV2 = createQuestion(allStudents, keyV2);
 
     // 稀に一致することもあり得るが、このseedでは異なるはず
     // v1 は生の seed を seededRandomV1 に、v2 は deriveSeedV1(seed,"pick") を seededRandomV2 に渡す
     expect(qV1.student.id).not.toBe(qV2.student.id);
   });
 
-  it("未知の version を渡すとエラーを投げる", async () => {
+  it("未知の version を渡すとエラーを投げる", () => {
     const key: QuizKey = { version: 99, baseDate: BASE_DATE, seed: 0 };
-    await expect(createQuestion(key)).rejects.toThrow("Unsupported algorithm version: 99");
+    expect(() => createQuestion(allStudents, key)).toThrow("Unsupported algorithm version: 99");
   });
 });
 
 describe("連続する日替わりキーで選ばれる生徒の分散（v2 相関解消）", () => {
-  it("連続30日の日替わり v2 キーで選ばれる pool インデックスが等差数列にならない", async () => {
+  it("連続30日の日替わり v2 キーで選ばれる pool インデックスが等差数列にならない", () => {
     const days: string[] = [];
     // 2026-04-01 から 30日分
     for (let i = 0; i < 30; i++) {
@@ -143,27 +104,7 @@ describe("連続する日替わりキーで選ばれる生徒の分散（v2 相�
     }
 
     // 各日で選ばれる生徒の pool インデックスを求める
-    const data = JSON.parse(studentsJsonText) as Record<
-      string,
-      {
-        profile: {
-          fullName: string;
-          name: string;
-          school: string;
-          grade: string | null;
-          club: string;
-          age: string;
-          birthday: string;
-          height: string;
-          hobby: string;
-          weaponName: string;
-          cv: string;
-          skills: { ex: string; normal: string; passive: string; sub: string };
-        };
-        images: { portrait: string };
-        availableFrom: string | null;
-      }
-    >;
+    const data = JSON.parse(studentsJsonText) as Record<string, StudentEntry>;
     const buildPool = (baseDate: string) =>
       Object.entries(data)
         .filter(([, e]) => e.availableFrom !== null && e.availableFrom <= baseDate)
@@ -195,7 +136,7 @@ describe("連続する日替わりキーで選ばれる生徒の分散（v2 相�
       indicesV2.push(pool.findIndex((s) => s.id === studentV2.id));
 
       // v1: 生の seed → seededRandomV1
-      const rngV1 = (await import("./random")).seededRandomV1(seed);
+      const rngV1 = seededRandomV1(seed);
       indicesV1.push(Math.floor(rngV1() * pool.length));
     }
 
@@ -225,9 +166,9 @@ describe("連続する日替わりキーで選ばれる生徒の分散（v2 相�
 });
 
 describe("createQuestionSet（version:2）", () => {
-  it("10問が重複なく生成される", async () => {
+  it("10問が重複なく生成される", () => {
     const masterKey: QuizKey = { version: 2, baseDate: BASE_DATE, seed: dateToSeed(BASE_DATE) };
-    const questions = await createQuestionSet(masterKey, 10);
+    const questions = createQuestionSet(allStudents, masterKey, 10);
 
     expect(questions).toHaveLength(10);
     const studentIds = questions.map((q) => q.student.id);
@@ -235,22 +176,22 @@ describe("createQuestionSet（version:2）", () => {
     expect(uniqueIds.size).toBe(10);
   });
 
-  it("各 subKey 単独で createQuestion を呼ぶと同じ生徒が得られる（自己完結性）", async () => {
+  it("各 subKey 単独で createQuestion を呼ぶと同じ生徒が得られる（自己完結性）", () => {
     const masterKey: QuizKey = { version: 2, baseDate: BASE_DATE, seed: dateToSeed(BASE_DATE) };
-    const questions = await createQuestionSet(masterKey, 10);
+    const questions = createQuestionSet(allStudents, masterKey, 10);
 
     for (const q of questions) {
       const subKey = q.key;
       expect(subKey.version).toBe(2);
-      const restored = await createQuestion(subKey);
+      const restored = createQuestion(allStudents, subKey);
       expect(restored.student.id).toBe(q.student.id);
       expect(restored.hints.map((h) => h.type)).toEqual(q.hints.map((h) => h.type));
     }
   });
 
-  it("masterKey の version は subKey にも引き継がれる", async () => {
+  it("masterKey の version は subKey にも引き継がれる", () => {
     const masterKey: QuizKey = { version: 2, baseDate: BASE_DATE, seed: dateToSeed(BASE_DATE) };
-    const questions = await createQuestionSet(masterKey, 5);
+    const questions = createQuestionSet(allStudents, masterKey, 5);
 
     for (const q of questions) {
       expect(q.key.version).toBe(2);
@@ -258,14 +199,145 @@ describe("createQuestionSet（version:2）", () => {
     }
   });
 
-  it("同じ masterKey から生成される問題セットは決定論的", async () => {
+  it("同じ masterKey から生成される問題セットは決定論的", () => {
     const masterKey: QuizKey = { version: 2, baseDate: BASE_DATE, seed: dateToSeed(BASE_DATE) };
-    const set1 = await createQuestionSet(masterKey, 5);
-    const set2 = await createQuestionSet(masterKey, 5);
+    const set1 = createQuestionSet(allStudents, masterKey, 5);
+    const set2 = createQuestionSet(allStudents, masterKey, 5);
 
     const ids1 = set1.map((q) => q.student.id);
     const ids2 = set2.map((q) => q.student.id);
     expect(ids1).toEqual(ids2);
+  });
+});
+
+// 過去に発行した QuizKey は再訪しても同じ問題を再現できる必要がある。
+// version 1・2 の出題結果を固定値で固定し、アルゴリズムや実装の変更で
+// 意図せず結果が変わってしまうことを防ぐ。
+describe("既存バージョンの出題結果の固定値テスト", () => {
+  const FIXED_BASE_DATE = "2026-02-10";
+
+  it("version:1 のキーは常に同じ生徒・同じヒント順を返す", () => {
+    const key: QuizKey = {
+      version: 1,
+      baseDate: FIXED_BASE_DATE,
+      seed: dateToSeed(FIXED_BASE_DATE),
+    };
+    const q = createQuestion(allStudents, key);
+
+    expect(q.student.id).toBe("himari");
+    expect(q.hints.map((h) => h.type)).toEqual([
+      "club",
+      "hobby",
+      "age",
+      "familyName",
+      "cv",
+      "birthday",
+      "height",
+      "school",
+      "weaponName",
+    ]);
+  });
+
+  it("version:1 のランダムなシードのキーも常に同じ生徒・同じヒント順を返す", () => {
+    const key: QuizKey = { version: 1, baseDate: FIXED_BASE_DATE, seed: 459804437 };
+    const q = createQuestion(allStudents, key);
+
+    expect(q.student.id).toBe("ritsu");
+    expect(q.hints.map((h) => h.type)).toEqual([
+      "familyName",
+      "height",
+      "age",
+      "weaponName",
+      "cv",
+      "club",
+      "hobby",
+      "birthday",
+      "school",
+    ]);
+  });
+
+  it("version:2 のキーは常に同じ生徒・同じヒント順を返す", () => {
+    const key: QuizKey = {
+      version: 2,
+      baseDate: FIXED_BASE_DATE,
+      seed: dateToSeed(FIXED_BASE_DATE),
+    };
+    const q = createQuestion(allStudents, key);
+
+    expect(q.student.id).toBe("natsu");
+    expect(q.hints.map((h) => h.type)).toEqual([
+      "height",
+      "hobby",
+      "club",
+      "school",
+      "cv",
+      "age",
+      "weaponName",
+      "familyName",
+      "birthday",
+    ]);
+  });
+
+  it("version:2 のランダムなシードのキーも常に同じ生徒・同じヒント順を返す", () => {
+    const key: QuizKey = { version: 2, baseDate: FIXED_BASE_DATE, seed: 459804437 };
+    const q = createQuestion(allStudents, key);
+
+    expect(q.student.id).toBe("junko");
+    expect(q.hints.map((h) => h.type)).toEqual([
+      "hobby",
+      "weaponName",
+      "school",
+      "club",
+      "cv",
+      "height",
+      "birthday",
+      "familyName",
+      "age",
+    ]);
+  });
+
+  it("version:1 の createQuestionSet(10問) は常に同じ生徒の並びを返す", () => {
+    const masterKey: QuizKey = {
+      version: 1,
+      baseDate: FIXED_BASE_DATE,
+      seed: dateToSeed(FIXED_BASE_DATE),
+    };
+    const questions = createQuestionSet(allStudents, masterKey, 10);
+
+    expect(questions.map((q) => q.student.id)).toEqual([
+      "akane",
+      "mika",
+      "arisu",
+      "minori",
+      "atsuko",
+      "miyo",
+      "chiaki",
+      "momoi",
+      "eimi",
+      "natsu",
+    ]);
+  });
+
+  it("version:2 の createQuestionSet(10問) は常に同じ生徒の並びを返す", () => {
+    const masterKey: QuizKey = {
+      version: 2,
+      baseDate: FIXED_BASE_DATE,
+      seed: dateToSeed(FIXED_BASE_DATE),
+    };
+    const questions = createQuestionSet(allStudents, masterKey, 10);
+
+    expect(questions.map((q) => q.student.id)).toEqual([
+      "neru",
+      "megu",
+      "sumire",
+      "kaede",
+      "kotama",
+      "hoshino",
+      "kisaki",
+      "moe",
+      "hanako",
+      "haruka",
+    ]);
   });
 });
 

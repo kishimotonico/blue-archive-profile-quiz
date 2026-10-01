@@ -1,7 +1,6 @@
-import type { PortraitState } from "./types";
+import type { PortraitState, Student } from "./types";
 import type { RoundState } from "./round";
 
-/** ヒント段階数 + 立ち絵（シルエット）の1段階。 */
 export function getTotalStages(state: RoundState): number {
   return state.question.hints.length + 1;
 }
@@ -32,4 +31,27 @@ export function getNextStep(state: RoundState): "hint" | "silhouette" | "giveUp"
   if (state.revealedHintCount < state.question.hints.length) return "hint";
   if (state.revealedHintCount === state.question.hints.length) return "silhouette";
   return "giveUp";
+}
+
+export interface RoundView {
+  student: Student;
+  answered: boolean;
+  correct: boolean;
+  score: number;
+  portraitState: PortraitState;
+  visibleHintCount: number;
+  nextStep: "hint" | "silhouette" | "giveUp" | null;
+}
+
+export function getRoundView(state: RoundState): RoundView {
+  const answered = state.status === "answered";
+  return {
+    student: state.question.student,
+    answered,
+    correct: answered && state.result.correct,
+    score: answered ? state.result.score : 0,
+    portraitState: getPortraitState(state),
+    visibleHintCount: getVisibleHintCount(state),
+    nextStep: getNextStep(state),
+  };
 }

@@ -1,46 +1,35 @@
-import { useEffect, useRef, type FormEvent } from "react";
+import { useId, type FormEvent } from "react";
 import { motion, useAnimationControls } from "motion/react";
 import Button from "../common/Button";
-import type { AnswerError } from "./quizLayoutTypes";
+import type { AnswerFeedbackError } from "./quizLayoutTypes";
 
 interface AnswerInputProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: () => void;
-  error: AnswerError;
-  errorVisible: boolean;
+  onSubmit: () => "accepted" | "unknownStudent";
+  error: AnswerFeedbackError | null;
   onDismissError: () => void;
 }
 
-function AnswerInput({
-  value,
-  onChange,
-  onSubmit,
-  error,
-  errorVisible,
-  onDismissError,
-}: AnswerInputProps) {
+function AnswerInput({ value, onChange, onSubmit, error, onDismissError }: AnswerInputProps) {
   const controls = useAnimationControls();
-  // マウント時点の error.key を初期値にすることで、レイアウト切り替えによる再マウント時には
-  // シェイクを再生せず、その後 key が実際に変わったときだけ再生する
-  const prevErrorKeyRef = useRef(error.key);
-
-  useEffect(() => {
-    if (error.key === prevErrorKeyRef.current) return;
-    prevErrorKeyRef.current = error.key;
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    controls.start({ x: [0, -8, 8, -6, 6, -4, 4, 0], transition: { duration: 0.4 } });
-  }, [error.key, controls]);
+  const errorId = useId();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (value.trim()) onSubmit();
+    if (!value.trim()) return;
+    // シェイクは送信結果が分かった直後、このハンドラの中でだけ再生する。
+    // stateやkeyの変化を監視するeffectを使わないため、同じ入力欄のDOMを保ったまま再生できる
+    if (onSubmit() === "unknownStudent") {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      controls.start({ x: [0, -8, 8, -6, 6, -4, 4, 0], transition: { duration: 0.4 } });
+    }
   };
 
   // focus-visible のリングは付けない。エラー時の赤枠と重なって二重枠になる
   const inputClass = [
     "flex-1 min-w-0 rounded-lg border-2 bg-ba-bg px-4 py-3 text-center font-semibold text-ba-navy transition-colors duration-200 placeholder:font-medium placeholder:text-ba-ink-soft focus:bg-white focus:outline-hidden disabled:bg-gray-100",
-    errorVisible
+    error
       ? "border-ba-wrong bg-ba-wrong-soft focus:border-ba-wrong"
       : "border-ba-border focus:border-ba-blue",
   ].join(" ");
@@ -48,34 +37,42 @@ function AnswerInput({
   const isAnswerEmpty = !value.trim();
 
   return (
-    <div className="relative w-full">
-      <motion.div animate={controls} className="flex gap-2 w-full">
-        <form onSubmit={handleSubmit} className="flex gap-2 w-full">
-          <input
-            type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="生徒名を入力"
-            autoComplete="off"
-            data-1p-ignore
-            data-lpignore="true"
-            data-form-type="other"
-            className={inputClass}
-          />
-          <Button
-            type="submit"
-            variant={isAnswerEmpty ? "secondary" : "accent"}
-            // 白地の secondary に disabled:opacity-50 が掛かると、ボタンの輪郭がほぼ消えて読めなくなるため
-            className={`shrink-0 ${isAnswerEmpty ? "disabled:opacity-80!" : ""}`}
-            disabled={isAnswerEmpty}
-          >
-            回答する
-          </Button>
-        </form>
-      </motion.div>
+    <div className="relative">
+      <motion.form animate={controls} onSubmit={handleSubmit} className="flex gap-2">
+        <label htmlFor="answer-input" className="sr-only">
+          生徒名
+        </label>
+        <input
+          id="answer-input"
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="生徒名を入力"
+          autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
+          data-form-type="other"
+          aria-invalid={error !== null}
+          aria-describedby={error ? errorId : undefined}
+          className={inputClass}
+        />
+        <Button
+          type="submit"
+          variant={isAnswerEmpty ? "secondary" : "accent"}
+          // 白地の secondary に disabled:opacity-50 が掛かると、ボタンの輪郭がほぼ消えて読めなくなるため
+          className={`shrink-0 ${isAnswerEmpty ? "disabled:opacity-80!" : ""}`}
+          disabled={isAnswerEmpty}
+        >
+          回答する
+        </Button>
+      </motion.form>
 
-      {errorVisible && error.message && (
+      {/* key={error.attempt} で、同じ文言が続いても吹き出しを出し直す（スクリーンリーダーへの再読み上げに必要） */}
+      {error && (
         <div
+          key={error.attempt}
+          id={errorId}
+          role="alert"
           className="absolute left-0 bottom-full mb-2 z-10 w-full max-w-xs cursor-pointer"
           onClick={onDismissError}
         >

@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
+import { useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import QuizScreen from "./QuizScreen";
+import { roundReducer } from "../../quiz-core";
 import type {
   Hint,
   QuestionResult,
@@ -83,7 +85,6 @@ function renderScreen(props: {
   questionId: string;
   round: RoundState;
   actions?: Partial<QuizActions>;
-  answerError?: { message: string | null; key: number };
   afterAnswer?: AfterAnswer;
 }) {
   const actions: QuizActions = {
@@ -100,9 +101,40 @@ function renderScreen(props: {
         questionId={props.questionId}
         round={props.round}
         actions={actions}
-        answerError={props.answerError ?? { message: null, key: 0 }}
         afterAnswer={props.afterAnswer ?? defaultAfterAnswer}
       />
+    </MemoryRouter>,
+  );
+}
+
+// round を実際に useState で持ち、submit/giveUp が roundReducer で本物の状態遷移をするハーネス。
+// QuizBody の flushSync + フォーカスは、呼び出し元（controller）の状態更新が実際に
+// 同期的にDOMへ反映されて初めて機能するため、round を外から書き換えるだけの
+// renderScreen では再現できない
+function renderStatefulScreen(initialRound: RoundState) {
+  function Harness() {
+    const [round, setRound] = useState(initialRound);
+    const submit = (answer: string): SubmitOutcome => {
+      setRound((prev) => roundReducer(prev, { type: "submit", answer, correct: true }));
+      return "accepted";
+    };
+    const giveUp = () => {
+      setRound((prev) => roundReducer(prev, { type: "giveUp" }));
+    };
+    return (
+      <QuizScreen
+        modeLabel="テストモード"
+        heading="見出し"
+        questionId="q1"
+        round={round}
+        actions={{ reveal: vi.fn(), giveUp, submit }}
+        afterAnswer={defaultAfterAnswer}
+      />
+    );
+  }
+  return render(
+    <MemoryRouter>
+      <Harness />
     </MemoryRouter>,
   );
 }
@@ -132,7 +164,6 @@ describe("QuizScreen - レイアウト切り替えでの下書き保持", () => 
             giveUp: vi.fn(),
             submit: vi.fn().mockReturnValue("accepted"),
           }}
-          answerError={{ message: null, key: 0 }}
           afterAnswer={defaultAfterAnswer}
         />
       </MemoryRouter>,
@@ -167,7 +198,6 @@ describe("QuizScreen - 問題が変わったときのリセット", () => {
             giveUp: vi.fn(),
             submit: vi.fn().mockReturnValue("accepted"),
           }}
-          answerError={{ message: null, key: 0 }}
           afterAnswer={defaultAfterAnswer}
         />
       </MemoryRouter>,
@@ -195,7 +225,6 @@ describe("QuizScreen - 問題が変わったときのリセット", () => {
             giveUp: vi.fn(),
             submit: vi.fn().mockReturnValue("accepted"),
           }}
-          answerError={{ message: null, key: 0 }}
           afterAnswer={defaultAfterAnswer}
         />
       </MemoryRouter>,
@@ -247,60 +276,19 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
   });
 
   it("submit で回答が確定すると主ボタンにフォーカスが移る", () => {
-    const submit = vi.fn<(answer: string) => SubmitOutcome>().mockReturnValue("accepted");
-    const { rerender } = renderScreen({
-      questionId: "q1",
-      round: playingRound("s1"),
-      actions: { submit },
-    });
+    renderStatefulScreen(playingRound("s1"));
 
     const input = screen.getByPlaceholderText("生徒名を入力") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "陸八魔アル" } });
     fireEvent.click(screen.getByRole("button", { name: "回答する" }));
-    expect(submit).toHaveBeenCalledWith("陸八魔アル");
-
-    // controller はここで round を answered に更新し、ページが questionId 据え置きで再レンダーする
-    rerender(
-      <MemoryRouter>
-        <QuizScreen
-          modeLabel="テストモード"
-          heading="見出し"
-          questionId="q1"
-          round={answeredRound("s1")}
-          actions={{ reveal: vi.fn(), giveUp: vi.fn(), submit }}
-          answerError={{ message: null, key: 0 }}
-          afterAnswer={defaultAfterAnswer}
-        />
-      </MemoryRouter>,
-    );
 
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
   });
 
   it("giveUp で回答が確定すると主ボタンにフォーカスが移る", () => {
-    const giveUp = vi.fn();
-    const { rerender } = renderScreen({
-      questionId: "q1",
-      round: { status: "playing", question: makeQuestion("s1"), revealedHintCount: 4 },
-      actions: { giveUp },
-    });
+    renderStatefulScreen({ status: "playing", question: makeQuestion("s1"), revealedHintCount: 4 });
 
     fireEvent.click(screen.getByRole("button", { name: "諦めて正解を表示" }));
-    expect(giveUp).toHaveBeenCalledTimes(1);
-
-    rerender(
-      <MemoryRouter>
-        <QuizScreen
-          modeLabel="テストモード"
-          heading="見出し"
-          questionId="q1"
-          round={answeredRound("s1")}
-          actions={{ reveal: vi.fn(), giveUp, submit: vi.fn().mockReturnValue("accepted") }}
-          answerError={{ message: null, key: 0 }}
-          afterAnswer={defaultAfterAnswer}
-        />
-      </MemoryRouter>,
-    );
 
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
   });

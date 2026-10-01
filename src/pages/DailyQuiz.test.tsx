@@ -48,11 +48,15 @@ vi.mock("../quiz-core", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../quiz-core")>();
   return {
     ...actual,
-    loadStudents: vi.fn().mockResolvedValue([mockStudent]),
     getDailyDate: vi.fn().mockReturnValue("2026-04-21"),
-    createDailyQuestion: vi.fn().mockResolvedValue(mockQuestion),
-    createQuestion: vi.fn().mockResolvedValue(mockQuestion),
+    createDailyQuestion: vi.fn().mockReturnValue(mockQuestion),
+    createQuestion: vi.fn().mockReturnValue(mockQuestion),
   };
+});
+
+vi.mock("../store/students", async () => {
+  const { atom } = await import("jotai");
+  return { allStudentsAtom: atom(async () => [mockStudent]) };
 });
 
 vi.mock("../components/quiz/portraitImageUrl", () => ({
@@ -137,7 +141,7 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     expect(vi.mocked(createQuestion)).toHaveBeenCalledTimes(1);
   });
 
-  it("保存済み10点(使用ヒント数1)を再訪すると、結果モーダルに10点・使用ヒント数1が表示され、結果が二重に記録されない", async () => {
+  it("保存済み10点を再訪すると、結果モーダルに10点・ランクSSが表示され、結果が二重に記録されない", async () => {
     const history: DailyHistory = {
       schemaVersion: 1,
       records: [
@@ -167,7 +171,7 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
 
     const dialog = screen.getByRole("dialog", { name: "今日のクイズの結果" });
     expect(dialog.textContent).toContain("10");
-    expect(screen.getByText("使用ヒント数: 1")).toBeTruthy();
+    expect(screen.getByText("ランク SS")).toBeTruthy();
 
     // 再訪時の record effect が走っても records は増えない（baseDate が既にあれば何もしない）
     expect(store.get(dailyHistoryAtom).records).toHaveLength(1);

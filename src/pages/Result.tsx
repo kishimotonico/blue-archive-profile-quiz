@@ -1,9 +1,8 @@
 import { useMemo } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
-import Header from "../components/layout/Header";
 import Button from "../components/common/Button";
-import { getMaxScore, getScoreRank, getQuestionOutcome } from "../quiz-core";
+import { getScoreRank, getQuestionOutcome, summarizeResults } from "../quiz-core";
 import type { QuestionResult, QuestionOutcome } from "../quiz-core";
 import { allStudentsAtom } from "../store/students";
 
@@ -29,6 +28,7 @@ function hintCountLabel(count: number): string {
 
 function ResultContent({ results }: { results: QuestionResult[] }) {
   const allStudents = useAtomValue(allStudentsAtom);
+  const navigate = useNavigate();
 
   const studentMap = useMemo(() => {
     const map = new Map(allStudents.map((s) => [s.id, s]));
@@ -36,20 +36,14 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
   }, [allStudents]);
 
   const totalQuestions = results.length;
-  const totalScore = results.reduce((s, r) => s + r.score, 0);
-  const correctCount = results.filter((r) => r.correct).length;
-  const maxPossibleScore = getMaxScore() * totalQuestions;
+  const { totalScore, correctCount, maxScore: maxPossibleScore } = summarizeResults(results);
 
   return (
-    <div className="min-h-[100dvh]">
-      <Header />
+    <div className="min-h-[calc(100dvh-var(--header-height))]">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <h1 className="font-display text-2xl font-black text-ba-navy mb-6 pr-16 md:pr-0">
-            クイズ結果
-          </h1>
+          <h1 className="font-display text-2xl font-black text-ba-navy mb-6">クイズ結果</h1>
 
-          {/* 合計スコア */}
           <div className="bg-white border border-ba-border rounded-2xl p-8 mb-6">
             <div className="text-center">
               <div className="font-display text-6xl font-black text-ba-blue mb-4">{totalScore}</div>
@@ -60,7 +54,6 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
             </div>
           </div>
 
-          {/* 問題ごとのスコア（グリッド） */}
           <div className="bg-white border border-ba-border rounded-2xl p-6 mb-6">
             <h2 className="font-display text-lg font-black text-ba-navy mb-4">問題ごとのスコア</h2>
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -72,19 +65,20 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                     className={`p-3 rounded-lg text-center ${outcomeClass(outcome)}`}
                   >
                     <div className="text-xs">Q{index + 1}</div>
-                    <div className="font-display text-lg font-black">{getScoreRank(r.score)}</div>
-                    <div className="text-xs">{r.score}点</div>
+                    <div className="font-bold text-lg tabular-nums">
+                      {r.score}
+                      <span className="text-xs font-normal">点</span>
+                    </div>
+                    <div className="text-xs opacity-80">{getScoreRank(r.score)}</div>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* 詳細テーブル */}
           <div className="bg-white border border-ba-border rounded-2xl p-6 mb-6">
             <h2 className="font-display text-lg font-black text-ba-navy mb-4">詳細</h2>
 
-            {/* デスクトップ: テーブル */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm text-left">
                 <thead>
@@ -122,7 +116,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                         </td>
                         <td className="py-3 pr-4 text-ba-ink-soft">{r.userAnswer ?? "—"}</td>
                         <td className="py-3">
-                          <span className="font-medium text-ba-navy">{r.score}点</span>
+                          <span className="font-bold text-ba-navy tabular-nums">{r.score}点</span>
                           <span className="ml-1 text-xs text-ba-ink-soft">
                             {getScoreRank(r.score)}
                           </span>
@@ -134,7 +128,6 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
               </table>
             </div>
 
-            {/* モバイル: カード */}
             <div className="md:hidden space-y-3">
               {results.map((r, index) => {
                 const outcome = getQuestionOutcome(r);
@@ -160,7 +153,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
                       <dd className="text-ba-navy">{r.userAnswer ?? "—"}</dd>
                       <dt className="text-ba-ink-soft">得点</dt>
                       <dd className="text-ba-navy">
-                        {r.score}点{" "}
+                        <span className="font-bold tabular-nums">{r.score}点</span>{" "}
                         <span className="text-ba-ink-soft">{getScoreRank(r.score)}</span>
                       </dd>
                     </dl>
@@ -170,18 +163,14 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
             </div>
           </div>
 
-          {/* アクションボタン */}
+          {/* a > button の入れ子を避けるため、Link ではなく navigate で遷移する */}
           <div className="space-y-3">
-            <Link to="/regular" className="block">
-              <Button variant="primary" className="w-full">
-                もう一度プレイ
-              </Button>
-            </Link>
-            <Link to="/" className="block">
-              <Button variant="secondary" className="w-full">
-                ホームに戻る
-              </Button>
-            </Link>
+            <Button variant="accent" className="w-full" onClick={() => navigate("/regular")}>
+              もう一度プレイ
+            </Button>
+            <Button variant="secondary" className="w-full" onClick={() => navigate("/")}>
+              ホームに戻る
+            </Button>
           </div>
         </div>
       </div>
@@ -191,19 +180,19 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
 
 function Result() {
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as ResultState | null;
 
   if (!state || !state.results) {
     return (
-      <div className="min-h-[100dvh]">
-        <Header />
+      <div className="min-h-[calc(100dvh-var(--header-height))]">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto text-center">
             <h1 className="font-display text-2xl font-black text-ba-navy mb-8">結果</h1>
             <p className="text-ba-ink-soft mb-8">結果データがありません</p>
-            <Link to="/">
-              <Button variant="primary">ホームに戻る</Button>
-            </Link>
+            <Button variant="primary" onClick={() => navigate("/")}>
+              ホームに戻る
+            </Button>
           </div>
         </div>
       </div>

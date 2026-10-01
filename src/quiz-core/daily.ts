@@ -1,5 +1,5 @@
 import { CURRENT_ALGORITHM_VERSION, type QuizKey } from "./key";
-import type { QuizQuestion } from "./types";
+import type { QuizQuestion, Student } from "./types";
 import { createQuestion } from "./quiz";
 
 // JST 4:00 = UTC+5 0:00
@@ -30,8 +30,8 @@ export function getDailyQuizKey(date?: string): QuizKey {
   };
 }
 
-export async function createDailyQuestion(date?: string): Promise<QuizQuestion> {
-  return createQuestion(getDailyQuizKey(date));
+export function createDailyQuestion(students: Student[], date?: string): QuizQuestion {
+  return createQuestion(students, getDailyQuizKey(date));
 }
 
 export function getNextQuizDate(date?: string): string {
@@ -69,4 +69,14 @@ export function getTimeUntilNextReset(): { hours: number; minutes: number } {
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
   return { hours, minutes };
+}
+
+export function formatTimeUntilNextReset({
+  hours,
+  minutes,
+}: {
+  hours: number;
+  minutes: number;
+}): string {
+  return hours > 0 ? `${hours}時間${minutes}分後` : `${minutes}分後`;
 }

@@ -1,13 +1,8 @@
 import { useRegularQuiz } from "../hooks/useRegularQuiz";
-import QuizLoadingState from "../components/quiz/QuizLoadingState";
-import QuizErrorState from "../components/quiz/QuizErrorState";
 import QuizScreen from "../components/quiz/QuizScreen";
 
 function RegularQuiz() {
-  const { state, view, totalQuestions, reveal, submit, giveUp, next, answerFeedback, errorKey } =
-    useRegularQuiz();
-
-  if (!view) return state.status === "error" ? <QuizErrorState /> : <QuizLoadingState />;
+  const { view, totalQuestions, reveal, submit, giveUp, next } = useRegularQuiz();
 
   const currentIndex = view.index;
 
@@ -18,7 +13,6 @@ function RegularQuiz() {
       questionId={view.questionId}
       round={view.round}
       actions={{ reveal, submit, giveUp }}
-      answerError={{ message: answerFeedback, key: errorKey }}
       afterAnswer={{
         primaryAction: {
           label: currentIndex + 1 < totalQuestions ? "次の問題へ" : "結果を見る",

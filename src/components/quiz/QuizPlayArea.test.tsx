@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
-import { createRef } from "react";
 import { describe, it, expect, vi } from "vitest";
 import QuizPlayArea from "./QuizPlayArea";
 import type { Hint, QuizQuestion, RoundState, Student } from "../../quiz-core";
@@ -46,18 +45,15 @@ const playingRound = (revealedHintCount: number): RoundState => ({
 const noopAnswer: AnswerDraft = {
   value: "",
   onChange: vi.fn(),
-  onSubmit: vi.fn(),
-  error: { message: null, key: 0 },
-  errorVisible: false,
+  onSubmit: vi.fn().mockReturnValue("accepted"),
+  error: null,
   dismissError: vi.fn(),
 };
 
 function renderPlayArea(round: RoundState) {
-  const hintButtonRef = createRef<HTMLButtonElement>();
   return render(
     <QuizPlayArea
       round={round}
-      hintButtonRef={hintButtonRef}
       actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
       answer={noopAnswer}
     />,
@@ -78,5 +74,19 @@ describe("QuizPlayArea - 開示ボタンの出し分け", () => {
   it("開示数がヒント数を超えたら「諦めて正解を表示」", () => {
     renderPlayArea(playingRound(4));
     expect(screen.getByRole("button", { name: "諦めて正解を表示" })).toBeTruthy();
+  });
+});
+
+describe("QuizPlayArea - autoFocusHintButton", () => {
+  it("シルエット表示済み（giveUp段階）のplayingを初期状態にしても「諦めて正解を表示」にフォーカスする", () => {
+    render(
+      <QuizPlayArea
+        round={playingRound(4)}
+        autoFocusHintButton
+        actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
+        answer={noopAnswer}
+      />,
+    );
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "諦めて正解を表示" }));
   });
 });

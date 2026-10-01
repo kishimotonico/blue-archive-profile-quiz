@@ -17,19 +17,15 @@ export function shuffleV1<T>(array: T[], seed: number): T[] {
 
 export function deriveSeedV1(master: number, tag: string, index = 0): number {
   let h = master ^ 0x9e3779b9;
-  for (const ch of tag) h = (((h << 5) - h) + ch.charCodeAt(0)) | 0;
+  for (const ch of tag) h = ((h << 5) - h + ch.charCodeAt(0)) | 0;
   h = (h * 16777619) ^ index;
   return h >>> 0;
 }
 
 // --- v2: mulberry32 ベースの整数安全 PRNG ---
 
-/**
- * mulberry32 アルゴリズムによる疑似乱数生成器。
- * Math.imul を使って 32bit 整数演算の精度を保証する。
- */
+/** mulberry32。Math.imul で 32bit 整数演算に閉じる */
 export function seededRandomV2(seed: number): () => number {
-  // seed を 32bit 符号なし整数に正規化
   let state = seed >>> 0;
   return () => {
     state = (state + 0x6d2b79f5) >>> 0;

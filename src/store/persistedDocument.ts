@@ -47,7 +47,7 @@ export function definePersistedDocument<T>({
     try {
       return JSON.parse(raw);
     } catch {
-      return undefined; // 検証で落ちて empty になる
+      return undefined;
     }
   };
 
@@ -60,7 +60,7 @@ export function definePersistedDocument<T>({
     let current = json;
     let migrated = false;
     for (const m of migrations) {
-      // from 昇順前提。migrate 後は schemaVersion が from + 1 になるので次が当たる
+      // migrations は from 昇順前提
       if (schemaVersionOf(current) === m.from) {
         current = m.migrate(current);
         migrated = true;

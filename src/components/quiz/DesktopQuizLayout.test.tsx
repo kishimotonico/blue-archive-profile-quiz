@@ -114,9 +114,9 @@ describe("DesktopQuizLayout - マウント時の主ボタンへのフォーカ�
     renderLayout(playingRound, { primaryAction: { label: "結果を見る", onClick: vi.fn() } });
 
     // 立ち絵パネルの高さを answered/playing で変えないため、ボタンは playing 中も
-    // mount されたまま、親セルが inert（invisible）になっている
+    // mount されたまま、親セルが invisible になっている
     const primaryButton = screen.getByRole("button", { name: "結果を見る" });
-    expect(primaryButton.closest("[inert]")).not.toBeNull();
+    expect(primaryButton.closest(".invisible")).not.toBeNull();
     expect(document.activeElement).not.toBe(primaryButton);
     // 代わりに開示ボタン側へ autoFocus する
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "シルエットを表示" }));

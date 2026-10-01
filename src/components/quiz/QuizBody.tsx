@@ -46,7 +46,7 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     dismissError();
   };
 
-  // flushSyncで確定させないと、ボタンがまだinertなDOMのままでfocus()が効かない
+  // flushSyncで確定させないと、ボタンがまだinvisibleのままでfocus()が効かない
   const handleSubmit = (): SubmitOutcome => {
     let outcome!: SubmitOutcome;
     flushSync(() => {

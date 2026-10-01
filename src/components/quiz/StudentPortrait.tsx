@@ -50,12 +50,11 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
         )}
       </div>
 
-      {/* hidden の間も invisible で残す（消すと立ち絵枠の高さが変わるため）。フォーカス・支援技術からは inert で外す */}
+      {/* hidden の間も invisible で残す（消すと立ち絵枠の高さが変わるため） */}
       <div
         className={`flex shrink-0 items-center justify-between gap-2 border-t border-ba-border px-3 py-2 ${
           hidden ? "invisible" : ""
         }`}
-        inert={hidden}
       >
         <span
           className={`min-w-0 truncate font-display font-black ${

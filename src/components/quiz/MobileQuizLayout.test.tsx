@@ -128,19 +128,21 @@ describe("MobileQuizLayout - マウント時のフォーカス", () => {
 });
 
 describe("MobileQuizLayout - 操作エリアの出し分け", () => {
-  it("playing中は回答後の面がinertになり、開示ボタン側が操作できる", () => {
+  it("playing中は回答後の面がinvisibleになり、開示ボタン側が操作できる", () => {
     renderLayout(playingRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
-    expect(screen.getByRole("button", { name: "シルエットを表示" }).closest("[inert]")).toBeNull();
-    expect(screen.getByRole("button", { name: "次の問題へ" }).closest("[inert]")).not.toBeNull();
+    expect(
+      screen.getByRole("button", { name: "シルエットを表示" }).closest(".invisible"),
+    ).toBeNull();
+    expect(screen.getByRole("button", { name: "次の問題へ" }).closest(".invisible")).not.toBeNull();
   });
 
-  it("answered中は開示ボタン側の面がinertになり、主ボタン側が操作できる", () => {
+  it("answered中は開示ボタン側の面がinvisibleになり、主ボタン側が操作できる", () => {
     renderLayout(answeredRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
-    expect(screen.getByRole("button", { name: "次の問題へ" }).closest("[inert]")).toBeNull();
+    expect(screen.getByRole("button", { name: "次の問題へ" }).closest(".invisible")).toBeNull();
     // answered中はQuizPlayAreaが諦めボタンではなく非表示のプレースホルダを描画する
-    expect(screen.getByText("諦めて正解を表示").closest("[inert]")).not.toBeNull();
+    expect(screen.getByText("諦めて正解を表示").closest(".invisible")).not.toBeNull();
   });
 
   it("answered中は正誤・得点・生徒名を1行にまとめて表示する", () => {

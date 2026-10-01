@@ -148,16 +148,10 @@ function MobileQuizLayout({
           グリッドセルに重ねて描画するだけで答え合わせの前後で高さが変わらない。
           各セルの min-w-0 は、無いとグリッドの列が中身の最小幅まで広がって右にはみ出すため */}
       <div className="shrink-0 grid border-t border-ba-border bg-white px-4 py-3">
-        <div
-          className={`col-start-1 row-start-1 min-w-0 ${answered ? "invisible" : ""}`}
-          inert={answered}
-        >
+        <div className={`col-start-1 row-start-1 min-w-0 ${answered ? "invisible" : ""}`}>
           {playArea}
         </div>
-        <div
-          className={`col-start-1 row-start-1 min-w-0 ${!answered ? "invisible" : ""}`}
-          inert={!answered}
-        >
+        <div className={`col-start-1 row-start-1 min-w-0 ${!answered ? "invisible" : ""}`}>
           <RevealedFace
             student={student}
             correct={correct}

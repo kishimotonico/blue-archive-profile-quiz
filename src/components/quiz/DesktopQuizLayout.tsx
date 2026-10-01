@@ -59,12 +59,11 @@ function DesktopQuizLayout({
 
       <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
         <StudentPortrait student={student} state={portraitState} correct={correct} />
-        {/* 両方を同じグリッドセルに重ね、常に mount して invisible/inert だけで切り替える（片方を unmount すると回答前後で高さが揃わない） */}
+        {/* 両方を同じグリッドセルに重ね、常に mount して invisible だけで切り替える（片方を unmount すると回答前後で高さが揃わない） */}
         {/* grid-cols-1とmin-w-0が無いと、内側のw-full要素が親トラック幅を無視して右カラムがはみ出す */}
         <div className="grid grid-cols-1 shrink-0 rounded-2xl border border-ba-border bg-white p-4">
           <div
             className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center ${answered ? "invisible" : ""}`}
-            inert={answered}
           >
             {playArea}
           </div>
@@ -72,7 +71,6 @@ function DesktopQuizLayout({
             className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center ${
               answered ? "" : "invisible"
             }`}
-            inert={!answered}
           >
             <StudentReveal correct={correct} score={score} />
             <div className="mt-2 w-full">

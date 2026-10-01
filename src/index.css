@@ -103,17 +103,6 @@ body {
     animation: ba-shine-sweep 0.7s ease-out;
     pointer-events: none;
   }
-
-  /* transitionだと広がる前の見た目（クリップの開始値）が描画されず補間の起点にできないため、
-     クラス付与のたびに0%から再生できるanimationを使う */
-  .ba-portrait-grow {
-    animation: ba-portrait-grow 0.5s ease-out forwards;
-  }
-
-  /* transitionは要素の新規挿入では再生されないため、mount時に必ず再生されるanimationを使う */
-  .ba-silhouette-fadein {
-    animation: ba-silhouette-fadein 0.5s ease-out forwards;
-  }
 }
 
 @keyframes ba-shine-sweep {
@@ -125,24 +114,6 @@ body {
   }
 }
 
-@keyframes ba-portrait-grow {
-  from {
-    clip-path: inset(0 0 calc(100% - var(--portrait-compact-height, 0px)) 0 round 1rem);
-  }
-  to {
-    clip-path: inset(0 round 1rem);
-  }
-}
-
-@keyframes ba-silhouette-fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.5;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .ba-shine::after {
     display: none;
@@ -151,15 +122,5 @@ body {
 
   .ba-ring-fill {
     transition: none;
-  }
-
-  .ba-portrait-grow {
-    animation: none;
-    clip-path: inset(0 round 1rem);
-  }
-
-  .ba-silhouette-fadein {
-    animation: none;
-    opacity: 0.5;
   }
 }

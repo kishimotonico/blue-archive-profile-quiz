@@ -90,9 +90,12 @@ describe("MobilePortraitCard - 「シルエット」ラベル", () => {
   });
 });
 
-describe("MobilePortraitCard - 広がる演出（ba-portrait-grow）", () => {
-  it("hiddenから展開へ遷移したときは広がる演出のクラスを付ける", () => {
+describe("MobilePortraitCard - 広がる演出（clip-path の遷移）", () => {
+  it("hidden と展開後で同じ形の clip-path を切り替え、遷移で広げる", () => {
     const { rerender, containerRef } = renderCard("hidden");
+    expect(containerRef.current?.className).toContain(
+      "[clip-path:inset(0_0_calc(100%_-_var(--portrait-compact-height))_0_round_1rem)]",
+    );
     rerender(
       <MobilePortraitCard
         student={mockStudent}
@@ -100,27 +103,25 @@ describe("MobilePortraitCard - 広がる演出（ba-portrait-grow）", () => {
         containerRef={containerRef}
       />,
     );
-    expect(containerRef.current?.className).toContain("ba-portrait-grow");
+    expect(containerRef.current?.className).toContain("[clip-path:inset(0_round_1rem)]");
+    expect(containerRef.current?.className).toContain(
+      "transition-[background-color,border-color,clip-path]",
+    );
   });
 
-  it("最初から展開済み（復元）で描画されたときは広がる演出のクラスを付けない", () => {
+  it("展開済みで新規マウントされても starting: で縮んだ状態から広がる", () => {
     const { containerRef } = renderCard("revealed");
-    expect(containerRef.current?.className).not.toContain("ba-portrait-grow");
-  });
-
-  it("hidden中は広がる演出のクラスを付けない", () => {
-    const { containerRef } = renderCard("hidden");
-    expect(containerRef.current?.className).not.toContain("ba-portrait-grow");
+    expect(containerRef.current?.className).toContain("starting:[clip-path:");
   });
 });
 
-describe("MobilePortraitCard - 操作エリアとの隙間・広がる演出の開始値（固定CSS値）", () => {
+describe("MobilePortraitCard - 操作エリアとの隙間・クリップ開始値（固定CSS値）", () => {
   it("枠の下端と操作エリアの隙間をscroll-margin-bottomの固定値で表す", () => {
     const { containerRef } = renderCard("silhouette");
     expect(containerRef.current?.className).toContain("[scroll-margin-bottom:1rem]");
   });
 
-  it("ba-portrait-grow（index.css）のクリップ開始値をhidden中の高さと同じ固定値で渡す", () => {
+  it("クリップの縮んだ状態の切り込みをhidden中の高さと同じ固定値で渡す", () => {
     const { containerRef } = renderCard("silhouette");
     expect(containerRef.current?.className).toContain(
       "[--portrait-compact-height:max(7rem,25dvh)]",

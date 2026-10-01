@@ -28,7 +28,7 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
             src={getPortraitImageUrl(student)}
             alt={revealed ? student.fullName : "シルエット"}
             draggable={false}
-            className={`absolute inset-0 h-full w-full object-cover object-top transition-all duration-500 ${imageStateClass}`}
+            className={`absolute inset-0 h-full w-full object-cover object-top transition-[opacity,filter] duration-500 motion-reduce:transition-none starting:opacity-0 ${imageStateClass}`}
             onError={(e) => {
               e.currentTarget.src = NO_IMAGE_URL;
             }}

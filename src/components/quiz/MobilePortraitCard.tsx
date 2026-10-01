@@ -1,4 +1,4 @@
-import { useState, type RefObject } from "react";
+import type { RefObject } from "react";
 import type { PortraitState, Student } from "../../quiz-core";
 import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 
@@ -24,24 +24,23 @@ function MobilePortraitCard({
   className = "",
 }: MobilePortraitCardProps) {
   const expanded = portraitState !== "hidden";
-  // 最初から silhouette/revealed で復元された場合は演出を再生しない。mount時の値で固定する
-  const [playRevealAnimation] = useState(() => portraitState === "hidden");
 
   return (
     <div
       ref={containerRef}
       data-portrait
       className={[
-        "relative w-full overflow-hidden rounded-2xl border transition-[background-color,border-color] duration-500 motion-reduce:transition-none",
+        "relative w-full overflow-hidden rounded-2xl border duration-500 ease-out motion-reduce:transition-none",
         // 枠の下端と操作エリアの間に残す隙間。回答前後で操作エリアの高さを揃えたため固定値で表せる
         "[scroll-margin-bottom:1rem]",
-        // ba-portrait-grow（index.css）のクリップ開始値。hidden中の高さ（h-[max(7rem,25dvh)]）と揃える
+        // 高さは即座に切り替え、見た目は clip-path の遷移で広げる。height を遷移させると img が毎フレーム再レイアウトされる
         "[--portrait-compact-height:max(7rem,25dvh)]",
+        "starting:[clip-path:inset(0_0_calc(100%_-_var(--portrait-compact-height))_0_round_1rem)]",
+        // cqh は MobileQuizLayout のスクロール領域基準。60dvh との小さい方にして低い端末でも上端が見切れないようにする。
+        // hidden 中は clip-path を遷移させない。dvh が変わると切り込みの値も変わり、下端が欠けて見えるため
         expanded
-          ? `h-[min(60dvh,calc(100cqh_-_2rem))] [clip-path:inset(0_round_1rem)] border-ba-border bg-white${
-              playRevealAnimation ? " ba-portrait-grow" : ""
-            }`
-          : "h-[max(7rem,25dvh)] border-transparent bg-ba-sky-1/60",
+          ? "h-[min(60dvh,calc(100cqh_-_2rem))] [clip-path:inset(0_round_1rem)] transition-[background-color,border-color,clip-path] border-ba-border bg-white"
+          : "h-[max(7rem,25dvh)] [clip-path:inset(0_0_calc(100%_-_var(--portrait-compact-height))_0_round_1rem)] transition-[background-color,border-color] border-transparent bg-ba-sky-1/60",
         className,
       ]
         .filter(Boolean)
@@ -52,13 +51,9 @@ function MobilePortraitCard({
           src={getPortraitImageUrl(student)}
           alt={portraitState === "revealed" ? student.fullName : "シルエット"}
           draggable={false}
-          className={`absolute inset-0 h-full w-full object-contain transition-[opacity,filter] duration-500 select-none ${
+          className={`absolute inset-0 h-full w-full object-contain transition-[opacity,filter] duration-500 select-none motion-reduce:transition-none starting:opacity-0 ${
             portraitState === "silhouette"
-              ? `brightness-0 pointer-events-none ${
-                  playRevealAnimation
-                    ? "ba-silhouette-fadein motion-reduce:opacity-50"
-                    : "opacity-50"
-                }`
+              ? "brightness-0 pointer-events-none opacity-50"
               : "opacity-100"
           }`}
           onError={(e) => {

@@ -6,8 +6,8 @@ interface HintListProps {
   hints: Hint[];
   visibleCount: number;
   /**
-   * 開示のきらめき演出を再生するか。playing 中の開示数増加だけを対象にし、
-   * 回答確定で全ヒントが一度に開くときは演出しない
+   * 直近の1枚にきらめきを付けるか。playing 中の開示だけが対象で、
+   * 回答確定で全ヒントが一度に開くときは値のフェードだけにして、きらめきを重ねない
    */
   animateReveal: boolean;
   /** "desktop" では常に全件を描画し、2列グリッドで高さを揃える。"mobile" では開示済み分だけ描画する */

@@ -133,21 +133,24 @@ function MobileQuizLayout({
     <div className="flex-1 flex flex-col min-h-0 min-w-0">
       <QuizTitleRow modeLabel={modeLabel} heading={heading} round={round} />
 
-      {/* container-type:sizeは、立ち絵枠の展開後の高さ上限（MobilePortraitCard）がcqhで参照できるように */}
-      <div className="flex-1 overflow-y-auto min-h-0 [container-type:size] scroll-smooth motion-reduce:scroll-auto">
-        <div className="flex flex-col gap-2 pb-4">
-          <HintList
-            hints={round.question.hints}
-            visibleCount={visibleHintCount}
-            animateReveal={round.status === "playing"}
-            layout="mobile"
-            justRevealedRef={justRevealedHintRef}
-          />
-          <MobilePortraitCard
-            student={student}
-            portraitState={portraitState}
-            containerRef={portraitRef}
-          />
+      {/* スクロール領域を絶対配置にするのは、立ち絵枠の高さ上限（MobilePortraitCard の cqh）の解決を
+          祖先の flex の内在サイズ計算に左右させないため。Chrome では flex アイテムのままだと 0 に解決される */}
+      <div className="flex-1 min-h-0 relative">
+        <div className="absolute inset-0 overflow-y-auto [container-type:size] scroll-smooth motion-reduce:scroll-auto">
+          <div className="flex flex-col gap-2 pb-4">
+            <HintList
+              hints={round.question.hints}
+              visibleCount={visibleHintCount}
+              animateReveal={round.status === "playing"}
+              layout="mobile"
+              justRevealedRef={justRevealedHintRef}
+            />
+            <MobilePortraitCard
+              student={student}
+              portraitState={portraitState}
+              containerRef={portraitRef}
+            />
+          </div>
         </div>
       </div>
 

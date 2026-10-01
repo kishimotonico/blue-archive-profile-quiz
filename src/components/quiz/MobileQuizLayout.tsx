@@ -1,4 +1,4 @@
-import { useRef, type ReactNode, type RefObject } from "react";
+import { useRef, type RefObject } from "react";
 import { flushSync } from "react-dom";
 import { getRoundView, type Student } from "../../quiz-core";
 import Button from "../common/Button";
@@ -7,19 +7,6 @@ import MobilePortraitCard from "./MobilePortraitCard";
 import QuizPlayArea from "./QuizPlayArea";
 import QuizTitleRow from "./QuizTitleRow";
 import type { AfterAnswer, QuizLayoutProps } from "./quizLayoutTypes";
-
-interface FooterFaceProps {
-  playArea: ReactNode;
-}
-
-// -mx-4 -mb-4 は main の余白を打ち消して画面端まで白い面にするため
-function FooterFace({ playArea }: FooterFaceProps) {
-  return (
-    <div className="min-w-0 -mx-4 -mb-4 border-t border-ba-border bg-white px-4 py-3">
-      {playArea}
-    </div>
-  );
-}
 
 interface RevealedFaceProps {
   student: Student;
@@ -155,12 +142,24 @@ function MobileQuizLayout({
       </div>
 
       {/* 回答前後で操作エリアの高さを揃えてあるため（RevealedFace参照）、両方を同じ
-          グリッドセルに重ねて描画するだけで答え合わせの前後で高さが変わらない */}
-      <div className="shrink-0 grid" data-quiz-footer-area>
-        <div className={`[grid-area:1/1] ${answered ? "invisible" : ""}`} inert={answered}>
-          <FooterFace playArea={playArea} />
+          グリッドセルに重ねて描画するだけで答え合わせの前後で高さが変わらない。
+          -mx-4 px-4 は main の左右余白を打ち消して白い面を画面端まで伸ばすため。下余白は main 側で
+          モバイルだけ0にしてあり、白い面が画面下端に接する。
+          各セルの min-w-0 は、無いとグリッドの列が中身の最小幅まで広がって右にはみ出すため */}
+      <div
+        className="shrink-0 grid -mx-4 px-4 border-t border-ba-border bg-white"
+        data-quiz-footer-area
+      >
+        <div
+          className={`[grid-area:1/1] min-w-0 py-3 ${answered ? "invisible" : ""}`}
+          inert={answered}
+        >
+          {playArea}
         </div>
-        <div className={`[grid-area:1/1] ${!answered ? "invisible" : ""}`} inert={!answered}>
+        <div
+          className={`[grid-area:1/1] min-w-0 ${!answered ? "invisible" : ""}`}
+          inert={!answered}
+        >
           <RevealedFace
             student={student}
             correct={correct}

@@ -120,7 +120,7 @@ function MobileQuizLayout({
         modeLabel={modeLabel}
         heading={heading}
         round={round}
-        className="px-4 pt-5 pb-3 md:pt-5.5 md:pb-1.5"
+        className="px-4 pt-5 pb-3"
       />
 
       {/* スクロール領域を絶対配置にするのは、立ち絵枠の高さ上限（MobilePortraitCard の cqh）の解決を

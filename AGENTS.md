@@ -10,7 +10,7 @@
 ├── scrape/              # スクレイピング関連のコード
 ├── specs/               # 仕様や開発に関するドキュメント
 │   ├── 001_app-concept.md
-│   ├── 002_design-renewal-followups.md  # デザイン刷新後の設計改善案
+│   ├── 002_design-renewal-followups.md  # デザイン刷新後の残課題
 │   └── 003_play-history.md              # プレイ履歴の保存仕様
 ├── data/                # クイズに必要なデータ
 │   ├── students.json    # 全生徒のプロフィール

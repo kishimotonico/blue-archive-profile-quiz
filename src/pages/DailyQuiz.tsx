@@ -2,18 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import { useDailyQuiz } from "../hooks/useDailyQuiz";
-import {
-  getTimeUntilNextReset,
-  formatTimeUntilNextReset,
-  getScoreRank,
-  getScoreRankLabel,
-  SCORE_RANKS,
-} from "../quiz-core";
+import { getTimeUntilNextReset, formatTimeUntilNextReset, getScoreRank } from "../quiz-core";
 import { dailyStatsAtom } from "../store/daily";
 import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
 import HaloRingGauge from "../components/common/HaloRingGauge";
 import QuizScreen from "../components/quiz/QuizScreen";
+import RankDistribution from "../components/quiz/RankDistribution";
 
 function DailyQuiz() {
   const { view, reveal, submit, giveUp } = useDailyQuiz();
@@ -34,11 +29,6 @@ function DailyQuiz() {
     </div>
   );
 
-  const rankDistribution = SCORE_RANKS.map(({ rank }) => ({
-    label: getScoreRankLabel(rank),
-    count: rankCounts[rank],
-  }));
-
   // 見出しは出題日（key.baseDate）から作る。描画時点の getDailyDate() だと、朝4:00を
   // またいで開いたままにしたとき見出しの日付と実際の問題がずれる
   const heading = (() => {
@@ -55,7 +45,10 @@ function DailyQuiz() {
         round={view.round}
         actions={{ reveal, submit, giveUp }}
         afterAnswer={{
-          primaryAction: { label: "結果を見る", onClick: () => setShowResultModal(true) },
+          primaryAction: {
+            label: "結果を見る",
+            onClick: () => setShowResultModal(true),
+          },
           status: completedStatus,
         }}
       />
@@ -101,27 +94,30 @@ function DailyQuiz() {
             <div className="border-t border-ba-border pt-3 mb-4 text-left">
               <h3 className="font-display text-base font-black text-ba-navy mb-2">統計情報</h3>
 
-              <div className="space-y-1.5 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-ba-ink-soft">累積挑戦回数:</span>
-                  <span className="font-semibold text-ba-navy">{totalAttempts}回</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-xs text-ba-ink-soft">挑戦回数</p>
+                  <p>
+                    <span className="font-display text-2xl font-black tabular-nums text-ba-navy">
+                      {totalAttempts}
+                    </span>
+                    <span className="ml-0.5 text-xs text-ba-ink-soft">回</span>
+                  </p>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-ba-ink-soft">ベストスコア:</span>
-                  <span className="font-semibold text-ba-navy">{bestScore}点</span>
+                <div>
+                  <p className="text-xs text-ba-ink-soft">ベストスコア</p>
+                  <p>
+                    <span className="font-display text-2xl font-black tabular-nums text-ba-navy">
+                      {bestScore}
+                    </span>
+                    <span className="ml-0.5 text-xs text-ba-ink-soft">点</span>
+                  </p>
                 </div>
               </div>
 
               <div className="mt-3">
-                <p className="text-sm text-ba-ink-soft mb-1.5">ランク分布:</p>
-                <div className="grid grid-cols-3 gap-1.5 text-xs text-ba-navy">
-                  {rankDistribution.map(({ label, count }) => (
-                    <div key={label} className="rounded-lg bg-ba-bg px-2 py-1.5 text-center">
-                      <div className="font-bold">{label}</div>
-                      <div>{count}回</div>
-                    </div>
-                  ))}
-                </div>
+                <p className="mb-1.5 text-sm text-ba-ink-soft">ランク分布</p>
+                <RankDistribution counts={rankCounts} highlightRank={getScoreRank(result.score)} />
               </div>
             </div>
 

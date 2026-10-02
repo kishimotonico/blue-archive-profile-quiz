@@ -25,7 +25,8 @@ export {
   createDailyQuestion,
 } from "./daily";
 
-export { getMaxScore, getScoreRank, getScoreRankLabel, SCORE_RANKS } from "./scoring";
+export { getMaxScore, getScoreRank, SCORE_RANKS } from "./scoring";
+export type { ScoreRank } from "./scoring";
 
 export { summarizeRecords, summarizeResults } from "./stats";
 export type { RecordStats, ResultsSummary } from "./stats";

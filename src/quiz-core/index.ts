@@ -41,10 +41,9 @@ export { dailySessionReducer } from "./dailySession";
 export type { DailySession } from "./dailySession";
 
 export {
-  getTotalStages,
   getVisibleHintCount,
   getPortraitState,
-  getRemainingStages,
+  getPotentialScore,
   getNextStep,
   getRoundView,
 } from "./reveal";

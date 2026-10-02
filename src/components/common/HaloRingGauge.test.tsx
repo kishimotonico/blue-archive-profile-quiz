@@ -15,9 +15,9 @@ describe("HaloRingGauge - アクセシビリティ", () => {
   });
 
   it("labelがあるときはコンテナにrole=imgとaria-labelが付く", () => {
-    render(<HaloRingGauge value={0.5} label="残りヒント 3" />);
+    render(<HaloRingGauge value={0.5} label="正解すると3点" />);
 
-    const img = screen.getByRole("img", { name: "残りヒント 3" });
+    const img = screen.getByRole("img", { name: "正解すると3点" });
     expect(img).toBeTruthy();
   });
 });

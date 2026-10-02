@@ -27,7 +27,7 @@ export interface AnswerDraft {
 /** 回答後にレイアウトが描画する主ボタンと、タイトル行に出す補足 */
 export interface AfterAnswer {
   primaryAction: { label: string; onClick: () => void };
-  /** 回答後、タイトル行の残りヒントのリングの位置に出す補足 */
+  /** 回答後、タイトル行の「正解したときの点数」のリングの位置に出す補足 */
   status?: ReactNode;
 }
 

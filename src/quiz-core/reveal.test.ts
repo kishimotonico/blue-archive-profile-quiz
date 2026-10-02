@@ -1,9 +1,8 @@
 import { describe, it, expect } from "vitest";
 import {
-  getTotalStages,
   getVisibleHintCount,
   getPortraitState,
-  getRemainingStages,
+  getPotentialScore,
   getNextStep,
   getRoundView,
 } from "./reveal";
@@ -61,12 +60,6 @@ const answeredState = (usedHintCount: number, correct = true): RoundState =>
     correct,
   });
 
-describe("getTotalStages", () => {
-  it("ヒント数 + 1（立ち絵）を返す", () => {
-    expect(getTotalStages(playingState(1))).toBe(4);
-  });
-});
-
 describe("getVisibleHintCount", () => {
   it("playing では revealedHintCount と hints.length の小さい方", () => {
     expect(getVisibleHintCount(playingState(2))).toBe(2);
@@ -92,14 +85,19 @@ describe("getPortraitState", () => {
   });
 });
 
-describe("getRemainingStages", () => {
-  it("playing では total - revealedHintCount", () => {
-    expect(getRemainingStages(playingState(1))).toBe(3);
-    expect(getRemainingStages(playingState(4))).toBe(0);
+describe("getPotentialScore", () => {
+  it("playing では開始時に10点、ヒントを開くたびに1点ずつ下がる", () => {
+    expect(getPotentialScore(playingState(1))).toBe(10);
+    expect(getPotentialScore(playingState(3))).toBe(8);
+  });
+
+  it("シルエットまで開いても1点は残る", () => {
+    expect(getPotentialScore(playingState(9))).toBe(2);
+    expect(getPotentialScore(playingState(10))).toBe(1);
   });
 
   it("answered では 0", () => {
-    expect(getRemainingStages(answeredState(1))).toBe(0);
+    expect(getPotentialScore(answeredState(3))).toBe(0);
   });
 });
 

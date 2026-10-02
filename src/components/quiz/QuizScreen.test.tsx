@@ -275,10 +275,10 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
     isDesktopMock.mockReturnValue(false);
   });
 
-  it("回答済みの状態でマウントされると主ボタンにフォーカスがある", () => {
+  it("回答済みの状態でマウントされても主ボタンにフォーカスしない", () => {
     renderScreen({ questionId: "q1", round: answeredRound("s1") });
 
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
+    expect(document.activeElement).toBe(document.body);
   });
 
   it("submit で回答が確定すると主ボタンにフォーカスが移る", () => {
@@ -299,7 +299,7 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
   });
 
-  it("フォーカスされた主ボタンの click で primaryAction.onClick が呼ばれる（Enter はブラウザが click に変換する）", () => {
+  it("主ボタンの click で primaryAction.onClick が呼ばれる", () => {
     const onClick = vi.fn();
     renderScreen({
       questionId: "q1",
@@ -307,11 +307,44 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
       afterAnswer: { primaryAction: { label: "次の問題へ", onClick } },
     });
 
-    const button = screen.getByRole("button", { name: "次の問題へ" });
-    expect(document.activeElement).toBe(button);
-    button.click();
+    screen.getByRole("button", { name: "次の問題へ" }).click();
 
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe.each([
+  ["モバイル", false],
+  ["デスクトップ", true],
+])("QuizScreen - 問題開始時の開示ボタンへのフォーカス（%s）", (_name, isDesktop) => {
+  beforeEach(() => {
+    isDesktopMock.mockReturnValue(isDesktop);
+  });
+
+  const screenFor = (questionId: string) => (
+    <MemoryRouter>
+      <QuizScreen
+        modeLabel="テストモード"
+        heading="見出し"
+        questionId={questionId}
+        round={playingRound("s1")}
+        actions={{ reveal: vi.fn(), giveUp: vi.fn(), submit: vi.fn() }}
+        afterAnswer={defaultAfterAnswer}
+      />
+    </MemoryRouter>
+  );
+
+  it("ページを開いた最初の問題では開示ボタンにフォーカスしない", () => {
+    renderScreen({ questionId: "q1", round: playingRound("s1") });
+
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it("questionId が変わった後の問題では開示ボタンにフォーカスする", () => {
+    const { rerender } = render(screenFor("q1"));
+    rerender(screenFor("q2"));
+
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次のヒントを開示" }));
   });
 });
 

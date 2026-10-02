@@ -15,11 +15,21 @@ interface QuizBodyProps {
   round: RoundState;
   actions: QuizActions;
   afterAnswer: AfterAnswer;
+  focusHintOnStart: boolean;
 }
 
+// 回答後の主ボタンへのフォーカスは下の handleSubmit / handleGiveUp だけが担う。autoFocus だと
+// 完了済みの再表示や途中復元のように何も操作していないときまで、フォーカス枠が出てしまう。
 // 回答欄の下書きとエラー表示状態をここで持つ。QuizScreen 側で key={questionId} を付けて
 // 問題が変わるたびに作り直しているため、画面幅が変わってレイアウトが切り替わっても下書きは残る
-function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyProps) {
+function QuizBody({
+  modeLabel,
+  heading,
+  round,
+  actions,
+  afterAnswer,
+  focusHintOnStart,
+}: QuizBodyProps) {
   const isDesktop = useIsDesktop();
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<AnswerFeedbackError | null>(null);
@@ -92,6 +102,7 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     answer,
     afterAnswer,
     justAnswered: answeredInThisView,
+    focusHintOnStart,
     primaryButtonRef,
   };
 

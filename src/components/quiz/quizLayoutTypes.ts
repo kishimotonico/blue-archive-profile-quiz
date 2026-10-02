@@ -40,6 +40,8 @@ export interface QuizLayoutProps {
   afterAnswer: AfterAnswer;
   /** この画面で今回答したとき true。結果の演出（正解は波紋とポップ、不正解・ギブアップは答えの名前のフェード）を一度だけ出す */
   justAnswered: boolean;
+  /** 問題の開始時に開示/諦めボタンへフォーカスするか。ページを開いた最初の問題では false にする（開いただけでフォーカス枠が出るため） */
+  focusHintOnStart: boolean;
   /** 回答確定後にフォーカスする主ボタンの ref。QuizBody が flushSync の直後に読むため、
    * レイアウトをまたいでも同じ ref を使えるよう QuizBody が持つ */
   primaryButtonRef: RefObject<HTMLButtonElement | null>;

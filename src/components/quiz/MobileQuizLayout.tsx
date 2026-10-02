@@ -13,19 +13,12 @@ interface RevealedFaceProps {
   round: RoundState;
   afterAnswer: AfterAnswer;
   justAnswered: boolean;
-  autoFocus: boolean;
   primaryButtonRef: RefObject<HTMLButtonElement | null>;
 }
 
 // 回答前の操作エリア（開示ボタン1段＋入力欄1段）と高さを揃えるため、結果の要約を入力欄と同じ
 // 52px、間隔も回答前と同じ gap-3 にして、主ボタンと合わせて2段にしている
-function RevealedFace({
-  round,
-  afterAnswer,
-  justAnswered,
-  autoFocus,
-  primaryButtonRef,
-}: RevealedFaceProps) {
+function RevealedFace({ round, afterAnswer, justAnswered, primaryButtonRef }: RevealedFaceProps) {
   return (
     <div className="min-w-0 flex flex-col items-stretch gap-3">
       <div className="flex h-[52px] min-w-0 items-center">
@@ -35,7 +28,6 @@ function RevealedFace({
         ref={primaryButtonRef}
         variant="accent"
         className="w-full"
-        autoFocus={autoFocus}
         onClick={afterAnswer.primaryAction.onClick}
       >
         {afterAnswer.primaryAction.label}
@@ -52,6 +44,7 @@ function MobileQuizLayout({
   answer,
   afterAnswer,
   justAnswered,
+  focusHintOnStart,
   primaryButtonRef,
 }: QuizLayoutProps) {
   const portraitRef = useRef<HTMLDivElement>(null);
@@ -95,7 +88,7 @@ function MobileQuizLayout({
 
   const playArea = (
     <QuizPlayArea
-      autoFocusHintButton={round.status === "playing"}
+      autoFocusHintButton={focusHintOnStart && round.status === "playing"}
       round={round}
       actions={{ reveal: handleReveal, giveUp: actions.giveUp }}
       answer={{ ...answer, onSubmit: handleSubmit }}
@@ -147,7 +140,6 @@ function MobileQuizLayout({
             round={round}
             afterAnswer={afterAnswer}
             justAnswered={justAnswered}
-            autoFocus={answered}
             primaryButtonRef={primaryButtonRef}
           />
         </div>

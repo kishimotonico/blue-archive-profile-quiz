@@ -17,6 +17,7 @@ function DesktopQuizLayout({
   answer,
   afterAnswer,
   justAnswered,
+  focusHintOnStart,
   primaryButtonRef,
 }: QuizLayoutProps) {
   const justRevealedHintRef = useRef<HTMLDivElement>(null);
@@ -35,7 +36,7 @@ function DesktopQuizLayout({
 
   const playArea = (
     <QuizPlayArea
-      autoFocusHintButton={round.status === "playing"}
+      autoFocusHintButton={focusHintOnStart && round.status === "playing"}
       round={round}
       actions={{ reveal: handleReveal, giveUp: actions.giveUp }}
       answer={answer}
@@ -86,7 +87,6 @@ function DesktopQuizLayout({
                 ref={primaryButtonRef}
                 variant="accent"
                 className="w-full"
-                autoFocus={answered}
                 onClick={afterAnswer.primaryAction.onClick}
               >
                 {afterAnswer.primaryAction.label}

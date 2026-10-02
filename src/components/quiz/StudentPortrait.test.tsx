@@ -32,7 +32,7 @@ function makeStudent(id: string, fullName: string): Student {
 describe("StudentPortrait - 全身を見るモーダル", () => {
   it("「全身を見る」ボタンで開き、閉じるボタンで閉じる", () => {
     const student = makeStudent("s1", "生徒A");
-    render(<StudentPortrait student={student} state="revealed" />);
+    render(<StudentPortrait student={student} state="revealed" correct />);
 
     fireEvent.click(screen.getByRole("button", { name: "全身を見る" }));
     expect(screen.getByRole("dialog")).toBeTruthy();
@@ -43,12 +43,12 @@ describe("StudentPortrait - 全身を見るモーダル", () => {
 
   it("stateがhiddenの間はモーダルを描画しない", () => {
     const student = makeStudent("s1", "生徒A");
-    const { rerender } = render(<StudentPortrait student={student} state="revealed" />);
+    const { rerender } = render(<StudentPortrait student={student} state="revealed" correct />);
 
     fireEvent.click(screen.getByRole("button", { name: "全身を見る" }));
     expect(screen.getByRole("dialog")).toBeTruthy();
 
-    rerender(<StudentPortrait student={student} state="hidden" />);
+    rerender(<StudentPortrait student={student} state="hidden" correct />);
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 });

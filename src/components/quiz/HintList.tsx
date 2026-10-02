@@ -5,16 +5,13 @@ import HintCard from "./HintCard";
 interface HintListProps {
   hints: Hint[];
   visibleCount: number;
-  /** プレイヤーが自分で開いた枚数。visibleCount との差は回答後に開いたヒントとして見分けがつく見た目にする */
+  /** プレイヤーが自分で開いた枚数。visibleCount との差は回答後に開いたヒント */
   playerRevealedCount: number;
-  /**
-   * 直近の1枚にきらめきを付けるか。playing 中の開示だけが対象で、
-   * 回答確定で全ヒントが一度に開くときは値のフェードだけにして、きらめきを重ねない
-   */
+  /** 直近の1枚にきらめきを付けるか。回答確定の一括開示では付けない */
   animateReveal: boolean;
-  /** "desktop" では常に全件を描画し、2列グリッドで高さを揃える。"mobile" では開示済み分だけ描画する */
+  /** "desktop" は全件を描画して2列グリッドで高さを揃える。"mobile" は開示済み分と見切れカードだけ描画する */
   layout: "desktop" | "mobile";
-  /** 直近に開示したカードの要素。呼び出し側がscrollIntoViewするために渡す */
+  /** 直近に開示したカード。呼び出し側が scrollIntoView するために渡す */
   justRevealedRef?: RefObject<HTMLDivElement | null>;
 }
 
@@ -48,7 +45,7 @@ function HintList({
           justRevealed={animateReveal && index === visibleCount - 1}
         />
       ))}
-      {/* 2列（md以上）では奇数枚のとき最後の行の空きを埋めるため見切れカードを1枚多く出す */}
+      {/* md 以上は2列なので、開示済みが奇数枚のときは最後の行の空きを埋める見切れカードを1枚多く出す */}
       {peekHints.map((hint, i) => (
         <HintCard
           key={visibleCount + i}

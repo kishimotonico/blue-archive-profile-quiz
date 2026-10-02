@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import Button from "../components/common/Button";
@@ -30,10 +29,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
   const allStudents = useAtomValue(allStudentsAtom);
   const navigate = useNavigate();
 
-  const studentMap = useMemo(() => {
-    const map = new Map(allStudents.map((s) => [s.id, s]));
-    return map;
-  }, [allStudents]);
+  const studentMap = new Map(allStudents.map((s) => [s.id, s]));
 
   const totalQuestions = results.length;
   const { totalScore, correctCount, maxScore: maxPossibleScore } = summarizeResults(results);
@@ -163,7 +159,7 @@ function ResultContent({ results }: { results: QuestionResult[] }) {
             </div>
           </div>
 
-          {/* a > button の入れ子を避けるため、Link ではなく navigate で遷移する */}
+          {/* Link だと a > button の入れ子になる */}
           <div className="space-y-3">
             <Button variant="accent" className="w-full" onClick={() => navigate("/regular")}>
               もう一度プレイ
@@ -183,7 +179,7 @@ function Result() {
   const navigate = useNavigate();
   const state = location.state as ResultState | null;
 
-  if (!state || !state.results) {
+  if (!state?.results) {
     return (
       <div className="min-h-[calc(100dvh-var(--header-height))]">
         <div className="container mx-auto px-4 py-8">

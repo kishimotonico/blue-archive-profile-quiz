@@ -27,8 +27,7 @@ function RankDistribution({ counts, highlightRank }: RankDistributionProps) {
               <span className="text-[10px] text-ba-ink-soft">{range}</span>
             </span>
             <span aria-hidden="true" className="flex min-w-0 flex-1 items-center">
-              {/* 数字を棒の右隣に置くので、幅はその分（2rem）を引いた領域に対する割合で決める。
-                  inline style の width は @starting-style で上書きできないため、伸びる動きは scale-x で作る */}
+              {/* 2rem は右隣の数字の分。inline style の width は @starting-style で上書きできないため、伸びる動きは scale-x で作る */}
               <span
                 className={`block h-5 origin-left rounded-r transition-transform duration-500 starting:scale-x-0 motion-reduce:transition-none ${
                   isToday ? "bg-ba-blue" : "bg-ba-sky-2"

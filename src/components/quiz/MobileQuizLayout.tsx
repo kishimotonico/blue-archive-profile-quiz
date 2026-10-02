@@ -16,8 +16,7 @@ interface RevealedFaceProps {
   primaryButtonRef: RefObject<HTMLButtonElement | null>;
 }
 
-// 回答前の操作エリア（開示ボタン1段＋入力欄1段）と高さを揃えるため、結果の要約を入力欄と同じ
-// 52px、間隔も回答前と同じ gap-3 にして、主ボタンと合わせて2段にしている
+// 回答前の操作エリア（ボタン1段＋入力欄1段）と高さを揃えるため、要約の高さと gap を入力欄に合わせる
 function RevealedFace({ round, afterAnswer, justAnswered, primaryButtonRef }: RevealedFaceProps) {
   return (
     <div className="min-w-0 flex flex-col items-stretch gap-3">
@@ -56,35 +55,26 @@ function MobileQuizLayout({
   const scrollPortraitIntoView = () => {
     portraitRef.current?.scrollIntoView({ block: "end" });
   };
-  const willExpandOnReveal = portraitState === "hidden" && nextStep === "silhouette";
 
-  // flushSync で DOM を確定させないと、枠が縮んだままの状態を基準に scrollIntoView してしまう
-  const handleReveal = (() => {
-    if (willExpandOnReveal) {
-      return () => {
-        flushSync(() => actions.reveal());
-        scrollPortraitIntoView();
-      };
+  // flushSync で DOM を確定させないと、開示前（枠が縮んだまま）を基準にスクロールしてしまう
+  const handleReveal = () => {
+    if (portraitState === "hidden" && nextStep === "silhouette") {
+      flushSync(() => actions.reveal());
+      scrollPortraitIntoView();
+    } else if (nextStep === "hint") {
+      flushSync(() => actions.reveal());
+      justRevealedHintRef.current?.scrollIntoView({ block: "center" });
+    } else {
+      actions.reveal();
     }
-    if (nextStep === "hint") {
-      return () => {
-        flushSync(() => actions.reveal());
-        justRevealedHintRef.current?.scrollIntoView({ block: "center" });
-      };
-    }
-    return actions.reveal;
-  })();
+  };
 
-  // unknownStudent（回答欄のエラー）では回答が確定せず枠も動かないため、
-  // 確定した場合だけスクロールする
-  const willExpandOnSubmit = portraitState === "hidden";
-  const handleSubmit = willExpandOnSubmit
-    ? () => {
-        const outcome = answer.onSubmit();
-        if (outcome === "accepted") scrollPortraitIntoView();
-        return outcome;
-      }
-    : answer.onSubmit;
+  // unknownStudent では回答が確定せず枠も動かないため、確定した場合だけスクロールする
+  const handleSubmit = () => {
+    const outcome = answer.onSubmit();
+    if (outcome === "accepted" && portraitState === "hidden") scrollPortraitIntoView();
+    return outcome;
+  };
 
   const playArea = (
     <QuizPlayArea
@@ -105,8 +95,8 @@ function MobileQuizLayout({
         className="px-4 pt-5 pb-3"
       />
 
-      {/* スクロール領域を絶対配置にするのは、立ち絵枠の高さ上限（MobilePortraitCard の cqh）の解決を
-          祖先の flex の内在サイズ計算に左右させないため。Chrome では flex アイテムのままだと 0 に解決される */}
+      {/* スクロール領域を絶対配置にするのは、MobilePortraitCard の cqh を祖先 flex の内在サイズに
+          左右させないため。flex アイテムのままだと Chrome では 0 に解決される */}
       <div className="flex-1 min-h-0 relative">
         <div className="absolute inset-0 overflow-y-auto [container-type:size] scroll-smooth motion-reduce:scroll-auto">
           <div className="flex flex-col gap-2 px-4 pb-4">
@@ -128,14 +118,13 @@ function MobileQuizLayout({
         </div>
       </div>
 
-      {/* 回答前後で操作エリアの高さを揃えてあるため（RevealedFace参照）、両方を同じ
-          グリッドセルに重ねて描画するだけで答え合わせの前後で高さが変わらない。
-          各セルの min-w-0 は、無いとグリッドの列が中身の最小幅まで広がって右にはみ出すため */}
+      {/* 回答前後の面を同じグリッドセルに重ね、invisible で切り替えて高さを揃える。min-w-0 が無いと
+          列が中身の最小幅まで広がって右にはみ出す */}
       <div className="shrink-0 grid border-t border-ba-border bg-white px-4 py-3">
         <div className={`col-start-1 row-start-1 min-w-0 ${answered ? "invisible" : ""}`}>
           {playArea}
         </div>
-        <div className={`col-start-1 row-start-1 min-w-0 ${!answered ? "invisible" : ""}`}>
+        <div className={`col-start-1 row-start-1 min-w-0 ${answered ? "" : "invisible"}`}>
           <RevealedFace
             round={round}
             afterAnswer={afterAnswer}

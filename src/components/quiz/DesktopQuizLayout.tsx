@@ -25,7 +25,7 @@ function DesktopQuizLayout({
   const { student, answered, correct, portraitState, visibleHintCount, nextStep } =
     getRoundView(round);
 
-  // flushSync で DOM を確定させないと、開示前の状態を基準に scrollIntoView してしまう
+  // flushSync で DOM を確定させないと、開示前を基準にスクロールしてしまう
   const handleReveal =
     nextStep === "hint"
       ? () => {
@@ -68,8 +68,8 @@ function DesktopQuizLayout({
 
       <aside className="flex w-[380px] xl:w-[420px] shrink-0 flex-col gap-3 min-h-0">
         <StudentPortrait student={student} state={portraitState} correct={correct} />
-        {/* 両方を同じグリッドセルに重ね、常に mount して invisible だけで切り替える（片方を unmount すると回答前後で高さが揃わない） */}
-        {/* grid-cols-1とmin-w-0が無いと、内側のw-full要素が親トラック幅を無視して右カラムがはみ出す */}
+        {/* 回答前後の面を同じグリッドセルに重ね、常に mount したまま invisible で切り替えて高さを揃える。
+            grid-cols-1 と min-w-0 が無いと、w-full の子が親の幅を無視して右カラムがはみ出す */}
         <div className="grid grid-cols-1 shrink-0 rounded-2xl border border-ba-border bg-white p-4">
           <div
             className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center ${answered ? "invisible" : ""}`}
@@ -77,9 +77,7 @@ function DesktopQuizLayout({
             {playArea}
           </div>
           <div
-            className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center ${
-              answered ? "" : "invisible"
-            }`}
+            className={`col-start-1 row-start-1 flex min-w-0 flex-col justify-center ${answered ? "" : "invisible"}`}
           >
             <RoundResultSummary round={round} justAnswered={justAnswered} />
             <div className="mt-3 w-full">

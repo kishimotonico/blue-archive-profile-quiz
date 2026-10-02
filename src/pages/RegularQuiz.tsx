@@ -5,7 +5,6 @@ function RegularQuiz() {
   const { view, totalQuestions, reveal, submit, giveUp, next } = useRegularQuiz();
 
   const currentIndex = view.index;
-
   return (
     <QuizScreen
       modeLabel={`フリープレイ・合計 ${view.totalScore}点`}

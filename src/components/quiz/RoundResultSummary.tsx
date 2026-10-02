@@ -14,12 +14,12 @@ const OUTCOME_LABEL: Record<QuestionOutcome, { text: string; className: string }
 
 interface RoundResultSummaryProps {
   round: RoundState;
-  /** この画面で今回答したか。true のときだけ結果に応じた演出を出す。完了済みの再表示や途中復元では false */
+  /** この画面で今回答したか。true のときだけ結果に応じた演出を出す */
   justAnswered?: boolean;
 }
 
-// 回答後の面は回答前から mount されているため、playing 中は score=0 のリングと空の文言で描画しておく。
-// answered になった瞬間にリングが .ba-ring-fill の transition で伸びる
+// 回答後の面は回答前から mount されているため、playing 中は score=0 のリングと空の文言で描画する。
+// answered になった瞬間にリングが transition で伸びる
 function RoundResultSummary({ round, justAnswered = false }: RoundResultSummaryProps) {
   const { student, score } = getRoundView(round);
   const outcome = round.status === "answered" ? getQuestionOutcome(round.result) : null;
@@ -42,8 +42,7 @@ function RoundResultSummary({ round, justAnswered = false }: RoundResultSummaryP
           {score}
         </span>
         <span className="text-[9px] font-bold leading-none text-ba-ink-soft">点</span>
-        {/* celebrate のときだけ mount し、animation を一度だけ走らせる。リングの外へ広がるが、
-            祖先に overflow を切るものはない */}
+        {/* celebrate のときだけ mount して animation を一度だけ走らせる。リングの外へ広がるので、祖先に overflow を切る要素を置かない */}
         {celebrate && (
           <span
             aria-hidden="true"

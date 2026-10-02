@@ -5,7 +5,7 @@ import { Suspense, type ReactNode } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useRegularQuiz } from "./useRegularQuiz";
 import { REGULAR_QUIZ_PROGRESS_KEY, type RegularQuizProgress } from "../store/regular";
-import { type QuizQuestion, type Student } from "../quiz-core";
+import type { QuizQuestion, Student } from "../quiz-core";
 
 const mockNavigate = vi.fn();
 

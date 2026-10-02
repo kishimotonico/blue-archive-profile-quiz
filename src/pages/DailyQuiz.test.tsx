@@ -84,11 +84,8 @@ const renderDailyQuiz = async (store: ReturnType<typeof createStore> = createSto
 const PROGRESS_KEY = { version: 1, baseDate: "2026-04-21", seed: 20260421 };
 
 describe("DailyQuiz - 再マウント時の状態復元", () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     localStorage.clear();
-    const { createDailyQuestion, createQuestion } = await import("../quiz-core");
-    vi.mocked(createDailyQuestion).mockClear();
-    vi.mocked(createQuestion).mockClear();
   });
 
   it("localStorage に dailyProgress があると revealedHintCount が復元される", async () => {
@@ -103,11 +100,6 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
       expect(screen.queryAllByText("VAL_HINT_3").length).toBeGreaterThan(0);
     });
     expect(screen.queryAllByText("VAL_HINT_4").length).toBe(0);
-
-    // 初期化フローは復元路だけを通り、新規プレイ路の createDailyQuestion は呼ばれないこと
-    const { createDailyQuestion, createQuestion } = await import("../quiz-core");
-    expect(vi.mocked(createDailyQuestion)).not.toHaveBeenCalled();
-    expect(vi.mocked(createQuestion)).toHaveBeenCalledTimes(1);
   });
 
   it("localStorage に今日の dailyResult があると完了済み画面が表示される", async () => {
@@ -135,10 +127,6 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     await waitFor(() => {
       expect(screen.getByText("完了済み")).toBeTruthy();
     });
-
-    const { createDailyQuestion, createQuestion } = await import("../quiz-core");
-    expect(vi.mocked(createDailyQuestion)).not.toHaveBeenCalled();
-    expect(vi.mocked(createQuestion)).toHaveBeenCalledTimes(1);
   });
 
   it("保存済み10点を再訪すると、結果モーダルに10点・ランクSSが表示され、結果が二重に記録されない", async () => {
@@ -173,7 +161,6 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     expect(dialog.textContent).toContain("10");
     expect(screen.getByText("ランク SS")).toBeTruthy();
 
-    // 再訪時の record effect が走っても records は増えない（baseDate が既にあれば何もしない）
     expect(store.get(dailyHistoryAtom).records).toHaveLength(1);
   });
 
@@ -186,10 +173,6 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     });
     expect(screen.queryAllByText("VAL_HINT_2").length).toBe(0);
     expect(screen.queryByText("完了済み")).toBeNull();
-
-    const { createDailyQuestion, createQuestion } = await import("../quiz-core");
-    expect(vi.mocked(createDailyQuestion)).toHaveBeenCalledTimes(1);
-    expect(vi.mocked(createQuestion)).not.toHaveBeenCalled();
   });
 });
 

@@ -5,7 +5,7 @@ import type { AnswerDraft } from "./quizLayoutTypes";
 
 interface QuizPlayAreaProps {
   round: RoundState;
-  /** マウント時に開示/諦めボタンへ自動的にフォーカスするか（問題ごとに1回だけ） */
+  /** マウント時に開示/諦めボタンへフォーカスするか */
   autoFocusHintButton?: boolean;
   actions: { reveal: () => void; giveUp: () => void };
   answer: AnswerDraft;
@@ -13,13 +13,11 @@ interface QuizPlayAreaProps {
 
 function QuizPlayArea({ round, autoFocusHintButton = false, actions, answer }: QuizPlayAreaProps) {
   const nextStep = getNextStep(round);
-  // 画面内の強調ボタン（primary/accent）は常に1つまでにする。回答欄に入力があると
-  // 「回答する」が accent になるため、その間は開示ボタンを secondary に下げる
+  // 入力があると「回答する」が accent になるので、強調ボタンを1つに保つため開示ボタンを secondary に下げる
   const isAnswerEmpty = !answer.value.trim();
 
-  // 開示ボタンを先に置き、Tab順が「開示 → 生徒名入力 → 回答する」になるようにしている。
-  // 回答済み（nextStep === null）でも同じ大きさのボタンを残す。各レイアウトはこの面を mount したまま
-  // invisible で切り替えるため、ボタンの有無で高さが変わると回答前後で操作エリアの高さが揃わない
+  // 開示ボタンを先に置き、Tab 順を「開示 → 入力 → 回答する」にする。回答済み（nextStep === null）でも
+  // ボタンを残すのは、この面を mount したまま invisible で切り替えるレイアウトの高さを揃えるため
   const hintButton =
     nextStep === "hint" || nextStep === "silhouette" ? (
       <Button

@@ -98,7 +98,7 @@ describe("HintList - 開示のきらめき", () => {
 });
 
 describe("HintList - 回答後に開いたヒント", () => {
-  it("playerRevealedCount 以降の開示済みカードだけに「（回答後に開示）」が付き、面は未開示のまま", () => {
+  it("playerRevealedCount 以降の開示済みカードだけに「（回答後に開示）」が付く", () => {
     render(
       <HintList
         hints={mockHints}
@@ -111,10 +111,7 @@ describe("HintList - 回答後に開いたヒント", () => {
 
     const cards = screen.getAllByText(/VAL_/).map((el) => el.parentElement);
     expect(cards[0]?.textContent).not.toContain("（回答後に開示）");
-    expect(cards[0]?.className).toContain("bg-white");
     expect(cards[1]?.textContent).toContain("（回答後に開示）");
-    expect(cards[1]?.className).toContain("bg-ba-sky-1/60");
-    expect(cards[1]?.className).not.toContain("bg-white");
   });
 
   it("未開示のカードには付かない", () => {

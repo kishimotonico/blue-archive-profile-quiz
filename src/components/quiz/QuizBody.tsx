@@ -18,10 +18,9 @@ interface QuizBodyProps {
   focusHintOnStart: boolean;
 }
 
-// 回答後の主ボタンへのフォーカスは下の handleSubmit / handleGiveUp だけが担う。autoFocus だと
-// 完了済みの再表示や途中復元のように何も操作していないときまで、フォーカス枠が出てしまう。
-// 回答欄の下書きとエラー表示状態をここで持つ。QuizScreen 側で key={questionId} を付けて
-// 問題が変わるたびに作り直しているため、画面幅が変わってレイアウトが切り替わっても下書きは残る
+// 回答欄の下書きをここで持つのは、画面幅でレイアウトが切り替わっても残すため。
+// 回答後の主ボタンへのフォーカスは handleSubmit / handleGiveUp だけが担う。autoFocus だと
+// 完了済みの再表示や途中復元でも、操作していないのにフォーカス枠が出る
 function QuizBody({
   modeLabel,
   heading,
@@ -35,7 +34,7 @@ function QuizBody({
   const [error, setError] = useState<AnswerFeedbackError | null>(null);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
-  // 演出は「この画面で今回答した」ときだけ出す。完了済みの再表示や途中復元は最初から answered なので出さない
+  // 完了済みの再表示や途中復元は最初から answered なので、演出を出さないためにここで区別する
   const [answeredInThisView, setAnsweredInThisView] = useState(false);
 
   useEffect(() => {
@@ -58,9 +57,8 @@ function QuizBody({
     dismissError();
   };
 
-  // flushSyncで確定させないと、ボタンがまだinvisibleのままでfocus()が効かない。
-  // answeredInThisView も同じ flushSync で確定させ、回答後の面が見えるのと同じ描画で演出を始める
-  // （後から更新すると、演出の初期状態が出る前に文字が一瞬見える）
+  // flushSync が無いと、ボタンが invisible のままで focus() が効かない。answeredInThisView も同じ
+  // 描画で確定させる。後から更新すると、演出の初期状態より先に文字が一瞬見える
   const handleSubmit = (): SubmitOutcome => {
     let outcome!: SubmitOutcome;
     flushSync(() => {
@@ -77,7 +75,7 @@ function QuizBody({
     return outcome;
   };
 
-  // giveUpは押せる時点で必ず回答確定（answered）に進む操作なので、判定なしでフォーカスしてよい
+  // 諦めは必ず answered に進むので、submit と違って判定せずフォーカスする
   const handleGiveUp = () => {
     flushSync(() => {
       actions.giveUp();

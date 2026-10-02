@@ -24,8 +24,7 @@ function QuizTitleRow({ modeLabel, heading, round, status, className }: QuizTitl
           {heading}
         </h1>
       </div>
-      {/* 回答後もタイトル行の高さが変わらないよう、リングは消さず invisible で隠し、
-          同じグリッドセルに status を重ねる */}
+      {/* 回答後に高さが変わらないよう、リングは invisible で残して同じセルに status を重ねる */}
       <div className="grid shrink-0 justify-items-end">
         <HaloRingGauge
           value={potentialScore / getMaxScore()}

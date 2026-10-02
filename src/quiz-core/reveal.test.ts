@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   getVisibleHintCount,
+  getPlayerRevealedHintCount,
   getPortraitState,
   getPotentialScore,
   getNextStep,
@@ -68,6 +69,18 @@ describe("getVisibleHintCount", () => {
 
   it("answered では常に hints.length（全ヒント表示）", () => {
     expect(getVisibleHintCount(answeredState(1))).toBe(3);
+  });
+});
+
+describe("getPlayerRevealedHintCount", () => {
+  it("playing では開いた枚数（立ち絵段階でも hints.length まで）", () => {
+    expect(getPlayerRevealedHintCount(playingState(2))).toBe(2);
+    expect(getPlayerRevealedHintCount(playingState(4))).toBe(3);
+  });
+
+  it("answered では回答確定時点の枚数。残りが回答後に開いたヒント", () => {
+    expect(getPlayerRevealedHintCount(answeredState(1))).toBe(1);
+    expect(getPlayerRevealedHintCount(answeredState(4))).toBe(3);
   });
 });
 

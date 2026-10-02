@@ -42,6 +42,7 @@ export type { DailySession } from "./dailySession";
 
 export {
   getVisibleHintCount,
+  getPlayerRevealedHintCount,
   getPortraitState,
   getPotentialScore,
   getNextStep,

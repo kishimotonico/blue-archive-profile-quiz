@@ -11,6 +11,16 @@ export function getVisibleHintCount(state: RoundState): number {
   return Math.min(state.revealedHintCount, state.question.hints.length);
 }
 
+/**
+ * プレイヤーが自分の操作で開いたヒントの枚数。answered で表示範囲（全ヒント）との差が
+ * 「回答後に開いたヒント」になる。usedHintCount は立ち絵段階で hints.length + 1 になり得るため頭打ちにする
+ */
+export function getPlayerRevealedHintCount(state: RoundState): number {
+  const hintCount = state.question.hints.length;
+  const used = state.status === "answered" ? state.result.usedHintCount : state.revealedHintCount;
+  return Math.min(used, hintCount);
+}
+
 export function getPortraitState(state: RoundState): PortraitState {
   if (state.status === "answered") return "revealed";
   if (state.revealedHintCount > state.question.hints.length) return "silhouette";

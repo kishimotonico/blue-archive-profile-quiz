@@ -1,6 +1,6 @@
 import { useRef, type RefObject } from "react";
 import { flushSync } from "react-dom";
-import { getRoundView, type RoundState } from "../../quiz-core";
+import { getPlayerRevealedHintCount, getRoundView, type RoundState } from "../../quiz-core";
 import Button from "../common/Button";
 import HintList from "./HintList";
 import MobilePortraitCard from "./MobilePortraitCard";
@@ -112,6 +112,7 @@ function MobileQuizLayout({
             <HintList
               hints={round.question.hints}
               visibleCount={visibleHintCount}
+              playerRevealedCount={getPlayerRevealedHintCount(round)}
               animateReveal={round.status === "playing"}
               layout="mobile"
               justRevealedRef={justRevealedHintRef}

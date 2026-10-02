@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { flushSync } from "react-dom";
-import { getRoundView } from "../../quiz-core";
+import { getPlayerRevealedHintCount, getRoundView } from "../../quiz-core";
 import Button from "../common/Button";
 import HintList from "./HintList";
 import QuizPlayArea from "./QuizPlayArea";
@@ -56,6 +56,7 @@ function DesktopQuizLayout({
           <HintList
             hints={round.question.hints}
             visibleCount={visibleHintCount}
+            playerRevealedCount={getPlayerRevealedHintCount(round)}
             animateReveal={round.status === "playing"}
             layout="desktop"
             justRevealedRef={justRevealedHintRef}

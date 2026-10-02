@@ -5,6 +5,8 @@ import HintCard from "./HintCard";
 interface HintListProps {
   hints: Hint[];
   visibleCount: number;
+  /** プレイヤーが自分で開いた枚数。visibleCount との差は回答後に開いたヒントとして見分けがつく見た目にする */
+  playerRevealedCount: number;
   /**
    * 直近の1枚にきらめきを付けるか。playing 中の開示だけが対象で、
    * 回答確定で全ヒントが一度に開くときは値のフェードだけにして、きらめきを重ねない
@@ -16,7 +18,14 @@ interface HintListProps {
   justRevealedRef?: RefObject<HTMLDivElement | null>;
 }
 
-function HintList({ hints, visibleCount, animateReveal, layout, justRevealedRef }: HintListProps) {
+function HintList({
+  hints,
+  visibleCount,
+  playerRevealedCount,
+  animateReveal,
+  layout,
+  justRevealedRef,
+}: HintListProps) {
   const isMobileLayout = layout === "mobile";
   const visibleHints = isMobileLayout ? hints.slice(0, visibleCount) : hints;
   const remaining = hints.length - visibleCount;
@@ -35,6 +44,7 @@ function HintList({ hints, visibleCount, animateReveal, layout, justRevealedRef 
           ref={index === visibleCount - 1 ? justRevealedRef : undefined}
           hint={hint}
           revealed={index < visibleCount}
+          revealedAfterAnswer={index >= playerRevealedCount && index < visibleCount}
           justRevealed={animateReveal && index === visibleCount - 1}
         />
       ))}

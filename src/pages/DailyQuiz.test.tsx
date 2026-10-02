@@ -133,7 +133,7 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     await renderDailyQuiz(store);
 
     await waitFor(() => {
-      expect(screen.getByText("今日のクイズは完了済みです")).toBeTruthy();
+      expect(screen.getByText("完了済み")).toBeTruthy();
     });
 
     const { createDailyQuestion, createQuestion } = await import("../quiz-core");
@@ -164,7 +164,7 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
     await renderDailyQuiz(store);
 
     await waitFor(() => {
-      expect(screen.getByText("今日のクイズは完了済みです")).toBeTruthy();
+      expect(screen.getByText("完了済み")).toBeTruthy();
     });
 
     fireEvent.click(screen.getByRole("button", { name: "結果を見る" }));
@@ -185,7 +185,7 @@ describe("DailyQuiz - 再マウント時の状態復元", () => {
       expect(screen.queryAllByText("VAL_HINT_1").length).toBeGreaterThan(0);
     });
     expect(screen.queryAllByText("VAL_HINT_2").length).toBe(0);
-    expect(screen.queryByText("今日のクイズは完了済みです")).toBeNull();
+    expect(screen.queryByText("完了済み")).toBeNull();
 
     const { createDailyQuestion, createQuestion } = await import("../quiz-core");
     expect(vi.mocked(createDailyQuestion)).toHaveBeenCalledTimes(1);

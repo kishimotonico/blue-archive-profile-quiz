@@ -34,6 +34,7 @@ function renderCard(portraitState: PortraitState) {
     <MobilePortraitCard
       student={mockStudent}
       portraitState={portraitState}
+      correct={false}
       containerRef={containerRef}
     />,
   );
@@ -100,6 +101,7 @@ describe("MobilePortraitCard - 広がる演出（clip-path の遷移）", () => 
       <MobilePortraitCard
         student={mockStudent}
         portraitState="silhouette"
+        correct={false}
         containerRef={containerRef}
       />,
     );
@@ -141,11 +143,37 @@ describe("MobilePortraitCard - シルエットの表示", () => {
       <MobilePortraitCard
         student={mockStudent}
         portraitState="silhouette"
+        correct={false}
         containerRef={containerRef}
       />,
     );
     await waitFor(() => {
       expect(screen.getByRole("img").className).toContain("opacity-50");
     });
+  });
+});
+
+describe("MobilePortraitCard - 回答後のバッジ", () => {
+  it("revealed のとき、正解なら「正解」、そうでなければ「答え」を表示する", () => {
+    const containerRef = createRef<HTMLDivElement>();
+    const { rerender } = render(
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="revealed"
+        correct
+        containerRef={containerRef}
+      />,
+    );
+    expect(screen.getByText("正解")).not.toBeNull();
+
+    rerender(
+      <MobilePortraitCard
+        student={mockStudent}
+        portraitState="revealed"
+        correct={false}
+        containerRef={containerRef}
+      />,
+    );
+    expect(screen.getByText("答え")).not.toBeNull();
   });
 });

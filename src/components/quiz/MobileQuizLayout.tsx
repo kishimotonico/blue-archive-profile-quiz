@@ -1,48 +1,28 @@
 import { useRef, type RefObject } from "react";
 import { flushSync } from "react-dom";
-import { getRoundView, type Student } from "../../quiz-core";
+import { getRoundView, type RoundState } from "../../quiz-core";
 import Button from "../common/Button";
 import HintList from "./HintList";
 import MobilePortraitCard from "./MobilePortraitCard";
 import QuizPlayArea from "./QuizPlayArea";
 import QuizTitleRow from "./QuizTitleRow";
+import RoundResultSummary from "./RoundResultSummary";
 import type { AfterAnswer, QuizLayoutProps } from "./quizLayoutTypes";
 
 interface RevealedFaceProps {
-  student: Student;
-  correct: boolean;
-  score: number;
+  round: RoundState;
   afterAnswer: AfterAnswer;
   autoFocus: boolean;
   primaryButtonRef: RefObject<HTMLButtonElement | null>;
 }
 
-// 回答前の操作エリア（開示ボタン1段＋入力欄1段）と高さを揃えるため、結果表示もボタンと
-// 同じ箱に収めて主ボタンと合わせて2段にしている
-function RevealedFace({
-  student,
-  correct,
-  score,
-  afterAnswer,
-  autoFocus,
-  primaryButtonRef,
-}: RevealedFaceProps) {
+// 回答前の操作エリア（開示ボタン1段＋入力欄1段）と高さを揃えるため、結果の要約を入力欄と同じ
+// 52px、間隔も回答前と同じ gap-3 にして、主ボタンと合わせて2段にしている
+function RevealedFace({ round, afterAnswer, autoFocus, primaryButtonRef }: RevealedFaceProps) {
   return (
     <div className="min-w-0 flex flex-col items-stretch gap-3">
-      {afterAnswer.notice}
-      <div className="flex min-w-0 items-center justify-center gap-2 rounded-lg border-2 border-transparent px-4 py-3 text-base">
-        <span
-          className={`shrink-0 font-display font-black ${correct ? "text-ba-correct" : "text-ba-wrong"}`}
-        >
-          {correct ? "正解！" : "不正解..."}
-        </span>
-        <span className="shrink-0 inline-flex items-baseline gap-1 rounded-full border border-ba-yellow-soft bg-linear-to-b from-ba-yellow-soft/40 to-ba-yellow/60 px-2.5 py-0.5 text-ba-navy">
-          <span className="text-sm font-bold">{score}</span>
-          <span className="text-[10px] font-bold">点</span>
-        </span>
-        <span className="min-w-0 flex-1 truncate text-left font-display font-black text-ba-navy">
-          {student.fullName}
-        </span>
+      <div className="flex h-[52px] min-w-0 items-center">
+        <RoundResultSummary round={round} />
       </div>
       <Button
         ref={primaryButtonRef}
@@ -69,7 +49,7 @@ function MobileQuizLayout({
   const portraitRef = useRef<HTMLDivElement>(null);
   const justRevealedHintRef = useRef<HTMLDivElement>(null);
 
-  const { student, answered, correct, score, portraitState, visibleHintCount, nextStep } =
+  const { student, answered, correct, portraitState, visibleHintCount, nextStep } =
     getRoundView(round);
 
   const scrollPortraitIntoView = () => {
@@ -120,6 +100,7 @@ function MobileQuizLayout({
         modeLabel={modeLabel}
         heading={heading}
         round={round}
+        status={afterAnswer.status}
         className="px-4 pt-5 pb-3"
       />
 
@@ -138,6 +119,7 @@ function MobileQuizLayout({
             <MobilePortraitCard
               student={student}
               portraitState={portraitState}
+              correct={correct}
               containerRef={portraitRef}
             />
           </div>
@@ -153,9 +135,7 @@ function MobileQuizLayout({
         </div>
         <div className={`col-start-1 row-start-1 min-w-0 ${!answered ? "invisible" : ""}`}>
           <RevealedFace
-            student={student}
-            correct={correct}
-            score={score}
+            round={round}
             afterAnswer={afterAnswer}
             autoFocus={answered}
             primaryButtonRef={primaryButtonRef}

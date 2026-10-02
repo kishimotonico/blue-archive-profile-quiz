@@ -145,12 +145,37 @@ describe("MobileQuizLayout - 操作エリアの出し分け", () => {
     expect(screen.getByText("諦めて正解を表示").closest(".invisible")).not.toBeNull();
   });
 
-  it("answered中は正誤・得点・生徒名を1行にまとめて表示する", () => {
+  it("answered中は判定・得点・生徒名を要約として表示する", () => {
     renderLayout(answeredRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
     expect(screen.getByText("正解！")).not.toBeNull();
     expect(screen.getByText("10")).not.toBeNull();
     expect(screen.getByText(question.student.fullName)).not.toBeNull();
+  });
+
+  it("ギブアップ時は「ギブアップ」と正解の生徒名を表示する", () => {
+    const gaveUpRound: RoundState = {
+      status: "answered",
+      question,
+      result: { ...answerResult, correct: false, userAnswer: null, score: 0 },
+    };
+    renderLayout(gaveUpRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
+
+    expect(screen.getByText("ギブアップ")).not.toBeNull();
+    expect(screen.getByText(question.student.fullName)).not.toBeNull();
+  });
+
+  it("afterAnswer.status は回答後だけタイトル行に表示する", () => {
+    const afterAnswer = {
+      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
+      status: <span>完了済み</span>,
+    };
+    const { unmount } = renderLayout(playingRound, afterAnswer);
+    expect(screen.queryByText("完了済み")).toBeNull();
+    unmount();
+
+    renderLayout(answeredRound, afterAnswer);
+    expect(screen.getByText("完了済み")).not.toBeNull();
   });
 });
 

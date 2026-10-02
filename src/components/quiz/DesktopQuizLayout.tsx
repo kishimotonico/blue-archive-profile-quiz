@@ -5,8 +5,8 @@ import Button from "../common/Button";
 import HintList from "./HintList";
 import QuizPlayArea from "./QuizPlayArea";
 import QuizTitleRow from "./QuizTitleRow";
+import RoundResultSummary from "./RoundResultSummary";
 import StudentPortrait from "./StudentPortrait";
-import StudentReveal from "./StudentReveal";
 import type { QuizLayoutProps } from "./quizLayoutTypes";
 
 function DesktopQuizLayout({
@@ -20,7 +20,7 @@ function DesktopQuizLayout({
 }: QuizLayoutProps) {
   const justRevealedHintRef = useRef<HTMLDivElement>(null);
 
-  const { student, answered, correct, score, portraitState, visibleHintCount, nextStep } =
+  const { student, answered, correct, portraitState, visibleHintCount, nextStep } =
     getRoundView(round);
 
   // flushSync で DOM を確定させないと、開示前の状態を基準に scrollIntoView してしまう
@@ -44,7 +44,13 @@ function DesktopQuizLayout({
   return (
     <div className="flex h-full gap-4 p-4">
       <div className="flex-1 flex flex-col min-h-0 min-w-0">
-        <QuizTitleRow modeLabel={modeLabel} heading={heading} round={round} className="py-1.5" />
+        <QuizTitleRow
+          modeLabel={modeLabel}
+          heading={heading}
+          round={round}
+          status={afterAnswer.status}
+          className="py-1.5"
+        />
 
         <div className="flex-1 overflow-y-auto min-h-0">
           <HintList
@@ -72,9 +78,8 @@ function DesktopQuizLayout({
               answered ? "" : "invisible"
             }`}
           >
-            <StudentReveal correct={correct} score={score} />
-            <div className="mt-2 w-full">
-              {afterAnswer.notice}
+            <RoundResultSummary round={round} />
+            <div className="mt-3 w-full">
               <Button
                 ref={primaryButtonRef}
                 variant="accent"

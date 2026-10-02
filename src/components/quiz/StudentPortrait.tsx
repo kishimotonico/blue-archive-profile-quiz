@@ -45,7 +45,7 @@ function StudentPortrait({ student, state, correct = false }: StudentPortraitPro
 
         {revealed && (
           <span className="absolute bottom-2 left-3 rounded-full bg-ba-blue px-3 py-1 text-xs font-bold text-white">
-            {correct ? "CORRECT!" : "ANSWER"}
+            {correct ? "正解" : "答え"}
           </span>
         )}
       </div>

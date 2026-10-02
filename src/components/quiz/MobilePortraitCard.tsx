@@ -5,12 +5,19 @@ import { getPortraitImageUrl, NO_IMAGE_URL } from "./portraitImageUrl";
 interface MobilePortraitCardProps {
   student: Student;
   portraitState: PortraitState;
+  /** 回答後の立ち絵バッジの文言（正解／答え）の出し分け */
+  correct: boolean;
   /** MobileQuizLayout が scrollIntoView の対象にする */
   containerRef: RefObject<HTMLDivElement | null>;
 }
 
 // デスクトップの StudentPortrait とは切り抜き・スクロール挙動が異なるため別コンポーネントにする
-function MobilePortraitCard({ student, portraitState, containerRef }: MobilePortraitCardProps) {
+function MobilePortraitCard({
+  student,
+  portraitState,
+  correct,
+  containerRef,
+}: MobilePortraitCardProps) {
   const expanded = portraitState !== "hidden";
 
   // 高さは即座に切り替え、見た目は clip-path の遷移で広げる。height を遷移させると img が毎フレーム
@@ -47,6 +54,11 @@ function MobilePortraitCard({ student, portraitState, containerRef }: MobilePort
         <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
           <span className="text-4xl font-light text-ba-blue/40">?</span>
         </div>
+      )}
+      {portraitState === "revealed" && (
+        <span className="absolute bottom-2 left-3 rounded-full bg-ba-blue px-3 py-1 text-xs font-bold text-white">
+          {correct ? "正解" : "答え"}
+        </span>
       )}
       {/* 10枚目のヒントのように見せるラベル。unmountすると枠が広がる演出と足並みが揃わないため、
           expanded後も不透明度だけ落として残す */}

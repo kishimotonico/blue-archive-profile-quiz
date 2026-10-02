@@ -24,10 +24,11 @@ export interface AnswerDraft {
   dismissError: () => void;
 }
 
-/** 回答後にレイアウトが描画する主ボタンと、その上に出す補足 */
+/** 回答後にレイアウトが描画する主ボタンと、タイトル行に出す補足 */
 export interface AfterAnswer {
   primaryAction: { label: string; onClick: () => void };
-  notice?: ReactNode;
+  /** 回答後、タイトル行の残りヒントのリングの位置に出す補足 */
+  status?: ReactNode;
 }
 
 export interface QuizLayoutProps {

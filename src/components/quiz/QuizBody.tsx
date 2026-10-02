@@ -84,8 +84,6 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     dismissError,
   };
 
-  const celebrate = answeredInThisView && round.status === "answered" && round.result.correct;
-
   const layoutProps = {
     modeLabel,
     heading,
@@ -93,7 +91,7 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     actions: { reveal: actions.reveal, giveUp: handleGiveUp },
     answer,
     afterAnswer,
-    celebrate,
+    justAnswered: answeredInThisView,
     primaryButtonRef,
   };
 

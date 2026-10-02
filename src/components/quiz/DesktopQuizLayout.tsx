@@ -16,7 +16,7 @@ function DesktopQuizLayout({
   actions,
   answer,
   afterAnswer,
-  celebrate,
+  justAnswered,
   primaryButtonRef,
 }: QuizLayoutProps) {
   const justRevealedHintRef = useRef<HTMLDivElement>(null);
@@ -80,7 +80,7 @@ function DesktopQuizLayout({
               answered ? "" : "invisible"
             }`}
           >
-            <RoundResultSummary round={round} celebrate={celebrate} />
+            <RoundResultSummary round={round} justAnswered={justAnswered} />
             <div className="mt-3 w-full">
               <Button
                 ref={primaryButtonRef}

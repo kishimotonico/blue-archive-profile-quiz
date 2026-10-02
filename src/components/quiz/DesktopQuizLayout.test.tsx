@@ -73,7 +73,7 @@ function renderLayout(round: RoundState, afterAnswer: AfterAnswer) {
       actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
       answer={noopAnswer}
       afterAnswer={afterAnswer}
-      celebrate={false}
+      justAnswered={false}
       primaryButtonRef={primaryButtonRef}
     />,
   );
@@ -97,7 +97,7 @@ function renderStatefulLayout(initialRound: RoundState, afterAnswer: AfterAnswer
         }}
         answer={noopAnswer}
         afterAnswer={afterAnswer}
-        celebrate={false}
+        justAnswered={false}
         primaryButtonRef={primaryButtonRef}
       />
     );

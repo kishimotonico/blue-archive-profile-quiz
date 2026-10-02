@@ -94,6 +94,12 @@ body {
     animation: ba-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) 0.4s both;
   }
 
+  /* 不正解・ギブアップの瞬間は判定を動かさず、答えの名前だけを少し遅らせて下から出す。
+     遅延中に名前が見えたままにならないよう both */
+  .ba-reveal-answer {
+    animation: ba-reveal-answer 0.4s ease-out 0.3s both;
+  }
+
   .ba-shine {
     position: relative;
     overflow: hidden;
@@ -138,6 +144,17 @@ body {
   }
 }
 
+@keyframes ba-reveal-answer {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes ba-shine-sweep {
   from {
     left: -60%;
@@ -161,7 +178,8 @@ body {
     display: none;
   }
 
-  .ba-pop {
+  .ba-pop,
+  .ba-reveal-answer {
     animation: none;
   }
 }

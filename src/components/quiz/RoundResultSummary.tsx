@@ -14,16 +14,18 @@ const OUTCOME_LABEL: Record<QuestionOutcome, { text: string; className: string }
 
 interface RoundResultSummaryProps {
   round: RoundState;
-  /** 正解した瞬間の演出（リングの波紋と判定のポップ）を出すか。完了済みの再表示では false */
-  celebrate?: boolean;
+  /** この画面で今回答したか。true のときだけ結果に応じた演出を出す。完了済みの再表示や途中復元では false */
+  justAnswered?: boolean;
 }
 
 // 回答後の面は回答前から mount されているため、playing 中は score=0 のリングと空の文言で描画しておく。
 // answered になった瞬間にリングが .ba-ring-fill の transition で伸びる
-function RoundResultSummary({ round, celebrate = false }: RoundResultSummaryProps) {
+function RoundResultSummary({ round, justAnswered = false }: RoundResultSummaryProps) {
   const { student, score } = getRoundView(round);
   const outcome = round.status === "answered" ? getQuestionOutcome(round.result) : null;
   const label = outcome && OUTCOME_LABEL[outcome];
+  const celebrate = justAnswered && outcome === "correct";
+  const revealAnswer = justAnswered && (outcome === "wrong" || outcome === "gaveUp");
 
   return (
     <div className="flex min-w-0 items-center gap-3">
@@ -58,7 +60,10 @@ function RoundResultSummary({ round, celebrate = false }: RoundResultSummaryProp
         >
           {label?.text}
         </span>
-        <span className="truncate text-sm leading-5 text-ba-navy">
+        <span
+          data-reveal-answer={revealAnswer || undefined}
+          className={`truncate text-sm leading-5 text-ba-navy ${revealAnswer ? "ba-reveal-answer" : ""}`}
+        >
           {outcome && outcome !== "correct" && <span className="text-ba-ink-soft">正解は </span>}
           {outcome && <span className="font-bold">{student.fullName}</span>}
         </span>

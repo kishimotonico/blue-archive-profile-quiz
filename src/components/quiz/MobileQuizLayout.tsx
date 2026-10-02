@@ -12,7 +12,7 @@ import type { AfterAnswer, QuizLayoutProps } from "./quizLayoutTypes";
 interface RevealedFaceProps {
   round: RoundState;
   afterAnswer: AfterAnswer;
-  celebrate: boolean;
+  justAnswered: boolean;
   autoFocus: boolean;
   primaryButtonRef: RefObject<HTMLButtonElement | null>;
 }
@@ -22,14 +22,14 @@ interface RevealedFaceProps {
 function RevealedFace({
   round,
   afterAnswer,
-  celebrate,
+  justAnswered,
   autoFocus,
   primaryButtonRef,
 }: RevealedFaceProps) {
   return (
     <div className="min-w-0 flex flex-col items-stretch gap-3">
       <div className="flex h-[52px] min-w-0 items-center">
-        <RoundResultSummary round={round} celebrate={celebrate} />
+        <RoundResultSummary round={round} justAnswered={justAnswered} />
       </div>
       <Button
         ref={primaryButtonRef}
@@ -51,7 +51,7 @@ function MobileQuizLayout({
   actions,
   answer,
   afterAnswer,
-  celebrate,
+  justAnswered,
   primaryButtonRef,
 }: QuizLayoutProps) {
   const portraitRef = useRef<HTMLDivElement>(null);
@@ -146,7 +146,7 @@ function MobileQuizLayout({
           <RevealedFace
             round={round}
             afterAnswer={afterAnswer}
-            celebrate={celebrate}
+            justAnswered={justAnswered}
             autoFocus={answered}
             primaryButtonRef={primaryButtonRef}
           />

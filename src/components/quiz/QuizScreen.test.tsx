@@ -115,7 +115,13 @@ function renderStatefulScreen(initialRound: RoundState) {
   function Harness() {
     const [round, setRound] = useState(initialRound);
     const submit = (answer: string): SubmitOutcome => {
-      setRound((prev) => roundReducer(prev, { type: "submit", answer, correct: true }));
+      setRound((prev) =>
+        roundReducer(prev, {
+          type: "submit",
+          answer,
+          correct: answer === initialRound.question.student.name,
+        }),
+      );
       return "accepted";
     };
     const giveUp = () => {
@@ -312,8 +318,9 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
 describe.each([
   ["モバイル", false],
   ["デスクトップ", true],
-])("QuizScreen - 正解した瞬間の演出（%s）", (_name, isDesktop) => {
+])("QuizScreen - 回答した瞬間の演出（%s）", (_name, isDesktop) => {
   const ripple = () => document.querySelector("[data-celebrate-ripple]");
+  const revealAnswer = () => document.querySelector(".ba-reveal-answer");
 
   beforeEach(() => {
     isDesktopMock.mockReturnValue(isDesktop);
@@ -329,17 +336,40 @@ describe.each([
     expect(ripple()).not.toBeNull();
   });
 
+  it("正解では答えの名前に演出が付かない", () => {
+    renderStatefulScreen(playingRound("s1"));
+
+    fireEvent.change(screen.getByPlaceholderText("生徒名を入力"), { target: { value: "s1" } });
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+
+    expect(revealAnswer()).toBeNull();
+  });
+
   it("最初から answered の状態で描画したときは出ない", () => {
     renderStatefulScreen(answeredRound("s1"));
 
     expect(ripple()).toBeNull();
+    expect(revealAnswer()).toBeNull();
   });
 
-  it("ギブアップでは出ない", () => {
+  it("ギブアップでは波紋が出ず、答えの名前だけ演出が付く", () => {
     renderStatefulScreen({ status: "playing", question: makeQuestion("s1"), revealedHintCount: 4 });
 
     fireEvent.click(screen.getByRole("button", { name: "諦めて正解を表示" }));
 
     expect(ripple()).toBeNull();
+    expect(revealAnswer()).not.toBeNull();
+  });
+
+  it("この画面で不正解にしたとき、答えの名前に演出が付く", () => {
+    renderStatefulScreen(playingRound("s1"));
+
+    fireEvent.change(screen.getByPlaceholderText("生徒名を入力"), {
+      target: { value: "ぜんぜん違う名前" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+
+    expect(ripple()).toBeNull();
+    expect(revealAnswer()).not.toBeNull();
   });
 });

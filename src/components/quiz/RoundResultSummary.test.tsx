@@ -28,18 +28,53 @@ const round: RoundState = {
   result: { studentId: "s1", usedHintCount: 1, correct: true, userAnswer: "タロウ", score: 10 },
 };
 
-describe("RoundResultSummary - 正解の演出", () => {
-  it("celebrate のときだけ波紋の要素を描画し、判定にポップのクラスを付ける", () => {
-    const { container, getByText } = render(<RoundResultSummary round={round} celebrate />);
+const wrongRound: RoundState = {
+  ...round,
+  result: { ...round.result, correct: false, userAnswer: "ハナコ", score: 0 },
+};
+const gaveUpRound: RoundState = {
+  ...round,
+  result: { ...round.result, correct: false, userAnswer: null, score: 0 },
+};
+
+describe("RoundResultSummary - 回答した瞬間の演出", () => {
+  it("今回答して正解したときだけ波紋の要素を描画し、判定にポップのクラスを付ける", () => {
+    const { container, getByText } = render(<RoundResultSummary round={round} justAnswered />);
 
     expect(container.querySelector("[data-celebrate-ripple]")).not.toBeNull();
     expect(getByText("正解！").className).toContain("ba-pop");
   });
 
-  it("celebrate でなければ波紋もポップもない", () => {
+  it("正解では2行目を動かさない", () => {
+    const { container } = render(<RoundResultSummary round={round} justAnswered />);
+
+    expect(container.querySelector(".ba-reveal-answer")).toBeNull();
+  });
+
+  it("今回答していなければ波紋もポップもない", () => {
     const { container, getByText } = render(<RoundResultSummary round={round} />);
 
     expect(container.querySelector("[data-celebrate-ripple]")).toBeNull();
     expect(getByText("正解！").className).not.toContain("ba-pop");
+  });
+
+  it.each([
+    ["不正解…", wrongRound],
+    ["ギブアップ", gaveUpRound],
+  ])("今回答した%sでは2行目だけに演出を付け、波紋とポップは出さない", (label, r) => {
+    const { container, getByText } = render(<RoundResultSummary round={r} justAnswered />);
+
+    expect(container.querySelector(".ba-reveal-answer")).not.toBeNull();
+    expect(container.querySelector("[data-celebrate-ripple]")).toBeNull();
+    expect(getByText(label).className).not.toContain("ba-pop");
+  });
+
+  it.each([
+    ["不正解", wrongRound],
+    ["ギブアップ", gaveUpRound],
+  ])("今回答していない%sでは2行目に演出を付けない", (_label, r) => {
+    const { container } = render(<RoundResultSummary round={r} />);
+
+    expect(container.querySelector(".ba-reveal-answer")).toBeNull();
   });
 });

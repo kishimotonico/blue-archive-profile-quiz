@@ -3,23 +3,16 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import Button from "./Button";
 
-describe("Button - フォーカス枠", () => {
-  it("accent は紺の枠で、白いすき間を空ける", () => {
-    render(<Button variant="accent">確定</Button>);
-    const { classList } = screen.getByRole("button", { name: "確定" });
+describe("Button - type", () => {
+  it("既定は button（form 内で意図せず submit しない）", () => {
+    render(<Button>操作</Button>);
 
-    expect(classList.contains("focus-visible:ring-ba-navy")).toBe(true);
-    expect(classList.contains("focus-visible:ring-offset-2")).toBe(true);
-    expect(classList.contains("focus-visible:ring-offset-white")).toBe(true);
-    expect(classList.contains("focus-visible:ring-ba-blue")).toBe(false);
+    expect(screen.getByRole("button", { name: "操作" }).getAttribute("type")).toBe("button");
   });
 
-  it.each(["primary", "secondary"] as const)("%s は青い枠のまま", (variant) => {
-    render(<Button variant={variant}>操作</Button>);
-    const { classList } = screen.getByRole("button", { name: "操作" });
+  it("type=submit を渡せば submit になる", () => {
+    render(<Button type="submit">送信</Button>);
 
-    expect(classList.contains("focus-visible:ring-ba-blue")).toBe(true);
-    expect(classList.contains("focus-visible:ring-offset-1")).toBe(true);
-    expect(classList.contains("focus-visible:ring-ba-navy")).toBe(false);
+    expect(screen.getByRole("button", { name: "送信" }).getAttribute("type")).toBe("submit");
   });
 });

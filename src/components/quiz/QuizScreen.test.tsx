@@ -308,3 +308,38 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
+
+describe.each([
+  ["モバイル", false],
+  ["デスクトップ", true],
+])("QuizScreen - 正解した瞬間の演出（%s）", (_name, isDesktop) => {
+  const ripple = () => document.querySelector("[data-celebrate-ripple]");
+
+  beforeEach(() => {
+    isDesktopMock.mockReturnValue(isDesktop);
+  });
+
+  it("この画面で正解したときだけ波紋が出る", () => {
+    renderStatefulScreen(playingRound("s1"));
+    expect(ripple()).toBeNull();
+
+    fireEvent.change(screen.getByPlaceholderText("生徒名を入力"), { target: { value: "s1" } });
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+
+    expect(ripple()).not.toBeNull();
+  });
+
+  it("最初から answered の状態で描画したときは出ない", () => {
+    renderStatefulScreen(answeredRound("s1"));
+
+    expect(ripple()).toBeNull();
+  });
+
+  it("ギブアップでは出ない", () => {
+    renderStatefulScreen({ status: "playing", question: makeQuestion("s1"), revealedHintCount: 4 });
+
+    fireEvent.click(screen.getByRole("button", { name: "諦めて正解を表示" }));
+
+    expect(ripple()).toBeNull();
+  });
+});

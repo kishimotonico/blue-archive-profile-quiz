@@ -38,6 +38,8 @@ export interface QuizLayoutProps {
   actions: { reveal: () => void; giveUp: () => void };
   answer: AnswerDraft;
   afterAnswer: AfterAnswer;
+  /** この画面で今回答して正解したとき true。結果の演出（波紋とポップ）を一度だけ出す */
+  celebrate: boolean;
   /** 回答確定後にフォーカスする主ボタンの ref。QuizBody が flushSync の直後に読むため、
    * レイアウトをまたいでも同じ ref を使えるよう QuizBody が持つ */
   primaryButtonRef: RefObject<HTMLButtonElement | null>;

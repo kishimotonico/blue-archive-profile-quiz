@@ -25,6 +25,8 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
   const [error, setError] = useState<AnswerFeedbackError | null>(null);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
+  // 演出は「この画面で今回答した」ときだけ出す。完了済みの再表示や途中復元は最初から answered なので出さない
+  const [answeredInThisView, setAnsweredInThisView] = useState(false);
 
   useEffect(() => {
     return () => clearTimeout(errorTimerRef.current);
@@ -46,11 +48,14 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     dismissError();
   };
 
-  // flushSyncで確定させないと、ボタンがまだinvisibleのままでfocus()が効かない
+  // flushSyncで確定させないと、ボタンがまだinvisibleのままでfocus()が効かない。
+  // answeredInThisView も同じ flushSync で確定させ、回答後の面が見えるのと同じ描画で演出を始める
+  // （後から更新すると、演出の初期状態が出る前に文字が一瞬見える）
   const handleSubmit = (): SubmitOutcome => {
     let outcome!: SubmitOutcome;
     flushSync(() => {
       outcome = actions.submit(draft.trim());
+      if (outcome === "accepted") setAnsweredInThisView(true);
     });
     if (outcome === "accepted") {
       setDraft("");
@@ -64,7 +69,10 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
 
   // giveUpは押せる時点で必ず回答確定（answered）に進む操作なので、判定なしでフォーカスしてよい
   const handleGiveUp = () => {
-    flushSync(() => actions.giveUp());
+    flushSync(() => {
+      actions.giveUp();
+      setAnsweredInThisView(true);
+    });
     primaryButtonRef.current?.focus();
   };
 
@@ -76,6 +84,8 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     dismissError,
   };
 
+  const celebrate = answeredInThisView && round.status === "answered" && round.result.correct;
+
   const layoutProps = {
     modeLabel,
     heading,
@@ -83,6 +93,7 @@ function QuizBody({ modeLabel, heading, round, actions, afterAnswer }: QuizBodyP
     actions: { reveal: actions.reveal, giveUp: handleGiveUp },
     answer,
     afterAnswer,
+    celebrate,
     primaryButtonRef,
   };
 

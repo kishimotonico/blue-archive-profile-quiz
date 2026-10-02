@@ -12,17 +12,24 @@ import type { AfterAnswer, QuizLayoutProps } from "./quizLayoutTypes";
 interface RevealedFaceProps {
   round: RoundState;
   afterAnswer: AfterAnswer;
+  celebrate: boolean;
   autoFocus: boolean;
   primaryButtonRef: RefObject<HTMLButtonElement | null>;
 }
 
 // 回答前の操作エリア（開示ボタン1段＋入力欄1段）と高さを揃えるため、結果の要約を入力欄と同じ
 // 52px、間隔も回答前と同じ gap-3 にして、主ボタンと合わせて2段にしている
-function RevealedFace({ round, afterAnswer, autoFocus, primaryButtonRef }: RevealedFaceProps) {
+function RevealedFace({
+  round,
+  afterAnswer,
+  celebrate,
+  autoFocus,
+  primaryButtonRef,
+}: RevealedFaceProps) {
   return (
     <div className="min-w-0 flex flex-col items-stretch gap-3">
       <div className="flex h-[52px] min-w-0 items-center">
-        <RoundResultSummary round={round} />
+        <RoundResultSummary round={round} celebrate={celebrate} />
       </div>
       <Button
         ref={primaryButtonRef}
@@ -44,6 +51,7 @@ function MobileQuizLayout({
   actions,
   answer,
   afterAnswer,
+  celebrate,
   primaryButtonRef,
 }: QuizLayoutProps) {
   const portraitRef = useRef<HTMLDivElement>(null);
@@ -138,6 +146,7 @@ function MobileQuizLayout({
           <RevealedFace
             round={round}
             afterAnswer={afterAnswer}
+            celebrate={celebrate}
             autoFocus={answered}
             primaryButtonRef={primaryButtonRef}
           />

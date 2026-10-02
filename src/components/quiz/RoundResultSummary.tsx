@@ -14,11 +14,13 @@ const OUTCOME_LABEL: Record<QuestionOutcome, { text: string; className: string }
 
 interface RoundResultSummaryProps {
   round: RoundState;
+  /** 正解した瞬間の演出（リングの波紋と判定のポップ）を出すか。完了済みの再表示では false */
+  celebrate?: boolean;
 }
 
 // 回答後の面は回答前から mount されているため、playing 中は score=0 のリングと空の文言で描画しておく。
 // answered になった瞬間にリングが .ba-ring-fill の transition で伸びる
-function RoundResultSummary({ round }: RoundResultSummaryProps) {
+function RoundResultSummary({ round, celebrate = false }: RoundResultSummaryProps) {
   const { student, score } = getRoundView(round);
   const outcome = round.status === "answered" ? getQuestionOutcome(round.result) : null;
   const label = outcome && OUTCOME_LABEL[outcome];
@@ -38,10 +40,21 @@ function RoundResultSummary({ round }: RoundResultSummaryProps) {
           {score}
         </span>
         <span className="text-[9px] font-bold leading-none text-ba-ink-soft">点</span>
+        {/* celebrate のときだけ mount し、animation を一度だけ走らせる。リングの外へ広がるが、
+            祖先に overflow を切るものはない */}
+        {celebrate && (
+          <span
+            aria-hidden="true"
+            data-celebrate-ripple
+            className="ba-ripple pointer-events-none absolute inset-0 rounded-full border-[3px] border-ba-sky"
+          />
+        )}
       </HaloRingGauge>
       <div className="flex min-w-0 flex-col">
         <span
-          className={`truncate font-display text-xl font-black leading-7 ${label?.className ?? ""}`}
+          className={`truncate font-display text-xl font-black leading-7 ${label?.className ?? ""} ${
+            celebrate ? "ba-pop" : ""
+          }`}
         >
           {label?.text}
         </span>

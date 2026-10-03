@@ -25,7 +25,8 @@ export {
   createDailyQuestion,
 } from "./daily";
 
-export { getMaxScore, getScoreRank, getScoreRankLabel, SCORE_RANKS } from "./scoring";
+export { getMaxScore, getScoreRank, SCORE_RANKS } from "./scoring";
+export type { ScoreRank } from "./scoring";
 
 export { summarizeRecords, summarizeResults } from "./stats";
 export type { RecordStats, ResultsSummary } from "./stats";
@@ -40,10 +41,10 @@ export { dailySessionReducer } from "./dailySession";
 export type { DailySession } from "./dailySession";
 
 export {
-  getTotalStages,
   getVisibleHintCount,
+  getPlayerRevealedHintCount,
   getPortraitState,
-  getRemainingStages,
+  getPotentialScore,
   getNextStep,
   getRoundView,
 } from "./reveal";

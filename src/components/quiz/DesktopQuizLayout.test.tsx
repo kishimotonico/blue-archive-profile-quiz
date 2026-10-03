@@ -73,6 +73,8 @@ function renderLayout(round: RoundState, afterAnswer: AfterAnswer) {
       actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
       answer={noopAnswer}
       afterAnswer={afterAnswer}
+      justAnswered={false}
+      focusHintOnStart
       primaryButtonRef={primaryButtonRef}
     />,
   );
@@ -96,6 +98,8 @@ function renderStatefulLayout(initialRound: RoundState, afterAnswer: AfterAnswer
         }}
         answer={noopAnswer}
         afterAnswer={afterAnswer}
+        justAnswered={false}
+        focusHintOnStart
         primaryButtonRef={primaryButtonRef}
       />
     );
@@ -104,10 +108,10 @@ function renderStatefulLayout(initialRound: RoundState, afterAnswer: AfterAnswer
 }
 
 describe("DesktopQuizLayout - マウント時の主ボタンへのフォーカス", () => {
-  it("answered状態でマウントされると主ボタンにフォーカスがある", () => {
+  it("answered状態でマウントされても主ボタンにはフォーカスしない（回答直後のフォーカスは QuizBody が担う）", () => {
     renderLayout(answeredRound, { primaryAction: { label: "結果を見る", onClick: vi.fn() } });
 
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "結果を見る" }));
+    expect(document.activeElement).not.toBe(screen.getByRole("button", { name: "結果を見る" }));
   });
 
   it("playing状態でマウントされると、主ボタンにはフォーカスしない（開示ボタン側に譲る）", () => {
@@ -122,12 +126,11 @@ describe("DesktopQuizLayout - マウント時の主ボタンへのフォーカ�
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "シルエットを表示" }));
   });
 
-  it("フォーカスされた主ボタンの click で primaryAction が呼ばれる", () => {
+  it("主ボタンの click で primaryAction が呼ばれる", () => {
     const onClick = vi.fn();
     renderLayout(answeredRound, { primaryAction: { label: "結果を見る", onClick } });
 
     const button = screen.getByRole("button", { name: "結果を見る" });
-    expect(document.activeElement).toBe(button);
     button.click();
 
     expect(onClick).toHaveBeenCalledTimes(1);

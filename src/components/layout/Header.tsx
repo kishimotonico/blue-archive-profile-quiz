@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { useAtomValue } from "jotai";
 import { Calendar, Shuffle } from "lucide-react";
 import { getDailyDate, getTimeUntilNextReset, formatTimeUntilNextReset } from "../../quiz-core";
@@ -40,7 +40,6 @@ function TitleMark() {
   );
 }
 
-// デスクトップナビの現在地と同じ形の語彙として、メニュー内の「表示中」にも同じ平行四辺形を使う
 function CurrentBadge() {
   return (
     <span
@@ -53,7 +52,7 @@ function CurrentBadge() {
   );
 }
 
-// @primer/octicons 19.38.0 の mark-github-16。ブランドガイドラインで変形・加工が禁止され色も白か黒に限られるため、パスは触らず黒で固定する
+// @primer/octicons 19.38.0 の mark-github-16。ブランドガイドラインで加工が禁止され色も白か黒に限られるため、パスは触らず黒で固定する
 function GithubIcon({ className }: { className: string }) {
   return (
     <svg
@@ -67,7 +66,6 @@ function GithubIcon({ className }: { className: string }) {
   );
 }
 
-// モバイルパネルのリンクと URL・アイコンを共有する
 function GithubLink({ className }: { className: string }) {
   return (
     <a
@@ -86,7 +84,7 @@ function GithubLink({ className }: { className: string }) {
 interface MenuTileProps {
   to: string;
   end?: boolean;
-  icon: React.ReactNode;
+  icon: ReactNode;
   name: string;
   description: string;
   onNavigate: () => void;
@@ -119,7 +117,7 @@ function MenuTile({ to, end, icon, name, description, onNavigate }: MenuTileProp
 interface NavTabProps {
   to: string;
   end?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function NavTab({ to, end, children }: NavTabProps) {
@@ -129,10 +127,7 @@ function NavTab({ to, end, children }: NavTabProps) {
       end={end}
       className={({ isActive }) =>
         `clip-nav-slant flex h-9 items-center text-sm font-bold px-3 transition-colors ${
-          isActive
-            ? // 14px の文字だと sky 上の白文字は AA (4.5:1) に届かないため、面には ba-blue を使う
-              "bg-ba-blue text-white"
-            : "text-ba-navy hover:bg-ba-sky-1"
+          isActive ? "bg-ba-blue text-white" : "text-ba-navy hover:bg-ba-sky-1"
         }`
       }
     >
@@ -141,8 +136,7 @@ function NavTab({ to, end, children }: NavTabProps) {
   );
 }
 
-// メニューは常時マウントしたまま開閉するため、開くたびに再描画されて日付が最新化される
-// （朝4:00をまたいだ後の再訪も開き直せば反映される）
+// メニューは常時マウントなので日付は再描画時にしか更新されない。4:00 をまたいだ後は次の再描画で最新になる
 function DailyStatusRow() {
   const history = useAtomValue(dailyHistoryAtom);
   const today = getDailyDate();
@@ -177,13 +171,8 @@ function DailyStatusRow() {
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev);
-  };
-
   const closeMenu = () => setIsMenuOpen(false);
 
-  // オーバーレイで背後を塞ぐためモーダルと同時には開かず、dialog のネイティブ Escape とは競合しない
   useEffect(() => {
     if (!isMenuOpen) return;
 
@@ -219,7 +208,7 @@ function Header() {
 
         <button
           className="md:hidden ml-auto w-11 h-11 flex items-center justify-center"
-          onClick={toggleMenu}
+          onClick={() => setIsMenuOpen((prev) => !prev)}
           aria-label="メニュー"
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"
@@ -228,8 +217,7 @@ function Header() {
         </button>
       </header>
 
-      {/* オーバーレイとパネルは常時マウントし、同じ長さのトランジションで開閉する。
-          オーバーレイだけ即座に出し入れすると、画面の明暗がパネルより先に切り替わってちらつく */}
+      {/* 常時マウントして同じ長さで開閉する。オーバーレイだけ先に切り替えると明暗がちらつく */}
       <div
         className={`md:hidden fixed inset-x-0 top-(--header-height) bottom-0 bg-ba-navy/45 z-40 transition-opacity duration-200 motion-reduce:transition-none ${
           isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"

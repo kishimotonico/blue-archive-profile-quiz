@@ -21,8 +21,7 @@ import {
 } from "../store/daily";
 import { allStudentsAtom } from "../store/students";
 
-// 今日の記録・進捗の有無で「復元」か「新規」かが決まる。この分岐は useReducer の遅延初期化に
-// 閉じ込め、reducer 自体は round の委譲だけを知る純粋な状態機械のままにする。
+// 復元か新規かの分岐は reducer ではなく遅延初期化に置き、reducer を純粋なまま保つ
 function initDailySession(store: ReturnType<typeof useStore>) {
   return (allStudents: Student[]): DailySession => {
     const today = getDailyDate();
@@ -34,8 +33,7 @@ function initDailySession(store: ReturnType<typeof useStore>) {
       session = {
         round: restoreRound(question, {
           status: "answered",
-          // 型を満たすためだけに null を置く。todayRecord がある時点で同じ baseDate の記録が
-          // 存在し、recordDailyResultAtom は何もしないので、この null は保存に戻らない
+          // 同じ baseDate の記録が既にあり recordDailyResultAtom は何もしないので、この null は保存されない
           result: { ...todayRecord.result, userAnswer: todayRecord.result.userAnswer ?? null },
         }),
         completedOnLoad: true,
@@ -75,7 +73,7 @@ export function useDailyQuiz() {
     if (round.status === "playing") {
       setDailyProgress({ key: round.question.key, revealedHintCount: round.revealedHintCount });
     } else {
-      // baseDate が既にあれば何もしない冪等な書き込みなので、完了済みの再訪でも二重記録しない。
+      // baseDate が既にあれば何もしないので、完了済みの再訪でも二重記録しない
       recordDailyResult({ key: round.question.key, result: round.result });
       setDailyProgress(null);
     }

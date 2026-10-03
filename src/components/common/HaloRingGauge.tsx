@@ -38,8 +38,7 @@ function HaloRingGauge({
       role={label ? "img" : undefined}
       aria-label={label}
     >
-      {/* labelが無いときコンテナごとaria-hiddenにするとchildren（ランク文字など）も
-          読み上げられなくなるため、装飾であるSVG側にだけ常時aria-hiddenを付ける */}
+      {/* コンテナごと aria-hidden にすると label が無いとき children も読み上げられなくなるため、SVG にだけ付ける */}
       <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full -rotate-90" aria-hidden="true">
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">

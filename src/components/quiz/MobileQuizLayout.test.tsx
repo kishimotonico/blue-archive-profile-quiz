@@ -72,6 +72,8 @@ function renderLayout(
       actions={{ reveal: vi.fn(), giveUp: vi.fn() }}
       answer={options.answer ?? noopAnswer}
       afterAnswer={afterAnswer}
+      justAnswered={false}
+      focusHintOnStart
       primaryButtonRef={primaryButtonRef}
     />,
   );
@@ -95,6 +97,8 @@ function renderStatefulLayout(initialRound: RoundState, afterAnswer: AfterAnswer
         }}
         answer={noopAnswer}
         afterAnswer={afterAnswer}
+        justAnswered={false}
+        focusHintOnStart
         primaryButtonRef={primaryButtonRef}
       />
     );
@@ -103,10 +107,10 @@ function renderStatefulLayout(initialRound: RoundState, afterAnswer: AfterAnswer
 }
 
 describe("MobileQuizLayout - マウント時のフォーカス", () => {
-  it("answered状態でマウントされると主ボタンにフォーカスがある", () => {
+  it("answered状態でマウントされても主ボタンにはフォーカスしない（回答直後のフォーカスは QuizBody が担う）", () => {
     renderLayout(answeredRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
+    expect(document.activeElement).not.toBe(screen.getByRole("button", { name: "次の問題へ" }));
   });
 
   it("playing状態でマウントされると、開示ボタンにフォーカスがある", () => {
@@ -115,12 +119,11 @@ describe("MobileQuizLayout - マウント時のフォーカス", () => {
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "シルエットを表示" }));
   });
 
-  it("フォーカスされた主ボタンの click で primaryAction が呼ばれる", () => {
+  it("主ボタンの click で primaryAction が呼ばれる", () => {
     const onClick = vi.fn();
     renderLayout(answeredRound, { primaryAction: { label: "次の問題へ", onClick } });
 
     const button = screen.getByRole("button", { name: "次の問題へ" });
-    expect(document.activeElement).toBe(button);
     button.click();
 
     expect(onClick).toHaveBeenCalledTimes(1);
@@ -145,12 +148,37 @@ describe("MobileQuizLayout - 操作エリアの出し分け", () => {
     expect(screen.getByText("諦めて正解を表示").closest(".invisible")).not.toBeNull();
   });
 
-  it("answered中は正誤・得点・生徒名を1行にまとめて表示する", () => {
+  it("answered中は判定・得点・生徒名を要約として表示する", () => {
     renderLayout(answeredRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
 
     expect(screen.getByText("正解！")).not.toBeNull();
     expect(screen.getByText("10")).not.toBeNull();
     expect(screen.getByText(question.student.fullName)).not.toBeNull();
+  });
+
+  it("ギブアップ時は「ギブアップ」と正解の生徒名を表示する", () => {
+    const gaveUpRound: RoundState = {
+      status: "answered",
+      question,
+      result: { ...answerResult, correct: false, userAnswer: null, score: 0 },
+    };
+    renderLayout(gaveUpRound, { primaryAction: { label: "次の問題へ", onClick: vi.fn() } });
+
+    expect(screen.getByText("ギブアップ")).not.toBeNull();
+    expect(screen.getByText(question.student.fullName)).not.toBeNull();
+  });
+
+  it("afterAnswer.status は回答後だけタイトル行に表示する", () => {
+    const afterAnswer = {
+      primaryAction: { label: "次の問題へ", onClick: vi.fn() },
+      status: <span>完了済み</span>,
+    };
+    const { unmount } = renderLayout(playingRound, afterAnswer);
+    expect(screen.queryByText("完了済み")).toBeNull();
+    unmount();
+
+    renderLayout(answeredRound, afterAnswer);
+    expect(screen.getByText("完了済み")).not.toBeNull();
   });
 });
 

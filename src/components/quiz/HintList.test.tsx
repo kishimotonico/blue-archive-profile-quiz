@@ -19,13 +19,29 @@ const manyHints: Hint[] = [
 
 describe("HintList - 「残り n ヒント」の帯", () => {
   it("layout=desktop では帯を表示しない", () => {
-    render(<HintList hints={manyHints} visibleCount={1} animateReveal layout="desktop" />);
+    render(
+      <HintList
+        hints={manyHints}
+        visibleCount={1}
+        playerRevealedCount={1}
+        animateReveal
+        layout="desktop"
+      />,
+    );
 
     expect(screen.queryByText(/残り/)).toBeNull();
   });
 
   it("layout=mobile かつ残り2枚以上では帯を表示する", () => {
-    render(<HintList hints={manyHints} visibleCount={1} animateReveal layout="mobile" />);
+    render(
+      <HintList
+        hints={manyHints}
+        visibleCount={1}
+        playerRevealedCount={1}
+        animateReveal
+        layout="mobile"
+      />,
+    );
 
     expect(screen.getByText(/残り 3 ヒント/)).toBeTruthy();
   });
@@ -33,7 +49,15 @@ describe("HintList - 「残り n ヒント」の帯", () => {
 
 describe("HintList - 開示のきらめき", () => {
   it("animateReveal=true のとき、直近に開示した1枚だけがきらめく", () => {
-    render(<HintList hints={mockHints} visibleCount={2} animateReveal layout="mobile" />);
+    render(
+      <HintList
+        hints={mockHints}
+        visibleCount={2}
+        playerRevealedCount={2}
+        animateReveal
+        layout="mobile"
+      />,
+    );
 
     const cards = screen.getAllByText(/VAL_/).map((el) => el.parentElement);
     expect(cards[0]?.className).not.toContain("ba-shine");
@@ -41,7 +65,15 @@ describe("HintList - 開示のきらめき", () => {
   });
 
   it("animateReveal=false のときはきらめかない（回答確定で一斉に開くケース）", () => {
-    render(<HintList hints={mockHints} visibleCount={2} animateReveal={false} layout="mobile" />);
+    render(
+      <HintList
+        hints={mockHints}
+        visibleCount={2}
+        playerRevealedCount={2}
+        animateReveal={false}
+        layout="mobile"
+      />,
+    );
 
     const cards = screen.getAllByText(/VAL_/).map((el) => el.parentElement);
     expect(cards.every((el) => !el?.className.includes("ba-shine"))).toBe(true);
@@ -53,6 +85,7 @@ describe("HintList - 開示のきらめき", () => {
       <HintList
         hints={mockHints}
         visibleCount={1}
+        playerRevealedCount={1}
         animateReveal
         layout="mobile"
         justRevealedRef={ref}
@@ -61,5 +94,37 @@ describe("HintList - 開示のきらめき", () => {
 
     expect(ref.current).not.toBeNull();
     expect(ref.current?.textContent).toContain("VAL_1");
+  });
+});
+
+describe("HintList - 回答後に開いたヒント", () => {
+  it("playerRevealedCount 以降の開示済みカードだけに「（回答後に開示）」が付く", () => {
+    render(
+      <HintList
+        hints={mockHints}
+        visibleCount={2}
+        playerRevealedCount={1}
+        animateReveal={false}
+        layout="desktop"
+      />,
+    );
+
+    const cards = screen.getAllByText(/VAL_/).map((el) => el.parentElement);
+    expect(cards[0]?.textContent).not.toContain("（回答後に開示）");
+    expect(cards[1]?.textContent).toContain("（回答後に開示）");
+  });
+
+  it("未開示のカードには付かない", () => {
+    render(
+      <HintList
+        hints={mockHints}
+        visibleCount={1}
+        playerRevealedCount={1}
+        animateReveal
+        layout="desktop"
+      />,
+    );
+
+    expect(screen.queryByText("（回答後に開示）")).toBeNull();
   });
 });

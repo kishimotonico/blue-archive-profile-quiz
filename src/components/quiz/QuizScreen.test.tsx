@@ -115,7 +115,13 @@ function renderStatefulScreen(initialRound: RoundState) {
   function Harness() {
     const [round, setRound] = useState(initialRound);
     const submit = (answer: string): SubmitOutcome => {
-      setRound((prev) => roundReducer(prev, { type: "submit", answer, correct: true }));
+      setRound((prev) =>
+        roundReducer(prev, {
+          type: "submit",
+          answer,
+          correct: answer === initialRound.question.student.name,
+        }),
+      );
       return "accepted";
     };
     const giveUp = () => {
@@ -269,10 +275,10 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
     isDesktopMock.mockReturnValue(false);
   });
 
-  it("回答済みの状態でマウントされると主ボタンにフォーカスがある", () => {
+  it("回答済みの状態でマウントされても主ボタンにフォーカスしない", () => {
     renderScreen({ questionId: "q1", round: answeredRound("s1") });
 
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
+    expect(document.activeElement).toBe(document.body);
   });
 
   it("submit で回答が確定すると主ボタンにフォーカスが移る", () => {
@@ -293,7 +299,7 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "次の問題へ" }));
   });
 
-  it("フォーカスされた主ボタンの click で primaryAction.onClick が呼ばれる（Enter はブラウザが click に変換する）", () => {
+  it("主ボタンの click で primaryAction.onClick が呼ばれる", () => {
     const onClick = vi.fn();
     renderScreen({
       questionId: "q1",
@@ -301,10 +307,102 @@ describe("QuizScreen - 回答後の主ボタンへのフォーカス", () => {
       afterAnswer: { primaryAction: { label: "次の問題へ", onClick } },
     });
 
-    const button = screen.getByRole("button", { name: "次の問題へ" });
-    expect(document.activeElement).toBe(button);
-    button.click();
+    screen.getByRole("button", { name: "次の問題へ" }).click();
 
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe.each([
+  ["モバイル", false],
+  ["デスクトップ", true],
+])("QuizScreen - 問題開始時の開示ボタンへのフォーカス（%s）", (_name, isDesktop) => {
+  beforeEach(() => {
+    isDesktopMock.mockReturnValue(isDesktop);
+  });
+
+  const screenFor = (questionId: string) => (
+    <MemoryRouter>
+      <QuizScreen
+        modeLabel="テストモード"
+        heading="見出し"
+        questionId={questionId}
+        round={playingRound("s1")}
+        actions={{ reveal: vi.fn(), giveUp: vi.fn(), submit: vi.fn() }}
+        afterAnswer={defaultAfterAnswer}
+      />
+    </MemoryRouter>
+  );
+
+  it("ページを開いた最初の問題では開示ボタンにフォーカスしない", () => {
+    renderScreen({ questionId: "q1", round: playingRound("s1") });
+
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it("questionId が変わった後の問題では開示ボタンにフォーカスする", () => {
+    const { rerender } = render(screenFor("q1"));
+    rerender(screenFor("q2"));
+
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "次のヒントを開示" }));
+  });
+});
+
+describe.each([
+  ["モバイル", false],
+  ["デスクトップ", true],
+])("QuizScreen - 回答した瞬間の演出（%s）", (_name, isDesktop) => {
+  const ripple = () => document.querySelector("[data-celebrate-ripple]");
+  const revealAnswer = () => document.querySelector(".ba-reveal-answer");
+
+  beforeEach(() => {
+    isDesktopMock.mockReturnValue(isDesktop);
+  });
+
+  it("この画面で正解したときだけ波紋が出る", () => {
+    renderStatefulScreen(playingRound("s1"));
+    expect(ripple()).toBeNull();
+
+    fireEvent.change(screen.getByPlaceholderText("生徒名を入力"), { target: { value: "s1" } });
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+
+    expect(ripple()).not.toBeNull();
+  });
+
+  it("正解では答えの名前に演出が付かない", () => {
+    renderStatefulScreen(playingRound("s1"));
+
+    fireEvent.change(screen.getByPlaceholderText("生徒名を入力"), { target: { value: "s1" } });
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+
+    expect(revealAnswer()).toBeNull();
+  });
+
+  it("最初から answered の状態で描画したときは出ない", () => {
+    renderStatefulScreen(answeredRound("s1"));
+
+    expect(ripple()).toBeNull();
+    expect(revealAnswer()).toBeNull();
+  });
+
+  it("ギブアップでは波紋が出ず、答えの名前だけ演出が付く", () => {
+    renderStatefulScreen({ status: "playing", question: makeQuestion("s1"), revealedHintCount: 4 });
+
+    fireEvent.click(screen.getByRole("button", { name: "諦めて正解を表示" }));
+
+    expect(ripple()).toBeNull();
+    expect(revealAnswer()).not.toBeNull();
+  });
+
+  it("この画面で不正解にしたとき、答えの名前に演出が付く", () => {
+    renderStatefulScreen(playingRound("s1"));
+
+    fireEvent.change(screen.getByPlaceholderText("生徒名を入力"), {
+      target: { value: "ぜんぜん違う名前" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "回答する" }));
+
+    expect(ripple()).toBeNull();
+    expect(revealAnswer()).not.toBeNull();
   });
 });

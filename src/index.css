@@ -4,24 +4,18 @@ layer(base);
 @import "tailwindcss";
 
 @theme {
-  /* 白文字を載せる面で WCAG AA（4.5:1）を満たす範囲で、できるだけ明るくしてある。
-     ba-blue-light はグラデの明るい端で、白との比がちょうど 4.5:1。これ以上明るくしない */
   --color-ba-blue: #0866c8;
   --color-ba-blue-light: #0776df;
   --color-ba-cyan: #47c5fb;
-  /* ゲーム本編寄りの明るい青。白文字とのコントラストが3.48:1しかないため、
-     白文字を載せるのは19px以上の太字（大きい文字はAAの必要比が3:1に下がる）だけに限る */
   --color-ba-sky: #128afa;
   --color-ba-navy: #2b3a55;
   --color-ba-yellow: #ffe433;
-  --color-ba-yellow-soft: #f3e27a;
   --color-ba-bg: #f3f7fb;
   --color-ba-sky-1: #dff1ff;
   --color-ba-sky-2: #b9e3ff;
   --color-ba-ink-soft: #5c6e8c;
   --color-ba-border: #dce6f4;
 
-  /* 正誤セマンティックトークン（白背景・淡色背景どちらでもAAコントラストを満たす値） */
   --color-ba-correct: #1d4ed8;
   --color-ba-correct-soft: #dbeafe;
   --color-ba-wrong: #b91c1c;
@@ -31,7 +25,7 @@ layer(base);
   --font-sans: "Noto Sans JP", sans-serif;
 }
 
-/* Header 自身のほか、モバイルメニューの開始位置や各画面の残り高さ計算が参照する */
+/* Header のほか、モバイルメニューの開始位置や各画面の残り高さ計算が参照する */
 :root {
   --header-height: 2.75rem;
 }
@@ -42,19 +36,11 @@ layer(base);
   }
 }
 
-/* デスクトップナビの現在地表示に使う平行四辺形カット */
 @utility clip-nav-slant {
   clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+/* border-color を指定していない枠線（Modal など）が currentcolor にならないよう、v3 の既定色に戻す */
 @layer base {
   *,
   ::after,
@@ -81,6 +67,23 @@ body {
     transition: stroke-dashoffset 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
+  /* 遅延はリングが伸びきる頃（.ba-ring-fill の 0.5s）に合わせる。
+     波紋は遅延中に見えないよう素の opacity を 0 にし、ポップは遅延中に文字が見えないよう both */
+  .ba-ripple {
+    opacity: 0;
+    animation: ba-ripple 0.7s ease-out 0.45s forwards;
+  }
+
+  .ba-pop {
+    transform-origin: left center;
+    animation: ba-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) 0.4s both;
+  }
+
+  /* 判定は動かさず答えの名前だけを遅らせて出す。遅延中に見えないよう both */
+  .ba-reveal-answer {
+    animation: ba-reveal-answer 0.4s ease-out 0.3s both;
+  }
+
   .ba-shine {
     position: relative;
     overflow: hidden;
@@ -103,6 +106,39 @@ body {
   }
 }
 
+@keyframes ba-ripple {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes ba-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ba-reveal-answer {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes ba-shine-sweep {
   from {
     left: -60%;
@@ -120,5 +156,14 @@ body {
 
   .ba-ring-fill {
     transition: none;
+  }
+
+  .ba-ripple {
+    display: none;
+  }
+
+  .ba-pop,
+  .ba-reveal-answer {
+    animation: none;
   }
 }

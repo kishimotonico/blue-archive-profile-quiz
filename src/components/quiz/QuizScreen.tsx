@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { RoundState } from "../../quiz-core";
 import QuizBody from "./QuizBody";
 import type { AfterAnswer, QuizActions } from "./quizLayoutTypes";
@@ -13,7 +13,6 @@ interface QuizScreenProps {
   afterAnswer: AfterAnswer;
 }
 
-// 結果モーダルや初期化・進捗保存などページ固有のロジックは呼び出し側に残す。
 function QuizScreen({
   modeLabel,
   heading,
@@ -22,9 +21,10 @@ function QuizScreen({
   actions,
   afterAnswer,
 }: QuizScreenProps) {
+  // 最初の問題だけ autoFocus しない。開いただけでフォーカス枠が出るため。2問目以降は Enter だけで続けられる
+  const [initialQuestionId] = useState(questionId);
   return (
-    // overflow-hidden だと main もスクロールコンテナになり、立ち絵の scrollIntoView が main まで
-    // 動かして位置がずれるため overflow-clip にする
+    // overflow-hidden だと main がスクロールコンテナになり、scrollIntoView が main まで動かしてしまう
     <main className="h-[calc(100dvh-var(--header-height))] max-w-6xl xl:max-w-7xl mx-auto w-full overflow-clip">
       <QuizBody
         key={questionId}
@@ -33,6 +33,7 @@ function QuizScreen({
         round={round}
         actions={actions}
         afterAnswer={afterAnswer}
+        focusHintOnStart={questionId !== initialQuestionId}
       />
     </main>
   );

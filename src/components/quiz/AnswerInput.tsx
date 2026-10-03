@@ -1,12 +1,13 @@
 import { useId, type FormEvent } from "react";
 import { motion, useAnimationControls } from "motion/react";
+import type { SubmitOutcome } from "../../quiz-core";
 import Button from "../common/Button";
 import type { AnswerFeedbackError } from "./quizLayoutTypes";
 
 interface AnswerInputProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: () => "accepted" | "unknownStudent";
+  onSubmit: () => SubmitOutcome;
   error: AnswerFeedbackError | null;
   onDismissError: () => void;
 }
@@ -18,8 +19,7 @@ function AnswerInput({ value, onChange, onSubmit, error, onDismissError }: Answe
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!value.trim()) return;
-    // シェイクは送信結果が分かった直後、このハンドラの中でだけ再生する。
-    // stateやkeyの変化を監視するeffectを使わないため、同じ入力欄のDOMを保ったまま再生できる
+    // effect で error の変化を監視せず、ここで再生する。key で作り直すと入力欄のフォーカスが外れる
     if (onSubmit() === "unknownStudent") {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       controls.start({ x: [0, -8, 8, -6, 6, -4, 4, 0], transition: { duration: 0.4 } });
@@ -59,7 +59,7 @@ function AnswerInput({ value, onChange, onSubmit, error, onDismissError }: Answe
         <Button
           type="submit"
           variant={isAnswerEmpty ? "secondary" : "accent"}
-          // 白地の secondary に disabled:opacity-50 が掛かると、ボタンの輪郭がほぼ消えて読めなくなるため
+          // 白地の secondary に disabled:opacity-50 が掛かると輪郭がほぼ消えて読めない
           className={`shrink-0 ${isAnswerEmpty ? "disabled:opacity-80!" : ""}`}
           disabled={isAnswerEmpty}
         >
@@ -67,7 +67,7 @@ function AnswerInput({ value, onChange, onSubmit, error, onDismissError }: Answe
         </Button>
       </motion.form>
 
-      {/* key={error.attempt} で、同じ文言が続いても吹き出しを出し直す（スクリーンリーダーへの再読み上げに必要） */}
+      {/* key で、同じ文言が続いても吹き出しを作り直し、スクリーンリーダーに再読み上げさせる */}
       {error && (
         <div
           key={error.attempt}
@@ -79,7 +79,6 @@ function AnswerInput({ value, onChange, onSubmit, error, onDismissError }: Answe
           <div className="bg-ba-wrong-soft border border-ba-wrong/40 text-ba-wrong text-xs font-semibold rounded-lg px-3 py-1.5 shadow-xs">
             {error.message}
           </div>
-          {/* 吹き出し三角形（下向き） */}
           <div className="ml-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-ba-wrong/40" />
         </div>
       )}

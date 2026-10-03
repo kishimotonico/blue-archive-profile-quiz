@@ -36,8 +36,7 @@ function generateMasterKey(): QuizKey {
   };
 }
 
-// sessionStorage の進捗有無で「復元」か「新規」かが決まる。この分岐は useReducer の遅延初期化に
-// 閉じ込め、reducer 自体は round/next の委譲だけを知る純粋な状態機械のままにする。
+// 復元か新規かの分岐は reducer ではなく遅延初期化に置き、reducer を純粋なまま保つ
 function initRegularState(allStudents: Student[]): RegularState {
   const stored = loadRegularQuizProgress();
   const key = stored ? stored.masterKey : generateMasterKey();
@@ -67,8 +66,6 @@ export function useRegularQuiz() {
 
   const [state, dispatch] = useReducer(regularSessionReducer, allStudents, initRegularState);
 
-  // 進捗（ready状態）のsessionStorageへの保存は、reducerの状態を外部ストレージへ写す同期なので
-  // effectのままでよい。finishedへの遷移はユーザー操作（nextハンドラ）の結果なのでそちらへ移す
   useEffect(() => {
     if (state.status === "ready") {
       saveRegularQuizProgress({
@@ -101,8 +98,7 @@ export function useRegularQuiz() {
     dispatch({ type: "round", action: { type: "giveUp" } });
   };
 
-  // 遷移は「次の問題へ」の操作の結果なので、状態を監視する effect ではなく、
-  // reducer を先に評価してここで直接行う
+  // 状態を監視する effect ではなく、reducer を先に評価してここで遷移する
   const next = () => {
     const nextState = regularSessionReducer(state, { type: "next" });
     if (nextState.status === "finished") {

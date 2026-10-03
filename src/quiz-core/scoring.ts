@@ -31,10 +31,3 @@ export const SCORE_RANKS: readonly { rank: ScoreRank; min: number; max: number }
 export function getScoreRank(score: number): ScoreRank {
   return (SCORE_RANKS.find((r) => score >= r.min) ?? SCORE_RANKS[SCORE_RANKS.length - 1]).rank;
 }
-
-/** ランク分布の表示用ラベル（例: "S (8-9点)"） */
-export function getScoreRankLabel(rank: ScoreRank): string {
-  const def = SCORE_RANKS.find((r) => r.rank === rank) ?? SCORE_RANKS[SCORE_RANKS.length - 1];
-  const range = def.min === def.max ? `${def.min}` : `${def.min}-${def.max}`;
-  return `${rank} (${range}点)`;
-}

@@ -9,8 +9,7 @@ import QuizErrorState from "./components/quiz/QuizErrorState";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import Header from "./components/layout/Header";
 
-// プレイ状態はページの useReducer にあり、ルート遷移のアンマウントで消えるため、
-// jotai の store はアプリで1つでよい。ErrorBoundary/Suspense は allStudentsAtom の読み込み用。
+// ErrorBoundary/Suspense は allStudentsAtom の読み込み用
 function RouteBoundary({ children }: { children: ReactNode }) {
   return (
     <ErrorBoundary fallback={<QuizErrorState />}>
@@ -19,8 +18,7 @@ function RouteBoundary({ children }: { children: ReactNode }) {
   );
 }
 
-// Header をレイアウトルートに1つだけ置き、ルート遷移や Suspense の解決のたびに再マウントされない
-// ようにする。各画面側でヘッダー高さ分を引いた高さを扱うため、ここでは min-h に留める
+// Header はルート遷移や Suspense 解決で再マウントされないよう、レイアウトルートに置く
 function AppLayout() {
   return (
     <div className="min-h-[100dvh] flex flex-col">

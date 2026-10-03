@@ -1,7 +1,6 @@
 import { useSyncExternalStore } from "react";
 
-// mdでは2カラムにするとヒントも立ち絵も窮屈なため、lg以上をデスクトップ扱いにする。
-// ヘッダー（mdで切替）とは意図的に揃えない
+// md では2カラムが窮屈なので lg 以上をデスクトップ扱いにする。ヘッダー（md 切替）とは意図的に揃えない
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
 // matchMedia を持たない jsdom ではモバイル扱いにする

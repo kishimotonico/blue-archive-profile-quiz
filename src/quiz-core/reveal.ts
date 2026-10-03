@@ -1,9 +1,6 @@
 import type { PortraitState, Student } from "./types";
 import type { RoundState } from "./round";
-
-export function getTotalStages(state: RoundState): number {
-  return state.question.hints.length + 1;
-}
+import { calculateScore } from "./scoring";
 
 /**
  * 画面に表示するヒントの範囲。answered は再訪時も含めて常に全ヒントを見せる
@@ -14,15 +11,26 @@ export function getVisibleHintCount(state: RoundState): number {
   return Math.min(state.revealedHintCount, state.question.hints.length);
 }
 
+/**
+ * プレイヤーが自分の操作で開いたヒントの枚数。answered で表示範囲（全ヒント）との差が
+ * 「回答後に開いたヒント」になる。usedHintCount は立ち絵段階で hints.length + 1 になり得るため頭打ちにする
+ */
+export function getPlayerRevealedHintCount(state: RoundState): number {
+  const hintCount = state.question.hints.length;
+  const used = state.status === "answered" ? state.result.usedHintCount : state.revealedHintCount;
+  return Math.min(used, hintCount);
+}
+
 export function getPortraitState(state: RoundState): PortraitState {
   if (state.status === "answered") return "revealed";
   if (state.revealedHintCount > state.question.hints.length) return "silhouette";
   return "hidden";
 }
 
-export function getRemainingStages(state: RoundState): number {
+/** playing 中に「いま正解したら何点か」。answered は結果の点数が別に出るため 0 */
+export function getPotentialScore(state: RoundState): number {
   if (state.status === "answered") return 0;
-  return getTotalStages(state) - state.revealedHintCount;
+  return calculateScore(state.revealedHintCount, true);
 }
 
 /** 開示ボタンが次に何をすべきかを示す。answered はボタン自体を出さないため null。 */

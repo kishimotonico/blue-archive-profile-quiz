@@ -3598,5 +3598,30 @@
       "portrait": "images/portrait/erina.png"
     },
     "availableFrom": "2026-09-25"
+  },
+  "tsumugi": {
+    "profile": {
+      "fullName": "椎名ツムギ",
+      "name": "ツムギ",
+      "school": "ワイルドハント芸術学院",
+      "grade": "2年生",
+      "club": "オカルト研究会（第4寮404号室）",
+      "age": "16歳",
+      "birthday": "3月11日",
+      "height": "162cm",
+      "hobby": "ぶらり旅、路上ライブ",
+      "weaponName": "ラブ・アンド・ピース",
+      "cv": "高田紗希衣",
+      "skills": {
+        "ex": "ラブ・アンド・ピース！",
+        "normal": "インスピレーション",
+        "passive": "デスメタルの精神",
+        "sub": "平和！平和！平和！"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/tsumugi.png"
+    },
+    "availableFrom": "2026-10-08"
   }
 }

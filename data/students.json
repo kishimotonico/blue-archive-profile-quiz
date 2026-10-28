@@ -3623,5 +3623,30 @@
       "portrait": "images/portrait/tsumugi.png"
     },
     "availableFrom": "2026-10-08"
+  },
+  "rana": {
+    "profile": {
+      "fullName": "古畑ラナ",
+      "name": "ラナ",
+      "school": "レッドウィンター連邦学園",
+      "grade": "1年生",
+      "club": "183号特別クラス",
+      "age": "12歳",
+      "birthday": "6月13日",
+      "height": "135cm",
+      "hobby": "編み物、岩登り",
+      "weaponName": "スペシャルレフリー",
+      "cv": "飯田ヒカル",
+      "skills": {
+        "ex": "IPoACスプーフィング",
+        "normal": "ウォッチドッグタイマー",
+        "passive": "オーバークロック",
+        "sub": "マルチキャスト"
+      }
+    },
+    "images": {
+      "portrait": "images/portrait/rana.png"
+    },
+    "availableFrom": "2026-10-29"
   }
 }
